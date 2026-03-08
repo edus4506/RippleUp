@@ -47,6 +47,7 @@ Business modeling in software development involves defining the product's vision
 
 ### Product Vision
 
+For people who want to make a positive impact in their communities, our platform is a collaborative event system that allows users to create, discover, and join humanitarian and community-help events.
 <!-- 
 Start by defining a clear and concise product vision for your app, to help members of the team, contributors, and users into focusing their often disparate views into a concise, visual, and short textual form. 
 
@@ -67,6 +68,12 @@ To learn more about how to write a good product vision, please read:
 
 
 ### Features and Assumptions
+ - Users Profile
+ - Event Creation
+ - Event Discovery
+ - Join / Leave Events
+ - Event Management
+ - Event history
 <!-- 
 Indicate an  initial/tentative list of high-level features - high-level capabilities or desired services of the system that are necessary to deliver benefits to the users.
  - Feature XPTO - a few words to briefly describe the feature
@@ -79,6 +86,17 @@ Optionally, indicate an initial/tentative list of assumptions that you are doing
 ## Requirements
 
 ### User Stories
+
+The system supports several user stories focused on enabling users to organize and participate in humanitarian events.
+
+The main functionalities include:
+- Creating humanitarian events
+- Browsing available events
+- Joining and leaving events
+- Managing events created by the user
+- Viewing event details and participants
+
+Each user story is documented and tracked in the GitHub Project board with the label "user story".
 <!-- 
 In this section you should describe all kinds of requirements for your module: functional and non-functional requirements.
 
