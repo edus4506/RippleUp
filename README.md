@@ -2,11 +2,11 @@
 
 > [!NOTE] In this file, you will find the structure you should follow to document your mobile app in the README.md file for LEIC-ES-2025-26. It is a single file with guidelines. You can add more sections, but for assessment reasons and automation, please make sure to include all sections of this template. Your professors will clarify about specificities of your app.
 
-# _[your product name]_ Development Report
+# _Ripple Up_ Development Report
 
-Welcome to the documentation of _[your product name]_!
+Welcome to the documentation of _Ripple Up_!
 
-This Software Development Report, tailored for LEIC-ES-2025-26, provides comprehensive details about _[your product name]_, starting from an high-level vision and going into low-level implementation decisions. 
+This Software Development Report, tailored for LEIC-ES-2025-26, provides comprehensive details about _Ripple Up_, starting from an high-level vision and going into low-level implementation decisions. 
 
 It is organised by the following activities: 
 
@@ -35,7 +35,7 @@ Please contact us!
 Thank you!
 
 * team member name and email
-* team member name and email
+* David Gomes - david2006gomes@gmail.com
 * team member name and email
 * team member name and email
 * team member name and email
@@ -68,12 +68,14 @@ To learn more about how to write a good product vision, please read:
 
 
 ### Features and Assumptions
- - Users Profile
- - Event Creation
- - Event Discovery
- - Join / Leave Events
- - Event Management
- - Event history
+ - Users Profile - Users can view and edit their personal profile, including name, photo, interests, and contact details.
+ - Event Creation - Users can create events by providing details such as title, description, date, time, location, and participant limits.
+ - Event Discovery - Users can browse and search for events based on categories, date, location, or keywords.
+ - Join / Leave Events - Users can register for events they are interested in and leave events if they change their plans.
+ - Event Management - Event organizers can edit, update, or cancel events they created.
+ - Event history - Users can view a record of past events they attended or organized.
+ - Event Notifications – Users receive notifications or reminders about upcoming events, updates, or cancellations.
+ - Event Categories – Events can be classified into categories or tagged to improve search and discovery.
 <!-- 
 Indicate an  initial/tentative list of high-level features - high-level capabilities or desired services of the system that are necessary to deliver benefits to the users.
  - Feature XPTO - a few words to briefly describe the feature
