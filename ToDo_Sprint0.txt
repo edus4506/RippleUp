@@ -1,0 +1,49 @@
+ENTREGA -6 ABRIL
+
+
+Business Modeling
+	Product vision statement -> Artur(confirmar que é o pedido)
+
+Requirements
+	Domain Modeling -> Tiago
+	Product backlog refinement -> Tiago / PR
+	Validate requirements(entrevistas/quizzes) -> Edu / Lourenço
+
+Analysis Design
+	UI mockups(algumas feitas no tpc já) -> Lourenço / PR
+	High-level architecture design(Logical architeture/Physical architeture) -> Artur
+
+Construction
+	Product increment #0: prototype (1 funcionalidade da app) -> Artur
+	
+
+Testing
+	Unit and Integration tests -> Edu / Artur
+	User acceptance test -> Edu / Artur
+	Log, Track,Document bugs (como foi feito no tpc) -> Edu / Artur
+
+DevOps
+	Automate all activities and workflows with GitHub Actions -> Todos
+
+Change Management
+	Manage Issues, branchs... -> Todos
+
+Project Management
+	Sprint planning -> Todos
+
+Enviroment
+	tpc #1, documentar uso de tecnologias e como as usamos -> Todos
+	
+	
+	
+
+	
+
+
+	
+	
+
+
+
+	
+	
