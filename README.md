@@ -155,6 +155,11 @@ In this section you should start by briefly describing the components of the pro
 
 
 ### Logical architecture
+The system follows a layered logical architecture composed of three main components: the User Interface, Business Logic, and Data Access layers.
+- The User Interface (UI) is responsible for handling user interactions and presenting visual elements. It captures user input and displays processed data in a user-friendly format.
+- The Business Logic layer manages the core functionalities of the application. It processes user inputs, applies application rules, and coordinates operations between the UI and external services.
+- The Data Access layer is responsible for handling communication with external systems and services. This includes interactions with the database and third-party APIs.
+!["Logical Architecture"](assets/Readme/logical_architecture.jpeg)
 <!--
 The purpose of this subsection is to document the high-level logical structure of the code (Logical View), using a UML diagram with logical packages, without the worry of allocating to components, processes or machines.
 
@@ -167,6 +172,13 @@ Example of _UML package diagram_ showing a _logical view_ of the Eletronic Ticke
 
 
 ### Physical architecture
+The physical architecture consists of a client-side mobile application and cloud-based external services.
+
+- The mobile application, developed using Flutter, runs on the user’s device. It contains the User Interface, Business Logic, and part of the Data Access layer. Additionally, it may use local storage mechanisms for caching and offline capabilities.
+- The application communicates directly with cloud services provided by Firebase, which handles data persistence through Cloud Firestore and file storage services.
+- External location-based functionalities are supported through the Google Maps Platform, which provides APIs for mapping and geocoding.
+!["Physical Architecture"](assets/Readme/physical_architecture.jpeg)
+
 <!--
 The goal of this subsection is to document the high-level physical structure of the software system (machines, connections, software components installed, and their dependencies) using UML deployment diagrams (Deployment View) or component diagrams (Implementation View), separate or integrated, showing the physical structure of the system.
 
