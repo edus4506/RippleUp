@@ -129,6 +129,8 @@ At the end, it is good to add a rough indication of the value of the user story 
 
 ### Domain model
 
+![UML Diagram](assets/Readme/uml.png)
+
 <!-- 
 To better understand the context of the software system, it is useful to have a simple UML class diagram with all and only the key concepts (names, attributes) and relationships involved of the problem domain addressed by your app. 
 Also provide a short textual description of each concept (domain class). 
