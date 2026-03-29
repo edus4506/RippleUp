@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:t5/views/pages/event_details_page.dart';
-import '../widgets/bottom_nav.dart';
+import 'package:t5/views/widgets/bottom_nav.dart';
 import 'profile_page.dart';
 
 import '/data/models/event.dart';
@@ -17,9 +16,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
 
-  // 🔥 ViewModel + Repository
   final EventFilter _eventFilter = EventFilter(EventRepository());
-
   List<Event> _filteredEvents = [];
 
   @override
@@ -28,7 +25,6 @@ class _HomePageState extends State<HomePage> {
     _filteredEvents = _eventFilter.applyFilters();
   }
 
-  // 🔥 UI LISTA
   Widget _buildEventsPage() {
     return ListView.builder(
       itemCount: _filteredEvents.length,
@@ -38,7 +34,14 @@ class _HomePageState extends State<HomePage> {
         return ListTile(
           key: Key('event_${event.id}'),
           title: Text(event.name),
-          subtitle: Text("${event.country} - Objective ${event.objectives.join(",")}"),
+          subtitle: Text(
+            "${event.country} - Objective ${event.objectives.join(", ")}",
+          ),
+          trailing: event.isFull
+              ? const Chip(
+            label: Text('FULL'),
+          )
+              : null,
           onTap: () {
             _showEventDetails(event);
           },
@@ -48,6 +51,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _showEventDetails(Event event) {
+    final bool isFull = event.isFull;
+
     showDialog(
       context: context,
       builder: (context) {
@@ -64,6 +69,55 @@ class _HomePageState extends State<HomePage> {
                 Text("District: ${event.district}"),
                 Text("City: ${event.city}"),
                 Text("Max Users: ${event.maxUsers}"),
+                Text(
+                  "Participants: ${event.currentUsers}/${event.maxUsers}",
+                  key: const Key('participants_text'),
+                ),
+                const SizedBox(height: 12),
+                if (isFull)
+                  Container(
+                    key: const Key('full_badge'),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.red.shade100,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Text(
+                      'FULL',
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                if (isFull) const SizedBox(height: 12),
+                if (isFull)
+                  const Text(
+                    'This activity is full',
+                    key: Key('full_message'),
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  key: const Key('join_button'),
+                  onPressed: isFull
+                      ? null
+                      : () {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('You joined ${event.name}'),
+                      ),
+                    );
+                  },
+                  child: const Text('Join'),
+                ),
               ],
             ),
           ),
@@ -78,7 +132,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // 🔥 FILTER DIALOG (UI ONLY)
   void _openFilterDialog() {
     List<int> selectedObjectives = [];
 
@@ -106,13 +159,11 @@ class _HomePageState extends State<HomePage> {
           builder: (context, setStateDialog) {
             return AlertDialog(
               title: const Text("Filter Events"),
-
               content: SizedBox(
                 width: double.maxFinite,
                 height: 450,
                 child: Column(
                   children: [
-                    // 🔥 OBJECTIVES
                     const Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
@@ -120,9 +171,7 @@ class _HomePageState extends State<HomePage> {
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
-
                     const SizedBox(height: 10),
-
                     SizedBox(
                       height: 150,
                       child: ListView.builder(
@@ -146,14 +195,10 @@ class _HomePageState extends State<HomePage> {
                         },
                       ),
                     ),
-
                     const SizedBox(height: 10),
-
-                    // 🌍 COUNTRY
                     DropdownButtonFormField<String>(
-                      decoration:
-                          const InputDecoration(labelText: "Country"),
-                      value: selectedCountry,
+                      decoration: const InputDecoration(labelText: "Country"),
+                      initialValue: selectedCountry,
                       items: countries.map((country) {
                         return DropdownMenuItem(
                           value: country,
@@ -168,17 +213,12 @@ class _HomePageState extends State<HomePage> {
                         });
                       },
                     ),
-
                     const SizedBox(height: 10),
-
-                    // 🏙 DISTRICT
                     if (selectedCountry != null)
                       DropdownButtonFormField<String>(
-                        decoration:
-                            const InputDecoration(labelText: "District"),
-                        value: selectedDistrict,
-                        items: districts[selectedCountry]!
-                            .map((district) {
+                        decoration: const InputDecoration(labelText: "District"),
+                        initialValue: selectedDistrict,
+                        items: districts[selectedCountry]!.map((district) {
                           return DropdownMenuItem(
                             value: district,
                             child: Text(district),
@@ -191,17 +231,12 @@ class _HomePageState extends State<HomePage> {
                           });
                         },
                       ),
-
                     const SizedBox(height: 10),
-
-                    // 📍 CITY
                     if (selectedDistrict != null)
                       DropdownButtonFormField<String>(
-                        decoration:
-                            const InputDecoration(labelText: "City"),
-                        value: selectedCity,
-                        items: cities[selectedDistrict]!
-                            .map((city) {
+                        decoration: const InputDecoration(labelText: "City"),
+                        initialValue: selectedCity,
+                        items: cities[selectedDistrict]!.map((city) {
                           return DropdownMenuItem(
                             value: city,
                             child: Text(city),
@@ -216,7 +251,6 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-
               actions: [
                 TextButton(
                   onPressed: () {
@@ -255,18 +289,17 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-
       body: _currentIndex == 0
           ? _buildEventsPage()
           : _currentIndex == 1
-              ? const Center(
-                  child: Text('Tarefas', style: TextStyle(fontSize: 24)))
-              : _currentIndex == 2
-                  ? const Center(
-                      child:
-                          Text('Favoritos', style: TextStyle(fontSize: 24)))
-                  : const ProfilePage(),
-
+          ? const Center(
+        child: Text('Tarefas', style: TextStyle(fontSize: 24)),
+      )
+          : _currentIndex == 2
+          ? const Center(
+        child: Text('Favoritos', style: TextStyle(fontSize: 24)),
+      )
+          : const ProfilePage(),
       bottomNavigationBar: AppBottomNav(
         currentIndex: _currentIndex,
         onTap: (index) {
