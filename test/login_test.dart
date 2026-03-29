@@ -38,4 +38,32 @@ void main() {
 
     expect(find.text('Home'), findsOneWidget);
   });
+
+  testWidgets('Invalid login shows error', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (_) => AuthViewModel(UserRepository()),
+          ),
+        ],
+        child: const MyApp(),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // inserir dados errados
+    await tester.enterText(find.byType(TextField).at(0), 'wrong@test.com');
+    await tester.enterText(find.byType(TextField).at(1), 'wrong');
+
+    await tester.tap(find.text('ENTRAR'));
+
+    await tester.pumpAndSettle(const Duration(seconds: 2));
+
+    expect(find.text('Credenciais inválidas'), findsOneWidget);
+  });
+
 }
+
+
