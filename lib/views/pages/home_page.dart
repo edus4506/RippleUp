@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:t5/views/pages/event_details_page.dart';
 import '../widgets/bottom_nav.dart';
 import 'profile_page.dart';
 
@@ -37,9 +38,41 @@ class _HomePageState extends State<HomePage> {
         return ListTile(
           key: Key('event_${event.id}'),
           title: Text(event.name),
-          subtitle: Text(
-            "${event.country} - Objective ${event.objectives.join(",")}",
+          subtitle: Text("${event.country} - Objective ${event.objectives.join(",")}"),
+          onTap: () {
+            _showEventDetails(event);
+          },
+        );
+      },
+    );
+  }
+
+  void _showEventDetails(Event event) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(event.name),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(event.description, style: const TextStyle(fontSize: 16)),
+                const SizedBox(height: 10),
+                Text("Objectives: ${event.objectives.join(', ')}"),
+                Text("Country: ${event.country}"),
+                Text("District: ${event.district}"),
+                Text("City: ${event.city}"),
+                Text("Max Users: ${event.maxUsers}"),
+              ],
+            ),
           ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Close"),
+            ),
+          ],
         );
       },
     );
