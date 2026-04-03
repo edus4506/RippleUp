@@ -4,6 +4,8 @@
 
 # _Ripple Up_ Development Report
 
+[![Flutter CI](https://github.com/LEIC-ES-2025-26-2LEIC05/T5/actions/workflows/flutter.yml/badge.svg?branch=main)](https://github.com/LEIC-ES-2025-26-2LEIC05/T5/actions/workflows/flutter.yml)
+
 Welcome to the documentation of _Ripple Up_!
 
 This Software Development Report, tailored for LEIC-ES-2025-26, provides comprehensive details about _Ripple Up_, starting from an high-level vision and going into low-level implementation decisions. 
