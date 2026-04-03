@@ -28,6 +28,11 @@ class _HomePageState extends State<HomePage> {
   String? _selectedCountry;
   String? _selectedDistrict;
   String? _selectedCity;
+  int? _minCurrentUsers;
+  int? _maxCurrentUsers;
+  int? _minMaxUsers;
+  int? _maxMaxUsers;
+  bool _showFullEvents = true;
 
   @override
   void initState() {
@@ -58,6 +63,11 @@ class _HomePageState extends State<HomePage> {
       country: _selectedCountry,
       district: _selectedDistrict,
       city: _selectedCity,
+      minCurrentUsers: _minCurrentUsers,
+      maxCurrentUsers: _maxCurrentUsers,
+      minMaxUsers: _minMaxUsers,
+      maxMaxUsers: _maxMaxUsers,
+      showFullEvents: _showFullEvents,
     );
   }
 
@@ -188,12 +198,24 @@ class _HomePageState extends State<HomePage> {
             String? country,
             String? district,
             String? city,
+            int? minCurrentUsers,
+            int? maxCurrentUsers,
+            int? minMaxUsers,
+            int? maxMaxUsers,
+            bool showFullEvents = true
           }) {
             setState(() {
               _selectedObjectives = objectives;
               _selectedCountry = country;
               _selectedDistrict = district;
               _selectedCity = city;
+
+              _minCurrentUsers = minCurrentUsers;
+              _maxCurrentUsers = maxCurrentUsers;
+              _minMaxUsers = minMaxUsers;
+              _maxMaxUsers = maxMaxUsers;
+              _showFullEvents = showFullEvents;
+
               _applyCurrentFilters();
             });
           },

@@ -22,17 +22,23 @@ class AppTheme {
         ),
       ),
 
-      /// 🔹 Cards (eventos)
+      /// 🔹 Cards (eventos + filtros)
       cardTheme: CardThemeData(
         color: Colors.white,
         elevation: 3,
         shadowColor: Colors.black.withOpacity(0.08),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18),
+
+          /// borda para caixas (Objectives)
+          side: BorderSide(
+            color: Color(0xFFE0E0E0), 
+            width: 1,
+          ),
         ),
+
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       ),
-
       /// 🔹 Tipografia global
       textTheme: const TextTheme(
         /// 🔹 Título do evento
@@ -60,6 +66,13 @@ class AppTheme {
           fontSize: 15,
           fontWeight: FontWeight.bold,
           color: Color.fromARGB(255, 69, 138, 40),
+        ),
+
+        /// "Show Full Events"
+        labelLarge: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold, 
+          color: Color(0xFF4A693D), 
         ),
       ),
 
@@ -96,6 +109,14 @@ class AppTheme {
       ),
       iconTheme: const IconThemeData(
         color: Color.fromARGB(255, 66, 139, 35),
+      ),
+      /// sliders
+      sliderTheme: SliderThemeData(
+        activeTrackColor: Color(0xFF4A693D),   // barra ativa
+        inactiveTrackColor: Color(0xFFC9CFB6), // barra fundo
+        thumbColor: Color(0xFF4A693D),         // bolinha
+        overlayColor: Color(0x334A693D),       // efeito ao tocar
+        valueIndicatorColor: Color(0xFF4A693D),
       ),
     );
   }

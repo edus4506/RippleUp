@@ -12,26 +12,32 @@ class EventFilter {
     String? country,
     String? district,
     String? city,
+    int? minCurrentUsers,
+    int? maxCurrentUsers,
+    int? minMaxUsers,
+    int? maxMaxUsers,
+    bool showFullEvents = true,
   }) {
     final sourceEvents = events ?? repository.getAllEvents();
 
     return sourceEvents.where((event) {
+
       if (objectives.isNotEmpty) {
         final matches = event.objectives.any((obj) => objectives.contains(obj));
         if (!matches) return false;
       }
 
-      if (country != null && event.country != country) {
-        return false;
-      }
+      if (country != null && event.country != country) return false;
+      if (district != null && event.district != district) return false;
+      if (city != null && event.city != city) return false;
 
-      if (district != null && event.district != district) {
-        return false;
-      }
+      if (minCurrentUsers != null && event.currentUsers < minCurrentUsers) return false;
+      if (maxCurrentUsers != null && event.currentUsers > maxCurrentUsers) return false;
 
-      if (city != null && event.city != city) {
-        return false;
-      }
+      if (minMaxUsers != null && event.maxUsers < minMaxUsers) return false;
+      if (maxMaxUsers != null && event.maxUsers > maxMaxUsers) return false;
+
+      if (!showFullEvents && event.isFull) return false;
 
       return true;
     }).toList();
