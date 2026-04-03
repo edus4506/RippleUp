@@ -35,9 +35,9 @@ Please contact us!
 Thank you!
 
 * Artur Moreira - arturmoreira899@gmail.com
+* Eduardo Santos - edu.santos4506@gmail.com
 * David Gomes - david2006gomes@gmail.com
 * Tiago Ribeiro - tiagoc8ribeiro@gmail.com
-* team member name and email
 * team member name and email
 
 ---
