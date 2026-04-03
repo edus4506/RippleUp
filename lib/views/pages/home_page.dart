@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:t5/views/widgets/bottom_nav.dart';
-import 'profile_page.dart';
 
-import '/data/models/event.dart';
-import '../../viewmodels/event_filter.dart';
+import '../../data/models/event.dart';
 import '../../data/repositories/event_repositorie.dart';
-
+import '../../viewmodels/event_filter.dart';
+import 'create_event_page.dart';
 import 'event_filter_page.dart';
+import 'profile_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,32 +19,77 @@ class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
 
   final EventFilter _eventFilter = EventFilter(EventRepository());
+
+  late List<Event> _allEvents;
   List<Event> _filteredEvents = [];
+
+  List<int> _selectedObjectives = [];
+  String? _selectedCountry;
+  String? _selectedDistrict;
+  String? _selectedCity;
 
   @override
   void initState() {
     super.initState();
-    _filteredEvents = _eventFilter.applyFilters();
+    _allEvents = EventRepository().getAllEvents();
+    _filteredEvents = _eventFilter.applyFilters(events: _allEvents);
   }
 
-  // 📌 LISTA DE EVENTOS
   Widget _buildEventsPage() {
     return ListView.builder(
       itemCount: _filteredEvents.length,
       itemBuilder: (context, index) {
-        final event = _filteredEvents[index]; // ✅ corrigido
+        final event = _filteredEvents[index];
 
         return ListTile(
           key: Key('event_${event.id}'),
           title: Text(event.name),
           subtitle: Text(
-            "${event.country} - Objective ${event.objectives.join(", ")}",
+            "${event.city}, ${event.district} - Objective ${event.objectives.join(", ")}",
           ),
-          trailing: event.isFull
-              ? const Chip(label: Text('FULL'))
-              : null,
+          trailing: event.isFull ? const Chip(label: Text('FULL')) : null,
           onTap: () {
             _showEventDetails(event);
+          },
+        );
+      },
+    );
+  }
+
+  void _applyCurrentFilters() {
+    _filteredEvents = _eventFilter.applyFilters(
+      events: _allEvents,
+      objectives: _selectedObjectives,
+      country: _selectedCountry,
+      district: _selectedDistrict,
+      city: _selectedCity,
+    );
+  }
+
+  int _nextEventId() {
+    final maxId = _allEvents.fold<int>(
+      0,
+          (maxValue, event) => event.id > maxValue ? event.id : maxValue,
+    );
+
+    return maxId + 1;
+  }
+
+  void _openCreateDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return CreateEventPage(
+          nextId: _nextEventId(),
+          onCreate: (event) {
+            setState(() {
+              _allEvents.add(event);
+              _applyCurrentFilters();
+            });
+
+            ScaffoldMessenger.of(this.context).showSnackBar(
+              SnackBar(content: Text('${event.name} created successfully')),
+            );
           },
         );
       },
@@ -75,7 +120,6 @@ class _HomePageState extends State<HomePage> {
                   key: const Key('participants_text'),
                 ),
                 const SizedBox(height: 12),
-
                 if (isFull)
                   Container(
                     key: const Key('full_badge'),
@@ -95,9 +139,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ),
-
                 if (isFull) const SizedBox(height: 12),
-
                 if (isFull)
                   const Text(
                     'This activity is full',
@@ -107,21 +149,19 @@ class _HomePageState extends State<HomePage> {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-
                 const SizedBox(height: 16),
-
                 ElevatedButton(
                   key: const Key('join_button'),
                   onPressed: isFull
                       ? null
                       : () {
-                          Navigator.pop(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('You joined ${event.name}'),
-                            ),
-                          );
-                        },
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('You joined ${event.name}'),
+                      ),
+                    );
+                  },
                   child: const Text('Join'),
                 ),
               ],
@@ -138,7 +178,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // 📌 ABRIR FILTER
   void _openFilterDialog() {
     showDialog(
       context: context,
@@ -151,12 +190,11 @@ class _HomePageState extends State<HomePage> {
             String? city,
           }) {
             setState(() {
-              _filteredEvents = _eventFilter.applyFilters(
-                objectives: objectives,
-                country: country,
-                district: district,
-                city: city,
-              );
+              _selectedObjectives = objectives;
+              _selectedCountry = country;
+              _selectedDistrict = district;
+              _selectedCity = city;
+              _applyCurrentFilters();
             });
           },
         );
@@ -164,7 +202,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // 📌 UI PRINCIPAL
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -173,26 +210,28 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
         actions: [
           IconButton(
+            key: const Key('create_event_button'),
+            icon: const Icon(Icons.add),
+            onPressed: _openCreateDialog,
+          ),
+          IconButton(
             key: const Key('filter_button'),
             icon: const Icon(Icons.filter_list),
-            onPressed: _openFilterDialog, // ✅ correto
+            onPressed: _openFilterDialog,
           ),
         ],
       ),
-
       body: _currentIndex == 0
           ? _buildEventsPage()
           : _currentIndex == 1
-              ? const Center(
-                  child: Text('Tarefas', style: TextStyle(fontSize: 24)),
-                )
-              : _currentIndex == 2
-                  ? const Center(
-                      child:
-                          Text('Favoritos', style: TextStyle(fontSize: 24)),
-                    )
-                  : const ProfilePage(),
-
+          ? const Center(
+        child: Text('Tarefas', style: TextStyle(fontSize: 24)),
+      )
+          : _currentIndex == 2
+          ? const Center(
+        child: Text('Favoritos', style: TextStyle(fontSize: 24)),
+      )
+          : const ProfilePage(),
       bottomNavigationBar: AppBottomNav(
         currentIndex: _currentIndex,
         onTap: (index) {

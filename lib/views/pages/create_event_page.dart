@@ -1,0 +1,228 @@
+import 'package:flutter/material.dart';
+import '../../data/models/event.dart';
+
+class CreateEventPage extends StatefulWidget {
+  final void Function(Event event) onCreate;
+  final int nextId;
+
+  const CreateEventPage({
+    super.key,
+    required this.onCreate,
+    required this.nextId,
+  });
+
+  @override
+  State<CreateEventPage> createState() => _CreateEventPageState();
+}
+
+class _CreateEventPageState extends State<CreateEventPage> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _maxUsersController = TextEditingController();
+
+  List<int> selectedObjectives = [];
+
+  String? selectedCountry;
+  String? selectedDistrict;
+  String? selectedCity;
+
+  final List<String> countries = ["Portugal", "Spain"];
+
+  final Map<String, List<String>> districts = {
+    "Portugal": ["Porto", "Lisboa"],
+    "Spain": ["Galicia"],
+  };
+
+  final Map<String, List<String>> cities = {
+    "Porto": ["Porto", "Matosinhos"],
+    "Lisboa": ["Lisboa"],
+    "Galicia": ["Vigo"],
+  };
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _descriptionController.dispose();
+    _maxUsersController.dispose();
+    super.dispose();
+  }
+
+  void _createEvent() {
+    final name = _nameController.text.trim();
+    final description = _descriptionController.text.trim();
+    final maxUsers = int.tryParse(_maxUsersController.text.trim());
+
+    if (name.isEmpty ||
+        description.isEmpty ||
+        maxUsers == null ||
+        maxUsers <= 0 ||
+        selectedObjectives.isEmpty ||
+        selectedCountry == null ||
+        selectedDistrict == null ||
+        selectedCity == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please fill in all fields correctly'),
+        ),
+      );
+      return;
+    }
+
+    final newEvent = Event(
+      id: widget.nextId,
+      name: name,
+      description: description,
+      currentUsers: 0,
+      maxUsers: maxUsers,
+      objectives: selectedObjectives,
+      country: selectedCountry!,
+      district: selectedDistrict!,
+      city: selectedCity!,
+    );
+
+    widget.onCreate(newEvent);
+    Navigator.pop(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Create Event'),
+      content: SizedBox(
+        width: double.maxFinite,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                key: const Key('create_name_field'),
+                controller: _nameController,
+                decoration: const InputDecoration(labelText: 'Event name'),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                key: const Key('create_description_field'),
+                controller: _descriptionController,
+                decoration: const InputDecoration(labelText: 'Description'),
+                maxLines: 3,
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                key: const Key('create_max_users_field'),
+                controller: _maxUsersController,
+                decoration: const InputDecoration(labelText: 'Max users'),
+                keyboardType: TextInputType.number,
+              ),
+              const SizedBox(height: 16),
+
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Objectives',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              const SizedBox(height: 8),
+
+              SizedBox(
+                height: 180,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: 17,
+                  itemBuilder: (context, index) {
+                    final objective = index + 1;
+
+                    return CheckboxListTile(
+                      dense: true,
+                      title: Text('Objective $objective'),
+                      value: selectedObjectives.contains(objective),
+                      onChanged: (value) {
+                        setState(() {
+                          if (value == true) {
+                            selectedObjectives.add(objective);
+                          } else {
+                            selectedObjectives.remove(objective);
+                          }
+                        });
+                      },
+                    );
+                  },
+                ),
+              ),
+
+              const SizedBox(height: 10),
+
+              DropdownButtonFormField<String>(
+                decoration: const InputDecoration(labelText: "Country"),
+                value: selectedCountry,
+                items: countries.map((country) {
+                  return DropdownMenuItem(
+                    value: country,
+                    child: Text(country),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    selectedCountry = value;
+                    selectedDistrict = null;
+                    selectedCity = null;
+                  });
+                },
+              ),
+
+              const SizedBox(height: 10),
+
+              if (selectedCountry != null)
+                DropdownButtonFormField<String>(
+                  decoration: const InputDecoration(labelText: "District"),
+                  value: selectedDistrict,
+                  items: districts[selectedCountry]!.map((district) {
+                    return DropdownMenuItem(
+                      value: district,
+                      child: Text(district),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedDistrict = value;
+                      selectedCity = null;
+                    });
+                  },
+                ),
+
+              const SizedBox(height: 10),
+
+              if (selectedDistrict != null)
+                DropdownButtonFormField<String>(
+                  decoration: const InputDecoration(labelText: "City"),
+                  value: selectedCity,
+                  items: cities[selectedDistrict]!.map((city) {
+                    return DropdownMenuItem(
+                      value: city,
+                      child: Text(city),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedCity = value;
+                    });
+                  },
+                ),
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          key: const Key('confirm_create_event_button'),
+          onPressed: _createEvent,
+          child: const Text('Create'),
+        ),
+      ],
+    );
+  }
+}

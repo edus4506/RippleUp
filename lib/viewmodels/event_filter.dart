@@ -7,33 +7,28 @@ class EventFilter {
   EventFilter(this.repository);
 
   List<Event> applyFilters({
+    List<Event>? events,
     List<int> objectives = const [],
     String? country,
     String? district,
     String? city,
   }) {
-    final events = repository.getAllEvents();
+    final sourceEvents = events ?? repository.getAllEvents();
 
-    return events.where((event) {
-      // 🔹 OBJECTIVES (OR)
+    return sourceEvents.where((event) {
       if (objectives.isNotEmpty) {
-        bool matches = event.objectives.any(
-          (obj) => objectives.contains(obj),
-        );
+        final matches = event.objectives.any((obj) => objectives.contains(obj));
         if (!matches) return false;
       }
 
-      // 🔹 COUNTRY
       if (country != null && event.country != country) {
         return false;
       }
 
-      // 🔹 DISTRICT
       if (district != null && event.district != district) {
         return false;
       }
 
-      // 🔹 CITY
       if (city != null && event.city != city) {
         return false;
       }
