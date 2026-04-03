@@ -114,7 +114,6 @@ class _CreateEventPageState extends State<CreateEventPage> {
                 keyboardType: TextInputType.number,
               ),
               const SizedBox(height: 16),
-
               const Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -123,7 +122,6 @@ class _CreateEventPageState extends State<CreateEventPage> {
                 ),
               ),
               const SizedBox(height: 8),
-
               SizedBox(
                 height: 180,
                 child: ListView.builder(
@@ -149,12 +147,10 @@ class _CreateEventPageState extends State<CreateEventPage> {
                   },
                 ),
               ),
-
               const SizedBox(height: 10),
-
               DropdownButtonFormField<String>(
                 decoration: const InputDecoration(labelText: "Country"),
-                value: selectedCountry,
+                initialValue: selectedCountry,
                 items: countries.map((country) {
                   return DropdownMenuItem(
                     value: country,
@@ -169,13 +165,11 @@ class _CreateEventPageState extends State<CreateEventPage> {
                   });
                 },
               ),
-
               const SizedBox(height: 10),
-
               if (selectedCountry != null)
                 DropdownButtonFormField<String>(
                   decoration: const InputDecoration(labelText: "District"),
-                  value: selectedDistrict,
+                  initialValue: selectedDistrict,
                   items: districts[selectedCountry]!.map((district) {
                     return DropdownMenuItem(
                       value: district,
@@ -189,13 +183,11 @@ class _CreateEventPageState extends State<CreateEventPage> {
                     });
                   },
                 ),
-
               const SizedBox(height: 10),
-
               if (selectedDistrict != null)
                 DropdownButtonFormField<String>(
                   decoration: const InputDecoration(labelText: "City"),
-                  value: selectedCity,
+                  initialValue: selectedCity,
                   items: cities[selectedDistrict]!.map((city) {
                     return DropdownMenuItem(
                       value: city,
