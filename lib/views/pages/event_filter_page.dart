@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class EventFilterPage extends StatefulWidget {
   final Function({
-    required List<int> objectives,
-    String? country,
-    String? district,
-    String? city,
+  required List<int> objectives,
+  String? country,
+  String? district,
+  String? city,
   }) onApply;
 
   const EventFilterPage({super.key, required this.onApply});
@@ -52,7 +52,6 @@ class _EventFilterPageState extends State<EventFilterPage> {
             ),
             const SizedBox(height: 10),
 
-            /// OBJECTIVES
             SizedBox(
               height: 150,
               child: ListView.builder(
@@ -79,10 +78,9 @@ class _EventFilterPageState extends State<EventFilterPage> {
 
             const SizedBox(height: 10),
 
-            /// COUNTRY
             DropdownButtonFormField<String>(
               decoration: const InputDecoration(labelText: "Country"),
-              value: selectedCountry,
+              initialValue: selectedCountry,
               items: countries.map((country) {
                 return DropdownMenuItem(
                   value: country,
@@ -100,11 +98,10 @@ class _EventFilterPageState extends State<EventFilterPage> {
 
             const SizedBox(height: 10),
 
-            /// DISTRICT
             if (selectedCountry != null)
               DropdownButtonFormField<String>(
                 decoration: const InputDecoration(labelText: "District"),
-                value: selectedDistrict,
+                initialValue: selectedDistrict,
                 items: districts[selectedCountry]!.map((district) {
                   return DropdownMenuItem(
                     value: district,
@@ -121,11 +118,10 @@ class _EventFilterPageState extends State<EventFilterPage> {
 
             const SizedBox(height: 10),
 
-            /// CITY
             if (selectedDistrict != null)
               DropdownButtonFormField<String>(
                 decoration: const InputDecoration(labelText: "City"),
-                value: selectedCity,
+                initialValue: selectedCity,
                 items: cities[selectedDistrict]!.map((city) {
                   return DropdownMenuItem(
                     value: city,
