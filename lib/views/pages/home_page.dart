@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:t5/views/widgets/bottom_nav.dart';
+import 'package:t5/views/widgets/event_card.dart';
 
 import '../../data/models/event.dart';
 import '../../data/repositories/event_repositorie.dart';
@@ -41,16 +42,10 @@ class _HomePageState extends State<HomePage> {
       itemBuilder: (context, index) {
         final event = _filteredEvents[index];
 
-        return ListTile(
+        return EventCard(
           key: Key('event_${event.id}'),
-          title: Text(event.name),
-          subtitle: Text(
-            "${event.city}, ${event.district} - Objective ${event.objectives.join(", ")}",
-          ),
-          trailing: event.isFull ? const Chip(label: Text('FULL')) : null,
-          onTap: () {
-            _showEventDetails(event);
-          },
+          event: event,
+          onTap: () => _showEventDetails(event),
         );
       },
     );
@@ -69,7 +64,7 @@ class _HomePageState extends State<HomePage> {
   int _nextEventId() {
     final maxId = _allEvents.fold<int>(
       0,
-          (maxValue, event) => event.id > maxValue ? event.id : maxValue,
+      (maxValue, event) => event.id > maxValue ? event.id : maxValue,
     );
 
     return maxId + 1;
@@ -108,7 +103,7 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(event.description, style: const TextStyle(fontSize: 16)),
+                Text(event.description),
                 const SizedBox(height: 10),
                 Text("Objectives: ${event.objectives.join(', ')}"),
                 Text("Country: ${event.country}"),
@@ -120,6 +115,7 @@ class _HomePageState extends State<HomePage> {
                   key: const Key('participants_text'),
                 ),
                 const SizedBox(height: 12),
+
                 if (isFull)
                   Container(
                     key: const Key('full_badge'),
@@ -139,7 +135,9 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ),
+
                 if (isFull) const SizedBox(height: 12),
+
                 if (isFull)
                   const Text(
                     'This activity is full',
@@ -149,19 +147,21 @@ class _HomePageState extends State<HomePage> {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
+
                 const SizedBox(height: 16),
+
                 ElevatedButton(
                   key: const Key('join_button'),
                   onPressed: isFull
                       ? null
                       : () {
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('You joined ${event.name}'),
-                      ),
-                    );
-                  },
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('You joined ${event.name}'),
+                            ),
+                          );
+                        },
                   child: const Text('Join'),
                 ),
               ],
@@ -206,32 +206,30 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home'),
-        centerTitle: true,
+        title: const Text('Events'),
+
+        leading: IconButton(
+          key: const Key('filter_button'),
+          icon: const Icon(Icons.filter_list),
+          onPressed: _openFilterDialog,
+        ),
+
         actions: [
           IconButton(
             key: const Key('create_event_button'),
             icon: const Icon(Icons.add),
             onPressed: _openCreateDialog,
           ),
-          IconButton(
-            key: const Key('filter_button'),
-            icon: const Icon(Icons.filter_list),
-            onPressed: _openFilterDialog,
-          ),
         ],
       ),
       body: _currentIndex == 0
           ? _buildEventsPage()
           : _currentIndex == 1
-          ? const Center(
-        child: Text('Tarefas', style: TextStyle(fontSize: 24)),
-      )
-          : _currentIndex == 2
-          ? const Center(
-        child: Text('Favoritos', style: TextStyle(fontSize: 24)),
-      )
-          : const ProfilePage(),
+              ? const Center(child: Text('Tarefas'))
+              : _currentIndex == 2
+                  ? const Center(child: Text('Favoritos'))
+                  : const ProfilePage(),
+
       bottomNavigationBar: AppBottomNav(
         currentIndex: _currentIndex,
         onTap: (index) {

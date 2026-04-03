@@ -4,12 +4,69 @@ class AppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
       primarySwatch: Colors.blue,
-      scaffoldBackgroundColor: Colors.white,
-      
-      // Configuração Global do BottomNavigationBar
+
+      /// 🔹 Background geral da app
+      scaffoldBackgroundColor: const Color(0xFFF7F7F7),
+
+      /// 🔹 AppBar (barra superior)
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Color(0xFFC9CFB6),
+        foregroundColor: Color(0xFF4A693D),
+        elevation: 0,
+        centerTitle: true,
+        titleTextStyle: TextStyle(
+          fontFamily: 'Roboto',
+          fontSize: 26,
+          fontWeight: FontWeight.bold,
+          color: Color(0xFF4A693D),
+        ),
+      ),
+
+      /// 🔹 Cards (eventos)
+      cardTheme: CardThemeData(
+        color: Colors.white,
+        elevation: 3,
+        shadowColor: Colors.black.withOpacity(0.08),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18),
+        ),
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      ),
+
+      /// 🔹 Tipografia global
+      textTheme: const TextTheme(
+        /// 🔹 Título do evento
+        titleMedium: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Color(0xFF4A693D),
+        ),
+
+        /// 🔹 Descrição (localização + objetivos)
+        bodyMedium: TextStyle(
+          fontSize: 14,
+          color: Colors.black,
+        ),
+
+        /// 🔹 FULL
+        labelMedium: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: Color.fromARGB(255, 69, 138, 40),
+        ),
+
+        /// 🔹 Número de participantes
+        bodyLarge: TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.bold,
+          color: Color.fromARGB(255, 69, 138, 40),
+        ),
+      ),
+
+      /// 🔹 Bottom Navigation
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.blue,
+        selectedItemColor: Color(0xFF4A693D),
         unselectedItemColor: Colors.grey,
         showSelectedLabels: false,
         showUnselectedLabels: false,
@@ -17,7 +74,7 @@ class AppTheme {
         elevation: 8,
       ),
 
-      // Configuração Global dos Inputs (TextFields)
+      /// 🔹 Inputs (TextField)
       inputDecorationTheme: const InputDecorationTheme(
         border: OutlineInputBorder(),
         focusedBorder: OutlineInputBorder(
@@ -26,14 +83,19 @@ class AppTheme {
         labelStyle: TextStyle(color: Colors.grey),
       ),
 
-      // Configuração Global dos Botões
+      /// 🔹 Botões
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.blue,
+          backgroundColor: Color(0xFF4A693D),
           foregroundColor: Colors.white,
           minimumSize: const Size(double.infinity, 50),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
+      ),
+      iconTheme: const IconThemeData(
+        color: Color.fromARGB(255, 66, 139, 35),
       ),
     );
   }
