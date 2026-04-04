@@ -40,7 +40,7 @@ Thank you!
 * Eduardo Santos - edu.santos4506@gmail.com
 * David Gomes - david2006gomes@gmail.com
 * Tiago Ribeiro - tiagoc8ribeiro@gmail.com
-* team member name and email
+* Lourenço Paçô -lourencopaco06@gmail.com
 
 ---
 ## Business Modelling
