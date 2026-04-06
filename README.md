@@ -169,6 +169,11 @@ Example:
 
 
 ## Architecture and Design
+
+The architecture of Ripple Up was designed to ensure scalability, maintainability, and clear separation of concerns. The system follows a layered approach, allowing independent development and testing of different components.
+
+The application is made to run the phone letting you explore and join events it is built with Flutter and supported by external cloud services for data persistence and additional functionalities.
+
 <!--
 The architecture of a software system encompasses the set of key decisions about its organization. 
 
@@ -217,6 +222,32 @@ Example of _UML deployment diagram_ showing a _deployment view_ of the Eletronic
 
 
 ### Functional prototype
+
+The current version of Ripple Up is a working prototype that shows the main features of the application.
+
+The app already includes the most important features:
+- View a list of events
+- Create new events
+- Filter events based on location, objectives, and number of participants
+- View event details
+- Join events
+- Mark events as favorites and view them in a separate page
+
+The prototype also includes the following screens:
+- Home page – shows all available events
+- Create event screen – allows users to add a new event
+- Filter screen – lets users filter events
+- Event details popup/page – shows full information about an event
+- Favorites page – shows events marked as favorite
+
+Future things to improve:
+- Save data permanently (currently events are temporary)
+- Add user accounts and authentication
+- Improve the design and user experience
+- View what events you joined
+- Notification reminders
+- Activity chats
+
 <!--
 To help on validating all the architectural, design and technological decisions made, we usually implement a functional prototype, a thin vertical slice of the system integrating as much technologies as we can.
 
