@@ -285,6 +285,20 @@ You can find below information and references related with the project managemen
 
 ### Sprint 0
 
+The goal of Sprint 0 was to prepare the project foundation and align the team before starting development.
+
+During this sprint, the team focused on:
+
+- Defining the product vision and identifying the main features of the application
+- Creating and organizing the GitHub repository and project board
+- Setting up the development environment using Flutter
+- Designing the initial architecture (layered structure: UI, Business Logic, Data)
+- Creating initial user stories and prioritizing them 
+- Designing the first UI mockups for the main screens (feed, event creation, filters)
+- Establishing team workflow, including task assignment and version control strategy
+
+This sprint ensured that the team had a clear direction and a structured plan for development.
+
 ### Sprint 1
 
 ### Sprint 2
