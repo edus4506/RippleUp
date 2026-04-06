@@ -241,7 +241,7 @@ The prototype also includes the following screens:
 - Favorites page – shows events marked as favorite
 
 Future things to improve:
-- Save data permanently (currently events are temporary)
+- Save data permanently (currently events are mockups)
 - Add user accounts and authentication
 - Improve the design and user experience
 - View what events you joined
@@ -257,6 +257,11 @@ At this phase, instead of a complete user story, you can simply implement a smal
 -->
 
 ## Project management
+
+To manage the development of Ripple Up, the team followed an agile approach inspired by Scrum. Work was divided into multiple sprints, allowing continuous improvement of the application.
+
+We used GitHub to organize tasks and track progress. Each task was associated with user stories.
+
 <!--
 Software project management is the art and science of planning and leading software projects, in which they are planned, implemented, monitored and controlled.
 
