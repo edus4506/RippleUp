@@ -19,6 +19,7 @@ It is organised by the following activities:
   * [User stories](#User-stories)
   * [Domain model](#Domain-model)
   * [User interfaces](#User-interfaces)
+  * [Validation of requirements through interviews](#Validation-of-requirements-through-interviews)
 * [Architecture and Design](#Architecture-And-Design)
   * [Logical architecture](#Logical-Architecture)
   * [Physical architecture](#Physical-Architecture)
@@ -132,6 +133,29 @@ At the end, it is good to add a rough indication of the value of the user story 
 ### Domain model
 
 ![UML Diagram](assets/Readme/uml.png)
+
+### User interfaces
+
+The main user interfaces of _Ripple Up_ were designed to support the core user flows of the application, namely browsing events, creating new events, filtering activities, and viewing event details.
+
+The following mockups illustrate the main screens currently considered for the application:
+
+<p align="center">
+  <img src="assets/Mockups/mockup_feed.png" alt="Feed Mockup" width="250"/>
+  <img src="assets/Mockups/mockup_event_creator.png" alt="Event Creator Mockup" width="250"/>
+  <img src="assets/Mockups/mockup_filter_event.png" alt="Filter Mockup" width="250"/>
+</p>
+
+
+### Validation of requirements through interviews
+
+To validate the requirements, we conducted two semi-structured interviews with potential target users of the application. The goal was to understand what users value in this type of platform, which information they need before joining an activity, and which features they consider most useful.
+
+The interviews showed that users are more interested in activities with a clear purpose and visible impact. They also highlighted the importance of having complete information before participating, especially the activity description, location, schedule, and number of participants.
+
+Another important conclusion was the usefulness of filtering features, particularly by interest and location, to help users find relevant activities more easily. The idea of a participant-only chat was also seen as useful for coordination after joining an event.
+
+Based on this feedback, the Product Backlog was refined by reinforcing the priority of event filtering, detailed event information, and participant coordination features. Although only two interviews were conducted, they provided a useful initial validation of the main requirements.
 
 <!-- 
 To better understand the context of the software system, it is useful to have a simple UML class diagram with all and only the key concepts (names, attributes) and relationships involved of the problem domain addressed by your app. 
