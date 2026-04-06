@@ -19,6 +19,7 @@ It is organised by the following activities:
   * [User stories](#User-stories)
   * [Domain model](#Domain-model)
   * [User interfaces](#User-interfaces)
+  * [Validation of requirements through interviews](#Validation-of-requirements-through-interviews)
 * [Architecture and Design](#Architecture-And-Design)
   * [Logical architecture](#Logical-Architecture)
   * [Physical architecture](#Physical-Architecture)
@@ -133,6 +134,29 @@ At the end, it is good to add a rough indication of the value of the user story 
 
 ![UML Diagram](assets/Readme/uml.png)
 
+### User interfaces
+
+The main user interfaces of _Ripple Up_ were designed to support the core user flows of the application, namely browsing events, creating new events, filtering activities, and viewing event details.
+
+The following mockups illustrate the main screens currently considered for the application:
+
+<p align="center">
+  <img src="assets/Mockups/mockup_feed.png" alt="Feed Mockup" width="250"/>
+  <img src="assets/Mockups/mockup_event_creator.png" alt="Event Creator Mockup" width="250"/>
+  <img src="assets/Mockups/mockup_filter_event.png" alt="Filter Mockup" width="250"/>
+</p>
+
+
+### Validation of requirements through interviews
+
+To validate the requirements, we conducted two semi-structured interviews with potential target users of the application. The goal was to understand what users value in this type of platform, which information they need before joining an activity, and which features they consider most useful.
+
+The interviews showed that users are more interested in activities with a clear purpose and visible impact. They also highlighted the importance of having complete information before participating, especially the activity description, location, schedule, and number of participants.
+
+Another important conclusion was the usefulness of filtering features, particularly by interest and location, to help users find relevant activities more easily. The idea of a participant-only chat was also seen as useful for coordination after joining an event.
+
+Based on this feedback, the Product Backlog was refined by reinforcing the priority of event filtering, detailed event information, and participant coordination features. Although only two interviews were conducted, they provided a useful initial validation of the main requirements.
+
 <!-- 
 To better understand the context of the software system, it is useful to have a simple UML class diagram with all and only the key concepts (names, attributes) and relationships involved of the problem domain addressed by your app. 
 Also provide a short textual description of each concept (domain class). 
@@ -145,6 +169,11 @@ Example:
 
 
 ## Architecture and Design
+
+The architecture of Ripple Up was designed to ensure scalability, maintainability, and clear separation of concerns. The system follows a layered approach, allowing independent development and testing of different components.
+
+The application is made to run the phone letting you explore and join events it is built with Flutter and supported by external cloud services for data persistence and additional functionalities.
+
 <!--
 The architecture of a software system encompasses the set of key decisions about its organization. 
 
@@ -193,6 +222,32 @@ Example of _UML deployment diagram_ showing a _deployment view_ of the Eletronic
 
 
 ### Functional prototype
+
+The current version of Ripple Up is a working prototype that shows the main features of the application.
+
+The app already includes the most important features:
+- View a list of events
+- Create new events
+- Filter events based on location, objectives, and number of participants
+- View event details
+- Join events
+- Mark events as favorites and view them in a separate page
+
+The prototype also includes the following screens:
+- Home page – shows all available events
+- Create event screen – allows users to add a new event
+- Filter screen – lets users filter events
+- Event details popup/page – shows full information about an event
+- Favorites page – shows events marked as favorite
+
+Future things to improve:
+- Save data permanently (currently events are mockups)
+- Add user accounts and authentication
+- Improve the design and user experience
+- View what events you joined
+- Notification reminders
+- Activity chats
+
 <!--
 To help on validating all the architectural, design and technological decisions made, we usually implement a functional prototype, a thin vertical slice of the system integrating as much technologies as we can.
 
@@ -202,6 +257,11 @@ At this phase, instead of a complete user story, you can simply implement a smal
 -->
 
 ## Project management
+
+To manage the development of Ripple Up, the team followed an agile approach inspired by Scrum. Work was divided into multiple sprints, allowing continuous improvement of the application.
+
+We used GitHub to organize tasks and track progress. Each task was associated with user stories.
+
 <!--
 Software project management is the art and science of planning and leading software projects, in which they are planned, implemented, monitored and controlled.
 
@@ -224,6 +284,20 @@ You can find below information and references related with the project managemen
 -->
 
 ### Sprint 0
+
+The goal of Sprint 0 was to prepare the project foundation and align the team before starting development.
+
+During this sprint, the team focused on:
+
+- Defining the product vision and identifying the main features of the application
+- Creating and organizing the GitHub repository and project board
+- Setting up the development environment using Flutter
+- Designing the initial architecture (layered structure: UI, Business Logic, Data)
+- Creating initial user stories and prioritizing them 
+- Designing the first UI mockups for the main screens (feed, event creation, filters)
+- Establishing team workflow, including task assignment and version control strategy
+
+This sprint ensured that the team had a clear direction and a structured plan for development.
 
 ### Sprint 1
 
