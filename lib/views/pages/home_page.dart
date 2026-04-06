@@ -74,7 +74,7 @@ class _HomePageState extends State<HomePage> {
   int _nextEventId() {
     final maxId = _allEvents.fold<int>(
       0,
-      (maxValue, event) => event.id > maxValue ? event.id : maxValue,
+          (maxValue, event) => event.id > maxValue ? event.id : maxValue,
     );
 
     return maxId + 1;
@@ -88,7 +88,7 @@ class _HomePageState extends State<HomePage> {
           nextId: _nextEventId(),
           onCreate: (event) {
             setState(() {
-              _allEvents.add(event);
+              _allEvents.insert(0, event);
               _applyCurrentFilters();
             });
 
@@ -125,7 +125,6 @@ class _HomePageState extends State<HomePage> {
                   key: const Key('participants_text'),
                 ),
                 const SizedBox(height: 12),
-
                 if (isFull)
                   Container(
                     key: const Key('full_badge'),
@@ -145,9 +144,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ),
-
                 if (isFull) const SizedBox(height: 12),
-
                 if (isFull)
                   const Text(
                     'This activity is full',
@@ -157,21 +154,19 @@ class _HomePageState extends State<HomePage> {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-
                 const SizedBox(height: 16),
-
                 ElevatedButton(
                   key: const Key('join_button'),
                   onPressed: isFull
                       ? null
                       : () {
-                          Navigator.pop(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('You joined ${event.name}'),
-                            ),
-                          );
-                        },
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('You joined ${event.name}'),
+                      ),
+                    );
+                  },
                   child: const Text('Join'),
                 ),
               ],
@@ -202,20 +197,18 @@ class _HomePageState extends State<HomePage> {
             int? maxCurrentUsers,
             int? minMaxUsers,
             int? maxMaxUsers,
-            bool showFullEvents = true
+            bool showFullEvents = true,
           }) {
             setState(() {
               _selectedObjectives = objectives;
               _selectedCountry = country;
               _selectedDistrict = district;
               _selectedCity = city;
-
               _minCurrentUsers = minCurrentUsers;
               _maxCurrentUsers = maxCurrentUsers;
               _minMaxUsers = minMaxUsers;
               _maxMaxUsers = maxMaxUsers;
               _showFullEvents = showFullEvents;
-
               _applyCurrentFilters();
             });
           },
@@ -229,13 +222,11 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Events'),
-
         leading: IconButton(
           key: const Key('filter_button'),
           icon: const Icon(Icons.filter_list),
           onPressed: _openFilterDialog,
         ),
-
         actions: [
           IconButton(
             key: const Key('create_event_button'),
@@ -247,11 +238,10 @@ class _HomePageState extends State<HomePage> {
       body: _currentIndex == 0
           ? _buildEventsPage()
           : _currentIndex == 1
-              ? const Center(child: Text('Tarefas'))
-              : _currentIndex == 2
-                  ? const Center(child: Text('Favoritos'))
-                  : const ProfilePage(),
-
+          ? const Center(child: Text('Tarefas'))
+          : _currentIndex == 2
+          ? const Center(child: Text('Favoritos'))
+          : const ProfilePage(),
       bottomNavigationBar: AppBottomNav(
         currentIndex: _currentIndex,
         onTap: (index) {
