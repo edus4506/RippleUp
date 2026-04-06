@@ -25,7 +25,6 @@ class EventCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               Row(
                 children: [
                   Expanded(
@@ -34,7 +33,6 @@ class EventCard extends StatelessWidget {
                       style: textTheme.titleMedium,
                     ),
                   ),
-
                   if (event.isFull)
                     Text(
                       'FULL',
@@ -47,15 +45,13 @@ class EventCard extends StatelessWidget {
                         const SizedBox(width: 4),
                         Text(
                           '${event.currentUsers}',
-                          style: textTheme.bodyLarge, // 👈 vem do theme
+                          style: textTheme.bodyLarge,
                         ),
                       ],
                     ),
                 ],
               ),
-
               const SizedBox(height: 8),
-
               Row(
                 children: [
                   const Icon(Icons.location_on, size: 18),
@@ -66,9 +62,7 @@ class EventCard extends StatelessWidget {
                   ),
                 ],
               ),
-
               const SizedBox(height: 6),
-
               Text(
                 'Objective ${event.objectives.join(', ')}',
                 style: textTheme.labelMedium,
