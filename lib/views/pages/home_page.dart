@@ -24,6 +24,10 @@ class _HomePageState extends State<HomePage> {
   late List<Event> _allEvents;
   List<Event> _filteredEvents = [];
 
+  List<Event> get _favoriteEvents {
+    return _allEvents.where((e) => e.isFavorite).toList();
+  }
+
   List<int> _selectedObjectives = [];
   String? _selectedCountry;
   String? _selectedDistrict;
@@ -51,6 +55,28 @@ class _HomePageState extends State<HomePage> {
           key: Key('event_${event.id}'),
           event: event,
           onTap: () => _showEventDetails(event),
+          onFavoriteToggle: () => _toggleFavorite(event),
+        );
+      },
+    );
+  }
+
+  Widget _buildFavoritesPage() {
+    final favorites = _favoriteEvents;
+
+    if (favorites.isEmpty) {
+      return const Center(child: Text('No favorite events yet'));
+    }
+
+    return ListView.builder(
+      itemCount: favorites.length,
+      itemBuilder: (context, index) {
+        final event = favorites[index];
+
+        return EventCard(
+          event: event,
+          onTap: () => _showEventDetails(event),
+          onFavoriteToggle: () => _toggleFavorite(event),
         );
       },
     );
@@ -183,6 +209,12 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void _toggleFavorite(Event event) {
+    setState(() {
+      event.isFavorite = !event.isFavorite;
+    });
+  }
+
   void _openFilterDialog() {
     showDialog(
       context: context,
@@ -240,7 +272,7 @@ class _HomePageState extends State<HomePage> {
           : _currentIndex == 1
           ? const Center(child: Text('Tarefas'))
           : _currentIndex == 2
-          ? const Center(child: Text('Favoritos'))
+          ? _buildFavoritesPage()
           : const ProfilePage(),
       bottomNavigationBar: AppBottomNav(
         currentIndex: _currentIndex,
