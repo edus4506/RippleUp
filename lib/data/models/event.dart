@@ -8,8 +8,9 @@ class Event {
   final String country;
   final String district;
   final String city;
+  bool isFavorite;
 
-  const Event({
+   Event({
     required this.id,
     required this.name,
     required this.description,
@@ -19,6 +20,7 @@ class Event {
     required this.country,
     required this.district,
     required this.city,
+    this.isFavorite = false,
   });
 
   bool get isFull => currentUsers >= maxUsers;

@@ -4,11 +4,13 @@ import '../../data/models/event.dart';
 class EventCard extends StatelessWidget {
   final Event event;
   final VoidCallback? onTap;
+  final VoidCallback? onFavoriteToggle;
 
   const EventCard({
     super.key,
     required this.event,
     this.onTap,
+    this.onFavoriteToggle,
   });
 
   @override
@@ -33,6 +35,15 @@ class EventCard extends StatelessWidget {
                       style: textTheme.titleMedium,
                     ),
                   ),
+
+                  IconButton(
+                    icon: Icon(
+                      event.isFavorite ? Icons.favorite : Icons.favorite_border,
+                      color: event.isFavorite ? Colors.red : null,
+                    ),
+                    onPressed: onFavoriteToggle,
+                  ),
+
                   if (event.isFull)
                     Text(
                       'FULL',
