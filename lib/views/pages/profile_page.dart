@@ -6,46 +6,56 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Usamos um SingleChildScrollView para que a página faça scroll se o ecrã for pequeno
+    final theme = Theme.of(context);
+
+    /// Scrollable layout for smaller screens
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 16),
       child: Column(
         children: [
-          // 1. Avatar do Utilizador
-          const CircleAvatar(
+          /// User avatar
+          CircleAvatar(
             radius: 60,
-            backgroundColor: Colors.blue,
-            child: Icon(Icons.person, size: 80, color: Colors.white),
+            backgroundColor: theme.colorScheme.primary,
+            child: Icon(
+              Icons.person,
+              size: 80,
+              color: theme.colorScheme.onPrimary,
+            ),
           ),
+
           const SizedBox(height: 16),
 
-          // 2. Informações de Texto
-          const Text(
+          /// User name
+          Text(
             'Nome do Utilizador',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            style: theme.textTheme.titleMedium?.copyWith(fontSize: 24),
           ),
-          const Text(
+
+          /// User email
+          Text(
             'utilizador@email.com',
-            style: TextStyle(color: Colors.grey),
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.hintColor,
+            ),
           ),
+
           const SizedBox(height: 32),
 
-          // 3. Lista de Opções (Estilo menu)
-          _buildProfileOption(Icons.settings, 'Configurações'),
-          _buildProfileOption(Icons.notifications, 'Notificações'),
-          _buildProfileOption(Icons.help_outline, 'Ajuda e Suporte'),
-          
+          /// Profile options menu
+          _buildProfileOption(context, Icons.settings, 'Configurações'),
+          _buildProfileOption(context, Icons.notifications, 'Notificações'),
+          _buildProfileOption(context, Icons.help_outline, 'Ajuda e Suporte'),
+
           const SizedBox(height: 40),
 
-          // 4. Botão de Logout (Sair)
-          // Repara que este botão vai usar o estilo do teu AppTheme automaticamente!
+          /// Logout button
           ElevatedButton(
             onPressed: () {
-              // Ao fazer logout, limpamos a pilha e voltamos para o Login
               Navigator.pushReplacementNamed(context, AppRoutes.login);
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red.shade400, // Sobrescrevemos apenas a cor para vermelho
+              backgroundColor: Colors.red.shade400, // override only this
             ),
             child: const Text('SAIR DA CONTA'),
           ),
@@ -54,14 +64,27 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  // Widget auxiliar para criar as linhas do menu
-  Widget _buildProfileOption(IconData icon, String title) {
+  /// Helper widget for profile menu options
+  Widget _buildProfileOption(BuildContext context, IconData icon, String title) {
+    final theme = Theme.of(context);
+
     return ListTile(
-      leading: Icon(icon, color: Colors.blue),
-      title: Text(title),
+      leading: Icon(
+        icon,
+        color: theme.iconTheme.color,
+      ),
+
+      /// Option title
+      title: Text(
+        title,
+        style: theme.textTheme.bodyLarge,
+      ),
+
+      /// Arrow icon
       trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+
       onTap: () {
-        // Ação da opção
+        // Option action
       },
     );
   }

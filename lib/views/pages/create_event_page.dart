@@ -48,6 +48,8 @@ class _CreateEventPageState extends State<CreateEventPage> {
   }
 
   void _createEvent() {
+    final theme = Theme.of(context);
+
     final name = _nameController.text.trim();
     final description = _descriptionController.text.trim();
     final maxUsers = int.tryParse(_maxUsersController.text.trim());
@@ -61,8 +63,11 @@ class _CreateEventPageState extends State<CreateEventPage> {
         selectedDistrict == null ||
         selectedCity == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please fill in all fields correctly'),
+        SnackBar(
+          content: Text(
+            'Please fill in all fields correctly',
+            style: theme.textTheme.bodyMedium,
+          ),
         ),
       );
       return;
@@ -86,8 +91,13 @@ class _CreateEventPageState extends State<CreateEventPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return AlertDialog(
-      title: const Text('Create Event'),
+      title: Text(
+        'Create Event',
+        style: theme.textTheme.titleMedium,
+      ),
       content: SizedBox(
         width: double.maxFinite,
         child: SingleChildScrollView(
@@ -99,29 +109,38 @@ class _CreateEventPageState extends State<CreateEventPage> {
                 controller: _nameController,
                 decoration: const InputDecoration(labelText: 'Event name'),
               ),
+
               const SizedBox(height: 10),
+
               TextField(
                 key: const Key('create_description_field'),
                 controller: _descriptionController,
                 decoration: const InputDecoration(labelText: 'Description'),
                 maxLines: 3,
               ),
+
               const SizedBox(height: 10),
+
               TextField(
                 key: const Key('create_max_users_field'),
                 controller: _maxUsersController,
                 decoration: const InputDecoration(labelText: 'Max users'),
                 keyboardType: TextInputType.number,
               ),
+
               const SizedBox(height: 16),
-              const Align(
+
+              /// Section title
+              Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   'Objectives',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: theme.textTheme.titleMedium,
                 ),
               ),
+
               const SizedBox(height: 8),
+
               SizedBox(
                 height: 180,
                 child: ListView.builder(
@@ -132,7 +151,10 @@ class _CreateEventPageState extends State<CreateEventPage> {
 
                     return CheckboxListTile(
                       dense: true,
-                      title: Text('Objective $objective'),
+                      title: Text(
+                        'Objective $objective',
+                        style: theme.textTheme.bodyMedium,
+                      ),
                       value: selectedObjectives.contains(objective),
                       onChanged: (value) {
                         setState(() {
@@ -147,14 +169,16 @@ class _CreateEventPageState extends State<CreateEventPage> {
                   },
                 ),
               ),
+
               const SizedBox(height: 10),
+
               DropdownButtonFormField<String>(
                 decoration: const InputDecoration(labelText: "Country"),
                 initialValue: selectedCountry,
                 items: countries.map((country) {
                   return DropdownMenuItem(
                     value: country,
-                    child: Text(country),
+                    child: Text(country, style: theme.textTheme.bodyMedium),
                   );
                 }).toList(),
                 onChanged: (value) {
@@ -165,7 +189,9 @@ class _CreateEventPageState extends State<CreateEventPage> {
                   });
                 },
               ),
+
               const SizedBox(height: 10),
+
               if (selectedCountry != null)
                 DropdownButtonFormField<String>(
                   decoration: const InputDecoration(labelText: "District"),
@@ -173,7 +199,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                   items: districts[selectedCountry]!.map((district) {
                     return DropdownMenuItem(
                       value: district,
-                      child: Text(district),
+                      child: Text(district, style: theme.textTheme.bodyMedium),
                     );
                   }).toList(),
                   onChanged: (value) {
@@ -183,7 +209,9 @@ class _CreateEventPageState extends State<CreateEventPage> {
                     });
                   },
                 ),
+
               const SizedBox(height: 10),
+
               if (selectedDistrict != null)
                 DropdownButtonFormField<String>(
                   decoration: const InputDecoration(labelText: "City"),
@@ -191,7 +219,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                   items: cities[selectedDistrict]!.map((city) {
                     return DropdownMenuItem(
                       value: city,
-                      child: Text(city),
+                      child: Text(city, style: theme.textTheme.bodyMedium),
                     );
                   }).toList(),
                   onChanged: (value) {
@@ -204,11 +232,16 @@ class _CreateEventPageState extends State<CreateEventPage> {
           ),
         ),
       ),
+
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
+          child: Text(
+            'Cancel',
+            style: theme.textTheme.labelLarge,
+          ),
         ),
+
         ElevatedButton(
           key: const Key('confirm_create_event_button'),
           onPressed: _createEvent,

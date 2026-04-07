@@ -8,6 +8,8 @@ class EventDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(event.name),
@@ -17,35 +19,43 @@ class EventDetailsPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+
+            /// Event title
             Text(
               event.name,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: theme.textTheme.titleMedium?.copyWith(fontSize: 24),
             ),
+
             const SizedBox(height: 10),
+
+            /// Description
             Text(
               event.description,
-              style: const TextStyle(fontSize: 18),
+              style: theme.textTheme.bodyMedium?.copyWith(fontSize: 18),
             ),
+
             const SizedBox(height: 20),
+
+            /// Event details
             Text(
               "Objectives: ${event.objectives.join(', ')}",
-              style: const TextStyle(fontSize: 16),
+              style: theme.textTheme.bodyMedium,
             ),
             Text(
               "Country: ${event.country}",
-              style: const TextStyle(fontSize: 16),
+              style: theme.textTheme.bodyMedium,
             ),
             Text(
               "District: ${event.district}",
-              style: const TextStyle(fontSize: 16),
+              style: theme.textTheme.bodyMedium,
             ),
             Text(
               "City: ${event.city}",
-              style: const TextStyle(fontSize: 16),
+              style: theme.textTheme.bodyMedium,
             ),
             Text(
               "Max Users: ${event.maxUsers}",
-              style: const TextStyle(fontSize: 16),
+              style: theme.textTheme.bodyMedium,
             ),
           ],
         ),

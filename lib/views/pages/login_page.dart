@@ -6,17 +6,23 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Login'),
-        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.lock_outline, size: 80, color: Colors.blue),
+            Icon(
+              Icons.lock_outline,
+              size: 80,
+              color: theme.iconTheme.color,
+            ),
+
             const SizedBox(height: 32),
 
             const TextField(
@@ -26,6 +32,7 @@ class LoginPage extends StatelessWidget {
                 prefixIcon: Icon(Icons.email),
               ),
             ),
+
             const SizedBox(height: 16),
 
             const TextField(
@@ -35,25 +42,26 @@ class LoginPage extends StatelessWidget {
                 prefixIcon: Icon(Icons.lock),
               ),
             ),
+
             const SizedBox(height: 32),
 
-            // BOTÃO PRINCIPAL: Se usares o AppTheme, não precisas de SizedBox nem Style aqui!
             ElevatedButton(
               onPressed: () {
                 Navigator.pushReplacementNamed(context, AppRoutes.home);
               },
               child: const Text('ENTRAR'),
             ),
-            
-            const SizedBox(height: 8), // Espaçamento entre botões
+
+            const SizedBox(height: 8),
 
             TextButton(
-              onPressed: () {
-                // Navegação para registo futuro
-              },
-              child: const Text('Não tem conta? Registe-se'),
+              onPressed: () {},
+              child: Text(
+                'Não tem conta? Registe-se',
+                style: theme.textTheme.labelLarge,
+              ),
             ),
-          ], // Fecha os children aqui
+          ],
         ),
       ),
     );
