@@ -1,122 +1,167 @@
 import 'package:flutter/material.dart';
+import 'palette.dart';
 
 class AppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
-      primarySwatch: Colors.blue,
+      primaryColor: AppColors.primary, 
 
-      /// 🔹 Background geral da app
-      scaffoldBackgroundColor: const Color(0xFFF7F7F7),
 
-      /// 🔹 AppBar (barra superior)
+      /// Background
+      scaffoldBackgroundColor: AppColors.background,
+
+
+      /// Upper AppBar 
       appBarTheme: const AppBarTheme(
-        backgroundColor: Color(0xFFC9CFB6),
-        foregroundColor: Color(0xFF4A693D),
+        backgroundColor: AppColors.secondary,
+        foregroundColor: AppColors.primary,
         elevation: 0,
         centerTitle: true,
         titleTextStyle: TextStyle(
           fontFamily: 'Roboto',
           fontSize: 26,
           fontWeight: FontWeight.bold,
-          color: Color(0xFF4A693D),
+          color: AppColors.primary,
         ),
       ),
 
-      /// 🔹 Cards (eventos + filtros)
+
+      /// Basic Cards 
       cardTheme: CardThemeData(
-        color: Colors.white,
+        color: AppColors.cardBackground,
         elevation: 3,
-        shadowColor: Colors.black.withOpacity(0.08),
+        shadowColor: AppColors.cardShadow,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18),
 
-          /// borda para caixas (Objectives)
           side: BorderSide(
-            color: Color(0xFFE0E0E0), 
+            color: AppColors.border,
             width: 1,
           ),
         ),
-
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       ),
-      /// 🔹 Tipografia global
+
+
+      /// Global text
       textTheme: const TextTheme(
-        /// 🔹 Título do evento
+
+        /// Title (event name)
         titleMedium: TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.bold,
-          color: Color(0xFF4A693D),
+          color: AppColors.textPrimary,
         ),
 
-        /// 🔹 Descrição (localização + objetivos)
+        /// Description (location, objectives)
         bodyMedium: TextStyle(
           fontSize: 14,
-          color: Colors.black,
+          color: AppColors.textSecondary,
         ),
 
-        /// 🔹 FULL
+        /// Status label (e.g. FULL)
         labelMedium: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.bold,
-          color: Color.fromARGB(255, 69, 138, 40),
+          color: AppColors.accent,
         ),
 
-        /// 🔹 Número de participantes
+        /// Highlight numbers (participants count)
         bodyLarge: TextStyle(
           fontSize: 15,
           fontWeight: FontWeight.bold,
-          color: Color.fromARGB(255, 69, 138, 40),
+          color: AppColors.accent,
         ),
 
-        /// "Show Full Events"
+        /// Action text (e.g. "Show Full Events")
         labelLarge: TextStyle(
           fontSize: 16,
-          fontWeight: FontWeight.bold, 
-          color: Color(0xFF4A693D), 
+          fontWeight: FontWeight.bold,
+          color: AppColors.textPrimary,
         ),
       ),
 
-      /// 🔹 Bottom Navigation
+
+      /// Bottom navigation bar
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: Color(0xFF4A693D),
+
+        /// Selected icon color
+        selectedItemColor: AppColors.primary,
+
+        /// Unselected icon color
         unselectedItemColor: Colors.grey,
+
+        /// Hide labels (icons only)
         showSelectedLabels: false,
         showUnselectedLabels: false,
-        backgroundColor: Colors.white,
+
+        /// Background color
+        backgroundColor: AppColors.cardBackground,
+
+        /// Shadow elevation
         elevation: 8,
       ),
 
-      /// 🔹 Inputs (TextField)
+
+      /// Input fields (TextField / TextFormField)
       inputDecorationTheme: const InputDecorationTheme(
-        border: OutlineInputBorder(),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.blue, width: 2),
+
+        /// Default border (inactive)
+        border: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: AppColors.inputBorder,
+          ),
         ),
-        labelStyle: TextStyle(color: Colors.grey),
+
+        /// Border when focused (active)
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: AppColors.primary,
+            width: 2,
+          ),
+        ),
+
+        /// Label text style (Email, Password, etc.)
+        labelStyle: TextStyle(
+          color: AppColors.textSecondary,
+        ),
       ),
 
-      /// 🔹 Botões
+
+      /// Buttons (ElevatedButton)
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: Color(0xFF4A693D),
-          foregroundColor: Colors.white,
+          backgroundColor: AppColors.primary,
+          foregroundColor: AppColors.cardBackground,
           minimumSize: const Size(double.infinity, 50),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
         ),
       ),
+
+      /// Icons
       iconTheme: const IconThemeData(
-        color: Color.fromARGB(255, 66, 139, 35),
+        color: AppColors.accent,
       ),
-      /// sliders
+
+      /// Sliders
       sliderTheme: SliderThemeData(
-        activeTrackColor: Color(0xFF4A693D),   // barra ativa
-        inactiveTrackColor: Color(0xFFC9CFB6), // barra fundo
-        thumbColor: Color(0xFF4A693D),         // bolinha
-        overlayColor: Color(0x334A693D),       // efeito ao tocar
-        valueIndicatorColor: Color(0xFF4A693D),
+        /// Active track (filled part)
+        activeTrackColor: AppColors.primary,
+
+        /// Inactive track (background)
+        inactiveTrackColor: AppColors.secondary,
+
+        /// Thumb (draggable circle)
+        thumbColor: AppColors.primary,
+
+        /// Touch overlay effect
+        overlayColor: AppColors.primary.withOpacity(0.2),
+
+        /// Value indicator (tooltip)
+        valueIndicatorColor: AppColors.primary,
       ),
     );
   }
