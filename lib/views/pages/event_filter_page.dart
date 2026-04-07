@@ -31,7 +31,7 @@ class _EventFilterPageState extends State<EventFilterPage> {
 
   bool showFullEvents = true;
 
-  /// 🔥 FALTAVA ISTO (localização)
+  /// Location data
   final List<String> countries = ["Portugal", "Spain"];
 
   final Map<String, List<String>> districts = {
@@ -47,8 +47,14 @@ class _EventFilterPageState extends State<EventFilterPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return AlertDialog(
-      title: const Text("Filter Events"),
+      title: Text(
+        "Filter Events",
+        style: theme.textTheme.titleMedium,
+      ),
+
       content: SizedBox(
         width: double.maxFinite,
         height: 550,
@@ -56,12 +62,12 @@ class _EventFilterPageState extends State<EventFilterPage> {
           child: Column(
             children: [
 
-              /// 🔹 OBJECTIVES
+              /// Objectives selection
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "Objectives",
-                  style: Theme.of(context).textTheme.titleMedium,
+                  style: theme.textTheme.titleMedium,
                 ),
               ),
 
@@ -76,7 +82,10 @@ class _EventFilterPageState extends State<EventFilterPage> {
                       final objective = index + 1;
 
                       return CheckboxListTile(
-                        title: Text("Objective $objective"),
+                        title: Text(
+                          "Objective $objective",
+                          style: theme.textTheme.bodyMedium,
+                        ),
                         value: selectedObjectives.contains(objective),
                         onChanged: (value) {
                           setState(() {
@@ -91,11 +100,11 @@ class _EventFilterPageState extends State<EventFilterPage> {
                 ),
               ),
 
-              /// 🔥 FULL CHECKBOX
+              /// Toggle to include full events
               CheckboxListTile(
                 title: Text(
                   "Show Full Events",
-                  style: Theme.of(context).textTheme.labelLarge,
+                  style: theme.textTheme.labelLarge,
                 ),
                 value: showFullEvents,
                 onChanged: (value) {
@@ -105,12 +114,12 @@ class _EventFilterPageState extends State<EventFilterPage> {
                 },
               ),
 
-              /// 🔥 CURRENT USERS
+              /// Current participants range
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "Current Participants",
-                  style: Theme.of(context).textTheme.titleMedium,
+                  style: theme.textTheme.titleMedium,
                 ),
               ),
 
@@ -130,12 +139,12 @@ class _EventFilterPageState extends State<EventFilterPage> {
                 },
               ),
 
-              /// 🔥 MAX USERS
+              /// Maximum participants range
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "Max Participants",
-                  style: Theme.of(context).textTheme.titleMedium,
+                  style: theme.textTheme.titleMedium,
                 ),
               ),
 
@@ -157,14 +166,14 @@ class _EventFilterPageState extends State<EventFilterPage> {
 
               const SizedBox(height: 16),
 
-              /// 🔹 COUNTRY
+              /// Country selector
               DropdownButtonFormField<String>(
                 decoration: const InputDecoration(labelText: "Country"),
                 value: selectedCountry,
                 items: countries.map((country) {
                   return DropdownMenuItem(
                     value: country,
-                    child: Text(country),
+                    child: Text(country, style: theme.textTheme.bodyMedium),
                   );
                 }).toList(),
                 onChanged: (value) {
@@ -178,7 +187,7 @@ class _EventFilterPageState extends State<EventFilterPage> {
 
               const SizedBox(height: 10),
 
-              /// 🔹 DISTRICT
+              /// District selector (depends on country)
               if (selectedCountry != null)
                 DropdownButtonFormField<String>(
                   decoration: const InputDecoration(labelText: "District"),
@@ -186,7 +195,7 @@ class _EventFilterPageState extends State<EventFilterPage> {
                   items: districts[selectedCountry]!.map((district) {
                     return DropdownMenuItem(
                       value: district,
-                      child: Text(district),
+                      child: Text(district, style: theme.textTheme.bodyMedium),
                     );
                   }).toList(),
                   onChanged: (value) {
@@ -199,7 +208,7 @@ class _EventFilterPageState extends State<EventFilterPage> {
 
               const SizedBox(height: 10),
 
-              /// 🔹 CITY
+              /// City selector (depends on district)
               if (selectedDistrict != null)
                 DropdownButtonFormField<String>(
                   decoration: const InputDecoration(labelText: "City"),
@@ -207,7 +216,7 @@ class _EventFilterPageState extends State<EventFilterPage> {
                   items: cities[selectedDistrict]!.map((city) {
                     return DropdownMenuItem(
                       value: city,
-                      child: Text(city),
+                      child: Text(city, style: theme.textTheme.bodyMedium),
                     );
                   }).toList(),
                   onChanged: (value) {
@@ -221,6 +230,7 @@ class _EventFilterPageState extends State<EventFilterPage> {
         ),
       ),
 
+      /// Apply filters action
       actions: [
         TextButton(
           onPressed: () {
@@ -238,7 +248,10 @@ class _EventFilterPageState extends State<EventFilterPage> {
 
             Navigator.pop(context);
           },
-          child: const Text("Apply"),
+          child: Text(
+            "Apply",
+            style: theme.textTheme.labelLarge,
+          ),
         ),
       ],
     );
