@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
 import 'routes/app_routes.dart';
 import 'core/theme/app_theme.dart';
-import 'viewmodels/auth_viewmodel.dart';
-import 'data/repositories/user_repository.dart';
+import 'package:t5/viewmodels/authViewModel/auth_viewModel.dart';
 import 'package:provider/provider.dart';
 
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(
   MultiProvider(
     providers: [
       ChangeNotifierProvider(
-        create: (_) => AuthViewModel(UserRepository()),
+        create: (_) => AuthViewModel(),
       ),
     ],
     child: const MyApp(),
@@ -28,8 +34,12 @@ class MyApp extends StatelessWidget {
       title: 'Minha App',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      initialRoute: AppRoutes.login,
 
+      builder: (context, child) {
+        return child!;
+      },
+
+      initialRoute: AppRoutes.login,
       routes: AppRoutes.routes,
     );
   }
