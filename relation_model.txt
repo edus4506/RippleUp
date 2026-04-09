@@ -2,9 +2,9 @@ EVENT_STATUS -> PLANNING, RUNNING, DONE
 
 user(id, name, email, profilePicture)
 
-event(id, envGoal, title, description, start_date, end_date, maxUsers, EVENT_STATUS, id_location -> location, id_creater -> user)
+event(id, idEnvGoal, title, description, start_date, end_date, maxUsers, EVENT_STATUS, id_location -> location, id_creater -> user)
 
-location(id, country, city, local, help_notes)
+location(id, country, city, space_name,latitude, longitude, help_notes)
 
 participation(id, id_event -> event, id_user -> user)
 
@@ -15,8 +15,8 @@ message(id, id_event -> event, id_sender -> user, message, dateTime)
 EventMedia(id, id_event -> event, picture_url)
 
 
-#####NOT FINISHED####
-firesotre uses nonSQL databse, this 
+
+firesotre uses nonSQL databse, 
 
 
 NOTES:

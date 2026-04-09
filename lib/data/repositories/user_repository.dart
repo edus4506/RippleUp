@@ -5,7 +5,7 @@ class UserRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   Future<Users?> getUser(String uid) async {
-    final doc = await _db.collection('User').doc(uid).get();
+    final doc = await _db.collection('users').doc(uid).get();
 
     if (doc.exists) {
       return Users.fromMap(doc.data()!);
@@ -18,6 +18,6 @@ class UserRepository {
     required String uid,
     required Users user,
   }) async {
-    await _db.collection('User').doc(uid).set(user.toMap());
+    await _db.collection('users').doc(uid).set(user.toMap());
   }
 }
