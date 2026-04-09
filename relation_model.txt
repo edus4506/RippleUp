@@ -15,7 +15,8 @@ message(id, id_event -> event, id_sender -> user, message, dateTime)
 EventMedia(id, id_event -> event, picture_url)
 
 
-
+#####NOT FINISHED####
+firesotre uses nonSQL databse, this 
 
 
 NOTES:

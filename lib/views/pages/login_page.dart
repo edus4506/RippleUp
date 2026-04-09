@@ -81,9 +81,6 @@ class _LoginPageState extends State<LoginPage> {
                             emailController.text.trim(),
                             passwordController.text.trim(),
                           );
-                          print(vm.currentUser);
-                          print(vm.currentUser?.uid);
-                          print(vm.currentUser?.email);
                           if (vm.currentUser != null && context.mounted) {
                             Navigator.pushReplacementNamed(
                               context,

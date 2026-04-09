@@ -1,17 +1,23 @@
-import '../models/user.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../data/models/user.dart';
 
 class UserRepository {
-  Future<User?> getUserByEmailPassword(String email, String password) async {
-    // simular delay (tipo API)
-    await Future.delayed(const Duration(seconds: 1));
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-    if (email == 'test@test.com' && password == '1234') {
-      return User(
-        id: '1',
-        email: email,
-      );
+  Future<Users?> getUser(String uid) async {
+    final doc = await _db.collection('User').doc(uid).get();
+
+    if (doc.exists) {
+      return Users.fromMap(doc.data()!);
     }
 
     return null;
+  }
+
+  Future<void> createUser({
+    required String uid,
+    required Users user,
+  }) async {
+    await _db.collection('User').doc(uid).set(user.toMap());
   }
 }

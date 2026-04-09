@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:t5/data/repositories/user_repository.dart';
 import 'routes/app_routes.dart';
 import 'core/theme/app_theme.dart';
 import 'package:t5/viewmodels/authViewModel/auth_viewModel.dart';
+import 'package:t5/viewModels/profile_viewModel.dart';
 import 'package:provider/provider.dart';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -18,6 +20,9 @@ void main() async {
     providers: [
       ChangeNotifierProvider(
         create: (_) => AuthViewModel(),
+      ),
+      ChangeNotifierProvider(
+        create: (_) => ProfileViewModel(UserRepository())
       ),
     ],
     child: const MyApp(),
