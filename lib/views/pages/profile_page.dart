@@ -3,6 +3,7 @@ import '../../routes/app_routes.dart';
 import '../../viewModels/profile_viewModel.dart';
 import 'package:t5/viewmodels/authViewModel/auth_viewModel.dart';
 import 'package:provider/provider.dart';
+import 'package:t5/theme/app_theme.dart';
 
 
 class ProfilePage extends StatefulWidget {
@@ -36,9 +37,14 @@ class _ProfilePageState extends State<ProfilePage> {
         children: [
           const CircleAvatar(
             radius: 60,
-            backgroundColor: Colors.blue,
-            child: Icon(Icons.person, size: 80, color: Colors.white),
+            //backgroundColor: theme.colorScheme.primary, not recognising theme
+            child: Icon(
+              Icons.person,
+              size: 80,
+              //color: theme.colorScheme.onPrimary, //not recognizing theme
+            ),
           ),
+
           const SizedBox(height: 16),
 
           if (vm.isLoading)

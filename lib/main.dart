@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:t5/data/repositories/user_repository.dart';
 import 'routes/app_routes.dart';
-import 'core/theme/app_theme.dart';
 import 'package:t5/viewmodels/authViewModel/auth_viewModel.dart';
 import 'package:t5/viewModels/profile_viewModel.dart';
 import 'package:provider/provider.dart';
+import 'theme/app_theme.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Minha App',
+      title: 'Ripple Up',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
 
