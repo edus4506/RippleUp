@@ -14,6 +14,15 @@ class UserRepository {
     return null;
   }
 
+  Future<void> updateProfilePicture({
+    required String uid,
+    required String imageUrl,
+  }) async {
+    await _db.collection('users').doc(uid).update({
+      'profilePictureUrl': imageUrl,
+    });
+  }
+
   Future<void> createUser({
     required String uid,
     required Users user,

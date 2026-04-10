@@ -4,6 +4,8 @@ import '../../viewModels/profile_viewModel.dart';
 import 'package:t5/viewmodels/authViewModel/auth_viewModel.dart';
 import 'package:provider/provider.dart';
 import 'package:t5/theme/app_theme.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 
 class ProfilePage extends StatefulWidget {
@@ -35,14 +37,14 @@ class _ProfilePageState extends State<ProfilePage> {
       padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 16),
       child: Column(
         children: [
-          const CircleAvatar(
+          CircleAvatar(
             radius: 60,
-            //backgroundColor: theme.colorScheme.primary, not recognising theme
-            child: Icon(
-              Icons.person,
-              size: 80,
-              //color: theme.colorScheme.onPrimary, //not recognizing theme
-            ),
+            backgroundImage: vm.user?.profilePictureUrl != null
+                ? NetworkImage(vm.user!.profilePictureUrl)
+                : null,
+            child: vm.user?.profilePictureUrl == null
+                ? const Icon(Icons.person, size: 80)
+                : null,
           ),
 
           const SizedBox(height: 16),
@@ -59,6 +61,22 @@ class _ProfilePageState extends State<ProfilePage> {
               style: const TextStyle(color: Colors.grey),
             ),
           ],
+
+          ElevatedButton(
+            onPressed: () async {
+              final picker = ImagePicker();
+
+              final pickedFile =
+                  await picker.pickImage(source: ImageSource.gallery);
+
+              if (pickedFile == null) return;
+
+              //final file = File(pickedFile.path); //later uncomment and put below for android use
+
+              await context.read<ProfileViewModel>().uploadProfileImage(pickedFile);
+            },
+            child: const Text("Alterar foto"),
+          ),
 
           const SizedBox(height: 40),
 
