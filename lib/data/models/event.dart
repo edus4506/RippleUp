@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Event {
+class Event {         //since an event can have multiple enviroment goals, a model EventEnvGoal was created. it has idEvent -> idEnvGoal
   final String id;
-  final String idEnvGoal;
+  //final String idEnvGoal; //will be acced through event_envGoals
   final String title;
   final String description;
   final DateTime startDate;
@@ -14,7 +14,7 @@ class Event {
 
   Event({
     required this.id,
-    required this.idEnvGoal,
+    //required this.idEnvGoal,
     required this.title,
     required this.description,
     required this.startDate,
@@ -28,7 +28,7 @@ class Event {
   factory Event.fromMap(Map<String, dynamic> map, String documentId) {
     return Event(
       id: documentId,
-      idEnvGoal: map['idEnvGoal'] ?? '',
+      //idEnvGoal: map['idEnvGoal'] ?? '',
       title: map['title'] ?? '',
       description: map['description'] ?? '',
       startDate: (map['startDate'] as Timestamp).toDate(),
@@ -42,7 +42,7 @@ class Event {
 
   Map<String, dynamic> toMap() {
     return {
-      'idEnvGoal': idEnvGoal,
+      //'idEnvGoal': idEnvGoal,
       'title': title,
       'description': description,
       'startDate': Timestamp.fromDate(startDate),

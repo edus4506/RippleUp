@@ -1,7 +1,7 @@
 class EnvironmentGoals {
   final String id;
   final String title;
-  final String imageUrl; //adicionar depois no firebas store
+  final String imageUrl; 
 
   EnvironmentGoals({
     required this.id,

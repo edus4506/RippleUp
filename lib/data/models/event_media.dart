@@ -1,7 +1,7 @@
 class EventMedia {
   final String id;
   final String idEvent;
-  final String imageUrl; //Adicionar depois com o firebase storage
+  final String imageUrl; 
 
   EventMedia({ 
     required this.id,
