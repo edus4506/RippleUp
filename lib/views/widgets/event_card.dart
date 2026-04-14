@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../data/models/event.dart';
 
-class EventCard extends StatelessWidget {
+/*class EventCard extends StatelessWidget {
   final Event event;
   final VoidCallback? onTap;
   final VoidCallback? onFavoriteToggle;
@@ -84,4 +84,4 @@ class EventCard extends StatelessWidget {
       ),
     );
   }
-}
+}*/

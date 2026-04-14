@@ -1,3 +1,9 @@
+
+
+/*
+
+//probalby will change with the db now instead of using the mock data
+
 import '../data/repositories/event_repositorie.dart';
 import '../data/models/event.dart';
 
@@ -42,4 +48,4 @@ class EventFilter {
       return true;
     }).toList();
   }
-}
+}*/

@@ -1,91 +1,99 @@
 import 'package:flutter/material.dart';
 import '../../routes/app_routes.dart';
+import '../../viewModels/profile_viewModel.dart';
+import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
+import 'package:provider/provider.dart';
+import 'package:t5/theme/app_theme.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
-class ProfilePage extends StatelessWidget {
+
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+  State<ProfilePage> createState() => _ProfilePageState();
+}
 
-    /// Scrollable layout for smaller screens
+class _ProfilePageState extends State<ProfilePage> {
+
+  bool _isInit = true;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (_isInit) {
+      context.read<ProfileViewModel>().loadUser();
+      _isInit = false;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final vm = context.watch<ProfileViewModel>();
+
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 16),
       child: Column(
         children: [
-          /// User avatar
           CircleAvatar(
             radius: 60,
-            backgroundColor: theme.colorScheme.primary,
-            child: Icon(
-              Icons.person,
-              size: 80,
-              color: theme.colorScheme.onPrimary,
-            ),
+            backgroundImage: vm.user?.profilePictureUrl != null
+                ? NetworkImage(vm.user!.profilePictureUrl)
+                : null,
+            child: vm.user?.profilePictureUrl == null
+                ? const Icon(Icons.person, size: 80)
+                : null,
           ),
 
           const SizedBox(height: 16),
 
-          /// User name
-          Text(
-            'Nome do Utilizador',
-            style: theme.textTheme.titleMedium?.copyWith(fontSize: 24),
-          ),
-
-          /// User email
-          Text(
-            'utilizador@email.com',
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.hintColor,
+          if (vm.isLoading)
+            const CircularProgressIndicator()
+          else ...[
+            Text(
+              vm.user?.name ?? "Sem nome",
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
+            Text(
+              vm.user?.email ?? "Sem email",
+              style: const TextStyle(color: Colors.grey),
+            ),
+          ],
+
+          ElevatedButton(
+            onPressed: () async {
+              final picker = ImagePicker();
+
+              final pickedFile =
+                  await picker.pickImage(source: ImageSource.gallery);
+
+              if (pickedFile == null) return;
+
+              //final file = File(pickedFile.path); //later uncomment and put below for android use
+
+              await context.read<ProfileViewModel>().uploadProfileImage(pickedFile);
+            },
+            child: const Text("Alterar foto"),
           ),
-
-          const SizedBox(height: 32),
-
-          /// Profile options menu
-          _buildProfileOption(context, Icons.settings, 'Configurações'),
-          _buildProfileOption(context, Icons.notifications, 'Notificações'),
-          _buildProfileOption(context, Icons.help_outline, 'Ajuda e Suporte'),
 
           const SizedBox(height: 40),
 
-          /// Logout button
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pushReplacementNamed(context, AppRoutes.login);
+          ElevatedButton (
+            onPressed: () async {
+              await context.read<AuthViewModel>().logout();
+              if (!mounted) return;
+
+              Navigator.of(context).pushReplacementNamed(AppRoutes.login);
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red.shade400, // override only this
+              backgroundColor: Colors.red,
             ),
             child: const Text('SAIR DA CONTA'),
           ),
         ],
       ),
-    );
-  }
-
-  /// Helper widget for profile menu options
-  Widget _buildProfileOption(BuildContext context, IconData icon, String title) {
-    final theme = Theme.of(context);
-
-    return ListTile(
-      leading: Icon(
-        icon,
-        color: theme.iconTheme.color,
-      ),
-
-      /// Option title
-      title: Text(
-        title,
-        style: theme.textTheme.bodyLarge,
-      ),
-
-      /// Arrow icon
-      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-
-      onTap: () {
-        // Option action
-      },
     );
   }
 }

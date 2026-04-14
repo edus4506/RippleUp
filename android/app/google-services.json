@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "587734064163",
+    "project_id": "rippleup-a077c",
+    "storage_bucket": "rippleup-a077c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:587734064163:android:13e56e6f4e9fdeb06f2596",
+        "android_client_info": {
+          "package_name": "com.example.t5"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5M67Jz9ZiG_s7rXRaP5-cYFY2P3TYCss"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

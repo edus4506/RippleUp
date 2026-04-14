@@ -12,7 +12,7 @@ class EventDetailsPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(event.name),
+        title: Text(event.title),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -22,7 +22,7 @@ class EventDetailsPage extends StatelessWidget {
 
             /// Event title
             Text(
-              event.name,
+              event.title,
               style: theme.textTheme.titleMedium?.copyWith(fontSize: 24),
             ),
 
@@ -34,10 +34,10 @@ class EventDetailsPage extends StatelessWidget {
               style: theme.textTheme.bodyMedium?.copyWith(fontSize: 18),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 20)
 
             /// Event details
-            Text(
+            /*Text(
               "Objectives: ${event.objectives.join(', ')}",
               style: theme.textTheme.bodyMedium,
             ),
@@ -56,7 +56,7 @@ class EventDetailsPage extends StatelessWidget {
             Text(
               "Max Users: ${event.maxUsers}",
               style: theme.textTheme.bodyMedium,
-            ),
+            ),*/
           ],
         ),
       ),

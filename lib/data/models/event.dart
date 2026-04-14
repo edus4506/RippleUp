@@ -1,27 +1,56 @@
-class Event {
-  final int id;
-  final String name;
-  final String description;
-  final int currentUsers;
-  final int maxUsers;
-  final List<int> objectives;
-  final String country;
-  final String district;
-  final String city;
-  bool isFavorite;
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-   Event({
+class Event {         //since an event can have multiple enviroment goals, a model EventEnvGoal was created. it has idEvent -> idEnvGoal
+  final String id;
+  //final String idEnvGoal; //will be acced through event_envGoals
+  final String title;
+  final String description;
+  final DateTime startDate;
+  final DateTime endDate;
+  final int maxUsers;
+  final String eventStatus;
+  final String idLocation;
+  final String idCreator;
+
+  Event({
     required this.id,
-    required this.name,
+    //required this.idEnvGoal,
+    required this.title,
     required this.description,
-    required this.currentUsers,
+    required this.startDate,
+    required this.endDate,
     required this.maxUsers,
-    required this.objectives,
-    required this.country,
-    required this.district,
-    required this.city,
-    this.isFavorite = false,
+    required this.eventStatus,
+    required this.idLocation,
+    required this.idCreator,
   });
 
-  bool get isFull => currentUsers >= maxUsers;
+  factory Event.fromMap(Map<String, dynamic> map, String documentId) {
+    return Event(
+      id: documentId,
+      //idEnvGoal: map['idEnvGoal'] ?? '',
+      title: map['title'] ?? '',
+      description: map['description'] ?? '',
+      startDate: (map['startDate'] as Timestamp).toDate(),
+      endDate: (map['endDate'] as Timestamp).toDate(),
+      maxUsers: map['maxUsers'] ?? 0,
+      eventStatus: map['eventStatus'] ?? 'PLANNING',
+      idLocation: map['idLocation'] ?? '',
+      idCreator: map['idCreator'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      //'idEnvGoal': idEnvGoal,
+      'title': title,
+      'description': description,
+      'startDate': Timestamp.fromDate(startDate),
+      'endDate': Timestamp.fromDate(endDate),
+      'maxUsers': maxUsers,
+      'eventStatus': eventStatus,
+      'idLocation': idLocation,
+      'idCreator': idCreator,
+    };
+  }
 }

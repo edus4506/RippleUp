@@ -1,67 +1,116 @@
 import 'package:flutter/material.dart';
-import '../../routes/app_routes.dart';
+import 'package:provider/provider.dart';
 
-class LoginPage extends StatelessWidget {
+import '../../routes/app_routes.dart';
+import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final vm = context.watch<AuthViewModel>();
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Login'),
+        centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.lock_outline,
-              size: 80,
-              color: theme.iconTheme.color,
-            ),
 
-            const SizedBox(height: 32),
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              const Icon(Icons.lock_outline, size: 80, color: Colors.blue),
+              const SizedBox(height: 32),
 
-            const TextField(
-              keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(
-                labelText: 'Email',
-                prefixIcon: Icon(Icons.email),
+              // EMAIL
+              TextField(
+                controller: emailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                  prefixIcon: Icon(Icons.email),
+                ),
               ),
-            ),
+              const SizedBox(height: 16),
 
-            const SizedBox(height: 16),
-
-            const TextField(
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: 'Password',
-                prefixIcon: Icon(Icons.lock),
+              // PASSWORD
+              TextField(
+                controller: passwordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: 'Password',
+                  prefixIcon: Icon(Icons.lock),
+                ),
               ),
-            ),
+              const SizedBox(height: 24),
 
-            const SizedBox(height: 32),
+              // ERRO
+              if (vm.errorMessage != null) ...[
+                Text(
+                  vm.errorMessage!,
+                  style: const TextStyle(color: Colors.red),
+                ),
+                const SizedBox(height: 16),
+              ],
 
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, AppRoutes.home);
-              },
-              child: const Text('ENTRAR'),
-            ),
-
-            const SizedBox(height: 8),
-
-            TextButton(
-              onPressed: () {},
-              child: Text(
-                'Não tem conta? Registe-se',
-                style: theme.textTheme.labelLarge,
+              // BOTÃO LOGIN
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: vm.isLoading
+                      ? null
+                      : () async {
+                          await vm.login(
+                            emailController.text.trim(),
+                            passwordController.text.trim(),
+                          );
+                          if (vm.currentUser != null && context.mounted) {
+                            Navigator.pushReplacementNamed(
+                              context,
+                              AppRoutes.home,
+                            );
+                          }
+                        },
+                  child: vm.isLoading
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Text('ENTRAR'),
+                ),
               ),
-            ),
-          ],
+
+              const SizedBox(height: 8),
+
+              TextButton(
+                onPressed: () {
+                  // futuro: navegar para registo
+                },
+                child: const Text('Não tem conta? Registe-se'),
+              ),
+            ],
+          ),
         ),
       ),
     );

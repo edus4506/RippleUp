@@ -7,7 +7,7 @@ class AppRoutes {
   static const String login = '/login';
 
   static Map<String, WidgetBuilder> routes = {
-    home: (context) => const HomePage(),
+    home: (context) => const HomePage(), 
     login: (context) => const LoginPage(),
   };
 }

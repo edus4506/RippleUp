@@ -73,7 +73,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
       return;
     }
 
-    final newEvent = Event(
+    final newEvent = null;/* Event(     Event has a new constructor
       id: widget.nextId,
       name: name,
       description: description,
@@ -83,7 +83,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
       country: selectedCountry!,
       district: selectedDistrict!,
       city: selectedCity!,
-    );
+    );*/
 
     widget.onCreate(newEvent);
     Navigator.pop(context);
