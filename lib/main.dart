@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:t5/data/repositories/storage_repository.dart';
 import 'package:t5/data/repositories/user_repository.dart';
 import 'routes/app_routes.dart';
-import 'package:t5/viewmodels/authViewModel/auth_viewModel.dart';
+import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
 import 'package:t5/viewModels/profile_viewModel.dart';
 import 'package:provider/provider.dart';
 import 'theme/app_theme.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:t5/viewmodels/event_filter.dart';
+import 'package:t5/viewModels/event_filter.dart';
 //import 'package:t5/data/repositories/event_repositorie.dart';
 
 /*void main() {
