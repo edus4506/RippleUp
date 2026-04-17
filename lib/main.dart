@@ -29,7 +29,7 @@ void main() async {
   MultiProvider(
     providers: [
       ChangeNotifierProvider(
-        create: (_) => AuthViewModel(),
+        create: (_) => AuthViewModel(UserRepository(), StorageRepository()),
       ),
       ChangeNotifierProvider(
         create: (_) => ProfileViewModel(UserRepository(), StorageRepository())

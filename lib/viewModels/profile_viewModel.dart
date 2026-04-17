@@ -46,9 +46,9 @@ class ProfileViewModel extends ChangeNotifier {
       final firebaseUser = FirebaseAuth.instance.currentUser;
       if (firebaseUser == null) return;
 
-      String imageUrl;
+      String imageUrl = await _storageRepository.uploadProfileImage(userId: firebaseUser.uid, file: pickedFile);
 
-      if (kIsWeb) {
+      /*if (kIsWeb) {
         // WEB
         final bytes = await pickedFile.readAsBytes();
 
@@ -64,18 +64,20 @@ class ProfileViewModel extends ChangeNotifier {
           userId: firebaseUser.uid,
           file: file,
         );
-      }
+      }*/
 
       await _userRepository.updateProfilePicture(
         uid: firebaseUser.uid,
         imageUrl: imageUrl,
       );
 
-      user = Users(
+      user = await _userRepository.getUser(firebaseUser.uid);
+
+      /*user = Users(
         name: user!.name,
         email: user!.email,
         profilePictureUrl: imageUrl,
-      ); 
+      ); */
 
     } catch (e) {
       print("Erro upload: $e");
