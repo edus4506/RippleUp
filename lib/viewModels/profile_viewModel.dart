@@ -48,36 +48,12 @@ class ProfileViewModel extends ChangeNotifier {
 
       String imageUrl = await _storageRepository.uploadProfileImage(userId: firebaseUser.uid, file: pickedFile);
 
-      /*if (kIsWeb) {
-        // WEB
-        final bytes = await pickedFile.readAsBytes();
-
-        imageUrl = await _storageRepository.uploadProfileImageWeb(
-          userId: firebaseUser.uid,
-          bytes: bytes,
-        );
-      } else {
-        // MOBILE
-        final file = File(pickedFile.path);
-
-        imageUrl = await _storageRepository.uploadProfileImage(
-          userId: firebaseUser.uid,
-          file: file,
-        );
-      }*/
-
       await _userRepository.updateProfilePicture(
         uid: firebaseUser.uid,
         imageUrl: imageUrl,
       );
 
       user = await _userRepository.getUser(firebaseUser.uid);
-
-      /*user = Users(
-        name: user!.name,
-        email: user!.email,
-        profilePictureUrl: imageUrl,
-      ); */
 
     } catch (e) {
       print("Erro upload: $e");

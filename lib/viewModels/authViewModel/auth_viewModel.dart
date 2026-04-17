@@ -45,7 +45,7 @@ class AuthViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> register(String name, String email, String password, XFile profilePictureUrl) async {
+  Future<void> register(String name, String email, String password, XFile profilePicture) async {
     try {
       isLoading = true;
       errorMessage = null;
@@ -56,10 +56,11 @@ class AuthViewModel extends ChangeNotifier {
         password: password,
       );
 
-      Users user = Users(name: name, email: email, profilePictureUrl: "");
+      final imageUrl = await _storageRepository.uploadProfileImage(userId: firebaseUser.user!.uid, file: profilePicture);
+      Users user = Users(name: name, email: email, profilePictureUrl: imageUrl);
       await _userRepository.createUser(uid: firebaseUser.user!.uid, user: user);
-      await _storageRepository.uploadProfileImage(userId: firebaseUser.user!.uid, file: profilePictureUrl);
 
+      
 
     } on FirebaseAuthException catch (e) {
       errorMessage = _mapError(e);

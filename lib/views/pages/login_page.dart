@@ -105,7 +105,7 @@ class _LoginPageState extends State<LoginPage> {
 
               TextButton(
                 onPressed: () {
-                  // futuro: navegar para registo
+                  Navigator.pushNamed(context, AppRoutes.register);
                 },
                 child: const Text('Não tem conta? Registe-se'),
               ),

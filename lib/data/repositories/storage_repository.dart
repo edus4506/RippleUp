@@ -23,7 +23,7 @@ class StorageRepository {
           bytes,
           fileOptions: const FileOptions(upsert: true),
         );
-        
+
     } else{
 
       await _client.storage
@@ -38,21 +38,4 @@ class StorageRepository {
     return publicUrl;
   }
 
-  //suports from web too
-  Future<String> uploadProfileImageWeb({
-    required String userId,
-    required Uint8List bytes,
-  }) async {
-    final path = 'profile-images/$userId/${DateTime.now().millisecondsSinceEpoch}.jpg';
-
-    await _client.storage
-        .from('profile-images')
-        .uploadBinary(
-          path,
-          bytes,
-          fileOptions: const FileOptions(upsert: true),
-        );
-
-    return _client.storage.from('profile-images').getPublicUrl(path);
-  }
 }
