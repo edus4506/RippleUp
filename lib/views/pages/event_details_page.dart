@@ -17,7 +17,7 @@ class EventDetailsPage extends StatelessWidget {
     final sortedObjectives = List<int>.from(event.objectives)..sort();
 
     final authVm = context.watch<AuthViewModel>();
-    final eventVm = context.watch<EventViewModel>();
+    final eventVm = context.read<EventViewModel>();
 
     final userId = authVm.currentUser?.uid;
     final isCreator = userId == event.idCreator;
@@ -82,10 +82,10 @@ class EventDetailsPage extends StatelessWidget {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: (userId == null ||
-                          isCreator ||
-                          eventVm.isLoading ||
-                          (!isParticipant && isFull))
-                      ? null
+                            isCreator ||
+                            eventVm.isLoading ||
+                            (!isParticipant && isFull))
+                        ? null
                         : () async {
                             final vm = context.read<EventViewModel>();
 
@@ -133,6 +133,66 @@ class EventDetailsPage extends StatelessWidget {
                 );
               },
             ),
+
+            if (isCreator) ...[
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                  ),
+                  onPressed: () async {
+                    final confirm = await showDialog<bool>(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Eliminar evento'),
+                        content: const Text(
+                            'Tens a certeza que queres apagar este evento?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () =>
+                                Navigator.pop(context, false),
+                            child: const Text('Cancelar'),
+                          ),
+                          TextButton(
+                            onPressed: () =>
+                                Navigator.pop(context, true),
+                            child: const Text('Apagar'),
+                          ),
+                        ],
+                      ),
+                    );
+
+                    if (confirm != true) return;
+
+                    final ok = await context
+                        .read<EventViewModel>()
+                        .deleteEvent(event.id);
+
+                    if (!context.mounted) return;
+
+                    if (ok) {
+                      Navigator.pop(context); 
+                    }
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          ok
+                              ? 'Evento eliminado'
+                              : (context
+                                      .read<EventViewModel>()
+                                      .errorMessage ??
+                                  'Erro ao eliminar'),
+                        ),
+                      ),
+                    );
+                  },
+                  child: const Text('Eliminar evento'),
+                ),
+              ),
+            ],
           ],
         ),
       ),

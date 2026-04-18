@@ -112,4 +112,23 @@ class EventRepository {
       });
     });
   }
+
+  Future<void> deleteEvent(String eventId) async {
+    final eventRef = _db.collection('events').doc(eventId);
+
+    final participations = await _db
+        .collection('participations')
+        .where('idEvent', isEqualTo: eventId)
+        .get();
+
+    final batch = _db.batch();
+
+    for (var doc in participations.docs) {
+      batch.delete(doc.reference);
+    }
+
+    batch.delete(eventRef);
+
+    await batch.commit();
+  }
 }

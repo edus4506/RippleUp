@@ -73,4 +73,22 @@ class EventViewModel extends ChangeNotifier {
       userId: userId,
     );
   }
+
+  Future<bool> deleteEvent(String eventId) async {
+    try {
+      isLoading = true;
+      errorMessage = null;
+      notifyListeners();
+
+      await _eventRepository.deleteEvent(eventId);
+
+      return true;
+    } catch (e) {
+      errorMessage = e.toString().replaceFirst('Exception: ', '');
+      return false;
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
 }
