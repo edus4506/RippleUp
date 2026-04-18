@@ -6,6 +6,7 @@ import 'package:t5/viewModels/event_viewModel.dart';
 import 'routes/app_routes.dart';
 import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
 import 'package:t5/viewModels/profile_viewModel.dart';
+import 'package:t5/viewModels/user_view_model.dart';
 import 'package:provider/provider.dart';
 import 'theme/app_theme.dart';
 
@@ -38,6 +39,9 @@ void main() async {
       ),
       ChangeNotifierProvider(
           create: (_) => EventViewModel(EventRepository()),
+      ),
+      ChangeNotifierProvider(
+        create: (_) => UserViewModel(UserRepository()),
       ),
     ],
     child: const MyApp(),

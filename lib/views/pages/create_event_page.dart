@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../data/models/event.dart';
 import '../../viewModels/event_viewModel.dart';
+import '../../viewModels/authViewModel/auth_viewModel.dart';
 
 class CreateEventPage extends StatefulWidget {
   final void Function(Event event) onCreate;
@@ -75,6 +76,20 @@ class _CreateEventPageState extends State<CreateEventPage> {
       return;
     }
 
+    final currentUser = context.read<AuthViewModel>().currentUser;
+
+    if (currentUser == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'You must be logged in to create an event',
+            style: theme.textTheme.bodyMedium,
+          ),
+        ),
+      );
+      return;
+    }
+
     final event = Event(
       id: '',
       title: name,
@@ -82,9 +97,9 @@ class _CreateEventPageState extends State<CreateEventPage> {
       startDate: DateTime.now(),
       endDate: DateTime.now().add(const Duration(hours: 2)),
       maxUsers: maxUsers,
-      currentUsers: 0,
+      currentUsers: 1,
       eventStatus: 'PLANNING',
-      idCreator: 'CURRENT_USER_ID',
+      idCreator: currentUser.uid,
       objectives: selectedObjectives,
       country: selectedCountry!,
       district: selectedDistrict!,
@@ -92,6 +107,9 @@ class _CreateEventPageState extends State<CreateEventPage> {
     );
 
     await context.read<EventViewModel>().createEvent(event);
+
+    if (!mounted) return;
+
     widget.onCreate(event);
     Navigator.pop(context);
   }

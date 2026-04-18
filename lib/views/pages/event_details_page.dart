@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:t5/data/models/event.dart';
+import 'package:t5/data/models/user.dart';
 import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
 import 'package:t5/viewModels/event_viewModel.dart';
+import 'package:t5/viewModels/user_view_model.dart';
 
 class EventDetailsPage extends StatelessWidget {
   final Event event;
@@ -64,18 +66,36 @@ class EventDetailsPage extends StatelessWidget {
               "${event.startDate} until ${event.endDate}",
               style: theme.textTheme.bodyMedium,
             ),
-            Text(
-              "Criado por ${event.idCreator}",
-              style: theme.textTheme.bodyMedium,
+            StreamBuilder<Users?>(
+              stream: context.read<UserViewModel>().userStream(event.idCreator),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Text(
+                    'Criado por...',
+                    style: theme.textTheme.bodyMedium,
+                  );
+                }
+
+                final creator = snapshot.data;
+
+                return Text(
+                  creator != null
+                      ? 'Criado por ${creator.name}'
+                      : 'Criado por utilizador desconhecido',
+                  style: theme.textTheme.bodyMedium,
+                );
+              },
             ),
             const SizedBox(height: 24),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: (userId == null || isCreator || isFull || eventVm.isLoading)
+                onPressed:
+                (userId == null || isCreator || isFull || eventVm.isLoading)
                     ? null
                     : () async {
-                  final ok = await context.read<EventViewModel>().joinEvent(
+                  final ok =
+                  await context.read<EventViewModel>().joinEvent(
                     eventId: event.id,
                     userId: userId,
                   );
@@ -87,7 +107,9 @@ class EventDetailsPage extends StatelessWidget {
                       content: Text(
                         ok
                             ? 'Entraste no evento com sucesso'
-                            : (context.read<EventViewModel>().errorMessage ??
+                            : (context
+                            .read<EventViewModel>()
+                            .errorMessage ??
                             'Erro ao entrar no evento'),
                       ),
                     ),

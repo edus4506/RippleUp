@@ -5,7 +5,23 @@ class EventRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   Future<void> createEvent(Event event) async {
-    await _db.collection('events').add(event.toMap());
+    final eventRef = _db.collection('events').doc();
+    final participationRef =
+    _db.collection('participations').doc('${eventRef.id}_${event.idCreator}');
+
+    final batch = _db.batch();
+
+    batch.set(eventRef, {
+      ...event.toMap(),
+      'currentUsers': 1,
+    });
+
+    batch.set(participationRef, {
+      'idUser': event.idCreator,
+      'idEvent': eventRef.id,
+    });
+
+    await batch.commit();
   }
 
   Stream<List<Event>> listenToEvents() {
