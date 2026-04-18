@@ -9,6 +9,7 @@ class EventDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final sortedObjectives = List<int>.from(event.objectives)..sort();
 
     return Scaffold(
       appBar: AppBar(
@@ -34,11 +35,10 @@ class EventDetailsPage extends StatelessWidget {
               style: theme.textTheme.bodyMedium?.copyWith(fontSize: 18),
             ),
 
-            const SizedBox(height: 20)
+            const SizedBox(height: 20),
 
-            /// Event details
-            /*Text(
-              "Objectives: ${event.objectives.join(', ')}",
+            Text(
+              "Objectives: ${sortedObjectives.join(', ')}",
               style: theme.textTheme.bodyMedium,
             ),
             Text(
@@ -54,9 +54,17 @@ class EventDetailsPage extends StatelessWidget {
               style: theme.textTheme.bodyMedium,
             ),
             Text(
-              "Max Users: ${event.maxUsers}",
+              "${event.currentUsers} / ${event.maxUsers} Participants",
               style: theme.textTheme.bodyMedium,
-            ),*/
+            ),
+            Text(
+              "${event.startDate} until ${event.endDate}",
+              style: theme.textTheme.bodyMedium,
+            ),
+            Text(
+              "Created by ${event.idCreator}",
+              style: theme.textTheme.bodyMedium,
+            )
           ],
         ),
       ),

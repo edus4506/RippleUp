@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:t5/views/pages/event_details_page.dart';
 import '../../../data/models/event.dart';
 import '../../../data/repositories/event_repository.dart';
 import 'create_event_page.dart';
@@ -16,6 +17,15 @@ class EventsPage extends StatelessWidget {
             const SnackBar(content: Text('Evento criado com sucesso!')),
           );
         },
+      ),
+    );
+  }
+
+  void _openEventDetails(BuildContext context, Event event) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EventDetailsPage(event: event),
       ),
     );
   }
@@ -51,6 +61,7 @@ class EventsPage extends StatelessWidget {
               return Card(
                 margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 child: ListTile(
+                  onTap: () => _openEventDetails(context, event),
                   title: Text(event.title),
                   subtitle: Text('${event.city}, ${event.district} — ${event.eventStatus}'),
                   trailing: Text('${event.currentUsers}/${event.maxUsers}'),
