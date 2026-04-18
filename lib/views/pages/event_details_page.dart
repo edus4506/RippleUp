@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:t5/data/models/event.dart';
+import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
+import 'package:t5/viewModels/event_viewModel.dart';
 
 class EventDetailsPage extends StatelessWidget {
   final Event event;
@@ -11,6 +14,13 @@ class EventDetailsPage extends StatelessWidget {
     final theme = Theme.of(context);
     final sortedObjectives = List<int>.from(event.objectives)..sort();
 
+    final authVm = context.watch<AuthViewModel>();
+    final eventVm = context.watch<EventViewModel>();
+
+    final userId = authVm.currentUser?.uid;
+    final isCreator = userId == event.idCreator;
+    final isFull = event.currentUsers >= event.maxUsers;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(event.title),
@@ -20,23 +30,16 @@ class EventDetailsPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
-            /// Event title
             Text(
               event.title,
               style: theme.textTheme.titleMedium?.copyWith(fontSize: 24),
             ),
-
             const SizedBox(height: 10),
-
-            /// Description
             Text(
               event.description,
               style: theme.textTheme.bodyMedium?.copyWith(fontSize: 18),
             ),
-
             const SizedBox(height: 20),
-
             Text(
               "Objectives: ${sortedObjectives.join(', ')}",
               style: theme.textTheme.bodyMedium,
@@ -54,7 +57,7 @@ class EventDetailsPage extends StatelessWidget {
               style: theme.textTheme.bodyMedium,
             ),
             Text(
-              "${event.currentUsers} / ${event.maxUsers} Participants",
+              "${event.currentUsers} / ${event.maxUsers} Participantes",
               style: theme.textTheme.bodyMedium,
             ),
             Text(
@@ -62,9 +65,49 @@ class EventDetailsPage extends StatelessWidget {
               style: theme.textTheme.bodyMedium,
             ),
             Text(
-              "Created by ${event.idCreator}",
+              "Criado por ${event.idCreator}",
               style: theme.textTheme.bodyMedium,
-            )
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: (userId == null || isCreator || isFull || eventVm.isLoading)
+                    ? null
+                    : () async {
+                  final ok = await context.read<EventViewModel>().joinEvent(
+                    eventId: event.id,
+                    userId: userId,
+                  );
+
+                  if (!context.mounted) return;
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        ok
+                            ? 'Entraste no evento com sucesso'
+                            : (context.read<EventViewModel>().errorMessage ??
+                            'Erro ao entrar no evento'),
+                      ),
+                    ),
+                  );
+                },
+                child: eventVm.isLoading
+                    ? const SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+                    : Text(
+                  isCreator
+                      ? 'És o criador deste evento'
+                      : isFull
+                      ? 'Evento cheio'
+                      : 'Entrar no evento',
+                ),
+              ),
+            ),
           ],
         ),
       ),

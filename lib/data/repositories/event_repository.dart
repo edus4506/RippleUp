@@ -15,4 +15,43 @@ class EventRepository {
           .toList(),
     );
   }
+
+  Future<void> joinEvent({
+    required String eventId,
+    required String userId,
+  }) async {
+    final eventRef = _db.collection('events').doc(eventId);
+    final participationRef =
+    _db.collection('participations').doc('${eventId}_$userId');
+
+    await _db.runTransaction((transaction) async {
+      final eventSnap = await transaction.get(eventRef);
+      final participationSnap = await transaction.get(participationRef);
+
+      if (!eventSnap.exists) {
+        throw Exception('Evento não encontrado');
+      }
+
+      if (participationSnap.exists) {
+        throw Exception('Já participas neste evento');
+      }
+
+      final data = eventSnap.data()!;
+      final currentUsers = data['currentUsers'] ?? 0;
+      final maxUsers = data['maxUsers'] ?? 0;
+
+      if (currentUsers >= maxUsers) {
+        throw Exception('Evento cheio');
+      }
+
+      transaction.set(participationRef, {
+        'idUser': userId,
+        'idEvent': eventId,
+      });
+
+      transaction.update(eventRef, {
+        'currentUsers': currentUsers + 1,
+      });
+    });
+  }
 }
