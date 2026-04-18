@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:t5/data/repositories/event_repository.dart';
 import 'package:t5/data/repositories/storage_repository.dart';
 import 'package:t5/data/repositories/user_repository.dart';
+import 'package:t5/viewModels/event_viewModel.dart';
 import 'routes/app_routes.dart';
 import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
 import 'package:t5/viewModels/profile_viewModel.dart';
+import 'package:t5/viewModels/user_view_model.dart';
 import 'package:provider/provider.dart';
 import 'theme/app_theme.dart';
 
@@ -33,6 +36,12 @@ void main() async {
       ),
       ChangeNotifierProvider(
         create: (_) => ProfileViewModel(UserRepository(), StorageRepository())
+      ),
+      ChangeNotifierProvider(
+          create: (_) => EventViewModel(EventRepository()),
+      ),
+      ChangeNotifierProvider(
+        create: (_) => UserViewModel(UserRepository()),
       ),
     ],
     child: const MyApp(),

@@ -3,9 +3,7 @@ import '../../routes/app_routes.dart';
 import '../../viewModels/profile_viewModel.dart';
 import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
 import 'package:provider/provider.dart';
-import 'package:t5/theme/app_theme.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
 
 
 class ProfilePage extends StatefulWidget {
