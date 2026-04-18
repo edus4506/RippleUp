@@ -73,7 +73,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
               //final file = File(pickedFile.path); //later uncomment and put below for android use
 
-              await context.read<ProfileViewModel>().uploadProfileImage(pickedFile);
+              await context.read<ProfileViewModel>().updateUserProfile(profilePicture: pickedFile);
             },
             child: const Text("Alterar foto"),
           ),

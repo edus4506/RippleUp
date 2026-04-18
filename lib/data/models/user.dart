@@ -1,7 +1,7 @@
 class Users {
-  final String name;
-  final String email;
-  final String profilePictureUrl;
+  String name;
+  String email;
+  String profilePictureUrl;
 
   Users({
     required this.name,

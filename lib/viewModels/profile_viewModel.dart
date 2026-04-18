@@ -37,8 +37,7 @@ class ProfileViewModel extends ChangeNotifier {
   }
 
 
-
-  Future<void> uploadProfileImage(XFile pickedFile) async {
+  /*Future<void> uploadProfileImage(XFile pickedFile) async {
     try {
       isLoading = true;
       notifyListeners();
@@ -61,6 +60,58 @@ class ProfileViewModel extends ChangeNotifier {
       isLoading = false;
       notifyListeners();
     }
+  }*/
+
+
+  /*Future<void> softDeleteAcc(Users user) async{ 
+    //this will set the name and the email to a default value on the firestore
+    //it will to eliminate the user account on the firebase auth
+    //its profile image will be set to a default image
+
+  }*/
+
+
+  Future<void> updateUserProfile({
+    Users? updatedUser,
+    XFile? profilePicture,
+    String? defaultProfilePictureUrl,
+  }) async{
+
+    try {
+      isLoading = true;
+      notifyListeners();
+
+    final firebaseUser = FirebaseAuth.instance.currentUser;
+    Users? currentUser = await _userRepository.getUser(firebaseUser!.uid);
+
+    if(currentUser == null) return;
+
+    if(profilePicture != null){
+        currentUser.profilePictureUrl = await _storageRepository.uploadProfileImage(userId: firebaseUser.uid, file: profilePicture);
+    }
+
+    if(updatedUser != null){
+        //email doesnt change for now, the functuon firebaseUser.verifyBeforeUpdateEmail requests that the user confirms the change on the new email
+
+        /*if(updatedUser.email != currentUser.email){
+          firebaseUser.verifyBeforeUpdateEmail(updatedUser.email);
+          currentUser.email = updatedUser.email;
+        }*/
+
+        if(updatedUser.name != currentUser.name){
+          currentUser.name = updatedUser.name;
+        }
+    }
+
+    user = currentUser;
+    await _userRepository.updateUser(uid: firebaseUser.uid, updatedUser: currentUser);
+    } catch (e) {
+      print("Erro ProfileVM: $e");
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+
   }
   
 }

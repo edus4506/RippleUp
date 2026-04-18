@@ -29,4 +29,21 @@ class UserRepository {
   }) async {
     await _db.collection('users').doc(uid).set(user.toMap());
   }
+
+
+  Future<void> softDeleteUser({
+    required String uid,
+    required Users user,
+  }) async {
+
+  }
+
+
+  Future<void> updateUser({
+    required String uid,
+    required Users updatedUser,
+  }) async {
+    await _db.collection('users').doc(uid).update(updatedUser.toMap());
+
+  }
 }

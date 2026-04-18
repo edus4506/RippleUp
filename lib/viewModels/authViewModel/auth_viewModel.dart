@@ -74,6 +74,10 @@ class AuthViewModel extends ChangeNotifier {
     await _auth.signOut();
   }
 
+  Future<void> deleteAcc() async{
+    await _auth.currentUser!.delete();
+  }
+
   String _mapError(FirebaseAuthException e) {
     switch (e.code) {
       case 'user-not-found':
