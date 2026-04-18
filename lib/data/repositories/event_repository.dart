@@ -70,4 +70,46 @@ class EventRepository {
       });
     });
   }
+
+  Stream<bool> isUserInEvent({
+    required String eventId,
+    required String userId,
+  }) {
+    return _db
+        .collection('participations')
+        .doc('${eventId}_$userId')
+        .snapshots()
+        .map((doc) => doc.exists);
+  }
+
+  Future<void> leaveEvent({
+    required String eventId,
+    required String userId,
+  }) async {
+    final eventRef = _db.collection('events').doc(eventId);
+    final participationRef =
+        _db.collection('participations').doc('${eventId}_$userId');
+
+    await _db.runTransaction((transaction) async {
+      final eventSnap = await transaction.get(eventRef);
+      final participationSnap = await transaction.get(participationRef);
+
+      if (!eventSnap.exists) {
+        throw Exception('Evento não encontrado');
+      }
+
+      if (!participationSnap.exists) {
+        throw Exception('Não participas neste evento');
+      }
+
+      final data = eventSnap.data()!;
+      final currentUsers = data['currentUsers'] ?? 0;
+
+      transaction.delete(participationRef);
+
+      transaction.update(eventRef, {
+        'currentUsers': (currentUsers > 0) ? currentUsers - 1 : 0,
+      });
+    });
+  }
 }
