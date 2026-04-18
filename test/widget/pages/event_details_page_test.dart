@@ -4,13 +4,17 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:provider/provider.dart';
 import 'package:t5/data/models/event.dart';
+import 'package:t5/data/models/user.dart';
 import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
 import 'package:t5/viewModels/event_viewModel.dart';
+import 'package:t5/viewModels/user_view_model.dart';
 import 'package:t5/views/pages/event_details_page.dart';
 
 class MockAuthViewModel extends Mock implements AuthViewModel {}
 
 class MockEventViewModel extends Mock implements EventViewModel {}
+
+class MockUserViewModel extends Mock implements UserViewModel {}
 
 class MockFirebaseUser extends Mock implements User {}
 
@@ -40,12 +44,14 @@ Event buildEvent({
 Widget buildTestablePage({
   required AuthViewModel authViewModel,
   required EventViewModel eventViewModel,
+  required UserViewModel userViewModel,
   required Event event,
 }) {
   return MultiProvider(
     providers: [
       ChangeNotifierProvider<AuthViewModel>.value(value: authViewModel),
       ChangeNotifierProvider<EventViewModel>.value(value: eventViewModel),
+      ChangeNotifierProvider<UserViewModel>.value(value: userViewModel),
     ],
     child: MaterialApp(
       home: EventDetailsPage(event: event),
@@ -56,23 +62,37 @@ Widget buildTestablePage({
 void main() {
   late MockAuthViewModel mockAuthViewModel;
   late MockEventViewModel mockEventViewModel;
+  late MockUserViewModel mockUserViewModel;
   late MockFirebaseUser mockUser;
 
   setUp(() {
     mockAuthViewModel = MockAuthViewModel();
     mockEventViewModel = MockEventViewModel();
+    mockUserViewModel = MockUserViewModel();
     mockUser = MockFirebaseUser();
 
     when(() => mockAuthViewModel.addListener(any())).thenAnswer((_) {});
     when(() => mockAuthViewModel.removeListener(any())).thenAnswer((_) {});
     when(() => mockEventViewModel.addListener(any())).thenAnswer((_) {});
     when(() => mockEventViewModel.removeListener(any())).thenAnswer((_) {});
+    when(() => mockUserViewModel.addListener(any())).thenAnswer((_) {});
+    when(() => mockUserViewModel.removeListener(any())).thenAnswer((_) {});
 
     when(() => mockEventViewModel.isLoading).thenReturn(false);
     when(() => mockEventViewModel.errorMessage).thenReturn(null);
 
     when(() => mockAuthViewModel.currentUser).thenReturn(mockUser);
     when(() => mockUser.uid).thenReturn('user-1');
+
+    when(() => mockUserViewModel.userStream(any())).thenAnswer(
+          (_) => Stream.value(
+        Users(
+          name: 'Eduardo',
+          email: 'eduardo@example.com',
+          profilePictureUrl: '',
+        ),
+      ),
+    );
   });
 
   testWidgets('shows join button when user can join event', (tester) async {
@@ -82,9 +102,12 @@ void main() {
       buildTestablePage(
         authViewModel: mockAuthViewModel,
         eventViewModel: mockEventViewModel,
+        userViewModel: mockUserViewModel,
         event: event,
       ),
     );
+
+    await tester.pump();
 
     expect(find.text('Entrar no evento'), findsOneWidget);
   });
@@ -96,9 +119,12 @@ void main() {
       buildTestablePage(
         authViewModel: mockAuthViewModel,
         eventViewModel: mockEventViewModel,
+        userViewModel: mockUserViewModel,
         event: event,
       ),
     );
+
+    await tester.pump();
 
     expect(find.text('És o criador deste evento'), findsOneWidget);
   });
@@ -110,9 +136,12 @@ void main() {
       buildTestablePage(
         authViewModel: mockAuthViewModel,
         eventViewModel: mockEventViewModel,
+        userViewModel: mockUserViewModel,
         event: event,
       ),
     );
+
+    await tester.pump();
 
     expect(find.text('Evento cheio'), findsOneWidget);
   });
@@ -131,9 +160,12 @@ void main() {
       buildTestablePage(
         authViewModel: mockAuthViewModel,
         eventViewModel: mockEventViewModel,
+        userViewModel: mockUserViewModel,
         event: event,
       ),
     );
+
+    await tester.pump();
 
     await tester.tap(find.byType(ElevatedButton));
     await tester.pumpAndSettle();
@@ -164,9 +196,12 @@ void main() {
       buildTestablePage(
         authViewModel: mockAuthViewModel,
         eventViewModel: mockEventViewModel,
+        userViewModel: mockUserViewModel,
         event: event,
       ),
     );
+
+    await tester.pump();
 
     await tester.tap(find.byType(ElevatedButton));
     await tester.pumpAndSettle();
