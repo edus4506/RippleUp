@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:t5/theme/app_theme.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import '../../data/models/user.dart';
 
 
 class ProfilePage extends StatefulWidget {
@@ -76,6 +77,46 @@ class _ProfilePageState extends State<ProfilePage> {
               await context.read<ProfileViewModel>().updateUserProfile(profilePicture: pickedFile);
             },
             child: const Text("Alterar foto"),
+          ),
+
+          ElevatedButton(
+            onPressed: () async {
+              final controller = TextEditingController(
+                text: vm.user?.name ?? "",
+              );
+
+              final result = await showDialog<String>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text("Alterar nome"),
+                  content: TextField(
+                    controller: controller,
+                    decoration: const InputDecoration(
+                      labelText: "Nome",
+                    ),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text("Cancelar"),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context, controller.text.trim());
+                      },
+                      child: const Text("Guardar"),
+                    ),
+                  ],
+                ),
+              );
+
+              if (result == null || result.isEmpty) return;
+
+              await context.read<ProfileViewModel>().updateUserProfile(
+                updatedUser: Users(name: result, email: vm.user!.email,profilePictureUrl: vm.user!.profilePictureUrl),
+              ); //vai ser preciso mudar
+            },
+            child: const Text("Alterar nome"),
           ),
 
           const SizedBox(height: 40),
