@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../data/models/event.dart';
-import '../../data/repositories/event_repository.dart';
+import '../../viewModels/event_viewModel.dart';
 
 class CreateEventPage extends StatefulWidget {
   final void Function(Event event) onCreate;
@@ -90,7 +91,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
       city: selectedCity!,
     );
 
-    await EventRepository().createEvent(event);
+    await context.read<EventViewModel>().createEvent(event);
     widget.onCreate(event);
     Navigator.pop(context);
   }

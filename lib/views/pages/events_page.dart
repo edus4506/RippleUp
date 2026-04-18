@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:t5/views/pages/event_details_page.dart';
 import '../../../data/models/event.dart';
-import '../../../data/repositories/event_repository.dart';
+import '../../viewModels/event_viewModel.dart';
 import 'create_event_page.dart';
 
 class EventsPage extends StatelessWidget {
@@ -38,7 +39,7 @@ class EventsPage extends StatelessWidget {
         child: const Icon(Icons.add),
       ),
       body: StreamBuilder<List<Event>>(
-        stream: EventRepository().listenToEvents(),
+        stream: context.read<EventViewModel>().eventsStream,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
