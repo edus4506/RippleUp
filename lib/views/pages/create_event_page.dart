@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../data/models/event.dart';
+import '../../data/repositories/event_repository.dart';
 
 class CreateEventPage extends StatefulWidget {
   final void Function(Event event) onCreate;
@@ -47,7 +48,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
     super.dispose();
   }
 
-  void _createEvent() {
+  void _createEvent() async {
     final theme = Theme.of(context);
 
     final name = _nameController.text.trim();
@@ -73,19 +74,24 @@ class _CreateEventPageState extends State<CreateEventPage> {
       return;
     }
 
-    final newEvent = null;/* Event(     Event has a new constructor
-      id: widget.nextId,
-      name: name,
+    final event = Event(
+      id: '',
+      title: name,
       description: description,
-      currentUsers: 0,
+      startDate: DateTime.now(),
+      endDate: DateTime.now().add(const Duration(hours: 2)),
       maxUsers: maxUsers,
+      currentUsers: 0,
+      eventStatus: 'PLANNING',
+      idCreator: 'CURRENT_USER_ID',
       objectives: selectedObjectives,
       country: selectedCountry!,
       district: selectedDistrict!,
       city: selectedCity!,
-    );*/
+    );
 
-    widget.onCreate(newEvent);
+    await EventRepository().createEvent(event);
+    widget.onCreate(event);
     Navigator.pop(context);
   }
 

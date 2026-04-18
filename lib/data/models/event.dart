@@ -8,9 +8,13 @@ class Event {         //since an event can have multiple enviroment goals, a mod
   final DateTime startDate;
   final DateTime endDate;
   final int maxUsers;
+  final int currentUsers;
   final String eventStatus;
-  final String idLocation;
   final String idCreator;
+  final String country;
+  final String district;
+  final String city;
+  final List<int> objectives;
 
   Event({
     required this.id,
@@ -20,9 +24,13 @@ class Event {         //since an event can have multiple enviroment goals, a mod
     required this.startDate,
     required this.endDate,
     required this.maxUsers,
+    required this.currentUsers,
     required this.eventStatus,
-    required this.idLocation,
     required this.idCreator,
+    required this.country,
+    required this.district,
+    required this.city,
+    required this.objectives,
   });
 
   factory Event.fromMap(Map<String, dynamic> map, String documentId) {
@@ -34,9 +42,13 @@ class Event {         //since an event can have multiple enviroment goals, a mod
       startDate: (map['startDate'] as Timestamp).toDate(),
       endDate: (map['endDate'] as Timestamp).toDate(),
       maxUsers: map['maxUsers'] ?? 0,
+      currentUsers: map['currentUsers'] ?? 0,
       eventStatus: map['eventStatus'] ?? 'PLANNING',
-      idLocation: map['idLocation'] ?? '',
       idCreator: map['idCreator'] ?? '',
+      country: map['country'] ?? '',
+      district: map['district'] ?? '',
+      city: map['city'] ?? '',
+      objectives: List<int>.from(map['objectives'] ?? []),
     );
   }
 
@@ -48,9 +60,13 @@ class Event {         //since an event can have multiple enviroment goals, a mod
       'startDate': Timestamp.fromDate(startDate),
       'endDate': Timestamp.fromDate(endDate),
       'maxUsers': maxUsers,
+      'currentUsers': currentUsers,
       'eventStatus': eventStatus,
-      'idLocation': idLocation,
       'idCreator': idCreator,
+      'country': country,
+      'district': district,
+      'city': city,
+      'objectives': objectives,
     };
   }
 }
