@@ -92,6 +92,56 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             child: const Text('SAIR DA CONTA'),
           ),
+
+          ElevatedButton(
+            onPressed: vm.isLoading
+                ? null
+                : () async {
+                    final confirm = await showDialog<bool>(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text("Eliminar conta"),
+                        content: const Text(
+                          "Tens a certeza? Esta ação não pode ser desfeita.",
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, false),
+                            child: const Text("Cancelar"),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, true),
+                            child: const Text(
+                              "Eliminar",
+                              style: TextStyle(color: Colors.red),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+
+                    if (confirm != true) return;
+
+                    final profileVM = context.read<ProfileViewModel>();
+                    final authVM = context.read<AuthViewModel>();
+
+                    await profileVM.softDeleteAcc();
+                    await authVM.deleteAcc();
+
+                    if (!context.mounted) return;
+
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                      AppRoutes.login,
+                      (route) => false,
+                    );
+                  },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red.shade800,
+            ),
+            child: vm.isLoading
+                ? const CircularProgressIndicator(color: Colors.white)
+                : const Text("ELIMINAR CONTA"),
+          ),
         ],
       ),
     );

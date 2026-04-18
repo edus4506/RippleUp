@@ -63,12 +63,17 @@ class ProfileViewModel extends ChangeNotifier {
   }*/
 
 
-  /*Future<void> softDeleteAcc(Users user) async{ 
+  Future<void> softDeleteAcc() async{ 
     //this will set the name and the email to a default value on the firestore
     //it will to eliminate the user account on the firebase auth
     //its profile image will be set to a default image
+    
+    final firebaseUser = FirebaseAuth.instance.currentUser;
 
-  }*/
+    await _storageRepository.deleteProfilePicture(uuid: firebaseUser!.uid);
+    await _userRepository.softDeleteUser(uid: firebaseUser!.uid);
+
+  }
 
 
   Future<void> updateUserProfile({

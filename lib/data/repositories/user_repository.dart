@@ -33,9 +33,9 @@ class UserRepository {
 
   Future<void> softDeleteUser({
     required String uid,
-    required Users user,
   }) async {
-
+    Users defaultUser = Users(name: "deletedUser", email: "deletedUser@gmail.com", profilePictureUrl: "");
+    await _db.collection('users').doc(uid).update(defaultUser.toMap());
   }
 
 
