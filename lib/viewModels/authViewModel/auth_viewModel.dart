@@ -5,7 +5,6 @@ import 'package:t5/data/models/user.dart';
 import 'package:t5/data/repositories/user_repository.dart';
 import 'package:t5/data/repositories/storage_repository.dart';
 import 'package:flutter/foundation.dart'; // kIsWeb
-import 'dart:io';
 
 
 class AuthViewModel extends ChangeNotifier {

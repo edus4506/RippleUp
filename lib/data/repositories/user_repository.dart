@@ -44,6 +44,15 @@ class UserRepository {
     required Users updatedUser,
   }) async {
     await _db.collection('users').doc(uid).update(updatedUser.toMap());
+  }
 
+  Stream<Users?> listenToUser(String uid) {
+    return _db.collection('users').doc(uid).snapshots().map((doc) {
+      if (!doc.exists || doc.data() == null) {
+        return null;
+      }
+
+      return Users.fromMap(doc.data()!);
+    });
   }
 }

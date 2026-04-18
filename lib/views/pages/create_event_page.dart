@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../data/models/event.dart';
+import '../../viewModels/event_viewModel.dart';
+import '../../viewModels/authViewModel/auth_viewModel.dart';
 
 class CreateEventPage extends StatefulWidget {
   final void Function(Event event) onCreate;
@@ -47,7 +50,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
     super.dispose();
   }
 
-  void _createEvent() {
+  void _createEvent() async {
     final theme = Theme.of(context);
 
     final name = _nameController.text.trim();
@@ -73,19 +76,41 @@ class _CreateEventPageState extends State<CreateEventPage> {
       return;
     }
 
-    final newEvent = null;/* Event(     Event has a new constructor
-      id: widget.nextId,
-      name: name,
+    final currentUser = context.read<AuthViewModel>().currentUser;
+
+    if (currentUser == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'You must be logged in to create an event',
+            style: theme.textTheme.bodyMedium,
+          ),
+        ),
+      );
+      return;
+    }
+
+    final event = Event(
+      id: '',
+      title: name,
       description: description,
-      currentUsers: 0,
+      startDate: DateTime.now(),
+      endDate: DateTime.now().add(const Duration(hours: 2)),
       maxUsers: maxUsers,
+      currentUsers: 1,
+      eventStatus: 'PLANNING',
+      idCreator: currentUser.uid,
       objectives: selectedObjectives,
       country: selectedCountry!,
       district: selectedDistrict!,
       city: selectedCity!,
-    );*/
+    );
 
-    widget.onCreate(newEvent);
+    await context.read<EventViewModel>().createEvent(event);
+
+    if (!mounted) return;
+
+    widget.onCreate(event);
     Navigator.pop(context);
   }
 
