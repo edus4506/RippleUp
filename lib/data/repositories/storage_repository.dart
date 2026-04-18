@@ -37,4 +37,20 @@ class StorageRepository {
     return publicUrl;
   }
 
+  Future<void> deleteProfilePicture({
+    required String uuid,
+  }) async{
+    final bucket = _client.storage.from('profile-images');
+
+    final folderPath = 'profile-images/$uuid';
+
+    final files = await bucket.list(path: folderPath);
+
+    if (files.isEmpty) return;
+
+    final paths = files.map((file) => '$folderPath/${file.name}').toList();
+
+    await bucket.remove(paths);
+  }
+
 }

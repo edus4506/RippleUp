@@ -4,6 +4,8 @@ import '../../viewModels/profile_viewModel.dart';
 import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import '../../data/models/user.dart';
 
 
 class ProfilePage extends StatefulWidget {
@@ -71,9 +73,49 @@ class _ProfilePageState extends State<ProfilePage> {
 
               //final file = File(pickedFile.path); //later uncomment and put below for android use
 
-              await context.read<ProfileViewModel>().uploadProfileImage(pickedFile);
+              await context.read<ProfileViewModel>().updateUserProfile(profilePicture: pickedFile);
             },
             child: const Text("Alterar foto"),
+          ),
+
+          ElevatedButton(
+            onPressed: () async {
+              final controller = TextEditingController(
+                text: vm.user?.name ?? "",
+              );
+
+              final result = await showDialog<String>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text("Alterar nome"),
+                  content: TextField(
+                    controller: controller,
+                    decoration: const InputDecoration(
+                      labelText: "Nome",
+                    ),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text("Cancelar"),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context, controller.text.trim());
+                      },
+                      child: const Text("Guardar"),
+                    ),
+                  ],
+                ),
+              );
+
+              if (result == null || result.isEmpty) return;
+
+              await context.read<ProfileViewModel>().updateUserProfile(
+                updatedUser: Users(name: result, email: vm.user!.email,profilePictureUrl: vm.user!.profilePictureUrl),
+              ); //vai ser preciso mudar
+            },
+            child: const Text("Alterar nome"),
           ),
 
           const SizedBox(height: 40),
@@ -89,6 +131,56 @@ class _ProfilePageState extends State<ProfilePage> {
               backgroundColor: Colors.red,
             ),
             child: const Text('SAIR DA CONTA'),
+          ),
+
+          ElevatedButton(
+            onPressed: vm.isLoading
+                ? null
+                : () async {
+                    final confirm = await showDialog<bool>(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text("Eliminar conta"),
+                        content: const Text(
+                          "Tens a certeza? Esta ação não pode ser desfeita.",
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, false),
+                            child: const Text("Cancelar"),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, true),
+                            child: const Text(
+                              "Eliminar",
+                              style: TextStyle(color: Colors.red),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+
+                    if (confirm != true) return;
+
+                    final profileVM = context.read<ProfileViewModel>();
+                    final authVM = context.read<AuthViewModel>();
+
+                    await profileVM.softDeleteAcc();
+                    await authVM.deleteAcc();
+
+                    if (!context.mounted) return;
+
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                      AppRoutes.login,
+                      (route) => false,
+                    );
+                  },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red.shade800,
+            ),
+            child: vm.isLoading
+                ? const CircularProgressIndicator(color: Colors.white)
+                : const Text("ELIMINAR CONTA"),
           ),
         ],
       ),

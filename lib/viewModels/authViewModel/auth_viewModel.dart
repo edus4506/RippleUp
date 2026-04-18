@@ -73,6 +73,27 @@ class AuthViewModel extends ChangeNotifier {
     await _auth.signOut();
   }
 
+  Future<void> deleteAcc() async {
+    try {
+      isLoading = true;
+      notifyListeners();
+
+      final user = _auth.currentUser;
+      if (user == null) return;
+
+      await user.delete();
+      await _auth.signOut();
+
+    } on FirebaseAuthException catch (e) {
+      errorMessage = e.code == 'requires-recent-login'
+          ? 'Tens de fazer login novamente para apagar a conta'
+          : _mapError(e);
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
   String _mapError(FirebaseAuthException e) {
     switch (e.code) {
       case 'user-not-found':
