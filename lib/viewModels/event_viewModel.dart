@@ -12,6 +12,9 @@ class EventViewModel extends ChangeNotifier {
 
   Stream<List<Event>> get eventsStream => _eventRepository.listenToEvents();
 
+  bool hideFullEvents = false;
+  Set<int> selectedGoals = {};
+
   Future<void> createEvent(Event event) async {
     await _eventRepository.createEvent(event);
   }
@@ -90,5 +93,36 @@ class EventViewModel extends ChangeNotifier {
       isLoading = false;
       notifyListeners();
     }
+  }
+
+  Stream<List<Event>> get filteredEventsStream {
+    return _eventRepository.listenToEvents().map((events) {
+      return events.where((event) {
+        if (hideFullEvents &&
+            event.currentUsers >= event.maxUsers) {
+          return false;
+        }
+
+        if (selectedGoals.isNotEmpty) {
+          final eventGoals = event.objectives; 
+
+          final hasMatch = eventGoals.any((goal) =>
+              selectedGoals.contains(goal));
+
+          if (!hasMatch) return false;
+        }
+
+        return true;
+      }).toList();
+    });
+  }
+
+  void applyFilters({
+    required bool hideFull,
+    required Set<int> goals,
+  }) {
+    hideFullEvents = hideFull;
+    selectedGoals = goals;
+    notifyListeners();
   }
 }

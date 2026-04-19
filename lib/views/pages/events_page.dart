@@ -39,7 +39,7 @@ class EventsPage extends StatelessWidget {
         child: const Icon(Icons.add),
       ),
       body: StreamBuilder<List<Event>>(
-        stream: context.read<EventViewModel>().eventsStream,
+        stream: context.watch<EventViewModel>().filteredEventsStream,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
