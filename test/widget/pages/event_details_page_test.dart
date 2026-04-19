@@ -85,7 +85,7 @@ void main() {
     when(() => mockUser.uid).thenReturn('user-1');
 
     when(() => mockUserViewModel.userStream(any())).thenAnswer(
-          (_) => Stream.value(
+      (_) => Stream.value(
         Users(
           name: 'Eduardo',
           email: 'eduardo@example.com',
@@ -93,6 +93,11 @@ void main() {
         ),
       ),
     );
+
+    when(() => mockEventViewModel.isUserInEvent(
+      eventId: any(named: 'eventId'),
+      userId: any(named: 'userId'),
+    )).thenAnswer((_) => Stream.value(false));
   });
 
   testWidgets('shows join button when user can join event', (tester) async {
@@ -107,7 +112,7 @@ void main() {
       ),
     );
 
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(find.text('Entrar no evento'), findsOneWidget);
   });
@@ -124,7 +129,7 @@ void main() {
       ),
     );
 
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(find.text('És o criador deste evento'), findsOneWidget);
   });
@@ -141,7 +146,7 @@ void main() {
       ),
     );
 
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(find.text('Evento cheio'), findsOneWidget);
   });
@@ -150,7 +155,7 @@ void main() {
     final event = buildEvent();
 
     when(
-          () => mockEventViewModel.joinEvent(
+      () => mockEventViewModel.joinEvent(
         eventId: any(named: 'eventId'),
         userId: any(named: 'userId'),
       ),
@@ -165,13 +170,13 @@ void main() {
       ),
     );
 
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     await tester.tap(find.byType(ElevatedButton));
     await tester.pumpAndSettle();
 
     verify(
-          () => mockEventViewModel.joinEvent(
+      () => mockEventViewModel.joinEvent(
         eventId: 'event-1',
         userId: 'user-1',
       ),
@@ -186,7 +191,7 @@ void main() {
     when(() => mockEventViewModel.errorMessage).thenReturn('Evento cheio');
 
     when(
-          () => mockEventViewModel.joinEvent(
+      () => mockEventViewModel.joinEvent(
         eventId: any(named: 'eventId'),
         userId: any(named: 'userId'),
       ),
@@ -201,13 +206,13 @@ void main() {
       ),
     );
 
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     await tester.tap(find.byType(ElevatedButton));
     await tester.pumpAndSettle();
 
     verify(
-          () => mockEventViewModel.joinEvent(
+      () => mockEventViewModel.joinEvent(
         eventId: 'event-1',
         userId: 'user-1',
       ),
