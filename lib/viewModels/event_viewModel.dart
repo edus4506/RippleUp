@@ -14,6 +14,8 @@ class EventViewModel extends ChangeNotifier {
 
   bool hideFullEvents = false;
   Set<int> selectedGoals = {};
+  int? minCapacity;
+  int? maxCapacity;
 
   Future<void> createEvent(Event event) async {
     await _eventRepository.createEvent(event);
@@ -104,12 +106,23 @@ class EventViewModel extends ChangeNotifier {
         }
 
         if (selectedGoals.isNotEmpty) {
-          final eventGoals = event.objectives; 
+          final eventGoals = event.objectives;
 
-          final hasMatch = eventGoals.any((goal) =>
-              selectedGoals.contains(goal));
+          final hasMatch = eventGoals.any(
+            (goal) => selectedGoals.contains(goal),
+          );
 
           if (!hasMatch) return false;
+        }
+
+        if (minCapacity != null &&
+            event.maxUsers < minCapacity!) {
+          return false;
+        }
+
+        if (maxCapacity != null &&
+            event.maxUsers > maxCapacity!) {
+          return false;
         }
 
         return true;
@@ -120,9 +133,14 @@ class EventViewModel extends ChangeNotifier {
   void applyFilters({
     required bool hideFull,
     required Set<int> goals,
+    int? minCapacity,
+    int? maxCapacity,
   }) {
     hideFullEvents = hideFull;
     selectedGoals = goals;
+    this.minCapacity = minCapacity;
+    this.maxCapacity = maxCapacity;
+
     notifyListeners();
   }
 }

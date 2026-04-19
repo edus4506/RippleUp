@@ -13,12 +13,24 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
   late bool localValue;
   late Set<int> selectedGoals;
 
+  late RangeValues capacityRange;
+  bool capacityChanged = false;
+
+  final double minCapacityValue = 0;
+  final double maxCapacityValue = 50;
+
   @override
   void initState() {
     super.initState();
     final vm = context.read<EventViewModel>();
+
     localValue = vm.hideFullEvents;
     selectedGoals = Set.from(vm.selectedGoals);
+
+    capacityRange = RangeValues(
+      vm.minCapacity?.toDouble() ?? minCapacityValue,
+      vm.maxCapacity?.toDouble() ?? maxCapacityValue,
+    );
   }
 
   @override
@@ -29,43 +41,43 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Filtros',
-              style: theme.textTheme.titleMedium,
-            ),
-
-            const SizedBox(height: 20),
-
-            CheckboxListTile(
-              title: const Text('Esconder eventos cheios'),
-              value: localValue,
-              onChanged: (value) {
-                setState(() {
-                  localValue = value ?? false;
-                });
-              },
-            ),
-
-            const SizedBox(height: 20),
-
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Objetivos Ambientais',
+      child: SingleChildScrollView( 
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Filtros',
                 style: theme.textTheme.titleMedium,
               ),
-            ),
 
-            const SizedBox(height: 10),
+              const SizedBox(height: 20),
 
-            SizedBox(
-              height: 300,
-              child: GridView.builder(
+              CheckboxListTile(
+                title: const Text('Esconder eventos cheios'),
+                value: localValue,
+                onChanged: (value) {
+                  setState(() {
+                    localValue = value ?? false;
+                  });
+                },
+              ),
+
+              const SizedBox(height: 20),
+
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Objetivos Ambientais',
+                  style: theme.textTheme.titleMedium,
+                ),
+              ),
+
+              const SizedBox(height: 10),
+
+              GridView.builder(
+                shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 6,
@@ -105,64 +117,112 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                       child: Center(
                         child: Text(
                           goal.toString(),
-                          style: const TextStyle(fontWeight: FontWeight.bold),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
                   );
                 },
               ),
-            ),
 
-            const SizedBox(height: 10),
+              const SizedBox(height: 20),
 
-            Column(
-              children: [
-                SizedBox(
-                  width: double.infinity,
-                  child: TextButton(
-                    onPressed: () {
-                      setState(() {
-                        localValue = false;
-                        selectedGoals.clear();
-                      });
-                    },
-                    child: const Text('Limpar filtros'),
-                  ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Capacidade do Evento',
+                  style: theme.textTheme.titleMedium,
                 ),
+              ),
 
-                const SizedBox(height: 10),
+              const SizedBox(height: 10),
 
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text('Cancelar'),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          final vm = context.read<EventViewModel>();
-                          vm.applyFilters(
-                            hideFull: localValue,
-                            goals: selectedGoals,
+              Text(
+                '${capacityRange.start.round()} - ${capacityRange.end.round()}',
+              ),
+
+              RangeSlider(
+                values: capacityRange,
+                min: minCapacityValue,
+                max: maxCapacityValue,
+                divisions: 50,
+                labels: RangeLabels(
+                  capacityRange.start.round().toString(),
+                  capacityRange.end.round().toString(),
+                ),
+                onChanged: (values) {
+                  setState(() {
+                    capacityRange = values;
+                    capacityChanged = true;
+                  });
+                },
+              ),
+
+              const SizedBox(height: 10),
+
+              Column(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: TextButton(
+                      onPressed: () {
+                        setState(() {
+                          localValue = false;
+                          selectedGoals.clear();
+
+                          capacityChanged = false;
+                          capacityRange = RangeValues(
+                            minCapacityValue,
+                            maxCapacityValue,
                           );
-
-                          Navigator.pop(context);
-                        },
-                        child: const Text('Aplicar'),
-                      ),
+                        });
+                      },
+                      child: const Text('Limpar filtros'),
                     ),
-                  ],
-                ),
-              ],
-            ),
-          ],
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text('Cancelar'),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            final vm = context.read<EventViewModel>();
+
+                            vm.applyFilters(
+                              hideFull: localValue,
+                              goals: selectedGoals,
+                              minCapacity: capacityChanged
+                                  ? capacityRange.start.round()
+                                  : null,
+                              maxCapacity: capacityChanged
+                                  ? capacityRange.end.round()
+                                  : null,
+                            );
+
+                            Navigator.pop(context);
+                          },
+                          child: const Text('Aplicar'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
