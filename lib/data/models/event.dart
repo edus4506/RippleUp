@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'event_status.dart';
 
 class Event {
   final String id;
@@ -74,5 +75,17 @@ class Event {
       'city': city,
       'objectives': objectives,
     };
+  }
+
+  EventStatus get status {
+    final now = DateTime.now();
+
+    if (now.isBefore(startDate)) {
+      return EventStatus.planning;
+    } else if (now.isAfter(endDate)) {
+      return EventStatus.done;
+    } else {
+      return EventStatus.occurring;
+    }
   }
 }
