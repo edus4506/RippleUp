@@ -16,6 +16,8 @@ class EventViewModel extends ChangeNotifier {
   Set<int> selectedGoals = {};
   int? minCapacity;
   int? maxCapacity;
+  int? minCurrentUsers;
+  int? maxCurrentUsers;
 
   Future<void> createEvent(Event event) async {
     await _eventRepository.createEvent(event);
@@ -125,6 +127,16 @@ class EventViewModel extends ChangeNotifier {
           return false;
         }
 
+        if (minCurrentUsers != null &&
+            event.currentUsers < minCurrentUsers!) {
+          return false;
+        }
+
+        if (maxCurrentUsers != null &&
+            event.currentUsers > maxCurrentUsers!) {
+          return false;
+        }
+
         return true;
       }).toList();
     });
@@ -135,11 +147,17 @@ class EventViewModel extends ChangeNotifier {
     required Set<int> goals,
     int? minCapacity,
     int? maxCapacity,
+    int? minCurrentUsers,
+    int? maxCurrentUsers,
   }) {
     hideFullEvents = hideFull;
     selectedGoals = goals;
+
     this.minCapacity = minCapacity;
     this.maxCapacity = maxCapacity;
+
+    this.minCurrentUsers = minCurrentUsers;
+    this.maxCurrentUsers = maxCurrentUsers;
 
     notifyListeners();
   }

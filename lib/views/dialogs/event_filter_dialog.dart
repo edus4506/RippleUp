@@ -19,6 +19,12 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
   final double minCapacityValue = 0;
   final double maxCapacityValue = 50;
 
+  late RangeValues currentUsersRange;
+  bool currentUsersChanged = false;
+
+  final double minUsersValue = 0;
+  final double maxUsersValue = 50;
+
   @override
   void initState() {
     super.initState();
@@ -30,6 +36,11 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
     capacityRange = RangeValues(
       vm.minCapacity?.toDouble() ?? minCapacityValue,
       vm.maxCapacity?.toDouble() ?? maxCapacityValue,
+    );
+
+    currentUsersRange = RangeValues(
+      vm.minCurrentUsers?.toDouble() ?? minUsersValue,
+      vm.maxCurrentUsers?.toDouble() ?? maxUsersValue,
     );
   }
 
@@ -156,6 +167,39 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                   setState(() {
                     capacityRange = values;
                     capacityChanged = true;
+                  });
+                },
+              ),
+              
+              const SizedBox(height: 20),
+
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Participantes Atuais',
+                  style: theme.textTheme.titleMedium,
+                ),
+              ),
+
+              const SizedBox(height: 10),
+
+              Text(
+                '${currentUsersRange.start.round()} - ${currentUsersRange.end.round()}',
+              ),
+
+              RangeSlider(
+                values: currentUsersRange,
+                min: minUsersValue,
+                max: maxUsersValue,
+                divisions: 50,
+                labels: RangeLabels(
+                  currentUsersRange.start.round().toString(),
+                  currentUsersRange.end.round().toString(),
+                ),
+                onChanged: (values) {
+                  setState(() {
+                    currentUsersRange = values;
+                    currentUsersChanged = true;
                   });
                 },
               ),
