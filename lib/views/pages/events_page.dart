@@ -23,11 +23,9 @@ class EventsPage extends StatelessWidget {
   }
 
   void _openEventDetails(BuildContext context, Event event) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => EventDetailsPage(event: event),
-      ),
+    showDialog(
+      context: context,
+      builder: (_) => EventDetailsDialog(event: event),
     );
   }
 
