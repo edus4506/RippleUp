@@ -52,7 +52,7 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
-      child: SingleChildScrollView( 
+      child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -150,27 +150,30 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
 
               const SizedBox(height: 10),
 
-              Text(
-                '${capacityRange.start.round()} - ${capacityRange.end.round()}',
+              Row(
+                children: [
+                  Text(
+                    '${capacityRange.start.round()} - ${capacityRange.end.round()}',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: RangeSlider(
+                      values: capacityRange,
+                      min: minCapacityValue,
+                      max: maxCapacityValue,
+                      divisions: 50,
+                      onChanged: (values) {
+                        setState(() {
+                          capacityRange = values;
+                          capacityChanged = true;
+                        });
+                      },
+                    ),
+                  ),
+                ],
               ),
 
-              RangeSlider(
-                values: capacityRange,
-                min: minCapacityValue,
-                max: maxCapacityValue,
-                divisions: 50,
-                labels: RangeLabels(
-                  capacityRange.start.round().toString(),
-                  capacityRange.end.round().toString(),
-                ),
-                onChanged: (values) {
-                  setState(() {
-                    capacityRange = values;
-                    capacityChanged = true;
-                  });
-                },
-              ),
-              
               const SizedBox(height: 20),
 
               Align(
@@ -183,25 +186,28 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
 
               const SizedBox(height: 10),
 
-              Text(
-                '${currentUsersRange.start.round()} - ${currentUsersRange.end.round()}',
-              ),
-
-              RangeSlider(
-                values: currentUsersRange,
-                min: minUsersValue,
-                max: maxUsersValue,
-                divisions: 50,
-                labels: RangeLabels(
-                  currentUsersRange.start.round().toString(),
-                  currentUsersRange.end.round().toString(),
-                ),
-                onChanged: (values) {
-                  setState(() {
-                    currentUsersRange = values;
-                    currentUsersChanged = true;
-                  });
-                },
+              Row(
+                children: [
+                  Text(
+                    '${currentUsersRange.start.round()} - ${currentUsersRange.end.round()}',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: RangeSlider(
+                      values: currentUsersRange,
+                      min: minUsersValue,
+                      max: maxUsersValue,
+                      divisions: 50,
+                      onChanged: (values) {
+                        setState(() {
+                          currentUsersRange = values;
+                          currentUsersChanged = true;
+                        });
+                      },
+                    ),
+                  ),
+                ],
               ),
 
               const SizedBox(height: 10),
@@ -220,6 +226,12 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                           capacityRange = RangeValues(
                             minCapacityValue,
                             maxCapacityValue,
+                          );
+
+                          currentUsersChanged = false;
+                          currentUsersRange = RangeValues(
+                            minUsersValue,
+                            maxUsersValue,
                           );
                         });
                       },
