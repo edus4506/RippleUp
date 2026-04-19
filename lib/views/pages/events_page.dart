@@ -11,7 +11,7 @@ class EventsPage extends StatelessWidget {
   void _openCreateEvent(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => CreateEventPage(
+      builder: (context) => CreateEventDialog(
         nextId: 0,
         onCreate: (Event event) {
           ScaffoldMessenger.of(context).showSnackBar(

@@ -1,27 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 import '../../data/models/event.dart';
 import '../../viewModels/event_viewModel.dart';
 import '../../viewModels/authViewModel/auth_viewModel.dart';
 
-class CreateEventPage extends StatefulWidget {
+class CreateEventDialog extends StatefulWidget {
   final void Function(Event event) onCreate;
   final int nextId;
 
-  const CreateEventPage({
+  const CreateEventDialog({
     super.key,
     required this.onCreate,
     required this.nextId,
   });
 
   @override
-  State<CreateEventPage> createState() => _CreateEventPageState();
+  State<CreateEventDialog> createState() => _CreateEventDialogState();
 }
 
-class _CreateEventPageState extends State<CreateEventPage> {
+class _CreateEventDialogState extends State<CreateEventDialog> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _maxUsersController = TextEditingController();
+
+  final TextEditingController _startDateController = TextEditingController();
+  final TextEditingController _endDateController = TextEditingController();
+
+  DateTime? startDate;
+  DateTime? endDate;
 
   List<int> selectedObjectives = [];
 
@@ -47,7 +54,35 @@ class _CreateEventPageState extends State<CreateEventPage> {
     _nameController.dispose();
     _descriptionController.dispose();
     _maxUsersController.dispose();
+    _startDateController.dispose();
+    _endDateController.dispose();
     super.dispose();
+  }
+
+  Future<DateTime?> _pickDateTime() async {
+    final date = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2100),
+    );
+
+    if (date == null) return null;
+
+    final time = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (time == null) return null;
+
+    return DateTime(
+      date.year,
+      date.month,
+      date.day,
+      time.hour,
+      time.minute,
+    );
   }
 
   void _createEvent() async {
@@ -64,7 +99,9 @@ class _CreateEventPageState extends State<CreateEventPage> {
         selectedObjectives.isEmpty ||
         selectedCountry == null ||
         selectedDistrict == null ||
-        selectedCity == null) {
+        selectedCity == null ||
+        startDate == null ||
+        endDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -76,16 +113,18 @@ class _CreateEventPageState extends State<CreateEventPage> {
       return;
     }
 
+    if (endDate!.isBefore(startDate!)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('End date must be after start date')),
+      );
+      return;
+    }
+
     final currentUser = context.read<AuthViewModel>().currentUser;
 
     if (currentUser == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'You must be logged in to create an event',
-            style: theme.textTheme.bodyMedium,
-          ),
-        ),
+        const SnackBar(content: Text('You must be logged in')),
       );
       return;
     }
@@ -94,8 +133,11 @@ class _CreateEventPageState extends State<CreateEventPage> {
       id: '',
       title: name,
       description: description,
-      startDate: DateTime.now(),
-      endDate: DateTime.now().add(const Duration(hours: 2)),
+
+      createdAt: DateTime.now(),
+      startDate: startDate!,
+      endDate: endDate!,
+
       maxUsers: maxUsers,
       currentUsers: 1,
       eventStatus: 'PLANNING',
@@ -119,18 +161,13 @@ class _CreateEventPageState extends State<CreateEventPage> {
     final theme = Theme.of(context);
 
     return AlertDialog(
-      title: Text(
-        'Create Event',
-        style: theme.textTheme.titleMedium,
-      ),
+      title: Text('Create Event', style: theme.textTheme.titleMedium),
       content: SizedBox(
         width: double.maxFinite,
         child: SingleChildScrollView(
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                key: const Key('create_name_field'),
                 controller: _nameController,
                 decoration: const InputDecoration(labelText: 'Event name'),
               ),
@@ -138,48 +175,77 @@ class _CreateEventPageState extends State<CreateEventPage> {
               const SizedBox(height: 10),
 
               TextField(
-                key: const Key('create_description_field'),
                 controller: _descriptionController,
                 decoration: const InputDecoration(labelText: 'Description'),
-                maxLines: 3,
               ),
 
               const SizedBox(height: 10),
 
               TextField(
-                key: const Key('create_max_users_field'),
                 controller: _maxUsersController,
                 decoration: const InputDecoration(labelText: 'Max users'),
                 keyboardType: TextInputType.number,
               ),
 
-              const SizedBox(height: 16),
+              const SizedBox(height: 10),
 
-              /// Section title
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Objectives',
-                  style: theme.textTheme.titleMedium,
+              TextField(
+                controller: _startDateController,
+                readOnly: true,
+                decoration: const InputDecoration(
+                  labelText: 'Start Date',
+                  prefixIcon: Icon(Icons.calendar_today),
                 ),
+                onTap: () async {
+                  final picked = await _pickDateTime();
+                  if (picked != null) {
+                    setState(() {
+                      startDate = picked;
+                      _startDateController.text =
+                          DateFormat('dd/MM/yyyy HH:mm').format(picked);
+                    });
+                  }
+                },
               ),
 
-              const SizedBox(height: 8),
+              const SizedBox(height: 10),
+
+              TextField(
+                controller: _endDateController,
+                readOnly: true,
+                decoration: const InputDecoration(
+                  labelText: 'End Date',
+                  prefixIcon: Icon(Icons.calendar_today),
+                ),
+                onTap: () async {
+                  final picked = await _pickDateTime();
+                  if (picked != null) {
+                    setState(() {
+                      endDate = picked;
+                      _endDateController.text =
+                          DateFormat('dd/MM/yyyy HH:mm').format(picked);
+                    });
+                  }
+                },
+              ),
+
+              const SizedBox(height: 16),
+
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text('Objectives', style: theme.textTheme.titleMedium),
+              ),
 
               SizedBox(
-                height: 180,
+                height: 150,
                 child: ListView.builder(
-                  shrinkWrap: true,
                   itemCount: 17,
                   itemBuilder: (context, index) {
                     final objective = index + 1;
 
                     return CheckboxListTile(
                       dense: true,
-                      title: Text(
-                        'Objective $objective',
-                        style: theme.textTheme.bodyMedium,
-                      ),
+                      title: Text('Objective $objective'),
                       value: selectedObjectives.contains(objective),
                       onChanged: (value) {
                         setState(() {
@@ -195,83 +261,46 @@ class _CreateEventPageState extends State<CreateEventPage> {
                 ),
               ),
 
-              const SizedBox(height: 10),
-
               DropdownButtonFormField<String>(
                 decoration: const InputDecoration(labelText: "Country"),
-                initialValue: selectedCountry,
-                items: countries.map((country) {
-                  return DropdownMenuItem(
-                    value: country,
-                    child: Text(country, style: theme.textTheme.bodyMedium),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    selectedCountry = value;
-                    selectedDistrict = null;
-                    selectedCity = null;
-                  });
-                },
+                value: selectedCountry,
+                items: countries.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
+                onChanged: (v) => setState(() {
+                  selectedCountry = v;
+                  selectedDistrict = null;
+                  selectedCity = null;
+                }),
               ),
-
-              const SizedBox(height: 10),
 
               if (selectedCountry != null)
                 DropdownButtonFormField<String>(
                   decoration: const InputDecoration(labelText: "District"),
-                  initialValue: selectedDistrict,
-                  items: districts[selectedCountry]!.map((district) {
-                    return DropdownMenuItem(
-                      value: district,
-                      child: Text(district, style: theme.textTheme.bodyMedium),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedDistrict = value;
-                      selectedCity = null;
-                    });
-                  },
+                  value: selectedDistrict,
+                  items: districts[selectedCountry]!
+                      .map((d) => DropdownMenuItem(value: d, child: Text(d)))
+                      .toList(),
+                  onChanged: (v) => setState(() {
+                    selectedDistrict = v;
+                    selectedCity = null;
+                  }),
                 ),
-
-              const SizedBox(height: 10),
 
               if (selectedDistrict != null)
                 DropdownButtonFormField<String>(
                   decoration: const InputDecoration(labelText: "City"),
-                  initialValue: selectedCity,
-                  items: cities[selectedDistrict]!.map((city) {
-                    return DropdownMenuItem(
-                      value: city,
-                      child: Text(city, style: theme.textTheme.bodyMedium),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedCity = value;
-                    });
-                  },
+                  value: selectedCity,
+                  items: cities[selectedDistrict]!
+                      .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                      .toList(),
+                  onChanged: (v) => setState(() => selectedCity = v),
                 ),
             ],
           ),
         ),
       ),
-
       actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text(
-            'Cancel',
-            style: theme.textTheme.labelLarge,
-          ),
-        ),
-
-        ElevatedButton(
-          key: const Key('confirm_create_event_button'),
-          onPressed: _createEvent,
-          child: const Text('Create'),
-        ),
+        TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+        ElevatedButton(onPressed: _createEvent, child: const Text('Create')),
       ],
     );
   }

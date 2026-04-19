@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Event {         //since an event can have multiple enviroment goals, a model EventEnvGoal was created. it has idEvent -> idEnvGoal
+class Event {
   final String id;
-  //final String idEnvGoal; //will be acced through event_envGoals
   final String title;
   final String description;
+  final DateTime createdAt;
   final DateTime startDate;
   final DateTime endDate;
   final int maxUsers;
@@ -18,9 +18,9 @@ class Event {         //since an event can have multiple enviroment goals, a mod
 
   Event({
     required this.id,
-    //required this.idEnvGoal,
     required this.title,
     required this.description,
+    required this.createdAt,
     required this.startDate,
     required this.endDate,
     required this.maxUsers,
@@ -36,11 +36,17 @@ class Event {         //since an event can have multiple enviroment goals, a mod
   factory Event.fromMap(Map<String, dynamic> map, String documentId) {
     return Event(
       id: documentId,
-      //idEnvGoal: map['idEnvGoal'] ?? '',
       title: map['title'] ?? '',
       description: map['description'] ?? '',
-      startDate: (map['startDate'] as Timestamp).toDate(),
-      endDate: (map['endDate'] as Timestamp).toDate(),
+      createdAt: map['createdAt'] != null
+          ? (map['createdAt'] as Timestamp).toDate()
+          : DateTime.now(),
+      startDate: map['startDate'] != null
+          ? (map['startDate'] as Timestamp).toDate()
+          : DateTime.now(),
+      endDate: map['endDate'] != null
+          ? (map['endDate'] as Timestamp).toDate()
+          : DateTime.now(),
       maxUsers: map['maxUsers'] ?? 0,
       currentUsers: map['currentUsers'] ?? 0,
       eventStatus: map['eventStatus'] ?? 'PLANNING',
@@ -54,9 +60,9 @@ class Event {         //since an event can have multiple enviroment goals, a mod
 
   Map<String, dynamic> toMap() {
     return {
-      //'idEnvGoal': idEnvGoal,
       'title': title,
       'description': description,
+      'createdAt': Timestamp.fromDate(createdAt),
       'startDate': Timestamp.fromDate(startDate),
       'endDate': Timestamp.fromDate(endDate),
       'maxUsers': maxUsers,
