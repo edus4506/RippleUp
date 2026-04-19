@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:t5/views/pages/event_details_page.dart';
+import 'package:t5/views/dialogs/event_details_dialog.dart';
 import '../../../data/models/event.dart';
 import '../../viewModels/event_viewModel.dart';
-import 'create_event_page.dart';
+import '../dialogs/create_event_dialog.dart';
 
 class EventsPage extends StatelessWidget {
   const EventsPage({super.key});
