@@ -172,7 +172,8 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byType(ElevatedButton));
+    await tester.tap(find.text('Entrar no evento'));
+    await tester.pump();
     await tester.pumpAndSettle();
 
     verify(
