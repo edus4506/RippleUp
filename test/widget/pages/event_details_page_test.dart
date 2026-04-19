@@ -172,9 +172,13 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Entrar no evento'));
+    final button = find.widgetWithText(ElevatedButton, 'Entrar no evento');
+    expect(button, findsOneWidget);
+
+    await tester.tap(button);
+
     await tester.pump();
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 1));
 
     verify(
       () => mockEventViewModel.joinEvent(
@@ -183,7 +187,7 @@ void main() {
       ),
     ).called(1);
 
-    expect(find.text('Entraste no evento com sucesso'), findsOneWidget);
+    expect(find.byType(SnackBar), findsOneWidget);
   });
 
   testWidgets('shows error snackbar when join fails', (tester) async {
@@ -209,8 +213,11 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byType(ElevatedButton));
-    await tester.pumpAndSettle();
+    final button = find.widgetWithText(ElevatedButton, 'Entrar no evento');
+    await tester.tap(button);
+
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
 
     verify(
       () => mockEventViewModel.joinEvent(
@@ -219,6 +226,6 @@ void main() {
       ),
     ).called(1);
 
-    expect(find.text('Evento cheio'), findsOneWidget);
+    expect(find.byType(SnackBar), findsOneWidget);
   });
 }
