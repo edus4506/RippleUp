@@ -25,6 +25,23 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
   final double minUsersValue = 0;
   final double maxUsersValue = 50;
 
+  String? selectedCountry;
+  String? selectedDistrict;
+  String? selectedCity;
+
+  final List<String> countries = ["Portugal", "Spain"];
+
+  final Map<String, List<String>> districts = {
+    "Portugal": ["Porto", "Lisboa"],
+    "Spain": ["Galicia"],
+  };
+
+  final Map<String, List<String>> cities = {
+    "Porto": ["Porto", "Matosinhos"],
+    "Lisboa": ["Lisboa"],
+    "Galicia": ["Vigo"],
+  };
+
   @override
   void initState() {
     super.initState();
@@ -42,6 +59,10 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
       vm.minCurrentUsers?.toDouble() ?? minUsersValue,
       vm.maxCurrentUsers?.toDouble() ?? maxUsersValue,
     );
+
+    selectedCountry = vm.selectedCountry;
+    selectedDistrict = vm.selectedDistrict;
+    selectedCity = vm.selectedCity;
   }
 
   @override
@@ -58,10 +79,7 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                'Filtros',
-                style: theme.textTheme.titleMedium,
-              ),
+              Text('Filtros', style: theme.textTheme.titleMedium),
 
               const SizedBox(height: 20),
 
@@ -90,7 +108,8 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
               GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate:
+                    const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 6,
                   crossAxisSpacing: 8,
                   mainAxisSpacing: 8,
@@ -122,7 +141,8 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                     },
                     child: Container(
                       decoration: BoxDecoration(
-                        color: isSelected ? Colors.green : Colors.grey[300],
+                        color:
+                            isSelected ? Colors.green : Colors.grey[300],
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Center(
@@ -143,6 +163,79 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
+                  'Localização',
+                  style: theme.textTheme.titleMedium,
+                ),
+              ),
+
+              const SizedBox(height: 10),
+
+              DropdownButtonFormField<String>(
+                decoration:
+                    const InputDecoration(labelText: "Country"),
+                initialValue: selectedCountry,
+                items: countries.map((country) {
+                  return DropdownMenuItem(
+                    value: country,
+                    child: Text(country),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    selectedCountry = value;
+                    selectedDistrict = null;
+                    selectedCity = null;
+                  });
+                },
+              ),
+
+              const SizedBox(height: 10),
+
+              if (selectedCountry != null)
+                DropdownButtonFormField<String>(
+                  decoration:
+                      const InputDecoration(labelText: "District"),
+                  initialValue: selectedDistrict,
+                  items: districts[selectedCountry]!
+                      .map((district) {
+                    return DropdownMenuItem(
+                      value: district,
+                      child: Text(district),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedDistrict = value;
+                      selectedCity = null;
+                    });
+                  },
+                ),
+
+              const SizedBox(height: 10),
+
+              if (selectedDistrict != null)
+                DropdownButtonFormField<String>(
+                  decoration:
+                      const InputDecoration(labelText: "City"),
+                  initialValue: selectedCity,
+                  items: cities[selectedDistrict]!.map((city) {
+                    return DropdownMenuItem(
+                      value: city,
+                      child: Text(city),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedCity = value;
+                    });
+                  },
+                ),
+
+              const SizedBox(height: 20),
+
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
                   'Capacidade do Evento',
                   style: theme.textTheme.titleMedium,
                 ),
@@ -154,7 +247,6 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                 children: [
                   Text(
                     '${capacityRange.start.round()} - ${capacityRange.end.round()}',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
@@ -190,7 +282,6 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                 children: [
                   Text(
                     '${currentUsersRange.start.round()} - ${currentUsersRange.end.round()}',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
@@ -212,68 +303,82 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
 
               const SizedBox(height: 10),
 
-              Column(
+              SizedBox(
+                width: double.infinity,
+                child: TextButton(
+                  onPressed: () {
+                    setState(() {
+                      localValue = false;
+                      selectedGoals.clear();
+
+                      capacityChanged = false;
+                      capacityRange = RangeValues(
+                        minCapacityValue,
+                        maxCapacityValue,
+                      );
+
+                      currentUsersChanged = false;
+                      currentUsersRange = RangeValues(
+                        minUsersValue,
+                        maxUsersValue,
+                      );
+
+                      selectedCountry = null;
+                      selectedDistrict = null;
+                      selectedCity = null;
+                    });
+                  },
+                  child: const Text('Limpar filtros'),
+                ),
+              ),
+
+              const SizedBox(height: 10),
+
+              Row(
                 children: [
-                  SizedBox(
-                    width: double.infinity,
-                    child: TextButton(
+                  Expanded(
+                    child: OutlinedButton(
                       onPressed: () {
-                        setState(() {
-                          localValue = false;
-                          selectedGoals.clear();
-
-                          capacityChanged = false;
-                          capacityRange = RangeValues(
-                            minCapacityValue,
-                            maxCapacityValue,
-                          );
-
-                          currentUsersChanged = false;
-                          currentUsersRange = RangeValues(
-                            minUsersValue,
-                            maxUsersValue,
-                          );
-                        });
+                        Navigator.pop(context);
                       },
-                      child: const Text('Limpar filtros'),
+                      child: const Text('Cancelar'),
                     ),
                   ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        final vm =
+                            context.read<EventViewModel>();
 
-                  const SizedBox(height: 10),
-
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: const Text('Cancelar'),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            final vm = context.read<EventViewModel>();
-
-                            vm.applyFilters(
-                              hideFull: localValue,
-                              goals: selectedGoals,
-                              minCapacity: capacityChanged
-                                  ? capacityRange.start.round()
+                        vm.applyFilters(
+                          hideFull: localValue,
+                          goals: selectedGoals,
+                          minCapacity: capacityChanged
+                              ? capacityRange.start.round()
+                              : null,
+                          maxCapacity: capacityChanged
+                              ? capacityRange.end.round()
+                              : null,
+                          minCurrentUsers:
+                              currentUsersChanged
+                                  ? currentUsersRange.start
+                                      .round()
                                   : null,
-                              maxCapacity: capacityChanged
-                                  ? capacityRange.end.round()
+                          maxCurrentUsers:
+                              currentUsersChanged
+                                  ? currentUsersRange.end
+                                      .round()
                                   : null,
-                            );
+                          country: selectedCountry,
+                          district: selectedDistrict,
+                          city: selectedCity,
+                        );
 
-                            Navigator.pop(context);
-                          },
-                          child: const Text('Aplicar'),
-                        ),
-                      ),
-                    ],
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Aplicar'),
+                    ),
                   ),
                 ],
               ),

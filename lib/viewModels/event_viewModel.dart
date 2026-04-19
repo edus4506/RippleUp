@@ -18,6 +18,9 @@ class EventViewModel extends ChangeNotifier {
   int? maxCapacity;
   int? minCurrentUsers;
   int? maxCurrentUsers;
+  String? selectedCountry;
+  String? selectedDistrict;
+  String? selectedCity;
 
   Future<void> createEvent(Event event) async {
     await _eventRepository.createEvent(event);
@@ -136,6 +139,21 @@ class EventViewModel extends ChangeNotifier {
             event.currentUsers > maxCurrentUsers!) {
           return false;
         }
+        
+        if (selectedCountry != null &&
+            event.country != selectedCountry) {
+          return false;
+        }
+
+        if (selectedDistrict != null &&
+            event.district != selectedDistrict) {
+          return false;
+        }
+
+        if (selectedCity != null &&
+            event.city != selectedCity) {
+          return false;
+        }
 
         return true;
       }).toList();
@@ -149,6 +167,9 @@ class EventViewModel extends ChangeNotifier {
     int? maxCapacity,
     int? minCurrentUsers,
     int? maxCurrentUsers,
+    String? country,
+    String? district,
+    String? city,
   }) {
     hideFullEvents = hideFull;
     selectedGoals = goals;
@@ -158,6 +179,10 @@ class EventViewModel extends ChangeNotifier {
 
     this.minCurrentUsers = minCurrentUsers;
     this.maxCurrentUsers = maxCurrentUsers;
+
+    selectedCountry = country;
+    selectedDistrict = district;
+    selectedCity = city;
 
     notifyListeners();
   }
