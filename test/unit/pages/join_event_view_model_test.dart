@@ -32,6 +32,27 @@ class FakeEventRepository implements EventRepository {
       throw Exception(exceptionMessage);
     }
   }
+
+  @override
+  Future<void> leaveEvent({
+    required String eventId,
+    required String userId,
+  }) async {
+    if (shouldThrow) {
+      throw Exception(exceptionMessage);
+    }
+  }
+
+  @override
+  Stream<bool> isUserInEvent({
+    required String eventId,
+    required String userId,
+  }) {
+    return Stream.value(false);
+  }
+
+  @override
+  Future<void> deleteEvent(String eventId) async {}
 }
 
 void main() {

@@ -39,4 +39,56 @@ class EventViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<bool> leaveEvent({
+    required String eventId,
+    required String userId,
+  }) async {
+    try {
+      isLoading = true;
+      errorMessage = null;
+      notifyListeners();
+
+      await _eventRepository.leaveEvent(
+        eventId: eventId,
+        userId: userId,
+      );
+
+      return true;
+    } catch (e) {
+      errorMessage = e.toString().replaceFirst('Exception: ', '');
+      return false;
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Stream<bool> isUserInEvent({
+    required String eventId,
+    required String userId,
+  }) {
+    return _eventRepository.isUserInEvent(
+      eventId: eventId,
+      userId: userId,
+    );
+  }
+
+  Future<bool> deleteEvent(String eventId) async {
+    try {
+      isLoading = true;
+      errorMessage = null;
+      notifyListeners();
+
+      await _eventRepository.deleteEvent(eventId);
+
+      return true;
+    } catch (e) {
+      errorMessage = e.toString().replaceFirst('Exception: ', '');
+      return false;
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
 }

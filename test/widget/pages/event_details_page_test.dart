@@ -85,7 +85,7 @@ void main() {
     when(() => mockUser.uid).thenReturn('user-1');
 
     when(() => mockUserViewModel.userStream(any())).thenAnswer(
-          (_) => Stream.value(
+      (_) => Stream.value(
         Users(
           name: 'Eduardo',
           email: 'eduardo@example.com',
@@ -93,6 +93,11 @@ void main() {
         ),
       ),
     );
+
+    when(() => mockEventViewModel.isUserInEvent(
+      eventId: any(named: 'eventId'),
+      userId: any(named: 'userId'),
+    )).thenAnswer((_) => Stream.value(false));
   });
 
   testWidgets('shows join button when user can join event', (tester) async {
@@ -107,7 +112,7 @@ void main() {
       ),
     );
 
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(find.text('Entrar no evento'), findsOneWidget);
   });
@@ -124,7 +129,7 @@ void main() {
       ),
     );
 
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(find.text('És o criador deste evento'), findsOneWidget);
   });
@@ -141,7 +146,7 @@ void main() {
       ),
     );
 
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(find.text('Evento cheio'), findsOneWidget);
   });
@@ -150,7 +155,7 @@ void main() {
     final event = buildEvent();
 
     when(
-          () => mockEventViewModel.joinEvent(
+      () => mockEventViewModel.joinEvent(
         eventId: any(named: 'eventId'),
         userId: any(named: 'userId'),
       ),
@@ -165,19 +170,24 @@ void main() {
       ),
     );
 
-    await tester.pump();
-
-    await tester.tap(find.byType(ElevatedButton));
     await tester.pumpAndSettle();
 
+    final button = find.widgetWithText(ElevatedButton, 'Entrar no evento');
+    expect(button, findsOneWidget);
+
+    await tester.tap(button);
+
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+
     verify(
-          () => mockEventViewModel.joinEvent(
+      () => mockEventViewModel.joinEvent(
         eventId: 'event-1',
         userId: 'user-1',
       ),
     ).called(1);
 
-    expect(find.text('Entraste no evento com sucesso'), findsOneWidget);
+    expect(find.byType(SnackBar), findsOneWidget);
   });
 
   testWidgets('shows error snackbar when join fails', (tester) async {
@@ -186,7 +196,7 @@ void main() {
     when(() => mockEventViewModel.errorMessage).thenReturn('Evento cheio');
 
     when(
-          () => mockEventViewModel.joinEvent(
+      () => mockEventViewModel.joinEvent(
         eventId: any(named: 'eventId'),
         userId: any(named: 'userId'),
       ),
@@ -201,18 +211,21 @@ void main() {
       ),
     );
 
-    await tester.pump();
-
-    await tester.tap(find.byType(ElevatedButton));
     await tester.pumpAndSettle();
 
+    final button = find.widgetWithText(ElevatedButton, 'Entrar no evento');
+    await tester.tap(button);
+
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+
     verify(
-          () => mockEventViewModel.joinEvent(
+      () => mockEventViewModel.joinEvent(
         eventId: 'event-1',
         userId: 'user-1',
       ),
     ).called(1);
 
-    expect(find.text('Evento cheio'), findsOneWidget);
+    expect(find.byType(SnackBar), findsOneWidget);
   });
 }

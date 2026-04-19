@@ -17,7 +17,7 @@ class EventDetailsPage extends StatelessWidget {
     final sortedObjectives = List<int>.from(event.objectives)..sort();
 
     final authVm = context.watch<AuthViewModel>();
-    final eventVm = context.watch<EventViewModel>();
+    final eventVm = context.read<EventViewModel>();
 
     final userId = authVm.currentUser?.uid;
     final isCreator = userId == event.idCreator;
@@ -42,38 +42,18 @@ class EventDetailsPage extends StatelessWidget {
               style: theme.textTheme.bodyMedium?.copyWith(fontSize: 18),
             ),
             const SizedBox(height: 20),
-            Text(
-              "Objectives: ${sortedObjectives.join(', ')}",
-              style: theme.textTheme.bodyMedium,
-            ),
-            Text(
-              "Country: ${event.country}",
-              style: theme.textTheme.bodyMedium,
-            ),
-            Text(
-              "District: ${event.district}",
-              style: theme.textTheme.bodyMedium,
-            ),
-            Text(
-              "City: ${event.city}",
-              style: theme.textTheme.bodyMedium,
-            ),
-            Text(
-              "${event.currentUsers} / ${event.maxUsers} Participantes",
-              style: theme.textTheme.bodyMedium,
-            ),
-            Text(
-              "${event.startDate} until ${event.endDate}",
-              style: theme.textTheme.bodyMedium,
-            ),
+            Text("Objectives: ${sortedObjectives.join(', ')}"),
+            Text("Country: ${event.country}"),
+            Text("District: ${event.district}"),
+            Text("City: ${event.city}"),
+            Text("${event.currentUsers} / ${event.maxUsers} Participantes"),
+            Text("${event.startDate} until ${event.endDate}"),
+
             StreamBuilder<Users?>(
               stream: context.read<UserViewModel>().userStream(event.idCreator),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Text(
-                    'Criado por...',
-                    style: theme.textTheme.bodyMedium,
-                  );
+                  return const Text('Criado por...');
                 }
 
                 final creator = snapshot.data;
@@ -82,54 +62,137 @@ class EventDetailsPage extends StatelessWidget {
                   creator != null
                       ? 'Criado por ${creator.name}'
                       : 'Criado por utilizador desconhecido',
-                  style: theme.textTheme.bodyMedium,
                 );
               },
             ),
+
             const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed:
-                (userId == null || isCreator || isFull || eventVm.isLoading)
-                    ? null
-                    : () async {
-                  final ok =
-                  await context.read<EventViewModel>().joinEvent(
-                    eventId: event.id,
-                    userId: userId,
-                  );
 
-                  if (!context.mounted) return;
+            StreamBuilder<bool>(
+              stream: (userId != null)
+                  ? eventVm.isUserInEvent(
+                      eventId: event.id,
+                      userId: userId,
+                    )
+                  : null,
+              builder: (context, snapshot) {
+                final isParticipant = snapshot.data ?? false;
 
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        ok
-                            ? 'Entraste no evento com sucesso'
-                            : (context
-                            .read<EventViewModel>()
-                            .errorMessage ??
-                            'Erro ao entrar no evento'),
+                return SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: (userId == null ||
+                            isCreator ||
+                            eventVm.isLoading ||
+                            (!isParticipant && isFull))
+                        ? null
+                        : () async {
+                            final vm = context.read<EventViewModel>();
+
+                            final ok = isParticipant
+                                ? await vm.leaveEvent(
+                                    eventId: event.id,
+                                    userId: userId,
+                                  )
+                                : await vm.joinEvent(
+                                    eventId: event.id,
+                                    userId: userId,
+                                  );
+
+                            if (!context.mounted) return;
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  ok
+                                      ? (isParticipant
+                                          ? 'Saíste do evento'
+                                          : 'Entraste no evento')
+                                      : (vm.errorMessage ?? 'Erro'),
+                                ),
+                              ),
+                            );
+                          },
+                    child: eventVm.isLoading
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child:
+                                CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : Text(
+                            isCreator
+                                ? 'És o criador deste evento'
+                                : isParticipant
+                                    ? 'Sair do evento'
+                                    : isFull
+                                        ? 'Evento cheio'
+                                        : 'Entrar no evento',
+                          ),
+                  ),
+                );
+              },
+            ),
+
+            if (isCreator) ...[
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                  ),
+                  onPressed: () async {
+                    final confirm = await showDialog<bool>(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Eliminar evento'),
+                        content: const Text(
+                            'Tens a certeza que queres apagar este evento?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () =>
+                                Navigator.pop(context, false),
+                            child: const Text('Cancelar'),
+                          ),
+                          TextButton(
+                            onPressed: () =>
+                                Navigator.pop(context, true),
+                            child: const Text('Apagar'),
+                          ),
+                        ],
                       ),
-                    ),
-                  );
-                },
-                child: eventVm.isLoading
-                    ? const SizedBox(
-                  height: 20,
-                  width: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-                    : Text(
-                  isCreator
-                      ? 'És o criador deste evento'
-                      : isFull
-                      ? 'Evento cheio'
-                      : 'Entrar no evento',
+                    );
+
+                    if (confirm != true) return;
+
+                    final ok = await context
+                        .read<EventViewModel>()
+                        .deleteEvent(event.id);
+
+                    if (!context.mounted) return;
+
+                    if (ok) {
+                      Navigator.pop(context); 
+                    }
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          ok
+                              ? 'Evento eliminado'
+                              : (context
+                                      .read<EventViewModel>()
+                                      .errorMessage ??
+                                  'Erro ao eliminar'),
+                        ),
+                      ),
+                    );
+                  },
+                  child: const Text('Eliminar evento'),
                 ),
               ),
-            ),
+            ],
           ],
         ),
       ),
