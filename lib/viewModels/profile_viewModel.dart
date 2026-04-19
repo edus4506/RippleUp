@@ -69,7 +69,7 @@ class ProfileViewModel extends ChangeNotifier {
     final firebaseUser = FirebaseAuth.instance.currentUser;
 
     await _storageRepository.deleteProfilePicture(uuid: firebaseUser!.uid);
-    await _userRepository.softDeleteUser(uid: firebaseUser!.uid);
+    await _userRepository.softDeleteUser(uid: firebaseUser.uid);
 
   }
 

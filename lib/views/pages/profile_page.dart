@@ -4,7 +4,6 @@ import '../../viewModels/profile_viewModel.dart';
 import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
 import '../../data/models/user.dart';
 
 
