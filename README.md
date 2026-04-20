@@ -243,30 +243,30 @@ Example of _UML deployment diagram_ showing a _deployment view_ of the Eletronic
 
 The current version of Ripple Up is a working prototype that shows the main features of the application.
 
-The app already includes the most important features:
+The current prototype already supports the main user flows of the application:
 - View a list of events
-- Create new events
-- Filter events based on location, objectives, and number of participants
+- Create new events with detailed inputs (description, capacity, dates, objectives, location)
+- Filter events based on multiple criteria (location, objectives, participants)
 - View event details
 - Join events
-- Mark events as favorites and view them in a separate page
 
 The prototype also includes the following screens:
 - Home page – shows all available events
 - Create event screen – allows users to add a new event
 - Filter screen – lets users filter events
 - Event details popup/page – shows full information about an event
-- Favorites page – shows events marked as favorite
 
+Below are screenshots of the current implementation:
 <p align="center">
   <img src="assets/Functional_Prototype/feed_screen.png" alt="Feed Screen" width="250"/>
   <img src="assets/Functional_Prototype/create_event_screen.png" alt="Create Event Screen" width="250"/>
   <img src="assets/Functional_Prototype/filter_screen.png" alt="Filter Screen" width="250"/>
+  <img src="assets/Functional_Prototype/event_details_screen.png" alt="Event Details Screen" width="250"/>
 </p>
 
 Future things to improve:
-- Save data permanently (currently events are mockups)
-- Add user accounts and authentication
+- Persist data using a backend service (e.g., Firebase)
+- Mark events as favorites and manage them
 - Improve the design and user experience
 - View what events you joined
 - Notification reminders
