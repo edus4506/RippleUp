@@ -24,6 +24,7 @@
 - Event filtering based on multiple criteria (objectives, participants, location)
 - Event details visualization
 - Join and leave event functionality
+- Favourite events
 - Event management features (delete event, set participant limits, define event dates and status)
 - Basic user features (login and account-related actions)
 

@@ -98,6 +98,7 @@ The main functionalities include:
 - Creating humanitarian events
 - Browsing available events
 - Joining and leaving events
+- Favourite events
 - Managing events created by the user
 - Viewing event details and participants
 
@@ -251,6 +252,7 @@ The current prototype already supports the main user flows of the application:
 - Filter events based on multiple criteria (location, objectives, participants)
 - View event details
 - Join events
+- Favourite events
 
 The prototype also includes the following screens:
 - Home page – shows all available events
@@ -471,6 +473,7 @@ The application now allows users to:
 - Create and manage events
 - Filter events according to user preferences
 - Join and leave events
+- Favourite events
 - Interact with event properties such as participant limits, dates, and status
 
 This increment delivers value to end-users by enabling meaningful participation in environmental initiatives, directly supporting the product vision.
