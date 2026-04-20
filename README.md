@@ -182,7 +182,9 @@ Example:
 
 The architecture of Ripple Up was designed to ensure scalability, maintainability, and clear separation of concerns. The system follows a layered approach, allowing independent development and testing of different components.
 
-The application is made to run the phone letting you explore and join events it is built with Flutter and supported by external cloud services for data persistence and additional functionalities.
+The application runs on mobile devices, allowing users to explore and participate in events. It is built with Flutter and designed to support integration with external cloud services for data persistence and additional functionalities.
+
+The design and implementation were continuously reviewed and refined throughout the project to ensure consistency and ongoing improvement of the system.
 
 <!--
 The architecture of a software system encompasses the set of key decisions about its organization. 
@@ -280,11 +282,95 @@ In this subsection please describe which feature, or part of it, you have implem
 At this phase, instead of a complete user story, you can simply implement a small part of a feature that demonstrates thay you can use the technology, for example, show a screen with the app credits (name and authors).
 -->
 
+## Development Environment
+
+To run the project locally:
+
+- Install Flutter (stable version)
+- Run `flutter pub get`
+- Use an emulator or physical device
+- Run `flutter run`
+
+The project was developed using Flutter and Dart.
+
+## Tools Used
+
+- Flutter
+- Dart
+- GitHub & GitHub Actions
+- Firebase (planned)
+- AI tools for development support
+
+## Use of AI Tools
+
+AI tools were used during the development of this project to assist with code structuring, debugging, and the creation of small tests during development, including support for unit testing.
+
+All generated suggestions were carefully reviewed, adapted, and integrated into the project to ensure correctness and alignment with the application requirements.
+
+AI was used as a support tool to improve productivity, while all design decisions and final implementations were validated by the development team.
+
 ## Project management
 
 To manage the development of Ripple Up, the team followed an agile approach inspired by Scrum. Work was divided into multiple sprints, allowing continuous improvement of the application.
 
 We used GitHub to organize tasks and track progress. Each task was associated with user stories.
+
+#### Definition of Ready (DoR)
+
+Before a user story is included in a sprint, it must satisfy the following criteria:
+
+- Clearly described (who, what, why)
+- Small enough to be completed within the sprint
+- Has acceptance criteria defined
+- Estimated using story points
+- Dependencies identified (if any)
+
+This ensures that backlog items are well-prepared and ready for development.
+
+#### Product Backlog Refinement
+
+The Product Backlog was continuously reviewed and refined throughout the project.
+
+This process included:
+- Adding and updating user stories based on project evolution
+- Prioritizing items according to their value and importance
+- Estimating effort using story points
+- Clarifying requirements and splitting larger items into smaller tasks when needed
+
+Refinement activities were supported by feedback gathered during requirement validation and ongoing development.
+
+#### Enabling Specification
+
+During development, additional technical tasks were identified and added to the backlog to support the implementation of user stories.
+
+These tasks included improving data handling, refining UI components, and ensuring proper interaction between different layers of the application.
+
+This helped ensure that the system remained functional and consistent as new features were developed.
+
+#### INVEST Criteria
+
+User stories were defined following the INVEST principles:
+
+- Independent – user stories are self-contained and do not depend heavily on others  
+- Negotiable – details can be refined during development  
+- Valuable – each story delivers value to the end-user  
+- Estimable – effort can be estimated using story points  
+- Small – stories are small enough to be completed within a sprint  
+- Testable – acceptance of each story can be verified  
+
+This approach helped ensure that backlog items were clear, manageable, and valuable.
+
+#### Definition of Done (DoD)
+
+A task or user story is considered done when:
+
+- The functionality is fully implemented
+- The code is integrated into the main branch
+- The feature is tested and working as expected
+- The corresponding item is moved to "Done" in the Scrum board
+
+This ensures consistency and quality across all delivered features.
+
 
 <!--
 Software project management is the art and science of planning and leading software projects, in which they are planned, implemented, monitored and controlled.
@@ -324,6 +410,104 @@ During this sprint, the team focused on:
 This sprint ensured that the team had a clear direction and a structured plan for development.
 
 ### Sprint 1
+
+#### Sprint Planning
+
+The goal of Sprint 1 was to deliver a first functional increment of *Ripple Up*, focusing on the core user flow of discovering and participating in environmental events.
+
+The selected user stories for this sprint focused on the core functionalities of the application:
+
+- Event browsing (feed and filtering)
+- Event details visualization
+- Event participation (join and leave events)
+- Event creation and management (create, delete, set participant limits, define dates and status)
+- Basic user features (login and account-related actions)
+
+These items were selected to deliver a complete and functional user flow while ensuring the scope was feasible within the sprint effort.
+
+At the beginning of the sprint, all selected items were placed in the "Sprint Backlog" column, with no tasks in progress or completed.
+
+<p align="center">
+  <img src="assets/scrumboard/sprint1_start_1.png" width="400"/>
+  <img src="assets/scrumboard/sprint1_start_2.png" width="400"/>
+</p>
+
+---
+
+#### Sprint Development
+
+During the sprint, development followed an incremental approach where tasks were self-assigned and moved across the board:
+
+- From **Sprint Backlog** → **In Progress**
+- From **In Progress** → **Done**
+
+The implementation focused on delivering a vertical slice of the application, integrating UI, business logic, and data layers.
+
+Main functionalities implemented:
+- Event listing (feed)
+- Event creation with detailed inputs (name, description, capacity, dates, objectives, location)
+- Event filtering based on multiple criteria (objectives, participants, location)
+- Event details visualization
+- Event participation (join and leave events)
+- Event management features (delete event, set participant limits, define event dates and status)
+- Basic user features (login and account-related actions)
+
+---
+
+#### Testing
+
+Basic testing was performed to validate core functionalities such as event creation, browsing, and participation. User acceptance was verified through manual testing based on defined scenarios.
+
+---
+
+#### Sprint Review
+
+At the end of Sprint 1, a functional product increment was achieved.
+Feedback was collected during the sprint review from team members and peers. The feedback highlighted the importance of improving data persistence and enhancing user experience, which will be addressed in future sprints.
+
+The application now allows users to:
+- Browse environmental events
+- View detailed information about each event
+- Create and manage events
+- Filter events according to user preferences
+- Join and leave events
+- Interact with event properties such as participant limits, dates, and status
+
+This increment delivers value to end-users by enabling meaningful participation in environmental initiatives, directly supporting the product vision.
+
+<p align="center">
+  <img src="assets/scrumboard/sprint1_end_1.png" width="400"/>
+  <img src="assets/scrumboard/sprint1_end_2.png" width="400"/>
+</p>
+
+---
+
+#### Release
+
+A release was created in GitHub for Sprint 1:
+
+- **Version:** v1 - Sprint 1  
+- Includes a functional version of the application  
+- Can be executed on a mobile device or emulator
+
+---
+
+#### Sprint Retrospective
+
+**Did well:**
+- Clear and well-structured architecture with separation of concerns (UI, ViewModels, and data layer)
+- Successful delivery of a functional prototype with a complete user flow
+- Implementation of core features end-to-end (event creation, browsing, filtering, and participation)
+
+**Do differently:**
+- Improve task distribution and collaboration within the team
+- Break down user stories into smaller and more manageable tasks
+- Compare planned vs completed work to better estimate future sprints
+- Plan the sprint scope more carefully to better match the available effort
+
+**Puzzles:**
+- How to design and integrate a proper data persistence solution (database/backend)
+- How to effectively manage task distribution and coordination within the team during development
 
 ### Sprint 2
 
