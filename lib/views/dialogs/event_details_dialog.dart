@@ -4,6 +4,7 @@ import 'package:t5/data/models/event.dart';
 import 'package:t5/data/models/user.dart';
 import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
 import 'package:t5/viewModels/event_viewModel.dart';
+import 'package:t5/viewModels/favorite_view_model.dart';
 import 'package:t5/viewModels/user_view_model.dart';
 
 class EventDetailsDialog extends StatelessWidget {
@@ -34,9 +35,46 @@ class EventDetailsDialog extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              Text(
-                event.title,
-                style: theme.textTheme.titleMedium,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      event.title,
+                      style: theme.textTheme.titleMedium,
+                    ),
+                  ),
+                  if (userId != null)
+                    StreamBuilder<bool>(
+                      stream: context.read<FavoriteViewModel>().isEventFavorited(
+                            userId: userId,
+                            eventId: event.id,
+                          ),
+                      builder: (context, snapshot) {
+                        final isFavorited = snapshot.data ?? false;
+                        return IconButton(
+                          icon: Icon(
+                            isFavorited ? Icons.favorite : Icons.favorite_border,
+                            color: isFavorited ? Colors.red : null,
+                          ),
+                          onPressed: () async {
+                            final vm = context.read<FavoriteViewModel>();
+                            if (isFavorited) {
+                              await vm.removeFavorite(
+                                userId: userId,
+                                eventId: event.id,
+                              );
+                            } else {
+                              await vm.addFavorite(
+                                userId: userId,
+                                eventId: event.id,
+                              );
+                            }
+                          },
+                        );
+                      },
+                    ),
+                ],
               ),
 
               const SizedBox(height: 10),
