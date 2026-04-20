@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:t5/data/repositories/event_repository.dart';
+import 'package:t5/data/repositories/favorite_repository.dart';
 import 'package:t5/data/repositories/storage_repository.dart';
 import 'package:t5/data/repositories/user_repository.dart';
 import 'package:t5/viewModels/event_viewModel.dart';
+import 'package:t5/viewModels/favorite_view_model.dart';
 import 'routes/app_routes.dart';
 import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
 import 'package:t5/viewModels/profile_viewModel.dart';
@@ -42,6 +44,9 @@ void main() async {
       ),
       ChangeNotifierProvider(
         create: (_) => UserViewModel(UserRepository()),
+      ),
+      ChangeNotifierProvider(
+        create: (_) => FavoriteViewModel(FavoriteRepository()),
       ),
     ],
     child: const MyApp(),

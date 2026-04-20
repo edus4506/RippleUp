@@ -4,9 +4,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:provider/provider.dart';
 import 'package:t5/data/models/event.dart';
+import 'package:t5/data/models/favorite_userEvent.dart';
 import 'package:t5/data/models/user.dart';
+import 'package:t5/data/repositories/favorite_repository.dart';
 import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
 import 'package:t5/viewModels/event_viewModel.dart';
+import 'package:t5/viewModels/favorite_view_model.dart';
 import 'package:t5/viewModels/user_view_model.dart';
 import 'package:t5/views/dialogs/event_details_dialog.dart';
 
@@ -14,6 +17,17 @@ class MockAuthViewModel extends Mock implements AuthViewModel {}
 class MockEventViewModel extends Mock implements EventViewModel {}
 class MockUserViewModel extends Mock implements UserViewModel {}
 class MockFirebaseUser extends Mock implements User {}
+class FakeFavoriteRepository implements FavoriteRepository {
+  @override
+  Stream<bool> isEventFavorited({required String userId, required String eventId}) =>
+      Stream.value(false);
+  @override
+  Future<void> addFavorite({required String userId, required String eventId}) async {}
+  @override
+  Future<void> removeFavorite({required String userId, required String eventId}) async {}
+  @override
+  Stream<List<Favorite>> listenToUserFavorites(String userId) => Stream.value([]);
+}
 
 Event buildEvent({
   String id = 'event-1',
@@ -50,6 +64,9 @@ Widget buildTestable({
       ChangeNotifierProvider<AuthViewModel>.value(value: auth),
       ChangeNotifierProvider<EventViewModel>.value(value: eventVm),
       ChangeNotifierProvider<UserViewModel>.value(value: userVm),
+      ChangeNotifierProvider<FavoriteViewModel>(
+        create: (_) => FavoriteViewModel(FakeFavoriteRepository()),
+      ),
     ],
     child: MaterialApp(
       home: EventDetailsDialog(event: event),
