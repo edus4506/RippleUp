@@ -25,6 +25,7 @@ Event buildEvent({
     id: id,
     title: 'Beach Cleanup',
     description: 'Let us clean the beach together.',
+    createdAt: DateTime.now(),
     startDate: DateTime(2026, 4, 20, 10, 0),
     endDate: DateTime(2026, 4, 20, 13, 0),
     maxUsers: maxUsers,

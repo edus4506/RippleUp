@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:t5/views/dialogs/event_details_dialog.dart';
+import '../../../data/models/event_status.dart';
 import '../../../data/models/event.dart';
 import '../../viewModels/event_viewModel.dart';
 import '../dialogs/create_event_dialog.dart';
@@ -11,7 +12,7 @@ class EventsPage extends StatelessWidget {
   void _openCreateEvent(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => CreateEventPage(
+      builder: (context) => CreateEventDialog(
         nextId: 0,
         onCreate: (Event event) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -57,13 +58,31 @@ class EventsPage extends StatelessWidget {
             itemCount: events.length,
             itemBuilder: (context, index) {
               final event = events[index];
+
               return Card(
                 margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 child: ListTile(
                   onTap: () => _openEventDetails(context, event),
+
                   title: Text(event.title),
-                  subtitle: Text('${event.city}, ${event.district} — ${event.eventStatus}'),
-                  trailing: Text('${event.currentUsers}/${event.maxUsers}'),
+
+                  subtitle: RichText(
+                    text: TextSpan(
+                      style: DefaultTextStyle.of(context).style,
+                      children: [
+                        TextSpan(
+                          text: '${event.city}, ${event.district} — ',
+                        ),
+                        TextSpan(
+                          text: event.status.text,
+                          style: TextStyle(
+                            color: event.status.color,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               );
             },
