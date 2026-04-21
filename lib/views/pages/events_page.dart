@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:t5/views/dialogs/event_details_dialog.dart';
-import '../../../data/models/event_status.dart';
 import '../../../data/models/event.dart';
 import '../../viewModels/event_viewModel.dart';
 import '../dialogs/event_filter_dialog.dart';
+import '../widgets/event_card.dart';
 
 class EventsPage extends StatelessWidget {
   const EventsPage({super.key});
@@ -57,31 +57,9 @@ class EventsPage extends StatelessWidget {
             itemBuilder: (context, index) {
               final event = events[index];
 
-              return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                child: ListTile(
-                  onTap: () => _openEventDetails(context, event),
-
-                  title: Text(event.title),
-
-                  subtitle: RichText(
-                    text: TextSpan(
-                      style: DefaultTextStyle.of(context).style,
-                      children: [
-                        TextSpan(
-                          text: '${event.city}, ${event.district} — ',
-                        ),
-                        TextSpan(
-                          text: event.status.text,
-                          style: TextStyle(
-                            color: event.status.color,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+              return EventCard(
+                event: event,
+                onTap: () => _openEventDetails(context, event),
               );
             },
           );
