@@ -33,10 +33,6 @@ class EventsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _openCreateEvent(context),
-        child: const Icon(Icons.add),
-      ),
       body: StreamBuilder<List<Event>>(
         stream: context.watch<EventViewModel>().filteredEventsStream,
         builder: (context, snapshot) {
