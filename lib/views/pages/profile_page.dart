@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../viewModels/profile_viewModel.dart';
 import 'package:provider/provider.dart';
-import 'favorites_page.dart';
+import '../widgets/profile_tabs/favorite_events_widget.dart';
+import '../widgets/profile_tabs/current_events_widget.dart';
+import '../widgets/profile_tabs/history_events_widget.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -11,6 +13,8 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  int selectedIndex = 0; // 0=atuais, 1=histórico, 2=favoritos
+
   @override
   void initState() {
     super.initState();
@@ -18,6 +22,19 @@ class _ProfilePageState extends State<ProfilePage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<ProfileViewModel>().loadUser();
     });
+  }
+
+  Widget _buildContent() {
+    switch (selectedIndex) {
+      case 0:
+        return const CurrentEventsWidget();   // por implementar
+      case 1:
+        return const HistoryEventsWidget();   // por implementar
+      case 2:
+        return const FavoriteEventsWidget();
+      default:
+        return const SizedBox();
+    }
   }
 
   @override
@@ -31,9 +48,7 @@ class _ProfilePageState extends State<ProfilePage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.menu),
-            onPressed: () {
-              // botão não faz nada
-            },
+            onPressed: () {},
           ),
         ],
       ),
@@ -77,32 +92,44 @@ class _ProfilePageState extends State<ProfilePage> {
 
             SizedBox(
               width: double.infinity,
-              
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.event_rounded),
-                    onPressed: () {},
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.history),
-                    onPressed: () {},
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.favorite_border),
+                    icon: Icon(
+                      Icons.event_rounded,
+                      color: selectedIndex == 0 ? Colors.green : Colors.grey,
+                    ),
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const FavoritesPage(),
-                        ),
-                      );
+                      setState(() => selectedIndex = 0);
                     },
-                  )
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      Icons.history,
+                      color: selectedIndex == 1 ? Colors.green : Colors.grey,
+                    ),
+                    onPressed: () {
+                      setState(() => selectedIndex = 1);
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      Icons.favorite,
+                      color: selectedIndex == 2 ? Colors.green : Colors.grey,
+                    ),
+                    onPressed: () {
+                      setState(() => selectedIndex = 2);
+                    },
+                  ),
                 ],
               ),
             ),
+
+            const SizedBox(height: 20),
+
+            // conteúdo dinâmico (favoritos, histórico, etc)
+            _buildContent(),
           ],
         ),
       ),
