@@ -21,56 +21,87 @@ class FavoritesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final userId = context.watch<AuthViewModel>().currentUser?.uid;
 
-    if (userId == null) {
-      return const Center(child: Text('Tens de estar autenticado para ver os favoritos.'));
-    }
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Favorites"),
+        //botao voltar provisorio
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
 
-    return StreamBuilder<List<Favorite>>(
-      stream: context.read<FavoriteViewModel>().userFavoritesStream(userId),
-      builder: (context, favSnapshot) {
-        if (favSnapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
+      body: userId == null
+          ? const Center(
+              child: Text('Tens de estar autenticado para ver os favoritos.'),
+            )
+          : StreamBuilder<List<Favorite>>(
+              stream: context
+                  .read<FavoriteViewModel>()
+                  .userFavoritesStream(userId),
+              builder: (context, favSnapshot) {
+                if (favSnapshot.connectionState ==
+                    ConnectionState.waiting) {
+                  return const Center(
+                      child: CircularProgressIndicator());
+                }
 
-        final favorites = favSnapshot.data ?? [];
+                final favorites = favSnapshot.data ?? [];
 
-        if (favorites.isEmpty) {
-          return const Center(child: Text('Nenhum evento favorito.'));
-        }
+                if (favorites.isEmpty) {
+                  return const Center(
+                      child: Text('Nenhum evento favorito.'));
+                }
 
-        return StreamBuilder<List<Event>>(
-          stream: context.read<EventViewModel>().eventsStream,
-          builder: (context, eventSnapshot) {
-            if (eventSnapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
+                return StreamBuilder<List<Event>>(
+                  stream:
+                      context.read<EventViewModel>().eventsStream,
+                  builder: (context, eventSnapshot) {
+                    if (eventSnapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return const Center(
+                          child: CircularProgressIndicator());
+                    }
 
-            final allEvents = eventSnapshot.data ?? [];
-            final favEventIds = favorites.map((f) => f.idEvent).toSet();
-            final favEvents = allEvents.where((e) => favEventIds.contains(e.id)).toList();
+                    final allEvents = eventSnapshot.data ?? [];
+                    final favEventIds =
+                        favorites.map((f) => f.idEvent).toSet();
 
-            if (favEvents.isEmpty) {
-              return const Center(child: Text('Nenhum evento favorito.'));
-            }
+                    final favEvents = allEvents
+                        .where((e) => favEventIds.contains(e.id))
+                        .toList();
 
-            return ListView.builder(
-              itemCount: favEvents.length,
-              itemBuilder: (context, index) {
-                final event = favEvents[index];
-                return Card(
-                  margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  child: ListTile(
-                    onTap: () => _openEventDetails(context, event),
-                    title: Text(event.title),
-                    subtitle: Text('${event.city}, ${event.district} — ${event.eventStatus}'),
-                    trailing: Text('${event.currentUsers}/${event.maxUsers}'),
-                  ),
+                    if (favEvents.isEmpty) {
+                      return const Center(
+                          child: Text('Nenhum evento favorito.'));
+                    }
+
+                    return ListView.builder(
+                      itemCount: favEvents.length,
+                      itemBuilder: (context, index) {
+                        final event = favEvents[index];
+
+                        return Card(
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 6),
+                          child: ListTile(
+                            onTap: () =>
+                                _openEventDetails(context, event),
+                            title: Text(event.title),
+                            subtitle: Text(
+                                '${event.city}, ${event.district} — ${event.eventStatus}'),
+                            trailing: Text(
+                                '${event.currentUsers}/${event.maxUsers}'),
+                          ),
+                        );
+                      },
+                    );
+                  },
                 );
               },
-            );
-          },
-        );
-      },
+            ),
     );
   }
 }

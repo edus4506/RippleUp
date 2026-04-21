@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../viewModels/profile_viewModel.dart';
 import 'package:provider/provider.dart';
+import 'favorites_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -90,7 +91,14 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   IconButton(
                     icon: const Icon(Icons.favorite_border),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const FavoritesPage(),
+                        ),
+                      );
+                    },
                   )
                 ],
               ),
