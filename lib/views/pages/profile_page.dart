@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../routes/app_routes.dart';
 import '../../viewModels/profile_viewModel.dart';
-import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
 import 'package:provider/provider.dart';
-import 'package:image_picker/image_picker.dart';
-import '../../data/models/user.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -44,14 +40,16 @@ class _ProfilePageState extends State<ProfilePage> {
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 16),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             CircleAvatar(
               radius: 60,
               backgroundImage: (vm.user?.profilePictureUrl != null &&
-                    vm.user!.profilePictureUrl.isNotEmpty)
-                ? NetworkImage(vm.user!.profilePictureUrl)
-                : null,
-              child: vm.user?.profilePictureUrl == null
+                      vm.user!.profilePictureUrl.isNotEmpty)
+                  ? NetworkImage(vm.user!.profilePictureUrl)
+                  : null,
+              child: (vm.user?.profilePictureUrl == null ||
+                      vm.user!.profilePictureUrl.isEmpty)
                   ? const Icon(Icons.person, size: 80)
                   : null,
             ),
@@ -65,145 +63,37 @@ class _ProfilePageState extends State<ProfilePage> {
                 vm.user?.name ?? "Sem nome",
                 style: const TextStyle(
                     fontSize: 24, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
               ),
               Text(
                 vm.user?.email ?? "Sem email",
                 style: const TextStyle(color: Colors.grey),
+                textAlign: TextAlign.center,
               ),
             ],
 
-            ElevatedButton(
-              onPressed: () async {
-                final picker = ImagePicker();
-                final pickedFile =
-                    await picker.pickImage(source: ImageSource.gallery);
-
-                if (pickedFile == null) return;
-
-                await context
-                    .read<ProfileViewModel>()
-                    .updateUserProfile(profilePicture: pickedFile);
-              },
-              child: const Text("Alterar foto"),
-            ),
-
-            ElevatedButton(
-              onPressed: () async {
-                final controller = TextEditingController(
-                  text: vm.user?.name ?? "",
-                );
-
-                final result = await showDialog<String>(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text("Alterar nome"),
-                    content: TextField(
-                      controller: controller,
-                      decoration:
-                          const InputDecoration(labelText: "Nome"),
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text("Cancelar"),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(
-                              context, controller.text.trim());
-                        },
-                        child: const Text("Guardar"),
-                      ),
-                    ],
-                  ),
-                );
-
-                if (result == null || result.isEmpty) return;
-
-                await context
-                    .read<ProfileViewModel>()
-                    .updateUserProfile(
-                      updatedUser: Users(
-                        name: result,
-                        email: vm.user!.email,
-                        profilePictureUrl:
-                            vm.user!.profilePictureUrl,
-                      ),
-                    );
-              },
-              child: const Text("Alterar nome"),
-            ),
-
             const SizedBox(height: 40),
 
-            ElevatedButton(
-              onPressed: () async {
-                await context.read<AuthViewModel>().logout();
-                if (!mounted) return;
-
-                Navigator.of(context)
-                    .pushReplacementNamed(AppRoutes.login);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
+            SizedBox(
+              width: double.infinity,
+              
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.event_rounded),
+                    onPressed: () {},
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.history),
+                    onPressed: () {},
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.favorite_border),
+                    onPressed: () {},
+                  )
+                ],
               ),
-              child: const Text('SAIR DA CONTA'),
-            ),
-
-            ElevatedButton(
-              onPressed: vm.isLoading
-                  ? null
-                  : () async {
-                      final confirm = await showDialog<bool>(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: const Text("Eliminar conta"),
-                          content: const Text(
-                              "Tens a certeza? Esta ação não pode ser desfeita."),
-                          actions: [
-                            TextButton(
-                              onPressed: () =>
-                                  Navigator.pop(context, false),
-                              child: const Text("Cancelar"),
-                            ),
-                            TextButton(
-                              onPressed: () =>
-                                  Navigator.pop(context, true),
-                              child: const Text(
-                                "Eliminar",
-                                style:
-                                    TextStyle(color: Colors.red),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-
-                      if (confirm != true) return;
-
-                      final profileVM =
-                          context.read<ProfileViewModel>();
-                      final authVM =
-                          context.read<AuthViewModel>();
-
-                      await profileVM.softDeleteAcc();
-                      await authVM.deleteAcc();
-
-                      if (!context.mounted) return;
-
-                      Navigator.of(context)
-                          .pushNamedAndRemoveUntil(
-                        AppRoutes.login,
-                        (route) => false,
-                      );
-                    },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red.shade800,
-              ),
-              child: vm.isLoading
-                  ? const CircularProgressIndicator(
-                      color: Colors.white)
-                  : const Text("ELIMINAR CONTA"),
             ),
           ],
         ),
