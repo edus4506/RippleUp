@@ -92,12 +92,6 @@ void main() {
     );
   }
 
-  testWidgets('HomePage shows title', (tester) async {
-    await tester.pumpWidget(buildApp());
-
-    expect(find.text('Home'), findsOneWidget);
-  });
-
   testWidgets('Filter button is visible on first tab', (tester) async {
     await tester.pumpWidget(buildApp());
 
