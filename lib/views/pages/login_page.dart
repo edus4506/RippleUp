@@ -27,6 +27,7 @@ class _LoginPageState extends State<LoginPage> {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('Login'),
         centerTitle: true,
       ),
@@ -82,9 +83,10 @@ class _LoginPageState extends State<LoginPage> {
                             passwordController.text.trim(),
                           );
                           if (vm.currentUser != null && context.mounted) {
-                            Navigator.pushReplacementNamed(
+                            Navigator.pushNamedAndRemoveUntil(
                               context,
                               AppRoutes.home,
+                              (route) => false,
                             );
                           }
                         },

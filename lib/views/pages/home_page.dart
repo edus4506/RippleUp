@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import '../widgets/bottom_nav.dart';
 import 'profile_page.dart';
 import 'events_page.dart';
-import 'favorites_page.dart';
 import '../dialogs/event_filter_dialog.dart';
+import 'create_event_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,8 +17,6 @@ class _HomePageState extends State<HomePage> {
 
   final List<Widget> _pages = [
     const EventsPage(),
-    const Center(child: Text('Tarefas', style: TextStyle(fontSize: 24))),
-    const FavoritesPage(),
     const ProfilePage(),
   ];
 
@@ -26,6 +24,15 @@ class _HomePageState extends State<HomePage> {
     showDialog(
       context: context,
       builder: (_) => const EventFilterDialog(),
+    );
+  }
+
+  void _openCreateEvent() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const CreateEventPage(),
+      ),
     );
   }
 
@@ -42,7 +49,9 @@ class _HomePageState extends State<HomePage> {
         title: const Text('Home'),
         centerTitle: true,
       ),
+
       body: _pages[_currentIndex],
+
       bottomNavigationBar: AppBottomNav(
         currentIndex: _currentIndex,
         onTap: (index) {
@@ -50,6 +59,7 @@ class _HomePageState extends State<HomePage> {
             _currentIndex = index;
           });
         },
+        onAddPressed: _openCreateEvent,
       ),
     );
   }

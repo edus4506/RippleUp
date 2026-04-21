@@ -4,24 +4,9 @@ import 'package:t5/views/dialogs/event_details_dialog.dart';
 import '../../../data/models/event_status.dart';
 import '../../../data/models/event.dart';
 import '../../viewModels/event_viewModel.dart';
-import '../dialogs/create_event_dialog.dart';
 
 class EventsPage extends StatelessWidget {
   const EventsPage({super.key});
-
-  void _openCreateEvent(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => CreateEventDialog(
-        nextId: 0,
-        onCreate: (Event event) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Evento criado com sucesso!')),
-          );
-        },
-      ),
-    );
-  }
 
   void _openEventDetails(BuildContext context, Event event) {
     showDialog(
@@ -33,10 +18,6 @@ class EventsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _openCreateEvent(context),
-        child: const Icon(Icons.add),
-      ),
       body: StreamBuilder<List<Event>>(
         stream: context.watch<EventViewModel>().filteredEventsStream,
         builder: (context, snapshot) {

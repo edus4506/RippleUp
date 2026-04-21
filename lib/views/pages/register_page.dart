@@ -115,9 +115,10 @@ class _RegisterPageState extends State<RegisterPage> {
                         );
 
                         if (vm.currentUser != null && context.mounted) {
-                          Navigator.pushReplacementNamed(
+                          Navigator.pushNamedAndRemoveUntil(
                             context,
                             AppRoutes.home,
+                            (route) => false,
                           );
                         }
                       },

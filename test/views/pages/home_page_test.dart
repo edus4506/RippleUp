@@ -11,6 +11,7 @@ import 'package:t5/viewModels/favorite_view_model.dart';
 import 'package:t5/views/pages/home_page.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:t5/views/widgets/bottom_nav.dart';
 
 class FakeEventRepository implements EventRepository {
   @override
@@ -106,6 +107,6 @@ void main() {
   testWidgets('Bottom navigation exists', (tester) async {
     await tester.pumpWidget(buildApp());
 
-    expect(find.byType(BottomNavigationBar), findsOneWidget);
+    expect(find.byType(AppBottomNav), findsOneWidget);
   });
 }
