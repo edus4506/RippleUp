@@ -4,6 +4,7 @@ import 'package:t5/views/dialogs/event_details_dialog.dart';
 import '../../../data/models/event_status.dart';
 import '../../../data/models/event.dart';
 import '../../viewModels/event_viewModel.dart';
+import '../dialogs/event_filter_dialog.dart';
 
 class EventsPage extends StatelessWidget {
   const EventsPage({super.key});
@@ -15,9 +16,25 @@ class EventsPage extends StatelessWidget {
     );
   }
 
+  void _openFilterModal(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => const EventFilterDialog(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Events"),
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.filter_list),
+          onPressed: () => _openFilterModal(context),
+        ),
+      ),
+
       body: StreamBuilder<List<Event>>(
         stream: context.watch<EventViewModel>().filteredEventsStream,
         builder: (context, snapshot) {

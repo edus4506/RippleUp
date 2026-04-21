@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../data/models/user.dart';
 
-
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
@@ -15,173 +14,199 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-
-  bool _isInit = true;
-
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
 
-    if (_isInit) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<ProfileViewModel>().loadUser();
-      _isInit = false;
-    }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<ProfileViewModel>();
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 16),
-      child: Column(
-        children: [
-          CircleAvatar(
-            radius: 60,
-            backgroundImage: vm.user?.profilePictureUrl != null
-                ? NetworkImage(vm.user!.profilePictureUrl)
-                : null,
-            child: vm.user?.profilePictureUrl == null
-                ? const Icon(Icons.person, size: 80)
-                : null,
-          ),
-
-          const SizedBox(height: 16),
-
-          if (vm.isLoading)
-            const CircularProgressIndicator()
-          else ...[
-            Text(
-              vm.user?.name ?? "Sem nome",
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            Text(
-              vm.user?.email ?? "Sem email",
-              style: const TextStyle(color: Colors.grey),
-            ),
-          ],
-
-          ElevatedButton(
-            onPressed: () async {
-              final picker = ImagePicker();
-
-              final pickedFile =
-                  await picker.pickImage(source: ImageSource.gallery);
-
-              if (pickedFile == null) return;
-
-              //final file = File(pickedFile.path); //later uncomment and put below for android use
-
-              await context.read<ProfileViewModel>().updateUserProfile(profilePicture: pickedFile);
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Profile"),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.menu),
+            onPressed: () {
+              // botão não faz nada
             },
-            child: const Text("Alterar foto"),
-          ),
-
-          ElevatedButton(
-            onPressed: () async {
-              final controller = TextEditingController(
-                text: vm.user?.name ?? "",
-              );
-
-              final result = await showDialog<String>(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text("Alterar nome"),
-                  content: TextField(
-                    controller: controller,
-                    decoration: const InputDecoration(
-                      labelText: "Nome",
-                    ),
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text("Cancelar"),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context, controller.text.trim());
-                      },
-                      child: const Text("Guardar"),
-                    ),
-                  ],
-                ),
-              );
-
-              if (result == null || result.isEmpty) return;
-
-              await context.read<ProfileViewModel>().updateUserProfile(
-                updatedUser: Users(name: result, email: vm.user!.email,profilePictureUrl: vm.user!.profilePictureUrl),
-              ); //vai ser preciso mudar
-            },
-            child: const Text("Alterar nome"),
-          ),
-
-          const SizedBox(height: 40),
-
-          ElevatedButton (
-            onPressed: () async {
-              await context.read<AuthViewModel>().logout();
-              if (!mounted) return;
-
-              Navigator.of(context).pushReplacementNamed(AppRoutes.login);
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-            ),
-            child: const Text('SAIR DA CONTA'),
-          ),
-
-          ElevatedButton(
-            onPressed: vm.isLoading
-                ? null
-                : () async {
-                    final confirm = await showDialog<bool>(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: const Text("Eliminar conta"),
-                        content: const Text(
-                          "Tens a certeza? Esta ação não pode ser desfeita.",
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, false),
-                            child: const Text("Cancelar"),
-                          ),
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, true),
-                            child: const Text(
-                              "Eliminar",
-                              style: TextStyle(color: Colors.red),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-
-                    if (confirm != true) return;
-
-                    final profileVM = context.read<ProfileViewModel>();
-                    final authVM = context.read<AuthViewModel>();
-
-                    await profileVM.softDeleteAcc();
-                    await authVM.deleteAcc();
-
-                    if (!context.mounted) return;
-
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                      AppRoutes.login,
-                      (route) => false,
-                    );
-                  },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red.shade800,
-            ),
-            child: vm.isLoading
-                ? const CircularProgressIndicator(color: Colors.white)
-                : const Text("ELIMINAR CONTA"),
           ),
         ],
+      ),
+
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 16),
+        child: Column(
+          children: [
+            CircleAvatar(
+              radius: 60,
+              backgroundImage: (vm.user?.profilePictureUrl != null &&
+                    vm.user!.profilePictureUrl.isNotEmpty)
+                ? NetworkImage(vm.user!.profilePictureUrl)
+                : null,
+              child: vm.user?.profilePictureUrl == null
+                  ? const Icon(Icons.person, size: 80)
+                  : null,
+            ),
+
+            const SizedBox(height: 16),
+
+            if (vm.isLoading)
+              const CircularProgressIndicator()
+            else ...[
+              Text(
+                vm.user?.name ?? "Sem nome",
+                style: const TextStyle(
+                    fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                vm.user?.email ?? "Sem email",
+                style: const TextStyle(color: Colors.grey),
+              ),
+            ],
+
+            ElevatedButton(
+              onPressed: () async {
+                final picker = ImagePicker();
+                final pickedFile =
+                    await picker.pickImage(source: ImageSource.gallery);
+
+                if (pickedFile == null) return;
+
+                await context
+                    .read<ProfileViewModel>()
+                    .updateUserProfile(profilePicture: pickedFile);
+              },
+              child: const Text("Alterar foto"),
+            ),
+
+            ElevatedButton(
+              onPressed: () async {
+                final controller = TextEditingController(
+                  text: vm.user?.name ?? "",
+                );
+
+                final result = await showDialog<String>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text("Alterar nome"),
+                    content: TextField(
+                      controller: controller,
+                      decoration:
+                          const InputDecoration(labelText: "Nome"),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text("Cancelar"),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(
+                              context, controller.text.trim());
+                        },
+                        child: const Text("Guardar"),
+                      ),
+                    ],
+                  ),
+                );
+
+                if (result == null || result.isEmpty) return;
+
+                await context
+                    .read<ProfileViewModel>()
+                    .updateUserProfile(
+                      updatedUser: Users(
+                        name: result,
+                        email: vm.user!.email,
+                        profilePictureUrl:
+                            vm.user!.profilePictureUrl,
+                      ),
+                    );
+              },
+              child: const Text("Alterar nome"),
+            ),
+
+            const SizedBox(height: 40),
+
+            ElevatedButton(
+              onPressed: () async {
+                await context.read<AuthViewModel>().logout();
+                if (!mounted) return;
+
+                Navigator.of(context)
+                    .pushReplacementNamed(AppRoutes.login);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+              ),
+              child: const Text('SAIR DA CONTA'),
+            ),
+
+            ElevatedButton(
+              onPressed: vm.isLoading
+                  ? null
+                  : () async {
+                      final confirm = await showDialog<bool>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text("Eliminar conta"),
+                          content: const Text(
+                              "Tens a certeza? Esta ação não pode ser desfeita."),
+                          actions: [
+                            TextButton(
+                              onPressed: () =>
+                                  Navigator.pop(context, false),
+                              child: const Text("Cancelar"),
+                            ),
+                            TextButton(
+                              onPressed: () =>
+                                  Navigator.pop(context, true),
+                              child: const Text(
+                                "Eliminar",
+                                style:
+                                    TextStyle(color: Colors.red),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+
+                      if (confirm != true) return;
+
+                      final profileVM =
+                          context.read<ProfileViewModel>();
+                      final authVM =
+                          context.read<AuthViewModel>();
+
+                      await profileVM.softDeleteAcc();
+                      await authVM.deleteAcc();
+
+                      if (!context.mounted) return;
+
+                      Navigator.of(context)
+                          .pushNamedAndRemoveUntil(
+                        AppRoutes.login,
+                        (route) => false,
+                      );
+                    },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red.shade800,
+              ),
+              child: vm.isLoading
+                  ? const CircularProgressIndicator(
+                      color: Colors.white)
+                  : const Text("ELIMINAR CONTA"),
+            ),
+          ],
+        ),
       ),
     );
   }
