@@ -3,7 +3,7 @@ import '../widgets/bottom_nav.dart';
 import 'profile_page.dart';
 import 'events_page.dart';
 import '../dialogs/event_filter_dialog.dart';
-import '../dialogs/create_event_dialog.dart';
+import 'create_event_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -28,11 +28,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _openCreateEvent() {
-    showDialog(
-      context: context,
-      builder: (context) => CreateEventDialog(
-        nextId: 0,
-        onCreate: (_) {},
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const CreateEventPage(),
       ),
     );
   }
