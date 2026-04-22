@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 enum EventStatus {
   planning,
   occurring,
@@ -15,17 +13,6 @@ extension EventStatusExtension on EventStatus {
         return 'OCCURRING';
       case EventStatus.done:
         return 'DONE';
-    }
-  }
-
-  Color get color {
-    switch (this) {
-      case EventStatus.planning:
-        return Colors.orange;
-      case EventStatus.occurring:
-        return Colors.green;
-      case EventStatus.done:
-        return Colors.grey;
     }
   }
 }

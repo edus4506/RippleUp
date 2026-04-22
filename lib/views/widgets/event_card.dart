@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../data/models/event.dart';
 import '../../../data/models/event_status.dart';
+import '../../theme/event_status_colors.dart';
 
 class EventCard extends StatelessWidget {
   final Event event;
@@ -31,7 +32,7 @@ class EventCard extends StatelessWidget {
               TextSpan(
                 text: event.status.text,
                 style: TextStyle(
-                  color: event.status.color,
+                  color: getEventStatusColor(event.status),
                   fontWeight: FontWeight.bold,
                 ),
               ),
