@@ -44,12 +44,12 @@ class _RegisterPageState extends State<RegisterPage> {
     final vm = context.watch<AuthViewModel>();
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Registo")),
+      appBar: AppBar(title: const Text("Register")),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // FOTO
+            // PHOTO
             GestureDetector(
               onTap: pickImage,
               child: CircleAvatar(
@@ -69,7 +69,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
             TextField(
               controller: nameController,
-              decoration: const InputDecoration(labelText: "Nome"),
+              decoration: const InputDecoration(labelText: "Name"),
             ),
 
             const SizedBox(height: 16),
@@ -102,7 +102,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     : () async {
                         if (selectedImage == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Escolhe uma imagem")),
+                            const SnackBar(content: Text("Choose an image")),
                           );
                           return;
                         }
@@ -124,13 +124,13 @@ class _RegisterPageState extends State<RegisterPage> {
                       },
                 child: vm.isLoading
                     ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text("REGISTAR"),
+                    : const Text("REGISTER"),
               ),
             ),
 
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text("Já tenho conta"),
+              child: const Text("I already have an account"),
             )
           ],
         ),

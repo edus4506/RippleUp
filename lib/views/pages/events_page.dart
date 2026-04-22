@@ -43,13 +43,13 @@ class EventsPage extends StatelessWidget {
           }
 
           if (snapshot.hasError) {
-            return Center(child: Text('Erro: ${snapshot.error}'));
+            return Center(child: Text('Error: ${snapshot.error}'));
           }
 
           final events = snapshot.data ?? [];
 
           if (events.isEmpty) {
-            return const Center(child: Text('Nenhum evento encontrado.'));
+            return const Center(child: Text('No events found.'));
           }
 
           return ListView.builder(

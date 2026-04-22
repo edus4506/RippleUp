@@ -7,7 +7,7 @@ class EventRepository {
   Future<void> createEvent(Event event) async {
     final eventRef = _db.collection('events').doc();
     final participationRef =
-    _db.collection('participations').doc('${eventRef.id}_${event.idCreator}');
+        _db.collection('participations').doc('${eventRef.id}_${event.idCreator}');
 
     final batch = _db.batch();
 
@@ -27,9 +27,9 @@ class EventRepository {
   Stream<List<Event>> listenToEvents() {
     return _db.collection('events').snapshots().map(
           (snapshot) => snapshot.docs
-          .map((doc) => Event.fromMap(doc.data(), doc.id))
-          .toList(),
-    );
+              .map((doc) => Event.fromMap(doc.data(), doc.id))
+              .toList(),
+        );
   }
 
   Future<void> joinEvent({
@@ -38,18 +38,18 @@ class EventRepository {
   }) async {
     final eventRef = _db.collection('events').doc(eventId);
     final participationRef =
-    _db.collection('participations').doc('${eventId}_$userId');
+        _db.collection('participations').doc('${eventId}_$userId');
 
     await _db.runTransaction((transaction) async {
       final eventSnap = await transaction.get(eventRef);
       final participationSnap = await transaction.get(participationRef);
 
       if (!eventSnap.exists) {
-        throw Exception('Evento não encontrado');
+        throw Exception('Event not found');
       }
 
       if (participationSnap.exists) {
-        throw Exception('Já participas neste evento');
+        throw Exception('You are already participating in this event');
       }
 
       final data = eventSnap.data()!;
@@ -57,7 +57,7 @@ class EventRepository {
       final maxUsers = data['maxUsers'] ?? 0;
 
       if (currentUsers >= maxUsers) {
-        throw Exception('Evento cheio');
+        throw Exception('Event is full');
       }
 
       transaction.set(participationRef, {
@@ -95,11 +95,11 @@ class EventRepository {
       final participationSnap = await transaction.get(participationRef);
 
       if (!eventSnap.exists) {
-        throw Exception('Evento não encontrado');
+        throw Exception('Event not found');
       }
 
       if (!participationSnap.exists) {
-        throw Exception('Não participas neste evento');
+        throw Exception('You are not participating in this event');
       }
 
       final data = eventSnap.data()!;

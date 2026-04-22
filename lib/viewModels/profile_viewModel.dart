@@ -25,7 +25,7 @@ class ProfileViewModel extends ChangeNotifier {
       user = await _userRepository.getUser(firebaseUser.uid);
 
     } catch (e) {
-      print("Erro ProfileVM: $e");
+      print("ProfileVM error: $e");
     } finally {
       isLoading = false;
       notifyListeners();
@@ -77,7 +77,7 @@ class ProfileViewModel extends ChangeNotifier {
       );
 
     } catch (e) {
-      print("Erro ProfileVM: $e");
+      print("ProfileVM error: $e");
     } finally {
       isLoading = false;
       notifyListeners();

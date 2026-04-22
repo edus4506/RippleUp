@@ -23,7 +23,7 @@ class FavoriteEventsWidget extends StatelessWidget {
 
     if (userId == null) {
       return const Center(
-        child: Text('Tens de estar autenticado para ver os favoritos.'),
+        child: Text('You must be logged in to view favorites.'),
       );
     }
 
@@ -44,7 +44,7 @@ class FavoriteEventsWidget extends StatelessWidget {
 
         if (events.isEmpty) {
           return const Center(
-            child: Text('Nenhum evento favorito.'),
+            child: Text('No favorite events.'),
           );
         }
 

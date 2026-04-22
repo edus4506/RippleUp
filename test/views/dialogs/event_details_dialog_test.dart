@@ -127,8 +127,8 @@ void main() {
     );
 
     await tester.pumpAndSettle();
-    await tester.pump(); // garante atualização do StreamBuilder
+    await tester.pump(); // ensures StreamBuilder updates
 
-    expect(find.text('Entrar'), findsOneWidget);
+    expect(find.text('Join'), findsOneWidget);
   });
 }

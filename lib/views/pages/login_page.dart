@@ -99,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
                             color: Colors.white,
                           ),
                         )
-                      : const Text('ENTRAR'),
+                      : const Text('LOGIN'),
                 ),
               ),
 
@@ -109,7 +109,7 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: () {
                   Navigator.pushNamed(context, AppRoutes.register);
                 },
-                child: const Text('Não tem conta? Registe-se'),
+                child: const Text("Don't have an account? Sign up"),
               ),
             ],
           ),

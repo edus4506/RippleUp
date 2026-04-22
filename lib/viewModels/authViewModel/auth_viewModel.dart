@@ -35,7 +35,7 @@ class AuthViewModel extends ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       errorMessage = _mapError(e);
     } catch (e) {
-      errorMessage = "Erro inesperado";
+      errorMessage = "Unexpected error";
     } finally {
       isLoading = false;
       notifyListeners();
@@ -100,7 +100,7 @@ class AuthViewModel extends ChangeNotifier {
 
     } on FirebaseAuthException catch (e) {
       errorMessage = e.code == 'requires-recent-login'
-          ? 'Tens de fazer login novamente para apagar a conta'
+          ? 'You need to log in again to delete your account'
           : _mapError(e);
     } finally {
       isLoading = false;
@@ -111,15 +111,15 @@ class AuthViewModel extends ChangeNotifier {
   String _mapError(FirebaseAuthException e) {
     switch (e.code) {
       case 'user-not-found':
-        return 'Utilizador não encontrado';
+        return 'User not found';
       case 'wrong-password':
-        return 'Password incorreta';
+        return 'Incorrect password';
       case 'email-already-in-use':
-        return 'Email já em uso';
+        return 'Email already in use';
       case 'invalid-email':
-        return 'Email inválido';
+        return 'Invalid email';
       default:
-        return 'Erro de autenticação';
+        return 'Authentication error';
     }
   }
 }

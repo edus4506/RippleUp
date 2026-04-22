@@ -147,8 +147,8 @@ class _Content extends StatelessWidget {
 
                 return Text(
                   creator != null
-                      ? 'Criado por ${creator.name}'
-                      : 'Criado por utilizador desconhecido',
+                      ? 'Created by ${creator.name}'
+                      : 'Created by unknown user'
                 );
               },
             ),
@@ -203,12 +203,12 @@ class _Actions extends StatelessWidget {
                     ? const CircularProgressIndicator()
                     : Text(
                         isCreator
-                            ? 'És o criador'
+                            ? 'You are the creator'
                             : isParticipant
-                                ? 'Sair'
+                                ? 'Leave'
                                 : isFull
-                                    ? 'Cheio'
-                                    : 'Entrar',
+                                    ? 'Full'
+                                    : 'Join'
                       ),
               ),
             ),
@@ -243,10 +243,10 @@ class _Actions extends StatelessWidget {
       SnackBar(
         content: Text(
           ok
-              ? (isParticipant
-                  ? 'Saíste do evento'
-                  : 'Entraste no evento')
-              : (vm.errorMessage ?? 'Erro'),
+            ? (isParticipant
+                ? 'You left the event'
+                : 'You joined the event')
+            : (vm.errorMessage ?? 'Error')
         ),
       ),
     );
@@ -273,18 +273,18 @@ class _DeleteButton extends StatelessWidget {
               final confirm = await showDialog<bool>(
                 context: context,
                 builder: (context) => AlertDialog(
-                  title: const Text('Eliminar evento'),
-                  content: const Text('Tens a certeza?'),
+                  title: const Text('Delete event'),
+                  content: const Text('Are you sure?'),
                   actions: [
                     TextButton(
                       onPressed: () =>
                           Navigator.pop(context, false),
-                      child: const Text('Cancelar'),
+                      child: const Text('Cancel'),
                     ),
                     TextButton(
                       onPressed: () =>
                           Navigator.pop(context, true),
-                      child: const Text('Apagar'),
+                      child: const Text('Delete'),
                     ),
                   ],
                 ),
@@ -303,12 +303,12 @@ class _DeleteButton extends StatelessWidget {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
-                    ok ? 'Evento eliminado' : 'Erro',
+                    ok ? 'Event deleted' : 'Error'
                   ),
                 ),
               );
             },
-            child: const Text('Eliminar'),
+            child: const Text('Delete'),
           ),
         ),
       ],
