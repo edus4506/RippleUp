@@ -44,7 +44,6 @@ Event buildEvent({
     endDate: DateTime(2026, 4, 20, 13, 0),
     maxUsers: maxUsers,
     currentUsers: currentUsers,
-    eventStatus: 'PLANNING',
     idCreator: idCreator,
     country: 'Portugal',
     district: 'Porto',
