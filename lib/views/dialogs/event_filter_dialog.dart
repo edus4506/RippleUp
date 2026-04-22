@@ -89,12 +89,12 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                   padding: const EdgeInsets.all(16),
                   child: Column(
                     children: [
-                      Text('Filtros', style: theme.textTheme.titleMedium),
+                      Text('Filters', style: theme.textTheme.titleMedium),
 
                       const SizedBox(height: 10),
 
                       CheckboxListTile(
-                        title: const Text('Esconder eventos cheios'),
+                        title: const Text('Hide full events'),
                         value: hideFull,
                         onChanged: (value) {
                           setState(() {
@@ -104,7 +104,7 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                       ),
 
                       CheckboxListTile(
-                        title: const Text('Mostrar eventos terminados'),
+                        title: const Text('Show finished events'),
                         value: showDone,
                         onChanged: (value) {
                           setState(() {
@@ -118,7 +118,7 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          'Objetivos Ambientais',
+                          'Environmental Goals',
                           style: theme.textTheme.titleMedium,
                         ),
                       ),
@@ -184,7 +184,7 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          'Localização',
+                          'Location',
                           style: theme.textTheme.titleMedium,
                         ),
                       ),
@@ -256,7 +256,7 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          'Capacidade do Evento',
+                          'Event Capacity',
                           style: theme.textTheme.titleMedium,
                         ),
                       ),
@@ -289,7 +289,7 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          'Participantes Atuais',
+                          'Current Participants',
                           style: theme.textTheme.titleMedium,
                         ),
                       ),
@@ -366,7 +366,7 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                             selectedCity = null;
                           });
                         },
-                        child: const Text('Limpar filtros'),
+                        child: const Text('Clear filters'),
                       ),
                     ),
 
@@ -385,7 +385,7 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                                   const EdgeInsets.symmetric(vertical: 14),
                             ),
                             onPressed: () => Navigator.pop(context),
-                            child: const Text('Cancelar'),
+                            child: const Text('Cancel'),
                           ),
                         ),
                         const SizedBox(width: 10),
@@ -424,7 +424,7 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
 
                               Navigator.pop(context);
                             },
-                            child: const Text('Aplicar'),
+                            child: const Text('Apply'),
                           ),
                         ),
                       ],

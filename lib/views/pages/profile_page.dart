@@ -13,7 +13,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  int selectedIndex = 0; // 0=atuais, 1=histórico, 2=favoritos
+  int selectedIndex = 0; // 0=current, 1=history, 2=favorites
 
   @override
   void initState() {
@@ -27,9 +27,9 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget _buildContent() {
     switch (selectedIndex) {
       case 0:
-        return const CurrentEventsWidget();   // por implementar
+        return const CurrentEventsWidget();   // to implement
       case 1:
-        return const HistoryEventsWidget();   // por implementar
+        return const HistoryEventsWidget();   // to implement
       case 2:
         return const FavoriteEventsWidget();
       default:
@@ -76,13 +76,13 @@ class _ProfilePageState extends State<ProfilePage> {
               const CircularProgressIndicator()
             else ...[
               Text(
-                vm.user?.name ?? "Sem nome",
+                vm.user?.name ?? "No name",
                 style: const TextStyle(
                     fontSize: 24, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
               Text(
-                vm.user?.email ?? "Sem email",
+                vm.user?.email ?? "No email",
                 style: const TextStyle(color: Colors.grey),
                 textAlign: TextAlign.center,
               ),
@@ -128,7 +128,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
             const SizedBox(height: 20),
 
-            // conteúdo dinâmico (favoritos, histórico, etc)
+            // dynamic content (favorites, history, etc)
             _buildContent(),
           ],
         ),

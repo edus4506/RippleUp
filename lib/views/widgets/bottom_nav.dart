@@ -41,7 +41,7 @@ class AppBottomNav extends StatelessWidget {
             onPressed: () => onTap(0),
           ),
 
-          // BOTÃO +
+          // BOTTON +
           Material(
             color: Colors.transparent,
             child: InkWell(

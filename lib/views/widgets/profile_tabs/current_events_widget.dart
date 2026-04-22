@@ -5,6 +5,6 @@ class CurrentEventsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SizedBox(); // por implementar
+    return const SizedBox(); // to implement
   }
 }

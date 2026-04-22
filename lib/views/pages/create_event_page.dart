@@ -146,7 +146,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
     if (!mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Evento criado com sucesso!')),
+      const SnackBar(content: Text('Event created successfully!')),
     );
 
     Navigator.pop(context);
@@ -214,7 +214,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                'Capacidade do Evento',
+                'Event Capacity',
                 style: theme.textTheme.titleMedium,
               ),
             ),
@@ -317,7 +317,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                'Objetivos Ambientais',
+                'Environmental Goals',
                 style: theme.textTheme.titleMedium,
               ),
             ),
