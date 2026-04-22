@@ -11,6 +11,7 @@ class EventFilterDialog extends StatefulWidget {
 
 class _EventFilterDialogState extends State<EventFilterDialog> {
   bool hideFull = false;
+  bool showDone = false;
   Set<int> selectedGoals = {};
 
   RangeValues capacityRange = const RangeValues(0, 50);
@@ -43,6 +44,7 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
     final filter = context.read<EventViewModel>().currentFilter;
 
     hideFull = filter.hideFull;
+    showDone = filter.showDone;
     selectedGoals = Set.from(filter.goals);
 
     capacityRange = RangeValues(
@@ -89,7 +91,7 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                     children: [
                       Text('Filtros', style: theme.textTheme.titleMedium),
 
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 10),
 
                       CheckboxListTile(
                         title: const Text('Esconder eventos cheios'),
@@ -101,7 +103,17 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                         },
                       ),
 
-                      const SizedBox(height: 20),
+                      CheckboxListTile(
+                        title: const Text('Mostrar eventos terminados'),
+                        value: showDone,
+                        onChanged: (value) {
+                          setState(() {
+                            showDone = value ?? true;
+                          });
+                        },
+                      ),
+
+                      const SizedBox(height: 10),
 
                       Align(
                         alignment: Alignment.centerLeft,
@@ -239,7 +251,7 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                           },
                         ),
 
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 10),
 
                       Align(
                         alignment: Alignment.centerLeft,
@@ -248,8 +260,6 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                           style: theme.textTheme.titleMedium,
                         ),
                       ),
-
-                      const SizedBox(height: 10),
 
                       Row(
                         children: [
@@ -274,7 +284,7 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                         ],
                       ),
 
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 10),
 
                       Align(
                         alignment: Alignment.centerLeft,
@@ -283,8 +293,6 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                           style: theme.textTheme.titleMedium,
                         ),
                       ),
-
-                      const SizedBox(height: 10),
 
                       Row(
                         children: [
@@ -347,6 +355,7 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                         onPressed: () {
                           setState(() {
                             hideFull = false;
+                            showDone = true;
                             selectedGoals.clear();
                             capacityChanged = false;
                             capacityRange = const RangeValues(0, 50);
@@ -394,6 +403,7 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                             onPressed: () {
                               context.read<EventViewModel>().applyFilters(
                                     hideFull: hideFull,
+                                    showDone: showDone,
                                     goals: selectedGoals,
                                     minCapacity: capacityChanged
                                         ? capacityRange.start.round()

@@ -1,5 +1,6 @@
 class EventFilter {
   final bool hideFull;
+  final bool showDone;
   final Set<int> goals;
 
   final int? minCapacity;
@@ -13,8 +14,9 @@ class EventFilter {
   final String? city;
 
   const EventFilter({
-    required this.hideFull,
-    required this.goals,
+    this.hideFull = false,
+    this.showDone = false,
+    this.goals = const {},
     this.minCapacity,
     this.maxCapacity,
     this.minCurrentUsers,
