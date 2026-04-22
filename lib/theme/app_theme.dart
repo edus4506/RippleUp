@@ -4,7 +4,7 @@ import 'palette.dart';
 class AppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
-      /// Modern color system
+      
       colorScheme: ColorScheme.light(
         primary: Palette.primary,
         secondary: Palette.secondary,
