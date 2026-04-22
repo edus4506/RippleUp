@@ -1,21 +1,15 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart'; // kIsWeb
-import 'package:image_picker/image_picker.dart';
+import 'dart:typed_data';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
 
 class StorageRepository {
   final _client = Supabase.instance.client;
 
-  Future<String> uploadProfileImage({
-    required String userId,
-    required XFile file,
+  Future<String> uploadBytes({
+    required String path,
+    required Uint8List bytes,
   }) async {
-    final path = 'profile-images/$userId/${DateTime.now().millisecondsSinceEpoch}.jpg'; //stay like this because with the same url, the cache will be used
-
-    if(kIsWeb){
-      final bytes = await file.readAsBytes();
-      await _client.storage
+    await _client.storage
         .from('profile-images')
         .uploadBinary(
           path,
@@ -23,23 +17,27 @@ class StorageRepository {
           fileOptions: const FileOptions(upsert: true),
         );
 
-    } else{
+    return _client.storage.from('profile-images').getPublicUrl(path);
+  }
 
-      await _client.storage
+  Future<String> uploadFile({
+    required String path,
+    required File file,
+  }) async {
+    await _client.storage
         .from('profile-images')
-        .upload(path, File(file.path), fileOptions: const FileOptions(upsert: true));
-    }
+        .upload(
+          path,
+          file,
+          fileOptions: const FileOptions(upsert: true),
+        );
 
-    final publicUrl = _client.storage
-        .from('profile-images')
-        .getPublicUrl(path);
-
-    return publicUrl;
+    return _client.storage.from('profile-images').getPublicUrl(path);
   }
 
   Future<void> deleteProfilePicture({
     required String uuid,
-  }) async{
+  }) async {
     final bucket = _client.storage.from('profile-images');
 
     final folderPath = 'profile-images/$uuid';
@@ -48,9 +46,9 @@ class StorageRepository {
 
     if (files.isEmpty) return;
 
-    final paths = files.map((file) => '$folderPath/${file.name}').toList();
+    final paths =
+        files.map((file) => '$folderPath/${file.name}').toList();
 
     await bucket.remove(paths);
   }
-
 }
