@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../viewModels/event_viewModel.dart';
+import 'package:t5/viewModels/event_viewModel.dart';
 
 class EventFilterDialog extends StatefulWidget {
   const EventFilterDialog({super.key});
@@ -10,20 +10,14 @@ class EventFilterDialog extends StatefulWidget {
 }
 
 class _EventFilterDialogState extends State<EventFilterDialog> {
-  late bool localValue;
-  late Set<int> selectedGoals;
+  bool hideFull = false;
+  Set<int> selectedGoals = {};
 
-  late RangeValues capacityRange;
+  RangeValues capacityRange = const RangeValues(0, 50);
   bool capacityChanged = false;
 
-  final double minCapacityValue = 0;
-  final double maxCapacityValue = 50;
-
-  late RangeValues currentUsersRange;
+  RangeValues currentUsersRange = const RangeValues(0, 50);
   bool currentUsersChanged = false;
-
-  final double minUsersValue = 0;
-  final double maxUsersValue = 50;
 
   String? selectedCountry;
   String? selectedDistrict;
@@ -45,24 +39,32 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
   @override
   void initState() {
     super.initState();
-    final vm = context.read<EventViewModel>();
 
-    localValue = vm.hideFullEvents;
-    selectedGoals = Set.from(vm.selectedGoals);
+    final filter = context.read<EventViewModel>().currentFilter;
+
+    hideFull = filter.hideFull;
+    selectedGoals = Set.from(filter.goals);
 
     capacityRange = RangeValues(
-      vm.minCapacity?.toDouble() ?? minCapacityValue,
-      vm.maxCapacity?.toDouble() ?? maxCapacityValue,
+      filter.minCapacity?.toDouble() ?? 0,
+      filter.maxCapacity?.toDouble() ?? 50,
     );
+
+    capacityChanged =
+        filter.minCapacity != null || filter.maxCapacity != null;
 
     currentUsersRange = RangeValues(
-      vm.minCurrentUsers?.toDouble() ?? minUsersValue,
-      vm.maxCurrentUsers?.toDouble() ?? maxUsersValue,
+      filter.minCurrentUsers?.toDouble() ?? 0,
+      filter.maxCurrentUsers?.toDouble() ?? 50,
     );
 
-    selectedCountry = vm.selectedCountry;
-    selectedDistrict = vm.selectedDistrict;
-    selectedCity = vm.selectedCity;
+    currentUsersChanged =
+        filter.minCurrentUsers != null ||
+        filter.maxCurrentUsers != null;
+
+    selectedCountry = filter.country;
+    selectedDistrict = filter.district;
+    selectedCity = filter.city;
   }
 
   @override
@@ -71,319 +73,357 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
 
     return Dialog(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(28),
       ),
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Filtros', style: theme.textTheme.titleMedium),
+      clipBehavior: Clip.antiAlias,
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.75,
+        width: double.maxFinite,
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      Text('Filtros', style: theme.textTheme.titleMedium),
 
-              const SizedBox(height: 20),
+                      const SizedBox(height: 20),
 
-              CheckboxListTile(
-                title: const Text('Esconder eventos cheios'),
-                value: localValue,
-                onChanged: (value) {
-                  setState(() {
-                    localValue = value ?? false;
-                  });
-                },
-              ),
-
-              const SizedBox(height: 20),
-
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Objetivos Ambientais',
-                  style: theme.textTheme.titleMedium,
-                ),
-              ),
-
-              const SizedBox(height: 10),
-
-              GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate:
-                    const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 6,
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 8,
-                ),
-                itemCount: 18,
-                itemBuilder: (context, index) {
-                  final goal = index + 1;
-
-                  if (goal == 18) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(10),
+                      CheckboxListTile(
+                        title: const Text('Esconder eventos cheios'),
+                        value: hideFull,
+                        onChanged: (value) {
+                          setState(() {
+                            hideFull = value ?? false;
+                          });
+                        },
                       ),
-                    );
-                  }
 
-                  final isSelected = selectedGoals.contains(goal);
+                      const SizedBox(height: 20),
 
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        if (isSelected) {
-                          selectedGoals.remove(goal);
-                        } else {
-                          selectedGoals.add(goal);
-                        }
-                      });
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color:
-                            isSelected ? Colors.green : Colors.grey[300],
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Center(
+                      Align(
+                        alignment: Alignment.centerLeft,
                         child: Text(
-                          goal.toString(),
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
+                          'Objetivos Ambientais',
+                          style: theme.textTheme.titleMedium,
                         ),
                       ),
+
+                      const SizedBox(height: 10),
+
+                      GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 6,
+                          crossAxisSpacing: 8,
+                          mainAxisSpacing: 8,
+                        ),
+                        itemCount: 18,
+                        itemBuilder: (context, index) {
+                          final goal = index + 1;
+
+                          if (goal == 18) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                color: Colors.grey[200],
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            );
+                          }
+
+                          final isSelected = selectedGoals.contains(goal);
+
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                if (isSelected) {
+                                  selectedGoals.remove(goal);
+                                } else {
+                                  selectedGoals.add(goal);
+                                }
+                              });
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? Colors.green
+                                    : Colors.grey[300],
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  goal.toString(),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Localização',
+                          style: theme.textTheme.titleMedium,
+                        ),
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      DropdownButtonFormField<String>(
+                        decoration:
+                            const InputDecoration(labelText: "Country"),
+                        value: selectedCountry,
+                        items: countries.map((country) {
+                          return DropdownMenuItem(
+                            value: country,
+                            child: Text(country),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedCountry = value;
+                            selectedDistrict = null;
+                            selectedCity = null;
+                          });
+                        },
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      if (selectedCountry != null)
+                        DropdownButtonFormField<String>(
+                          decoration:
+                              const InputDecoration(labelText: "District"),
+                          value: selectedDistrict,
+                          items: districts[selectedCountry]!
+                              .map((district) => DropdownMenuItem(
+                                    value: district,
+                                    child: Text(district),
+                                  ))
+                              .toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              selectedDistrict = value;
+                              selectedCity = null;
+                            });
+                          },
+                        ),
+
+                      const SizedBox(height: 10),
+
+                      if (selectedDistrict != null)
+                        DropdownButtonFormField<String>(
+                          decoration:
+                              const InputDecoration(labelText: "City"),
+                          value: selectedCity,
+                          items: cities[selectedDistrict]!
+                              .map((city) => DropdownMenuItem(
+                                    value: city,
+                                    child: Text(city),
+                                  ))
+                              .toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              selectedCity = value;
+                            });
+                          },
+                        ),
+
+                      const SizedBox(height: 20),
+
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Capacidade do Evento',
+                          style: theme.textTheme.titleMedium,
+                        ),
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      Row(
+                        children: [
+                          Text(
+                            '${capacityRange.start.round()} - ${capacityRange.end.round()}',
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: RangeSlider(
+                              values: capacityRange,
+                              min: 0,
+                              max: 50,
+                              divisions: 50,
+                              onChanged: (values) {
+                                setState(() {
+                                  capacityRange = values;
+                                  capacityChanged = true;
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Participantes Atuais',
+                          style: theme.textTheme.titleMedium,
+                        ),
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      Row(
+                        children: [
+                          Text(
+                            '${currentUsersRange.start.round()} - ${currentUsersRange.end.round()}',
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: RangeSlider(
+                              values: currentUsersRange,
+                              min: 0,
+                              max: 50,
+                              divisions: 50,
+                              onChanged: (values) {
+                                setState(() {
+                                  currentUsersRange = values;
+                                  currentUsersChanged = true;
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 20),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+            SafeArea(
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF5F5F5),
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(28),
+                    bottomRight: Radius.circular(28),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withAlpha(20),
+                      blurRadius: 6,
                     ),
-                  );
-                },
-              ),
-
-              const SizedBox(height: 20),
-
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Localização',
-                  style: theme.textTheme.titleMedium,
-                ),
-              ),
-
-              const SizedBox(height: 10),
-
-              DropdownButtonFormField<String>(
-                decoration:
-                    const InputDecoration(labelText: "Country"),
-                initialValue: selectedCountry,
-                items: countries.map((country) {
-                  return DropdownMenuItem(
-                    value: country,
-                    child: Text(country),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    selectedCountry = value;
-                    selectedDistrict = null;
-                    selectedCity = null;
-                  });
-                },
-              ),
-
-              const SizedBox(height: 10),
-
-              if (selectedCountry != null)
-                DropdownButtonFormField<String>(
-                  decoration:
-                      const InputDecoration(labelText: "District"),
-                  initialValue: selectedDistrict,
-                  items: districts[selectedCountry]!
-                      .map((district) {
-                    return DropdownMenuItem(
-                      value: district,
-                      child: Text(district),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedDistrict = value;
-                      selectedCity = null;
-                    });
-                  },
-                ),
-
-              const SizedBox(height: 10),
-
-              if (selectedDistrict != null)
-                DropdownButtonFormField<String>(
-                  decoration:
-                      const InputDecoration(labelText: "City"),
-                  initialValue: selectedCity,
-                  items: cities[selectedDistrict]!.map((city) {
-                    return DropdownMenuItem(
-                      value: city,
-                      child: Text(city),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedCity = value;
-                    });
-                  },
-                ),
-
-              const SizedBox(height: 20),
-
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Capacidade do Evento',
-                  style: theme.textTheme.titleMedium,
-                ),
-              ),
-
-              const SizedBox(height: 10),
-
-              Row(
-                children: [
-                  Text(
-                    '${capacityRange.start.round()} - ${capacityRange.end.round()}',
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: RangeSlider(
-                      values: capacityRange,
-                      min: minCapacityValue,
-                      max: maxCapacityValue,
-                      divisions: 50,
-                      onChanged: (values) {
-                        setState(() {
-                          capacityRange = values;
-                          capacityChanged = true;
-                        });
-                      },
+                  ],
+                  border: Border(
+                    top: BorderSide(
+                      color: Colors.grey.shade300,
+                      width: 0.5,
                     ),
                   ),
-                ],
-              ),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      width: double.infinity,
+                      child: TextButton(
+                        onPressed: () {
+                          setState(() {
+                            hideFull = false;
+                            selectedGoals.clear();
+                            capacityChanged = false;
+                            capacityRange = const RangeValues(0, 50);
+                            currentUsersChanged = false;
+                            currentUsersRange = const RangeValues(0, 50);
+                            selectedCountry = null;
+                            selectedDistrict = null;
+                            selectedCity = null;
+                          });
+                        },
+                        child: const Text('Limpar filtros'),
+                      ),
+                    ),
 
-              const SizedBox(height: 20),
+                    const SizedBox(height: 10),
 
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Participantes Atuais',
-                  style: theme.textTheme.titleMedium,
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                              side: BorderSide(color: Colors.grey.shade400),
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 14),
+                            ),
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text('Cancelar'),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF3E5F36),
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 14),
+                            ),
+                            onPressed: () {
+                              context.read<EventViewModel>().applyFilters(
+                                    hideFull: hideFull,
+                                    goals: selectedGoals,
+                                    minCapacity: capacityChanged
+                                        ? capacityRange.start.round()
+                                        : null,
+                                    maxCapacity: capacityChanged
+                                        ? capacityRange.end.round()
+                                        : null,
+                                    minCurrentUsers: currentUsersChanged
+                                        ? currentUsersRange.start.round()
+                                        : null,
+                                    maxCurrentUsers: currentUsersChanged
+                                        ? currentUsersRange.end.round()
+                                        : null,
+                                    country: selectedCountry,
+                                    district: selectedDistrict,
+                                    city: selectedCity,
+                                  );
+
+                              Navigator.pop(context);
+                            },
+                            child: const Text('Aplicar'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-
-              const SizedBox(height: 10),
-
-              Row(
-                children: [
-                  Text(
-                    '${currentUsersRange.start.round()} - ${currentUsersRange.end.round()}',
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: RangeSlider(
-                      values: currentUsersRange,
-                      min: minUsersValue,
-                      max: maxUsersValue,
-                      divisions: 50,
-                      onChanged: (values) {
-                        setState(() {
-                          currentUsersRange = values;
-                          currentUsersChanged = true;
-                        });
-                      },
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 10),
-
-              SizedBox(
-                width: double.infinity,
-                child: TextButton(
-                  onPressed: () {
-                    setState(() {
-                      localValue = false;
-                      selectedGoals.clear();
-
-                      capacityChanged = false;
-                      capacityRange = RangeValues(
-                        minCapacityValue,
-                        maxCapacityValue,
-                      );
-
-                      currentUsersChanged = false;
-                      currentUsersRange = RangeValues(
-                        minUsersValue,
-                        maxUsersValue,
-                      );
-
-                      selectedCountry = null;
-                      selectedDistrict = null;
-                      selectedCity = null;
-                    });
-                  },
-                  child: const Text('Limpar filtros'),
-                ),
-              ),
-
-              const SizedBox(height: 10),
-
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text('Cancelar'),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        final vm =
-                            context.read<EventViewModel>();
-
-                        vm.applyFilters(
-                          hideFull: localValue,
-                          goals: selectedGoals,
-                          minCapacity: capacityChanged
-                              ? capacityRange.start.round()
-                              : null,
-                          maxCapacity: capacityChanged
-                              ? capacityRange.end.round()
-                              : null,
-                          minCurrentUsers:
-                              currentUsersChanged
-                                  ? currentUsersRange.start
-                                      .round()
-                                  : null,
-                          maxCurrentUsers:
-                              currentUsersChanged
-                                  ? currentUsersRange.end
-                                      .round()
-                                  : null,
-                          country: selectedCountry,
-                          district: selectedDistrict,
-                          city: selectedCity,
-                        );
-
-                        Navigator.pop(context);
-                      },
-                      child: const Text('Aplicar'),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

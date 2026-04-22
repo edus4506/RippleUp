@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:t5/data/models/event.dart';
-import 'package:t5/data/models/favorite_userEvent.dart';
 import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
 import 'package:t5/viewModels/event_viewModel.dart';
 import 'package:t5/viewModels/favorite_view_model.dart';
@@ -28,56 +27,37 @@ class FavoriteEventsWidget extends StatelessWidget {
       );
     }
 
-    return StreamBuilder<List<Favorite>>(
-      stream:
-          context.read<FavoriteViewModel>().userFavoritesStream(userId),
-      builder: (context, favSnapshot) {
-        if (favSnapshot.connectionState == ConnectionState.waiting) {
+    final favoriteVm = context.read<FavoriteViewModel>();
+    final eventVm = context.read<EventViewModel>();
+
+    return StreamBuilder<List<Event>>(
+      stream: favoriteVm.favoriteEventsStream(
+        userId: userId,
+        eventsStream: eventVm.eventsStream,
+      ),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
 
-        final favorites = favSnapshot.data ?? [];
+        final events = snapshot.data ?? [];
 
-        if (favorites.isEmpty) {
+        if (events.isEmpty) {
           return const Center(
             child: Text('Nenhum evento favorito.'),
           );
         }
 
-        return StreamBuilder<List<Event>>(
-          stream: context.read<EventViewModel>().eventsStream,
-          builder: (context, eventSnapshot) {
-            if (eventSnapshot.connectionState ==
-                ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
+        return ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: events.length,
+          itemBuilder: (context, index) {
+            final event = events[index];
 
-            final allEvents = eventSnapshot.data ?? [];
-            final favEventIds =
-                favorites.map((f) => f.idEvent).toSet();
-
-            final favEvents = allEvents
-                .where((e) => favEventIds.contains(e.id))
-                .toList();
-
-            if (favEvents.isEmpty) {
-              return const Center(
-                child: Text('Nenhum evento favorito.'),
-              );
-            }
-
-            return ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: favEvents.length,
-              itemBuilder: (context, index) {
-                final event = favEvents[index];
-
-                return EventCard(
-                  event: event,
-                  onTap: () => _openEventDetails(context, event),
-                );
-              },
+            return EventCard(
+              event: event,
+              onTap: () => _openEventDetails(context, event),
             );
           },
         );

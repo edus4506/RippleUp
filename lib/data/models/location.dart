@@ -3,8 +3,8 @@ class Location {
   final String country;
   final String city;
   final String localName;
-  final String latitude;
-  final String longitude;
+  final double latitude;
+  final double longitude;
   final String helpNotes;
 
   Location({

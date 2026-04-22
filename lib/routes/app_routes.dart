@@ -4,7 +4,7 @@ import 'package:t5/views/pages/register_page.dart';
 import '../views/pages/home_page.dart';
 
 class AppRoutes {
-  static const String home = '/';
+  static const String home = '/home';
   static const String login = '/login';
   static const String register = '/register';
 

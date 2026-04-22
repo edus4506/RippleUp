@@ -18,7 +18,7 @@ class AppBottomNav extends StatelessWidget {
     return Container(
       height: 65,
       decoration: BoxDecoration(
-        color: AppColors.background,
+        color: Palette.background, 
         boxShadow: [
           BoxShadow(
             color: Colors.black.withAlpha(25),
@@ -35,13 +35,13 @@ class AppBottomNav extends StatelessWidget {
               Icons.home,
               size: 28,
               color: currentIndex == 0
-                  ? AppColors.primary
+                  ? Palette.primary 
                   : Colors.grey,
             ),
             onPressed: () => onTap(0),
           ),
 
-          // BOTTON +
+          // BOTÃO +
           Material(
             color: Colors.transparent,
             child: InkWell(
@@ -51,7 +51,7 @@ class AppBottomNav extends StatelessWidget {
                 height: 48,
                 width: 48,
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withAlpha(180),
+                  color: Palette.primary.withAlpha(180), 
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: const Icon(
@@ -69,7 +69,7 @@ class AppBottomNav extends StatelessWidget {
               Icons.person,
               size: 28,
               color: currentIndex == 1
-                  ? AppColors.primary
+                  ? Palette.primary 
                   : Colors.grey,
             ),
             onPressed: () => onTap(1),

@@ -1,4 +1,4 @@
-class Favorite {   //user can have many different events on favorite
+class Favorite { 
   final String id;
   final String idUser;
   final String idEvent;

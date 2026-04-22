@@ -1,57 +1,88 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:t5/data/repositories/event_repository.dart';
 import 'package:t5/data/repositories/favorite_repository.dart';
 import 'package:t5/data/repositories/storage_repository.dart';
 import 'package:t5/data/repositories/user_repository.dart';
+
+import 'package:t5/services/profile_image_service.dart';
+
 import 'package:t5/viewModels/event_viewModel.dart';
 import 'package:t5/viewModels/favorite_view_model.dart';
-import 'routes/app_routes.dart';
 import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
 import 'package:t5/viewModels/profile_viewModel.dart';
 import 'package:t5/viewModels/user_view_model.dart';
-import 'package:provider/provider.dart';
+
+import 'routes/app_routes.dart';
 import 'theme/app_theme.dart';
 
-import 'package:supabase_flutter/supabase_flutter.dart'; //for file storage
-
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Supabase.initialize(
     url: 'https://zryedbkqhfitgsmpmajc.supabase.co',
-    //annon public
-    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpyeWVkYmtxaGZpdGdzbXBtYWpjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1OTkwNTYsImV4cCI6MjA5MTE3NTA1Nn0.TnL2cVCFWeSIids6M38f-ed3YQKcHoPzyCW9DojACk8',
+    anonKey:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpyeWVkYmtxaGZpdGdzbXBtYWpjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1OTkwNTYsImV4cCI6MjA5MTE3NTA1Nn0.TnL2cVCFWeSIids6M38f-ed3YQKcHoPzyCW9DojACk8',
   );
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   runApp(
-  MultiProvider(
-    providers: [
-      ChangeNotifierProvider(
-        create: (_) => AuthViewModel(UserRepository(), StorageRepository()),
-      ),
-      ChangeNotifierProvider(
-        create: (_) => ProfileViewModel(UserRepository(), StorageRepository())
-      ),
-      ChangeNotifierProvider(
-          create: (_) => EventViewModel(EventRepository()),
-      ),
-      ChangeNotifierProvider(
-        create: (_) => UserViewModel(UserRepository()),
-      ),
-      ChangeNotifierProvider(
-        create: (_) => FavoriteViewModel(FavoriteRepository()),
-      ),
-    ],
-    child: const MyApp(),
-  ),
-);
+    MultiProvider(
+      providers: [
+        
+        Provider(create: (_) => UserRepository()),
+        Provider(create: (_) => StorageRepository()),
+        Provider(create: (_) => EventRepository()),
+        Provider(create: (_) => FavoriteRepository()),
+
+        ProxyProvider<StorageRepository, ProfileImageService>(
+          update: (_, storageRepo, __) =>
+              ProfileImageService(storageRepo),
+        ),
+
+        ChangeNotifierProvider(
+          create: (context) => AuthViewModel(
+            context.read<UserRepository>(),
+            context.read<ProfileImageService>(),
+          ),
+        ),
+
+        ChangeNotifierProvider(
+          create: (context) => ProfileViewModel(
+            context.read<UserRepository>(),
+            context.read<ProfileImageService>(),
+          ),
+        ),
+
+        ChangeNotifierProvider(
+          create: (context) => EventViewModel(
+            context.read<EventRepository>(),
+          ),
+        ),
+
+        ChangeNotifierProvider(
+          create: (context) => UserViewModel(
+            context.read<UserRepository>(),
+          ),
+        ),
+
+        ChangeNotifierProvider(
+          create: (context) => FavoriteViewModel(
+            context.read<FavoriteRepository>(),
+          ),
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -63,11 +94,6 @@ class MyApp extends StatelessWidget {
       title: 'Ripple Up',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-
-      builder: (context, child) {
-        return child!;
-      },
-
       initialRoute: AppRoutes.login,
       routes: AppRoutes.routes,
     );

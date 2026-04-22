@@ -10,7 +10,6 @@ class Event {
   final DateTime endDate;
   final int maxUsers;
   final int currentUsers;
-  final String eventStatus;
   final String idCreator;
   final String country;
   final String district;
@@ -26,7 +25,6 @@ class Event {
     required this.endDate,
     required this.maxUsers,
     required this.currentUsers,
-    required this.eventStatus,
     required this.idCreator,
     required this.country,
     required this.district,
@@ -50,7 +48,6 @@ class Event {
           : DateTime.now(),
       maxUsers: map['maxUsers'] ?? 0,
       currentUsers: map['currentUsers'] ?? 0,
-      eventStatus: map['eventStatus'] ?? 'PLANNING',
       idCreator: map['idCreator'] ?? '',
       country: map['country'] ?? '',
       district: map['district'] ?? '',
@@ -68,7 +65,6 @@ class Event {
       'endDate': Timestamp.fromDate(endDate),
       'maxUsers': maxUsers,
       'currentUsers': currentUsers,
-      'eventStatus': eventStatus,
       'idCreator': idCreator,
       'country': country,
       'district': district,
