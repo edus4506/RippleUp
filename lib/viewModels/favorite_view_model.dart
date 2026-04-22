@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:t5/data/models/favorite_userEvent.dart';
+import 'package:t5/data/models/event.dart';
 import 'package:t5/data/repositories/favorite_repository.dart';
 
 class FavoriteViewModel extends ChangeNotifier {
@@ -22,6 +23,19 @@ class FavoriteViewModel extends ChangeNotifier {
       userId: userId,
       eventId: eventId,
     );
+  }
+
+  Stream<List<Event>> favoriteEventsStream({
+    required String userId,
+    required Stream<List<Event>> eventsStream,
+  }) {
+    return userFavoritesStream(userId).asyncMap((favorites) async {
+      final events = await eventsStream.first;
+
+      final favIds = favorites.map((f) => f.idEvent).toSet();
+
+      return events.where((e) => favIds.contains(e.id)).toList();
+    });
   }
 
   Future<bool> addFavorite({
