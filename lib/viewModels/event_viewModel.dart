@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:t5/data/models/event.dart';
 import 'package:t5/data/repositories/event_repository.dart';
 
+import 'package:t5/services/event_filter.dart';
+import 'package:t5/services/event_filter_service.dart';
+
 class EventViewModel extends ChangeNotifier {
   final EventRepository _eventRepository;
 
@@ -10,17 +13,47 @@ class EventViewModel extends ChangeNotifier {
   bool isLoading = false;
   String? errorMessage;
 
-  Stream<List<Event>> get eventsStream => _eventRepository.listenToEvents();
+  Stream<List<Event>> get eventsStream =>
+      _eventRepository.listenToEvents();
 
-  bool hideFullEvents = false;
-  Set<int> selectedGoals = {};
-  int? minCapacity;
-  int? maxCapacity;
-  int? minCurrentUsers;
-  int? maxCurrentUsers;
-  String? selectedCountry;
-  String? selectedDistrict;
-  String? selectedCity;
+  EventFilter _filter = const EventFilter(
+    hideFull: false,
+    goals: {},
+  );
+
+  EventFilter get currentFilter => _filter;
+
+  Stream<List<Event>> get filteredEventsStream {
+    return eventsStream.map((events) {
+      return EventFilterService.apply(events, _filter);
+    });
+  }
+
+  void applyFilters({
+    required bool hideFull,
+    required Set<int> goals,
+    int? minCapacity,
+    int? maxCapacity,
+    int? minCurrentUsers,
+    int? maxCurrentUsers,
+    String? country,
+    String? district,
+    String? city,
+  }) {
+    _filter = EventFilter(
+      hideFull: hideFull,
+      goals: goals,
+      minCapacity: minCapacity,
+      maxCapacity: maxCapacity,
+      minCurrentUsers: minCurrentUsers,
+      maxCurrentUsers: maxCurrentUsers,
+      country: country,
+      district: district,
+      city: city,
+    );
+
+    notifyListeners();
+  }
 
   Future<void> createEvent(Event event) async {
     await _eventRepository.createEvent(event);
@@ -42,7 +75,8 @@ class EventViewModel extends ChangeNotifier {
 
       return true;
     } catch (e) {
-      errorMessage = e.toString().replaceFirst('Exception: ', '');
+      errorMessage =
+          e.toString().replaceFirst('Exception: ', '');
       return false;
     } finally {
       isLoading = false;
@@ -66,7 +100,8 @@ class EventViewModel extends ChangeNotifier {
 
       return true;
     } catch (e) {
-      errorMessage = e.toString().replaceFirst('Exception: ', '');
+      errorMessage =
+          e.toString().replaceFirst('Exception: ', '');
       return false;
     } finally {
       isLoading = false;
@@ -94,96 +129,12 @@ class EventViewModel extends ChangeNotifier {
 
       return true;
     } catch (e) {
-      errorMessage = e.toString().replaceFirst('Exception: ', '');
+      errorMessage =
+          e.toString().replaceFirst('Exception: ', '');
       return false;
     } finally {
       isLoading = false;
       notifyListeners();
     }
-  }
-
-  Stream<List<Event>> get filteredEventsStream {
-    return _eventRepository.listenToEvents().map((events) {
-      return events.where((event) {
-        if (hideFullEvents &&
-            event.currentUsers >= event.maxUsers) {
-          return false;
-        }
-
-        if (selectedGoals.isNotEmpty) {
-          final eventGoals = event.objectives;
-
-          final hasMatch = eventGoals.any(
-            (goal) => selectedGoals.contains(goal),
-          );
-
-          if (!hasMatch) return false;
-        }
-
-        if (minCapacity != null &&
-            event.maxUsers < minCapacity!) {
-          return false;
-        }
-
-        if (maxCapacity != null &&
-            event.maxUsers > maxCapacity!) {
-          return false;
-        }
-
-        if (minCurrentUsers != null &&
-            event.currentUsers < minCurrentUsers!) {
-          return false;
-        }
-
-        if (maxCurrentUsers != null &&
-            event.currentUsers > maxCurrentUsers!) {
-          return false;
-        }
-        
-        if (selectedCountry != null &&
-            event.country != selectedCountry) {
-          return false;
-        }
-
-        if (selectedDistrict != null &&
-            event.district != selectedDistrict) {
-          return false;
-        }
-
-        if (selectedCity != null &&
-            event.city != selectedCity) {
-          return false;
-        }
-
-        return true;
-      }).toList();
-    });
-  }
-
-  void applyFilters({
-    required bool hideFull,
-    required Set<int> goals,
-    int? minCapacity,
-    int? maxCapacity,
-    int? minCurrentUsers,
-    int? maxCurrentUsers,
-    String? country,
-    String? district,
-    String? city,
-  }) {
-    hideFullEvents = hideFull;
-    selectedGoals = goals;
-
-    this.minCapacity = minCapacity;
-    this.maxCapacity = maxCapacity;
-
-    this.minCurrentUsers = minCurrentUsers;
-    this.maxCurrentUsers = maxCurrentUsers;
-
-    selectedCountry = country;
-    selectedDistrict = district;
-    selectedCity = city;
-
-    notifyListeners();
   }
 }
