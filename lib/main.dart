@@ -6,7 +6,7 @@ import 'package:t5/data/repositories/favorite_repository.dart';
 import 'package:t5/data/repositories/storage_repository.dart';
 import 'package:t5/data/repositories/user_repository.dart';
 
-import 'package:t5/data/services/profile_image_service.dart';
+import 'package:t5/services/profile_image_service.dart';
 
 import 'package:t5/viewModels/event_viewModel.dart';
 import 'package:t5/viewModels/favorite_view_model.dart';
@@ -37,19 +37,17 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        /// 🔹 Repositories (single source of truth)
+        
         Provider(create: (_) => UserRepository()),
         Provider(create: (_) => StorageRepository()),
         Provider(create: (_) => EventRepository()),
         Provider(create: (_) => FavoriteRepository()),
 
-        /// 🔹 Services
         ProxyProvider<StorageRepository, ProfileImageService>(
           update: (_, storageRepo, __) =>
               ProfileImageService(storageRepo),
         ),
 
-        /// 🔹 ViewModels
         ChangeNotifierProvider(
           create: (context) => AuthViewModel(
             context.read<UserRepository>(),

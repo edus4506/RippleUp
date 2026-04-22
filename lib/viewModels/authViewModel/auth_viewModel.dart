@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:t5/data/models/user.dart';
 import 'package:t5/data/repositories/user_repository.dart';
-import 'package:t5/data/services/profile_image_service.dart';
+import 'package:t5/services/profile_image_service.dart';
 
 class AuthViewModel extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;

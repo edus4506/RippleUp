@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../data/repositories/user_repository.dart';
 import '../../data/models/user.dart';
-import '../../data/services/profile_image_service.dart';
+import '../services/profile_image_service.dart';
 
 class ProfileViewModel extends ChangeNotifier {
   final UserRepository _userRepository;

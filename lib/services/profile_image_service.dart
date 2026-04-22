@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/foundation.dart'; // kIsWeb
-import '../repositories/storage_repository.dart';
+import '../data/repositories/storage_repository.dart';
 
 class ProfileImageService {
   final StorageRepository _storageRepository;
