@@ -4,136 +4,103 @@ import 'palette.dart';
 class AppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
-      primaryColor: AppColors.primary, 
+      /// Modern color system
+      colorScheme: ColorScheme.light(
+        primary: Palette.primary,
+        secondary: Palette.secondary,
+        background: Palette.background,
+      ),
 
+      scaffoldBackgroundColor: Palette.background,
 
-      /// Background
-      scaffoldBackgroundColor: AppColors.background,
-
-
-      /// Upper AppBar 
+      /// AppBar
       appBarTheme: const AppBarTheme(
-        backgroundColor: AppColors.secondary,
-        foregroundColor: AppColors.primary,
+        backgroundColor: Palette.secondary,
+        foregroundColor: Palette.primary,
         elevation: 0,
         centerTitle: true,
         titleTextStyle: TextStyle(
-          fontFamily: 'Roboto',
           fontSize: 26,
           fontWeight: FontWeight.bold,
-          color: AppColors.primary,
+          color: Palette.primary,
         ),
       ),
 
-
-      /// Basic Cards 
+      /// Cards
       cardTheme: CardThemeData(
-        color: AppColors.cardBackground,
+        color: Palette.cardBackground,
         elevation: 3,
-        shadowColor: AppColors.cardShadow,
+        shadowColor: Colors.black.withOpacity(0.08),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18),
-
           side: BorderSide(
-            color: AppColors.border,
+            color: Palette.border,
             width: 1,
           ),
         ),
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       ),
 
-
-      /// Global text
+      /// Text
       textTheme: const TextTheme(
-
-        /// Title (event name)
         titleMedium: TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.bold,
-          color: AppColors.textPrimary,
+          color: Palette.textPrimary,
         ),
-
-        /// Description (location, objectives)
         bodyMedium: TextStyle(
           fontSize: 14,
-          color: AppColors.textSecondary,
+          color: Palette.textSecondary,
         ),
-
-        /// Status label (e.g. FULL)
         labelMedium: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.bold,
-          color: AppColors.accent,
+          color: Palette.accent,
         ),
-
-        /// Highlight numbers (participants count)
         bodyLarge: TextStyle(
           fontSize: 15,
           fontWeight: FontWeight.bold,
-          color: AppColors.accent,
+          color: Palette.accent,
         ),
-
-        /// Action text (e.g. "Show Full Events")
         labelLarge: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.bold,
-          color: AppColors.textPrimary,
+          color: Palette.textPrimary,
         ),
       ),
 
-
-      /// Bottom navigation bar
+      /// Bottom Nav
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         type: BottomNavigationBarType.fixed,
-
-        /// Selected icon color
-        selectedItemColor: AppColors.primary,
-
-        /// Unselected icon color
+        selectedItemColor: Palette.primary,
         unselectedItemColor: Colors.grey,
-
-        /// Hide labels (icons only)
         showSelectedLabels: false,
         showUnselectedLabels: false,
-
-        /// Background color
-        backgroundColor: AppColors.cardBackground,
-
-        /// Shadow elevation
+        backgroundColor: Palette.cardBackground,
         elevation: 8,
       ),
 
-
-      /// Input fields (TextField / TextFormField)
+      /// Inputs
       inputDecorationTheme: const InputDecorationTheme(
-
-        /// Default border (inactive)
         border: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: AppColors.inputBorder,
-          ),
+          borderSide: BorderSide(color: Palette.inputBorder),
         ),
-
-        /// Border when focused (active)
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: AppColors.primary,
+            color: Palette.primary,
             width: 2,
           ),
         ),
-
-        /// Label text style (Email, Password, etc.)
         labelStyle: TextStyle(
-          color: AppColors.textSecondary,
+          color: Palette.textSecondary,
         ),
       ),
 
-
-      /// Buttons (ElevatedButton)
+      /// Buttons
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,
-          foregroundColor: AppColors.cardBackground,
+          backgroundColor: Palette.primary,
+          foregroundColor: Colors.white,
           minimumSize: const Size(double.infinity, 50),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -143,25 +110,16 @@ class AppTheme {
 
       /// Icons
       iconTheme: const IconThemeData(
-        color: AppColors.accent,
+        color: Palette.accent,
       ),
 
       /// Sliders
       sliderTheme: SliderThemeData(
-        /// Active track (filled part)
-        activeTrackColor: AppColors.primary,
-
-        /// Inactive track (background)
-        inactiveTrackColor: AppColors.secondary,
-
-        /// Thumb (draggable circle)
-        thumbColor: AppColors.primary,
-
-        /// Touch overlay effect
-        overlayColor: AppColors.primary.withOpacity(0.2),
-
-        /// Value indicator (tooltip)
-        valueIndicatorColor: AppColors.primary,
+        activeTrackColor: Palette.primary,
+        inactiveTrackColor: Palette.secondary,
+        thumbColor: Palette.primary,
+        overlayColor: Palette.primary.withOpacity(0.2),
+        valueIndicatorColor: Palette.primary,
       ),
     );
   }

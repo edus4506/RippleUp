@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:t5/theme/palette.dart';
 import '../data/models/event_status.dart';
 
 Color getEventStatusColor(EventStatus status) {
   switch (status) {
     case EventStatus.planning:
-      return Colors.orange;
+      return Palette.statusPlanning;
+
     case EventStatus.occurring:
-      return Colors.green;
+      return Palette.statusOccurring;
+
     case EventStatus.done:
-      return Colors.grey;
+      return Palette.statusDone;
   }
 }
