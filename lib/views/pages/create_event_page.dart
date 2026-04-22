@@ -134,7 +134,6 @@ class _CreateEventPageState extends State<CreateEventPage> {
       endDate: endDate!,
       maxUsers: maxUsers,
       currentUsers: 1,
-      eventStatus: 'PLANNING',
       idCreator: currentUser.uid,
       objectives: selectedObjectives,
       country: selectedCountry!,
