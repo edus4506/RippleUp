@@ -67,8 +67,8 @@ void main() {
     await tester.tap(find.text('Open'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Filtros'), findsOneWidget);
-    expect(find.text('Aplicar'), findsOneWidget);
-    expect(find.text('Cancelar'), findsOneWidget);
+    expect(find.text('Filters'), findsOneWidget);
+  expect(find.text('Apply'), findsOneWidget);
+  expect(find.text('Cancel'), findsOneWidget);
   });
 }

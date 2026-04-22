@@ -6,7 +6,7 @@ import 'package:t5/viewModels/event_viewModel.dart';
 class FakeEventRepository implements EventRepository {
   FakeEventRepository({
     this.shouldThrow = false,
-    this.exceptionMessage = 'Erro',
+    this.exceptionMessage = 'Error',
   });
 
   bool shouldThrow;
@@ -76,7 +76,7 @@ void main() {
     test('returns false and sets errorMessage when repository throws', () async {
       final repo = FakeEventRepository(
         shouldThrow: true,
-        exceptionMessage: 'Evento cheio',
+        exceptionMessage: 'Event is full',
       );
       final viewModel = EventViewModel(repo);
 
@@ -86,7 +86,7 @@ void main() {
       );
 
       expect(result, false);
-      expect(viewModel.errorMessage, 'Evento cheio');
+      expect(viewModel.errorMessage, 'Event is full');
       expect(viewModel.isLoading, false);
       expect(repo.receivedEventId, 'event-1');
       expect(repo.receivedUserId, 'user-1');
