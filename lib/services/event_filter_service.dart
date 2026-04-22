@@ -1,4 +1,5 @@
 import 'package:t5/data/models/event.dart';
+import 'package:t5/data/models/event_status.dart';
 import 'event_filter.dart';
 
 class EventFilterService {
@@ -7,6 +8,11 @@ class EventFilterService {
 
       if (filter.hideFull &&
           event.currentUsers >= event.maxUsers) {
+        return false;
+      }
+
+      if (!filter.showDone &&
+          event.status == EventStatus.done) {
         return false;
       }
 

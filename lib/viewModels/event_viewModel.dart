@@ -16,10 +16,7 @@ class EventViewModel extends ChangeNotifier {
   Stream<List<Event>> get eventsStream =>
       _eventRepository.listenToEvents();
 
-  EventFilter _filter = const EventFilter(
-    hideFull: false,
-    goals: {},
-  );
+  EventFilter _filter = const EventFilter();
 
   EventFilter get currentFilter => _filter;
 
@@ -31,6 +28,7 @@ class EventViewModel extends ChangeNotifier {
 
   void applyFilters({
     required bool hideFull,
+    required bool showDone,
     required Set<int> goals,
     int? minCapacity,
     int? maxCapacity,
@@ -42,6 +40,7 @@ class EventViewModel extends ChangeNotifier {
   }) {
     _filter = EventFilter(
       hideFull: hideFull,
+      showDone: showDone,
       goals: goals,
       minCapacity: minCapacity,
       maxCapacity: maxCapacity,
