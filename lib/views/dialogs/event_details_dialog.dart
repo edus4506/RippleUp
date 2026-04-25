@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:t5/data/models/event.dart';
-import 'package:t5/data/models/user.dart';
+import 'package:t5/data/models/event_status.dart';
 import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
 import 'package:t5/viewModels/event_viewModel.dart';
 import 'package:t5/viewModels/favorite_view_model.dart';
 import 'package:t5/viewModels/user_view_model.dart';
+import 'package:t5/theme/event_status_colors.dart';
 
 class EventDetailsDialog extends StatelessWidget {
   final Event event;
@@ -15,146 +16,98 @@ class EventDetailsDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userId = context.watch<AuthViewModel>().currentUser?.uid;
-    final eventVm = context.read<EventViewModel>();
+    final isLocked = event.status == EventStatus.occurring ||
+        event.status == EventStatus.done;
 
-    final sortedObjectives = List<int>.from(event.objectives)..sort();
-
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: SizedBox(
-        width: double.maxFinite,
-        height: 500,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              _Header(event: event, userId: userId),
-
-              const SizedBox(height: 10),
-
-              _Content(event: event, sortedObjectives: sortedObjectives),
-
-              const SizedBox(height: 10),
-
-              _Actions(
-                event: event,
-                userId: userId,
-                eventVm: eventVm,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _Header extends StatelessWidget {
-  final Event event;
-  final String? userId;
-
-  const _Header({required this.event, required this.userId});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: Text(
-            event.title,
-            style: theme.textTheme.titleMedium,
-          ),
-        ),
-
-        if (userId != null)
-          StreamBuilder<bool>(
-            stream: context.read<FavoriteViewModel>().isEventFavorited(
-                  userId: userId!,
-                  eventId: event.id,
-                ),
-            builder: (context, snapshot) {
-              final isFavorited = snapshot.data ?? false;
-
-              return IconButton(
-                icon: Icon(
-                  isFavorited
-                      ? Icons.favorite
-                      : Icons.favorite_border,
-                  color: isFavorited ? Colors.red : null,
-                ),
-                onPressed: () async {
-                  final vm = context.read<FavoriteViewModel>();
-
-                  if (isFavorited) {
-                    await vm.removeFavorite(
-                      userId: userId!,
-                      eventId: event.id,
-                    );
-                  } else {
-                    await vm.addFavorite(
-                      userId: userId!,
-                      eventId: event.id,
-                    );
-                  }
-                },
-              );
-            },
-          ),
-      ],
-    );
-  }
-}
-
-class _Content extends StatelessWidget {
-  final Event event;
-  final List<int> sortedObjectives;
-
-  const _Content({
-    required this.event,
-    required this.sortedObjectives,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: SingleChildScrollView(
+    return AlertDialog(
+      title: Text(event.title),
+      content: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Text(event.description),
-            const SizedBox(height: 10),
+            // Creator info
+            if (userId != null)
+              StreamBuilder(
+                stream: context.read<UserViewModel>().userStream(event.idCreator),
+                builder: (context, snapshot) {
+                  final creatorName = snapshot.data?.name ?? '...';
+                  return Text('Created by: $creatorName');
+                },
+              ),
 
-            Text("Objectives: ${sortedObjectives.join(', ')}"),
-            Text("Country: ${event.country}"),
-            Text("District: ${event.district}"),
-            Text("City: ${event.city}"),
-            Text("${event.currentUsers} / ${event.maxUsers}"),
-            Text("${event.startDate} until ${event.endDate}"),
+            const SizedBox(height: 8),
 
-            const SizedBox(height: 10),
-
-            StreamBuilder<Users?>(
-              stream: context
-                  .read<UserViewModel>()
-                  .userStream(event.idCreator),
-              builder: (context, snapshot) {
-                final creator = snapshot.data;
-
-                return Text(
-                  creator != null
-                      ? 'Created by ${creator.name}'
-                      : 'Created by unknown user'
-                );
-              },
+            // Status badge
+            Row(
+              children: [
+                const Text('Status: '),
+                Text(
+                  event.status.text,
+                  style: TextStyle(
+                    color: getEventStatusColor(event.status),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
+
+            const SizedBox(height: 8),
+
+            Text(event.description),
+
+            const SizedBox(height: 8),
+
+            Text('${event.city}, ${event.district}, ${event.country}'),
+
+            const SizedBox(height: 4),
+
+            Text('Participants: ${event.currentUsers}/${event.maxUsers}'),
+
+            const SizedBox(height: 4),
+
+            Text(
+              'Start: ${event.startDate.day}/${event.startDate.month}/${event.startDate.year}',
+            ),
+            Text(
+              'End: ${event.endDate.day}/${event.endDate.month}/${event.endDate.year}',
+            ),
+
+            const SizedBox(height: 8),
+
+            // Favorite button
+            if (userId != null)
+              StreamBuilder<bool>(
+                stream: context.read<FavoriteViewModel>().isEventFavorited(
+                      userId: userId,
+                      eventId: event.id,
+                    ),
+                builder: (context, snapshot) {
+                  final isFav = snapshot.data ?? false;
+                  return IconButton(
+                    icon: Icon(
+                      isFav ? Icons.favorite : Icons.favorite_border,
+                      color: Colors.red,
+                    ),
+                    onPressed: () {
+                      final favVm = context.read<FavoriteViewModel>();
+                      if (isFav) {
+                        favVm.removeFavorite(
+                            userId: userId, eventId: event.id);
+                      } else {
+                        favVm.addFavorite(
+                            userId: userId, eventId: event.id);
+                      }
+                    },
+                  );
+                },
+              ),
           ],
         ),
       ),
+      actions: [
+        _Actions(event: event, userId: userId, isLocked: isLocked),
+      ],
     );
   }
 }
@@ -162,154 +115,108 @@ class _Content extends StatelessWidget {
 class _Actions extends StatelessWidget {
   final Event event;
   final String? userId;
-  final EventViewModel eventVm;
+  final bool isLocked;
 
   const _Actions({
     required this.event,
     required this.userId,
-    required this.eventVm,
+    required this.isLocked,
   });
 
   @override
   Widget build(BuildContext context) {
-    final isCreator = userId == event.idCreator;
-    final isFull = event.currentUsers >= event.maxUsers;
+    if (userId == null) {
+      return TextButton(
+        onPressed: () => Navigator.pop(context),
+        child: const Text('Close'),
+      );
+    }
 
-    return StreamBuilder<bool>(
-      stream: (userId != null)
-          ? eventVm.isUserInEvent(
-              eventId: event.id,
-              userId: userId!,
-            )
-          : null,
-      builder: (context, snapshot) {
-        final isParticipant = snapshot.data ?? false;
+    final isCreator = event.idCreator == userId;
 
-        return Column(
-          children: [
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: (userId == null ||
-                        isCreator ||
-                        eventVm.isLoading ||
-                        (!isParticipant && isFull))
-                    ? null
-                    : () => _handleJoinLeave(
-                          context,
-                          isParticipant,
-                        ),
-                child: eventVm.isLoading
-                    ? const CircularProgressIndicator()
-                    : Text(
-                        isCreator
-                            ? 'You are the creator'
-                            : isParticipant
-                                ? 'Leave'
-                                : isFull
-                                    ? 'Full'
-                                    : 'Join'
-                      ),
-              ),
-            ),
-
-            if (isCreator)
-              _DeleteButton(event: event),
-          ],
-        );
-      },
-    );
-  }
-
-  Future<void> _handleJoinLeave(
-    BuildContext context,
-    bool isParticipant,
-  ) async {
-    final vm = context.read<EventViewModel>();
-
-    final ok = isParticipant
-        ? await vm.leaveEvent(
-            eventId: event.id,
-            userId: userId!,
-          )
-        : await vm.joinEvent(
-            eventId: event.id,
-            userId: userId!,
-          );
-
-    if (!context.mounted) return;
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          ok
-            ? (isParticipant
-                ? 'You left the event'
-                : 'You joined the event')
-            : (vm.errorMessage ?? 'Error')
-        ),
-      ),
-    );
-  }
-}
-
-class _DeleteButton extends StatelessWidget {
-  final Event event;
-
-  const _DeleteButton({required this.event});
-
-  @override
-  Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const SizedBox(height: 10),
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-            ),
-            onPressed: () async {
-              final confirm = await showDialog<bool>(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('Delete event'),
-                  content: const Text('Are you sure?'),
-                  actions: [
-                    TextButton(
-                      onPressed: () =>
-                          Navigator.pop(context, false),
-                      child: const Text('Cancel'),
-                    ),
-                    TextButton(
-                      onPressed: () =>
-                          Navigator.pop(context, true),
-                      child: const Text('Delete'),
-                    ),
-                  ],
+        // Join / Leave — only for non-creators
+        if (!isCreator)
+          StreamBuilder<bool>(
+            stream: context.read<EventViewModel>().isUserInEvent(
+                  eventId: event.id,
+                  userId: userId!,
                 ),
-              );
+            builder: (context, snapshot) {
+              final isIn = snapshot.data ?? false;
 
-              if (confirm != true) return;
+              return ElevatedButton(
+                onPressed: isLocked
+                    ? null
+                    : () async {
+                        final vm = context.read<EventViewModel>();
+                        bool success;
 
-              final ok = await context
-                  .read<EventViewModel>()
-                  .deleteEvent(event.id);
+                        if (isIn) {
+                          success = await vm.leaveEvent(
+                            eventId: event.id,
+                            userId: userId!,
+                          );
+                        } else {
+                          success = await vm.joinEvent(
+                            eventId: event.id,
+                            userId: userId!,
+                          );
+                        }
 
-              if (!context.mounted) return;
+                        if (!context.mounted) return;
 
-              if (ok) Navigator.pop(context);
-
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    ok ? 'Event deleted' : 'Error'
-                  ),
-                ),
+                        if (!success) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                vm.errorMessage ?? 'Something went wrong',
+                              ),
+                            ),
+                          );
+                        } else {
+                          Navigator.pop(context);
+                        }
+                      },
+                child: Text(isIn ? 'Leave' : 'Join'),
               );
             },
+          ),
+
+        // Delete — only for creator
+        if (isCreator)
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            onPressed: isLocked
+                ? null
+                : () async {
+                    final vm = context.read<EventViewModel>();
+                    final success =
+                        await vm.deleteEvent(event.id);
+
+                    if (!context.mounted) return;
+
+                    if (!success) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            vm.errorMessage ?? 'Something went wrong',
+                          ),
+                        ),
+                      );
+                    } else {
+                      Navigator.pop(context);
+                    }
+                  },
             child: const Text('Delete'),
           ),
+
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Close'),
         ),
       ],
     );
