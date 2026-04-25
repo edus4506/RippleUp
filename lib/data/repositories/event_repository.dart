@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/event.dart';
+import '../models/event_status.dart';
 
 class EventRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -48,11 +49,18 @@ class EventRepository {
         throw Exception('Event not found');
       }
 
+      final data = eventSnap.data()!;
+      final event = Event.fromMap(data, eventSnap.id);
+
+      if (event.status == EventStatus.occurring ||
+          event.status == EventStatus.done) {
+        throw Exception('Cannot join an event that is already ongoing or finished');
+      }
+
       if (participationSnap.exists) {
         throw Exception('You are already participating in this event');
       }
 
-      final data = eventSnap.data()!;
       final currentUsers = data['currentUsers'] ?? 0;
       final maxUsers = data['maxUsers'] ?? 0;
 
@@ -98,12 +106,18 @@ class EventRepository {
         throw Exception('Event not found');
       }
 
+      final event = Event.fromMap(eventSnap.data()!, eventSnap.id);
+
+      if (event.status == EventStatus.occurring ||
+          event.status == EventStatus.done) {
+        throw Exception('Cannot leave an event that is already ongoing or finished');
+      }
+
       if (!participationSnap.exists) {
         throw Exception('You are not participating in this event');
       }
 
-      final data = eventSnap.data()!;
-      final currentUsers = data['currentUsers'] ?? 0;
+      final currentUsers = eventSnap.data()!['currentUsers'] ?? 0;
 
       transaction.delete(participationRef);
 
@@ -115,6 +129,19 @@ class EventRepository {
 
   Future<void> deleteEvent(String eventId) async {
     final eventRef = _db.collection('events').doc(eventId);
+
+    final eventSnap = await eventRef.get();
+
+    if (!eventSnap.exists) {
+      throw Exception('Event not found');
+    }
+
+    final event = Event.fromMap(eventSnap.data()!, eventSnap.id);
+
+    if (event.status == EventStatus.occurring ||
+        event.status == EventStatus.done) {
+      throw Exception('Cannot delete an event that is already ongoing or finished');
+    }
 
     final participations = await _db
         .collection('participations')
