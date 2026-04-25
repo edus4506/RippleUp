@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:t5/data/models/event.dart';
+import 'package:t5/data/models/event_status.dart';
 import 'package:t5/data/models/participation.dart';
 import 'package:t5/data/repositories/participation_repository.dart';
 import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
@@ -56,12 +57,15 @@ class CurrentEventsWidget extends StatelessWidget {
 
             final allEvents = eventSnap.data ?? [];
 
-            final joinedEvents = allEvents
-                .where((e) => joinedIds.contains(e.id))
+            final activeEvents = allEvents
+                .where((e) =>
+                    joinedIds.contains(e.id) &&
+                    (e.status == EventStatus.planning ||
+                        e.status == EventStatus.occurring))
                 .toList()
               ..sort((a, b) => a.startDate.compareTo(b.startDate));
 
-            if (joinedEvents.isEmpty) {
+            if (activeEvents.isEmpty) {
               return const Center(
                 child: Text('You have not joined any events yet.'),
               );
@@ -70,9 +74,9 @@ class CurrentEventsWidget extends StatelessWidget {
             return ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: joinedEvents.length,
+              itemCount: activeEvents.length,
               itemBuilder: (context, index) {
-                final event = joinedEvents[index];
+                final event = activeEvents[index];
                 return EventCard(
                   event: event,
                   onTap: () => _openEventDetails(context, event),
