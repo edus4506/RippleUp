@@ -1,0 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../models/participation.dart';
+
+class ParticipationRepository {
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
+
+  Stream<List<Participation>> listenToUserParticipations(String userId) {
+    return _db
+        .collection('participations')
+        .where('idUser', isEqualTo: userId)
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => Participation.fromMap(doc.data(), doc.id))
+            .toList());
+  }
+}
