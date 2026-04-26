@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'package:t5/data/repositories/event_repository.dart';
 import 'package:t5/data/repositories/favorite_repository.dart';
+import 'package:t5/data/repositories/participation_repository.dart';
 import 'package:t5/data/repositories/storage_repository.dart';
 import 'package:t5/data/repositories/user_repository.dart';
 
@@ -37,11 +38,11 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        
         Provider(create: (_) => UserRepository()),
         Provider(create: (_) => StorageRepository()),
         Provider(create: (_) => EventRepository()),
         Provider(create: (_) => FavoriteRepository()),
+        Provider(create: (_) => ParticipationRepository()),
 
         ProxyProvider<StorageRepository, ProfileImageService>(
           update: (_, storageRepo, __) =>
