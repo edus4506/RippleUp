@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:t5/data/models/event.dart';
 import 'package:t5/data/models/event_status.dart';
+import 'package:t5/routes/app_routes.dart';
 import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
 import 'package:t5/viewModels/event_viewModel.dart';
 import 'package:t5/viewModels/favorite_view_model.dart';
 import 'package:t5/viewModels/user_view_model.dart';
 import 'package:t5/theme/event_status_colors.dart';
+import 'package:t5/views/pages/chat_page.dart';
 
 class EventDetailsDialog extends StatelessWidget {
   final Event event;
@@ -142,52 +144,84 @@ class _Actions extends StatelessWidget {
         if (!isCreator)
           StreamBuilder<bool>(
             stream: context.read<EventViewModel>().isUserInEvent(
-                  eventId: event.id,
-                  userId: userId!,
-                ),
+              eventId: event.id,
+              userId: userId!,
+            ),
             builder: (context, snapshot) {
               final isIn = snapshot.data ?? false;
 
-              return ElevatedButton(
-                onPressed: isLocked
-                    ? null
-                    : () async {
-                        final vm = context.read<EventViewModel>();
-                        bool success;
+              return Column(
+                children: [
+                  ElevatedButton(
+                    onPressed: isLocked
+                        ? null
+                        : () async {
+                            final vm = context.read<EventViewModel>();
+                            bool success;
 
-                        if (isIn) {
-                          success = await vm.leaveEvent(
-                            eventId: event.id,
-                            userId: userId!,
-                          );
-                        } else {
-                          success = await vm.joinEvent(
-                            eventId: event.id,
-                            userId: userId!,
-                          );
-                        }
+                            if (isIn) {
+                              success = await vm.leaveEvent(
+                                eventId: event.id,
+                                userId: userId!,
+                              );
+                            } else {
+                              success = await vm.joinEvent(
+                                eventId: event.id,
+                                userId: userId!,
+                              );
+                            }
 
-                        if (!context.mounted) return;
+                            if (!context.mounted) return;
 
-                        if (!success) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                vm.errorMessage ?? 'Something went wrong',
-                              ),
-                            ),
-                          );
-                        } else {
-                          Navigator.pop(context);
-                        }
+                            if (!success) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    vm.errorMessage ?? 'Something went wrong',
+                                  ),
+                                ),
+                              );
+                            } else {
+                              Navigator.pop(context);
+                            }
+                          },
+                    child: Text(isIn ? 'Leave' : 'Join'),
+                  ),
+
+                  if (isIn)
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context); // fecha dialog
+
+                        Navigator.pushNamed(
+                          context,
+                          AppRoutes.chat,
+                          arguments: event.id
+                        );
                       },
-                child: Text(isIn ? 'Leave' : 'Join'),
+                      child: const Text("Open Chat"),
+                    ),
+                ],
               );
             },
           ),
 
         // Delete — only for creator
         if (isCreator)
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+
+              Navigator.pushNamed(
+                context,
+                AppRoutes.chat,
+                arguments: event.id,
+              );
+            },
+            child: const Text("Open Chat"),
+          ),
+
+        if(isCreator)
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             onPressed: isLocked

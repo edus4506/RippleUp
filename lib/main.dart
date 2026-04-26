@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'package:t5/data/repositories/event_repository.dart';
 import 'package:t5/data/repositories/favorite_repository.dart';
+import 'package:t5/data/repositories/message_repository.dart';
 import 'package:t5/data/repositories/participation_repository.dart';
 import 'package:t5/data/repositories/storage_repository.dart';
 import 'package:t5/data/repositories/user_repository.dart';
@@ -12,6 +13,7 @@ import 'package:t5/services/profile_image_service.dart';
 import 'package:t5/viewModels/event_viewModel.dart';
 import 'package:t5/viewModels/favorite_view_model.dart';
 import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
+import 'package:t5/viewModels/message_viewModel.dart';
 import 'package:t5/viewModels/profile_viewModel.dart';
 import 'package:t5/viewModels/user_view_model.dart';
 
@@ -43,6 +45,8 @@ void main() async {
         Provider(create: (_) => EventRepository()),
         Provider(create: (_) => FavoriteRepository()),
         Provider(create: (_) => ParticipationRepository()),
+        Provider(create: (_) => MessageRepository()),
+
 
         ProxyProvider<StorageRepository, ProfileImageService>(
           update: (_, storageRepo, __) =>
@@ -80,6 +84,12 @@ void main() async {
             context.read<FavoriteRepository>(),
           ),
         ),
+
+        ChangeNotifierProvider(
+          create: (context) => MessageViewModel(
+            context.read<MessageRepository>(),
+          ),
+        ),
       ],
       child: const MyApp(),
     ),
@@ -97,6 +107,7 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       initialRoute: AppRoutes.login,
       routes: AppRoutes.routes,
+      onGenerateRoute: AppRoutes.onGenerateRoute,
     );
   }
 }
