@@ -21,10 +21,13 @@ class AppRoutes {
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case chat:
-        final eventId = settings.arguments as String;
+        final args = settings.arguments as Map;
 
         return MaterialPageRoute(
-          builder: (_) => ChatPage(eventId: eventId),
+          builder: (_) => ChatPage(
+            eventId: args['eventId'],
+            title: args['title'],
+          ),
         );
 
       default:

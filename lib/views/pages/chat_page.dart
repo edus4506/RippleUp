@@ -9,8 +9,10 @@ import '../../data/models/user.dart';
 
 class ChatPage extends StatefulWidget {
   final String eventId;
+  final String title;
+  //both are passed when the page is called in the constuctor
 
-  const ChatPage({super.key, required this.eventId});
+  const ChatPage({super.key, required this.eventId, required this.title});
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -50,8 +52,8 @@ class _ChatPageState extends State<ChatPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Event Chat"),
-      ),
+      title: Text("${widget.title} Chat"),
+    ),
       body: Column(
         children: [
           Expanded(

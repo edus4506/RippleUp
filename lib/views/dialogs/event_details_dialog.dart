@@ -196,7 +196,10 @@ class _Actions extends StatelessWidget {
                         Navigator.pushNamed(
                           context,
                           AppRoutes.chat,
-                          arguments: event.id
+                          arguments: {
+                            'eventId' : event.id,
+                            'title': event.title,
+                          }
                         );
                       },
                       child: const Text("Open Chat"),
@@ -215,7 +218,10 @@ class _Actions extends StatelessWidget {
               Navigator.pushNamed(
                 context,
                 AppRoutes.chat,
-                arguments: event.id,
+                arguments: {
+                  'eventId' : event.id,
+                  'title': event.title,
+                }
               );
             },
             child: const Text("Open Chat"),
