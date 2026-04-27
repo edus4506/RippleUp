@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:t5/data/constants/event_locations.dart';
 import 'package:t5/viewModels/event_viewModel.dart';
 
 class EventFilterDialog extends StatefulWidget {
@@ -23,19 +24,6 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
   String? selectedCountry;
   String? selectedDistrict;
   String? selectedCity;
-
-  final List<String> countries = ["Portugal", "Spain"];
-
-  final Map<String, List<String>> districts = {
-    "Portugal": ["Porto", "Lisboa"],
-    "Spain": ["Galicia"],
-  };
-
-  final Map<String, List<String>> cities = {
-    "Porto": ["Porto", "Matosinhos"],
-    "Lisboa": ["Lisboa"],
-    "Galicia": ["Vigo"],
-  };
 
   @override
   void initState() {
@@ -81,6 +69,7 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
           children: [
             Expanded(
               child: SingleChildScrollView(
+                padding: const EdgeInsets.only(bottom: 24),
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: Column(
@@ -125,11 +114,11 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 6,
-                              crossAxisSpacing: 8,
-                              mainAxisSpacing: 8,
-                            ),
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 6,
+                          crossAxisSpacing: 8,
+                          mainAxisSpacing: 8,
+                        ),
                         itemCount: 18,
                         itemBuilder: (context, index) {
                           final goal = index + 1;
@@ -188,14 +177,18 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                       const SizedBox(height: 10),
 
                       DropdownButtonFormField<String>(
-                        decoration: const InputDecoration(labelText: "Country"),
+                        decoration: const InputDecoration(labelText: 'Country'),
                         value: selectedCountry,
-                        items: countries.map((country) {
-                          return DropdownMenuItem(
+                        menuMaxHeight: 300,
+                        isExpanded: true,
+                        items: eventCountries
+                            .map(
+                              (country) => DropdownMenuItem(
                             value: country,
                             child: Text(country),
-                          );
-                        }).toList(),
+                          ),
+                        )
+                            .toList(),
                         onChanged: (value) {
                           setState(() {
                             selectedCountry = value;
@@ -210,16 +203,18 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                       if (selectedCountry != null)
                         DropdownButtonFormField<String>(
                           decoration: const InputDecoration(
-                            labelText: "District",
+                            labelText: 'District',
                           ),
                           value: selectedDistrict,
-                          items: districts[selectedCountry]!
+                          menuMaxHeight: 300,
+                          isExpanded: true,
+                          items: eventDistrictsByCountry[selectedCountry]!
                               .map(
                                 (district) => DropdownMenuItem(
-                                  value: district,
-                                  child: Text(district),
-                                ),
-                              )
+                              value: district,
+                              child: Text(district),
+                            ),
+                          )
                               .toList(),
                           onChanged: (value) {
                             setState(() {
@@ -233,15 +228,17 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
 
                       if (selectedDistrict != null)
                         DropdownButtonFormField<String>(
-                          decoration: const InputDecoration(labelText: "City"),
+                          decoration: const InputDecoration(labelText: 'City'),
                           value: selectedCity,
-                          items: cities[selectedDistrict]!
+                          menuMaxHeight: 300,
+                          isExpanded: true,
+                          items: eventCitiesByDistrict[selectedDistrict]!
                               .map(
                                 (city) => DropdownMenuItem(
-                                  value: city,
-                                  child: Text(city),
-                                ),
-                              )
+                              value: city,
+                              child: Text(city),
+                            ),
+                          )
                               .toList(),
                           onChanged: (value) {
                             setState(() {
