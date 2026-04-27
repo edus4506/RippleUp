@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:t5/data/constants/event_locations.dart';
 import 'package:t5/viewModels/event_viewModel.dart';
 
 class EventFilterDialog extends StatefulWidget {
@@ -23,19 +24,6 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
   String? selectedCountry;
   String? selectedDistrict;
   String? selectedCity;
-
-  final List<String> countries = ["Portugal", "Spain"];
-
-  final Map<String, List<String>> districts = {
-    "Portugal": ["Porto", "Lisboa"],
-    "Spain": ["Galicia"],
-  };
-
-  final Map<String, List<String>> cities = {
-    "Porto": ["Porto", "Matosinhos"],
-    "Lisboa": ["Lisboa"],
-    "Galicia": ["Vigo"],
-  };
 
   @override
   void initState() {
@@ -81,6 +69,7 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
           children: [
             Expanded(
               child: SingleChildScrollView(
+                padding: const EdgeInsets.only(bottom: 24),
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: Column(
@@ -188,14 +177,18 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                       const SizedBox(height: 10),
 
                       DropdownButtonFormField<String>(
-                        decoration: const InputDecoration(labelText: "Country"),
+                        decoration: const InputDecoration(labelText: 'Country'),
                         value: selectedCountry,
-                        items: countries.map((country) {
-                          return DropdownMenuItem(
-                            value: country,
-                            child: Text(country),
-                          );
-                        }).toList(),
+                        menuMaxHeight: 300,
+                        isExpanded: true,
+                        items: eventCountries
+                            .map(
+                              (country) => DropdownMenuItem(
+                                value: country,
+                                child: Text(country),
+                              ),
+                            )
+                            .toList(),
                         onChanged: (value) {
                           setState(() {
                             selectedCountry = value;
@@ -210,10 +203,12 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                       if (selectedCountry != null)
                         DropdownButtonFormField<String>(
                           decoration: const InputDecoration(
-                            labelText: "District",
+                            labelText: 'District',
                           ),
                           value: selectedDistrict,
-                          items: districts[selectedCountry]!
+                          menuMaxHeight: 300,
+                          isExpanded: true,
+                          items: eventDistrictsByCountry[selectedCountry]!
                               .map(
                                 (district) => DropdownMenuItem(
                                   value: district,
@@ -233,9 +228,11 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
 
                       if (selectedDistrict != null)
                         DropdownButtonFormField<String>(
-                          decoration: const InputDecoration(labelText: "City"),
+                          decoration: const InputDecoration(labelText: 'City'),
                           value: selectedCity,
-                          items: cities[selectedDistrict]!
+                          menuMaxHeight: 300,
+                          isExpanded: true,
+                          items: eventCitiesByDistrict[selectedDistrict]!
                               .map(
                                 (city) => DropdownMenuItem(
                                   value: city,

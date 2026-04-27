@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import '../../data/constants/event_locations.dart';
 import '../../data/models/event.dart';
-import '../../viewModels/event_viewModel.dart';
 import '../../viewModels/authViewModel/auth_viewModel.dart';
+import '../../viewModels/event_viewModel.dart';
 
 class CreateEventPage extends StatefulWidget {
   const CreateEventPage({super.key});
@@ -27,19 +28,6 @@ class _CreateEventPageState extends State<CreateEventPage> {
   String? selectedCountry;
   String? selectedDistrict;
   String? selectedCity;
-
-  final List<String> countries = ["Portugal", "Spain"];
-
-  final Map<String, List<String>> districts = {
-    "Portugal": ["Porto", "Lisboa"],
-    "Spain": ["Galicia"],
-  };
-
-  final Map<String, List<String>> cities = {
-    "Porto": ["Porto", "Matosinhos"],
-    "Lisboa": ["Lisboa"],
-    "Galicia": ["Vigo"],
-  };
 
   @override
   void dispose() {
@@ -183,7 +171,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
       ),
 
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
         child: Column(
           children: [
             TextField(
@@ -373,13 +361,18 @@ class _CreateEventPageState extends State<CreateEventPage> {
             const SizedBox(height: 10),
 
             DropdownButtonFormField<String>(
-              decoration: const InputDecoration(labelText: "Country"),
+              decoration: const InputDecoration(labelText: 'Country'),
               value: selectedCountry,
-              items: countries
-                  .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+              menuMaxHeight: 300,
+              isExpanded: true,
+              items: eventCountries
+                  .map(
+                    (country) =>
+                        DropdownMenuItem(value: country, child: Text(country)),
+                  )
                   .toList(),
-              onChanged: (v) => setState(() {
-                selectedCountry = v;
+              onChanged: (value) => setState(() {
+                selectedCountry = value;
                 selectedDistrict = null;
                 selectedCity = null;
               }),
@@ -388,13 +381,20 @@ class _CreateEventPageState extends State<CreateEventPage> {
             if (selectedCountry != null) ...[
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
-                decoration: const InputDecoration(labelText: "District"),
+                decoration: const InputDecoration(labelText: 'District'),
                 value: selectedDistrict,
-                items: districts[selectedCountry]!
-                    .map((d) => DropdownMenuItem(value: d, child: Text(d)))
+                menuMaxHeight: 300,
+                isExpanded: true,
+                items: eventDistrictsByCountry[selectedCountry]!
+                    .map(
+                      (district) => DropdownMenuItem(
+                        value: district,
+                        child: Text(district),
+                      ),
+                    )
                     .toList(),
-                onChanged: (v) => setState(() {
-                  selectedDistrict = v;
+                onChanged: (value) => setState(() {
+                  selectedDistrict = value;
                   selectedCity = null;
                 }),
               ),
@@ -403,12 +403,17 @@ class _CreateEventPageState extends State<CreateEventPage> {
             if (selectedDistrict != null) ...[
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
-                decoration: const InputDecoration(labelText: "City"),
+                decoration: const InputDecoration(labelText: 'City'),
                 value: selectedCity,
-                items: cities[selectedDistrict]!
-                    .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                menuMaxHeight: 300,
+                isExpanded: true,
+                items: eventCitiesByDistrict[selectedDistrict]!
+                    .map(
+                      (city) =>
+                          DropdownMenuItem(value: city, child: Text(city)),
+                    )
                     .toList(),
-                onChanged: (v) => setState(() => selectedCity = v),
+                onChanged: (value) => setState(() => selectedCity = value),
               ),
             ],
           ],
