@@ -114,11 +114,11 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 6,
-                          crossAxisSpacing: 8,
-                          mainAxisSpacing: 8,
-                        ),
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 6,
+                              crossAxisSpacing: 8,
+                              mainAxisSpacing: 8,
+                            ),
                         itemCount: 18,
                         itemBuilder: (context, index) {
                           final goal = index + 1;
@@ -184,10 +184,10 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                         items: eventCountries
                             .map(
                               (country) => DropdownMenuItem(
-                            value: country,
-                            child: Text(country),
-                          ),
-                        )
+                                value: country,
+                                child: Text(country),
+                              ),
+                            )
                             .toList(),
                         onChanged: (value) {
                           setState(() {
@@ -211,10 +211,10 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                           items: eventDistrictsByCountry[selectedCountry]!
                               .map(
                                 (district) => DropdownMenuItem(
-                              value: district,
-                              child: Text(district),
-                            ),
-                          )
+                                  value: district,
+                                  child: Text(district),
+                                ),
+                              )
                               .toList(),
                           onChanged: (value) {
                             setState(() {
@@ -235,10 +235,10 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                           items: eventCitiesByDistrict[selectedDistrict]!
                               .map(
                                 (city) => DropdownMenuItem(
-                              value: city,
-                              child: Text(city),
-                            ),
-                          )
+                                  value: city,
+                                  child: Text(city),
+                                ),
+                              )
                               .toList(),
                           onChanged: (value) {
                             setState(() {

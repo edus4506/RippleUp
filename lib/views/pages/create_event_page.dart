@@ -204,10 +204,10 @@ class _CreateEventPageState extends State<CreateEventPage> {
                 Expanded(
                   child: Slider(
                     value:
-                    (_maxUsersController.text.isEmpty
-                        ? 0
-                        : int.parse(_maxUsersController.text))
-                        .toDouble(),
+                        (_maxUsersController.text.isEmpty
+                                ? 0
+                                : int.parse(_maxUsersController.text))
+                            .toDouble(),
                     min: 0,
                     max: 50,
                     divisions: 50,
@@ -367,11 +367,9 @@ class _CreateEventPageState extends State<CreateEventPage> {
               isExpanded: true,
               items: eventCountries
                   .map(
-                    (country) => DropdownMenuItem(
-                  value: country,
-                  child: Text(country),
-                ),
-              )
+                    (country) =>
+                        DropdownMenuItem(value: country, child: Text(country)),
+                  )
                   .toList(),
               onChanged: (value) => setState(() {
                 selectedCountry = value;
@@ -390,10 +388,10 @@ class _CreateEventPageState extends State<CreateEventPage> {
                 items: eventDistrictsByCountry[selectedCountry]!
                     .map(
                       (district) => DropdownMenuItem(
-                    value: district,
-                    child: Text(district),
-                  ),
-                )
+                        value: district,
+                        child: Text(district),
+                      ),
+                    )
                     .toList(),
                 onChanged: (value) => setState(() {
                   selectedDistrict = value;
@@ -411,11 +409,9 @@ class _CreateEventPageState extends State<CreateEventPage> {
                 isExpanded: true,
                 items: eventCitiesByDistrict[selectedDistrict]!
                     .map(
-                      (city) => DropdownMenuItem(
-                    value: city,
-                    child: Text(city),
-                  ),
-                )
+                      (city) =>
+                          DropdownMenuItem(value: city, child: Text(city)),
+                    )
                     .toList(),
                 onChanged: (value) => setState(() => selectedCity = value),
               ),

@@ -1,8 +1,6 @@
 const String portugalCountry = 'Portugal';
 
-const List<String> eventCountries = [
-  portugalCountry,
-];
+const List<String> eventCountries = [portugalCountry];
 
 const List<String> portugalDistricts = [
   'Aveiro',
