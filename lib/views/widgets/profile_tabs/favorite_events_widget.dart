@@ -43,9 +43,7 @@ class FavoriteEventsWidget extends StatelessWidget {
         final events = snapshot.data ?? [];
 
         if (events.isEmpty) {
-          return const Center(
-            child: Text('No favorite events.'),
-          );
+          return const Center(child: Text('No favorite events.'));
         }
 
         return ListView.builder(

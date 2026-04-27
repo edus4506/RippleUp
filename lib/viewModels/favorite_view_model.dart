@@ -47,10 +47,7 @@ class FavoriteViewModel extends ChangeNotifier {
       errorMessage = null;
       notifyListeners();
 
-      await _favoriteRepository.addFavorite(
-        userId: userId,
-        eventId: eventId,
-      );
+      await _favoriteRepository.addFavorite(userId: userId, eventId: eventId);
 
       return true;
     } catch (e) {

@@ -17,10 +17,7 @@ class ProfileImageService {
 
     if (kIsWeb) {
       final bytes = await file.readAsBytes();
-      return await _storageRepository.uploadBytes(
-        path: path,
-        bytes: bytes,
-      );
+      return await _storageRepository.uploadBytes(path: path, bytes: bytes);
     } else {
       return await _storageRepository.uploadFile(
         path: path,

@@ -1,7 +1,7 @@
 class EnvironmentGoals {
   final String id;
   final String title;
-  final String imageUrl; 
+  final String imageUrl;
 
   EnvironmentGoals({
     required this.id,
@@ -9,7 +9,10 @@ class EnvironmentGoals {
     required this.imageUrl,
   });
 
-  factory EnvironmentGoals.fromMap(Map<String, dynamic> map, String documentId) {
+  factory EnvironmentGoals.fromMap(
+    Map<String, dynamic> map,
+    String documentId,
+  ) {
     return EnvironmentGoals(
       id: documentId,
       title: map['title'] ?? '',
@@ -17,10 +20,8 @@ class EnvironmentGoals {
     );
   }
 
-  Map<String, dynamic> toMap() { //probably wont be used, we only want to make gets, not posts to the db
-    return {
-      'title': title,
-      'image_url' : imageUrl
-    };
+  Map<String, dynamic> toMap() {
+    //probably wont be used, we only want to make gets, not posts to the db
+    return {'title': title, 'image_url': imageUrl};
   }
 }

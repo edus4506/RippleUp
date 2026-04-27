@@ -14,19 +14,32 @@ import 'package:t5/viewModels/user_view_model.dart';
 import 'package:t5/views/dialogs/event_details_dialog.dart';
 
 class MockAuthViewModel extends Mock implements AuthViewModel {}
+
 class MockEventViewModel extends Mock implements EventViewModel {}
+
 class MockUserViewModel extends Mock implements UserViewModel {}
+
 class MockFirebaseUser extends Mock implements User {}
+
 class FakeFavoriteRepository implements FavoriteRepository {
   @override
-  Stream<bool> isEventFavorited({required String userId, required String eventId}) =>
-      Stream.value(false);
+  Stream<bool> isEventFavorited({
+    required String userId,
+    required String eventId,
+  }) => Stream.value(false);
   @override
-  Future<void> addFavorite({required String userId, required String eventId}) async {}
+  Future<void> addFavorite({
+    required String userId,
+    required String eventId,
+  }) async {}
   @override
-  Future<void> removeFavorite({required String userId, required String eventId}) async {}
+  Future<void> removeFavorite({
+    required String userId,
+    required String eventId,
+  }) async {}
   @override
-  Stream<List<Favorite>> listenToUserFavorites(String userId) => Stream.value([]);
+  Stream<List<Favorite>> listenToUserFavorites(String userId) =>
+      Stream.value([]);
 }
 
 Event buildEvent({
@@ -67,9 +80,7 @@ Widget buildTestable({
         create: (_) => FavoriteViewModel(FakeFavoriteRepository()),
       ),
     ],
-    child: MaterialApp(
-      home: EventDetailsDialog(event: event),
-    ),
+    child: MaterialApp(home: EventDetailsDialog(event: event)),
   );
 }
 
@@ -108,10 +119,12 @@ void main() {
       ),
     );
 
-    when(() => eventVm.isUserInEvent(
-          eventId: any(named: 'eventId'),
-          userId: any(named: 'userId'),
-        )).thenAnswer((_) => Stream.value(false));
+    when(
+      () => eventVm.isUserInEvent(
+        eventId: any(named: 'eventId'),
+        userId: any(named: 'userId'),
+      ),
+    ).thenAnswer((_) => Stream.value(false));
   });
 
   testWidgets('shows join button', (tester) async {

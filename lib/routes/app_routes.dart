@@ -9,8 +9,8 @@ class AppRoutes {
   static const String register = '/register';
 
   static Map<String, WidgetBuilder> routes = {
-    home: (context) => const HomePage(), 
+    home: (context) => const HomePage(),
     login: (context) => const LoginPage(),
-    register: (context) => const RegisterPage()
+    register: (context) => const RegisterPage(),
   };
 }

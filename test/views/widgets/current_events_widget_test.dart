@@ -17,7 +17,9 @@ import 'package:t5/viewModels/user_view_model.dart';
 import 'package:t5/views/widgets/profile_tabs/current_events_widget.dart';
 
 class MockAuthViewModel extends Mock implements AuthViewModel {}
+
 class MockFirebaseUser extends Mock implements User {}
+
 class MockUserRepository extends Mock implements UserRepository {}
 
 class FakeParticipationRepository implements ParticipationRepository {
@@ -40,24 +42,41 @@ class FakeEventRepository implements EventRepository {
   @override
   Future<void> deleteEvent(String eventId) async {}
   @override
-  Future<void> joinEvent({required String eventId, required String userId}) async {}
+  Future<void> joinEvent({
+    required String eventId,
+    required String userId,
+  }) async {}
   @override
-  Future<void> leaveEvent({required String eventId, required String userId}) async {}
+  Future<void> leaveEvent({
+    required String eventId,
+    required String userId,
+  }) async {}
   @override
-  Stream<bool> isUserInEvent({required String eventId, required String userId}) =>
-      Stream.value(false);
+  Stream<bool> isUserInEvent({
+    required String eventId,
+    required String userId,
+  }) => Stream.value(false);
 }
 
 class FakeFavoriteRepository implements FavoriteRepository {
   @override
-  Stream<bool> isEventFavorited({required String userId, required String eventId}) =>
-      Stream.value(false);
+  Stream<bool> isEventFavorited({
+    required String userId,
+    required String eventId,
+  }) => Stream.value(false);
   @override
-  Future<void> addFavorite({required String userId, required String eventId}) async {}
+  Future<void> addFavorite({
+    required String userId,
+    required String eventId,
+  }) async {}
   @override
-  Future<void> removeFavorite({required String userId, required String eventId}) async {}
+  Future<void> removeFavorite({
+    required String userId,
+    required String eventId,
+  }) async {}
   @override
-  Stream<List<Favorite>> listenToUserFavorites(String userId) => Stream.value([]);
+  Stream<List<Favorite>> listenToUserFavorites(String userId) =>
+      Stream.value([]);
 }
 
 Event buildEvent({
@@ -88,19 +107,21 @@ Widget buildTestable({
   required EventRepository eventRepo,
 }) {
   final userRepo = MockUserRepository();
-  when(() => userRepo.listenToUser(any())).thenAnswer((_) => const Stream.empty());
+  when(
+    () => userRepo.listenToUser(any()),
+  ).thenAnswer((_) => const Stream.empty());
 
   return MultiProvider(
     providers: [
       ChangeNotifierProvider<AuthViewModel>.value(value: auth),
       Provider<ParticipationRepository>.value(value: participationRepo),
       ChangeNotifierProvider(create: (_) => EventViewModel(eventRepo)),
-      ChangeNotifierProvider(create: (_) => FavoriteViewModel(FakeFavoriteRepository())),
+      ChangeNotifierProvider(
+        create: (_) => FavoriteViewModel(FakeFavoriteRepository()),
+      ),
       ChangeNotifierProvider(create: (_) => UserViewModel(userRepo)),
     ],
-    child: const MaterialApp(
-      home: Scaffold(body: CurrentEventsWidget()),
-    ),
+    child: const MaterialApp(home: Scaffold(body: CurrentEventsWidget())),
   );
 }
 
@@ -118,12 +139,16 @@ void main() {
     when(() => firebaseUser.uid).thenReturn('user-1');
   });
 
-  testWidgets('shows empty message when user has no joined events', (tester) async {
-    await tester.pumpWidget(buildTestable(
-      auth: authVm,
-      participationRepo: FakeParticipationRepository([]),
-      eventRepo: FakeEventRepository([]),
-    ));
+  testWidgets('shows empty message when user has no joined events', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildTestable(
+        auth: authVm,
+        participationRepo: FakeParticipationRepository([]),
+        eventRepo: FakeEventRepository([]),
+      ),
+    );
 
     await tester.pumpAndSettle();
 
@@ -149,11 +174,13 @@ void main() {
       Participation(id: 'e2_user-1', idUser: 'user-1', idEvent: 'e2'),
     ];
 
-    await tester.pumpWidget(buildTestable(
-      auth: authVm,
-      participationRepo: FakeParticipationRepository(participations),
-      eventRepo: FakeEventRepository([event1, event2]),
-    ));
+    await tester.pumpWidget(
+      buildTestable(
+        auth: authVm,
+        participationRepo: FakeParticipationRepository(participations),
+        eventRepo: FakeEventRepository([event1, event2]),
+      ),
+    );
 
     await tester.pumpAndSettle();
 
@@ -183,11 +210,13 @@ void main() {
       Participation(id: 'e1_user-1', idUser: 'user-1', idEvent: 'e1'),
     ];
 
-    await tester.pumpWidget(buildTestable(
-      auth: authVm,
-      participationRepo: FakeParticipationRepository(participations),
-      eventRepo: FakeEventRepository([joinedEvent, otherEvent]),
-    ));
+    await tester.pumpWidget(
+      buildTestable(
+        auth: authVm,
+        participationRepo: FakeParticipationRepository(participations),
+        eventRepo: FakeEventRepository([joinedEvent, otherEvent]),
+      ),
+    );
 
     await tester.pumpAndSettle();
 

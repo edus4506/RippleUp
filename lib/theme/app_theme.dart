@@ -4,7 +4,6 @@ import 'palette.dart';
 class AppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
-      
       colorScheme: ColorScheme.light(
         primary: Palette.primary,
         secondary: Palette.secondary,
@@ -33,10 +32,7 @@ class AppTheme {
         shadowColor: Colors.black.withOpacity(0.08),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18),
-          side: BorderSide(
-            color: Palette.border,
-            width: 1,
-          ),
+          side: BorderSide(color: Palette.border, width: 1),
         ),
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       ),
@@ -48,10 +44,7 @@ class AppTheme {
           fontWeight: FontWeight.bold,
           color: Palette.textPrimary,
         ),
-        bodyMedium: TextStyle(
-          fontSize: 14,
-          color: Palette.textSecondary,
-        ),
+        bodyMedium: TextStyle(fontSize: 14, color: Palette.textSecondary),
         labelMedium: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.bold,
@@ -86,14 +79,9 @@ class AppTheme {
           borderSide: BorderSide(color: Palette.inputBorder),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Palette.primary,
-            width: 2,
-          ),
+          borderSide: BorderSide(color: Palette.primary, width: 2),
         ),
-        labelStyle: TextStyle(
-          color: Palette.textSecondary,
-        ),
+        labelStyle: TextStyle(color: Palette.textSecondary),
       ),
 
       /// Buttons
@@ -109,9 +97,7 @@ class AppTheme {
       ),
 
       /// Icons
-      iconTheme: const IconThemeData(
-        color: Palette.accent,
-      ),
+      iconTheme: const IconThemeData(color: Palette.accent),
 
       /// Sliders
       sliderTheme: SliderThemeData(

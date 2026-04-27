@@ -48,17 +48,27 @@ class FakeEventRepository implements EventRepository {
 
 class FakeFavoriteRepository implements FavoriteRepository {
   @override
-  Stream<bool> isEventFavorited({required String userId, required String eventId}) =>
-      Stream.value(false);
+  Stream<bool> isEventFavorited({
+    required String userId,
+    required String eventId,
+  }) => Stream.value(false);
   @override
-  Future<void> addFavorite({required String userId, required String eventId}) async {}
+  Future<void> addFavorite({
+    required String userId,
+    required String eventId,
+  }) async {}
   @override
-  Future<void> removeFavorite({required String userId, required String eventId}) async {}
+  Future<void> removeFavorite({
+    required String userId,
+    required String eventId,
+  }) async {}
   @override
-  Stream<List<Favorite>> listenToUserFavorites(String userId) => Stream.value([]);
+  Stream<List<Favorite>> listenToUserFavorites(String userId) =>
+      Stream.value([]);
 }
 
 class MockAuthViewModel extends Mock implements AuthViewModel {}
+
 class MockFirebaseUser extends Mock implements User {}
 
 void main() {
@@ -86,9 +96,7 @@ void main() {
           create: (_) => FavoriteViewModel(FakeFavoriteRepository()),
         ),
       ],
-      child: const MaterialApp(
-        home: HomePage(),
-      ),
+      child: const MaterialApp(home: HomePage()),
     );
   }
 

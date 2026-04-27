@@ -23,21 +23,18 @@ class UserRepository {
     });
   }
 
-  Future<void> createUser({
-    required String uid,
-    required Users user,
-  }) async {
+  Future<void> createUser({required String uid, required Users user}) async {
     await _db.collection('users').doc(uid).set(user.toMap());
   }
 
-
-  Future<void> softDeleteUser({
-    required String uid,
-  }) async {
-    Users defaultUser = Users(name: "deletedUser", email: "deletedUser@gmail.com", profilePictureUrl: "");
+  Future<void> softDeleteUser({required String uid}) async {
+    Users defaultUser = Users(
+      name: "deletedUser",
+      email: "deletedUser@gmail.com",
+      profilePictureUrl: "",
+    );
     await _db.collection('users').doc(uid).update(defaultUser.toMap());
   }
-
 
   Future<void> updateUser({
     required String uid,

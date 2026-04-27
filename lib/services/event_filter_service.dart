@@ -5,14 +5,11 @@ import 'event_filter.dart';
 class EventFilterService {
   static List<Event> apply(List<Event> events, EventFilter filter) {
     return events.where((event) {
-
-      if (filter.hideFull &&
-          event.currentUsers >= event.maxUsers) {
+      if (filter.hideFull && event.currentUsers >= event.maxUsers) {
         return false;
       }
 
-      if (!filter.showDone &&
-          event.status == EventStatus.done) {
+      if (!filter.showDone && event.status == EventStatus.done) {
         return false;
       }
 
@@ -23,13 +20,11 @@ class EventFilterService {
         if (!hasMatch) return false;
       }
 
-      if (filter.minCapacity != null &&
-          event.maxUsers < filter.minCapacity!) {
+      if (filter.minCapacity != null && event.maxUsers < filter.minCapacity!) {
         return false;
       }
 
-      if (filter.maxCapacity != null &&
-          event.maxUsers > filter.maxCapacity!) {
+      if (filter.maxCapacity != null && event.maxUsers > filter.maxCapacity!) {
         return false;
       }
 
@@ -43,18 +38,15 @@ class EventFilterService {
         return false;
       }
 
-      if (filter.country != null &&
-          event.country != filter.country) {
+      if (filter.country != null && event.country != filter.country) {
         return false;
       }
 
-      if (filter.district != null &&
-          event.district != filter.district) {
+      if (filter.district != null && event.district != filter.district) {
         return false;
       }
 
-      if (filter.city != null &&
-          event.city != filter.city) {
+      if (filter.city != null && event.city != filter.city) {
         return false;
       }
 

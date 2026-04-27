@@ -16,7 +16,8 @@ class EventDetailsDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userId = context.watch<AuthViewModel>().currentUser?.uid;
-    final isLocked = event.status == EventStatus.occurring ||
+    final isLocked =
+        event.status == EventStatus.occurring ||
         event.status == EventStatus.done;
 
     return AlertDialog(
@@ -29,7 +30,9 @@ class EventDetailsDialog extends StatelessWidget {
             // Creator info
             if (userId != null)
               StreamBuilder(
-                stream: context.read<UserViewModel>().userStream(event.idCreator),
+                stream: context.read<UserViewModel>().userStream(
+                  event.idCreator,
+                ),
                 builder: (context, snapshot) {
                   final creatorName = snapshot.data?.name ?? '...';
                   return Text('Created by: $creatorName');
@@ -79,9 +82,9 @@ class EventDetailsDialog extends StatelessWidget {
             if (userId != null)
               StreamBuilder<bool>(
                 stream: context.read<FavoriteViewModel>().isEventFavorited(
-                      userId: userId,
-                      eventId: event.id,
-                    ),
+                  userId: userId,
+                  eventId: event.id,
+                ),
                 builder: (context, snapshot) {
                   final isFav = snapshot.data ?? false;
                   return IconButton(
@@ -92,11 +95,9 @@ class EventDetailsDialog extends StatelessWidget {
                     onPressed: () {
                       final favVm = context.read<FavoriteViewModel>();
                       if (isFav) {
-                        favVm.removeFavorite(
-                            userId: userId, eventId: event.id);
+                        favVm.removeFavorite(userId: userId, eventId: event.id);
                       } else {
-                        favVm.addFavorite(
-                            userId: userId, eventId: event.id);
+                        favVm.addFavorite(userId: userId, eventId: event.id);
                       }
                     },
                   );
@@ -105,9 +106,7 @@ class EventDetailsDialog extends StatelessWidget {
           ],
         ),
       ),
-      actions: [
-        _Actions(event: event, userId: userId, isLocked: isLocked),
-      ],
+      actions: [_Actions(event: event, userId: userId, isLocked: isLocked)],
     );
   }
 }
@@ -142,9 +141,9 @@ class _Actions extends StatelessWidget {
         if (!isCreator)
           StreamBuilder<bool>(
             stream: context.read<EventViewModel>().isUserInEvent(
-                  eventId: event.id,
-                  userId: userId!,
-                ),
+              eventId: event.id,
+              userId: userId!,
+            ),
             builder: (context, snapshot) {
               final isIn = snapshot.data ?? false;
 
@@ -194,8 +193,7 @@ class _Actions extends StatelessWidget {
                 ? null
                 : () async {
                     final vm = context.read<EventViewModel>();
-                    final success =
-                        await vm.deleteEvent(event.id);
+                    final success = await vm.deleteEvent(event.id);
 
                     if (!context.mounted) return;
 

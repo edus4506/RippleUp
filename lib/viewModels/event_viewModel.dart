@@ -13,8 +13,7 @@ class EventViewModel extends ChangeNotifier {
   bool isLoading = false;
   String? errorMessage;
 
-  Stream<List<Event>> get eventsStream =>
-      _eventRepository.listenToEvents();
+  Stream<List<Event>> get eventsStream => _eventRepository.listenToEvents();
 
   EventFilter _filter = const EventFilter();
 
@@ -67,15 +66,11 @@ class EventViewModel extends ChangeNotifier {
       errorMessage = null;
       notifyListeners();
 
-      await _eventRepository.joinEvent(
-        eventId: eventId,
-        userId: userId,
-      );
+      await _eventRepository.joinEvent(eventId: eventId, userId: userId);
 
       return true;
     } catch (e) {
-      errorMessage =
-          e.toString().replaceFirst('Exception: ', '');
+      errorMessage = e.toString().replaceFirst('Exception: ', '');
       return false;
     } finally {
       isLoading = false;
@@ -92,15 +87,11 @@ class EventViewModel extends ChangeNotifier {
       errorMessage = null;
       notifyListeners();
 
-      await _eventRepository.leaveEvent(
-        eventId: eventId,
-        userId: userId,
-      );
+      await _eventRepository.leaveEvent(eventId: eventId, userId: userId);
 
       return true;
     } catch (e) {
-      errorMessage =
-          e.toString().replaceFirst('Exception: ', '');
+      errorMessage = e.toString().replaceFirst('Exception: ', '');
       return false;
     } finally {
       isLoading = false;
@@ -112,10 +103,7 @@ class EventViewModel extends ChangeNotifier {
     required String eventId,
     required String userId,
   }) {
-    return _eventRepository.isUserInEvent(
-      eventId: eventId,
-      userId: userId,
-    );
+    return _eventRepository.isUserInEvent(eventId: eventId, userId: userId);
   }
 
   Future<bool> deleteEvent(String eventId) async {
@@ -128,8 +116,7 @@ class EventViewModel extends ChangeNotifier {
 
       return true;
     } catch (e) {
-      errorMessage =
-          e.toString().replaceFirst('Exception: ', '');
+      errorMessage = e.toString().replaceFirst('Exception: ', '');
       return false;
     } finally {
       isLoading = false;

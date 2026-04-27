@@ -23,7 +23,6 @@ class ProfileViewModel extends ChangeNotifier {
       if (firebaseUser == null) return;
 
       user = await _userRepository.getUser(firebaseUser.uid);
-
     } catch (e) {
       print("ProfileVM error: $e");
     } finally {
@@ -50,17 +49,13 @@ class ProfileViewModel extends ChangeNotifier {
       final firebaseUser = FirebaseAuth.instance.currentUser;
       if (firebaseUser == null) return;
 
-      Users? currentUser =
-          await _userRepository.getUser(firebaseUser.uid);
+      Users? currentUser = await _userRepository.getUser(firebaseUser.uid);
 
       if (currentUser == null) return;
 
       if (profilePicture != null) {
-        currentUser.profilePictureUrl =
-            await _profileImageService.uploadProfileImage(
-          userId: firebaseUser.uid,
-          file: profilePicture,
-        );
+        currentUser.profilePictureUrl = await _profileImageService
+            .uploadProfileImage(userId: firebaseUser.uid, file: profilePicture);
       }
 
       if (updatedUser != null) {
@@ -75,7 +70,6 @@ class ProfileViewModel extends ChangeNotifier {
         uid: firebaseUser.uid,
         updatedUser: currentUser,
       );
-
     } catch (e) {
       print("ProfileVM error: $e");
     } finally {

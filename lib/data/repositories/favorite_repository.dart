@@ -37,8 +37,10 @@ class FavoriteRepository {
         .collection('favorites')
         .where('idUser', isEqualTo: userId)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => Favorite.fromMap(doc.data(), doc.id))
-            .toList());
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => Favorite.fromMap(doc.data(), doc.id))
+              .toList(),
+        );
   }
 }

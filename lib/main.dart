@@ -31,9 +31,7 @@ void main() async {
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpyeWVkYmtxaGZpdGdzbXBtYWpjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1OTkwNTYsImV4cCI6MjA5MTE3NTA1Nn0.TnL2cVCFWeSIids6M38f-ed3YQKcHoPzyCW9DojACk8',
   );
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(
     MultiProvider(
@@ -45,8 +43,7 @@ void main() async {
         Provider(create: (_) => ParticipationRepository()),
 
         ProxyProvider<StorageRepository, ProfileImageService>(
-          update: (_, storageRepo, __) =>
-              ProfileImageService(storageRepo),
+          update: (_, storageRepo, __) => ProfileImageService(storageRepo),
         ),
 
         ChangeNotifierProvider(
@@ -64,21 +61,16 @@ void main() async {
         ),
 
         ChangeNotifierProvider(
-          create: (context) => EventViewModel(
-            context.read<EventRepository>(),
-          ),
+          create: (context) => EventViewModel(context.read<EventRepository>()),
         ),
 
         ChangeNotifierProvider(
-          create: (context) => UserViewModel(
-            context.read<UserRepository>(),
-          ),
+          create: (context) => UserViewModel(context.read<UserRepository>()),
         ),
 
         ChangeNotifierProvider(
-          create: (context) => FavoriteViewModel(
-            context.read<FavoriteRepository>(),
-          ),
+          create: (context) =>
+              FavoriteViewModel(context.read<FavoriteRepository>()),
         ),
       ],
       child: const MyApp(),

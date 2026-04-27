@@ -32,13 +32,11 @@ class FakeRepo implements EventRepository {
   Stream<bool> isUserInEvent({
     required String eventId,
     required String userId,
-  }) =>
-      Stream.value(false);
+  }) => Stream.value(false);
 }
 
 void main() {
   testWidgets('EventFilterDialog opens and shows UI', (tester) async {
-
     await tester.binding.setSurfaceSize(const Size(1200, 2000));
 
     await tester.pumpWidget(
@@ -68,7 +66,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Filters'), findsOneWidget);
-  expect(find.text('Apply'), findsOneWidget);
-  expect(find.text('Cancel'), findsOneWidget);
+    expect(find.text('Apply'), findsOneWidget);
+    expect(find.text('Cancel'), findsOneWidget);
   });
 }
