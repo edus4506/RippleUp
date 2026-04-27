@@ -20,24 +20,15 @@ class StorageRepository {
     return _client.storage.from('profile-images').getPublicUrl(path);
   }
 
-  Future<String> uploadFile({
-    required String path,
-    required File file,
-  }) async {
+  Future<String> uploadFile({required String path, required File file}) async {
     await _client.storage
         .from('profile-images')
-        .upload(
-          path,
-          file,
-          fileOptions: const FileOptions(upsert: true),
-        );
+        .upload(path, file, fileOptions: const FileOptions(upsert: true));
 
     return _client.storage.from('profile-images').getPublicUrl(path);
   }
 
-  Future<void> deleteProfilePicture({
-    required String uuid,
-  }) async {
+  Future<void> deleteProfilePicture({required String uuid}) async {
     final bucket = _client.storage.from('profile-images');
 
     final folderPath = 'profile-images/$uuid';
@@ -46,8 +37,7 @@ class StorageRepository {
 
     if (files.isEmpty) return;
 
-    final paths =
-        files.map((file) => '$folderPath/${file.name}').toList();
+    final paths = files.map((file) => '$folderPath/${file.name}').toList();
 
     await bucket.remove(paths);
   }

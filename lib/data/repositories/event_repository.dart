@@ -7,15 +7,13 @@ class EventRepository {
 
   Future<void> createEvent(Event event) async {
     final eventRef = _db.collection('events').doc();
-    final participationRef =
-        _db.collection('participations').doc('${eventRef.id}_${event.idCreator}');
+    final participationRef = _db
+        .collection('participations')
+        .doc('${eventRef.id}_${event.idCreator}');
 
     final batch = _db.batch();
 
-    batch.set(eventRef, {
-      ...event.toMap(),
-      'currentUsers': 1,
-    });
+    batch.set(eventRef, {...event.toMap(), 'currentUsers': 1});
 
     batch.set(participationRef, {
       'idUser': event.idCreator,
@@ -26,7 +24,10 @@ class EventRepository {
   }
 
   Stream<List<Event>> listenToEvents() {
-    return _db.collection('events').snapshots().map(
+    return _db
+        .collection('events')
+        .snapshots()
+        .map(
           (snapshot) => snapshot.docs
               .map((doc) => Event.fromMap(doc.data(), doc.id))
               .toList(),
@@ -38,8 +39,9 @@ class EventRepository {
     required String userId,
   }) async {
     final eventRef = _db.collection('events').doc(eventId);
-    final participationRef =
-        _db.collection('participations').doc('${eventId}_$userId');
+    final participationRef = _db
+        .collection('participations')
+        .doc('${eventId}_$userId');
 
     await _db.runTransaction((transaction) async {
       final eventSnap = await transaction.get(eventRef);
@@ -54,7 +56,9 @@ class EventRepository {
 
       if (event.status == EventStatus.occurring ||
           event.status == EventStatus.done) {
-        throw Exception('Cannot join an event that is already ongoing or finished');
+        throw Exception(
+          'Cannot join an event that is already ongoing or finished',
+        );
       }
 
       if (participationSnap.exists) {
@@ -68,14 +72,9 @@ class EventRepository {
         throw Exception('Event is full');
       }
 
-      transaction.set(participationRef, {
-        'idUser': userId,
-        'idEvent': eventId,
-      });
+      transaction.set(participationRef, {'idUser': userId, 'idEvent': eventId});
 
-      transaction.update(eventRef, {
-        'currentUsers': currentUsers + 1,
-      });
+      transaction.update(eventRef, {'currentUsers': currentUsers + 1});
     });
   }
 
@@ -95,8 +94,9 @@ class EventRepository {
     required String userId,
   }) async {
     final eventRef = _db.collection('events').doc(eventId);
-    final participationRef =
-        _db.collection('participations').doc('${eventId}_$userId');
+    final participationRef = _db
+        .collection('participations')
+        .doc('${eventId}_$userId');
 
     await _db.runTransaction((transaction) async {
       final eventSnap = await transaction.get(eventRef);
@@ -110,7 +110,9 @@ class EventRepository {
 
       if (event.status == EventStatus.occurring ||
           event.status == EventStatus.done) {
-        throw Exception('Cannot leave an event that is already ongoing or finished');
+        throw Exception(
+          'Cannot leave an event that is already ongoing or finished',
+        );
       }
 
       if (!participationSnap.exists) {
@@ -140,7 +142,9 @@ class EventRepository {
 
     if (event.status == EventStatus.occurring ||
         event.status == EventStatus.done) {
-      throw Exception('Cannot delete an event that is already ongoing or finished');
+      throw Exception(
+        'Cannot delete an event that is already ongoing or finished',
+      );
     }
 
     final participations = await _db

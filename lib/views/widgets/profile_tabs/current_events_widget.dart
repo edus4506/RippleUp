@@ -57,13 +57,16 @@ class CurrentEventsWidget extends StatelessWidget {
 
             final allEvents = eventSnap.data ?? [];
 
-            final activeEvents = allEvents
-                .where((e) =>
-                    joinedIds.contains(e.id) &&
-                    (e.status == EventStatus.planning ||
-                        e.status == EventStatus.occurring))
-                .toList()
-              ..sort((a, b) => a.startDate.compareTo(b.startDate));
+            final activeEvents =
+                allEvents
+                    .where(
+                      (e) =>
+                          joinedIds.contains(e.id) &&
+                          (e.status == EventStatus.planning ||
+                              e.status == EventStatus.occurring),
+                    )
+                    .toList()
+                  ..sort((a, b) => a.startDate.compareTo(b.startDate));
 
             if (activeEvents.isEmpty) {
               return const Center(

@@ -6,20 +6,18 @@ class EventEnvGoals {
   EventEnvGoals({
     required this.id,
     required this.idEvent,
-    required this.idEnvGoal
+    required this.idEnvGoal,
   });
 
   factory EventEnvGoals.fromMap(Map<String, dynamic> map, String documentId) {
     return EventEnvGoals(
       id: documentId,
       idEvent: map['idEvent'] ?? '',
-      idEnvGoal: map['idEnvGoal'] ?? '',    );
+      idEnvGoal: map['idEnvGoal'] ?? '',
+    );
   }
 
   Map<String, dynamic> toMap() {
-    return {
-      'idEvent': idEvent,
-      'idEnvGoal': idEnvGoal,
-    };
+    return {'idEvent': idEvent, 'idEnvGoal': idEnvGoal};
   }
 }

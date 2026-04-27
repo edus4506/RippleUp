@@ -17,10 +17,7 @@ class EventsPage extends StatelessWidget {
   }
 
   void _openFilterModal(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (_) => const EventFilterDialog(),
-    );
+    showDialog(context: context, builder: (_) => const EventFilterDialog());
   }
 
   @override

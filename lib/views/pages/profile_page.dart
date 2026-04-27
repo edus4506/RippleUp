@@ -27,9 +27,9 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget _buildContent() {
     switch (selectedIndex) {
       case 0:
-        return const CurrentEventsWidget();   // to implement
+        return const CurrentEventsWidget(); // to implement
       case 1:
-        return const HistoryEventsWidget();   // to implement
+        return const HistoryEventsWidget(); // to implement
       case 2:
         return const FavoriteEventsWidget();
       default:
@@ -45,12 +45,7 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(
         title: const Text("Profile"),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () {},
-          ),
-        ],
+        actions: [IconButton(icon: const Icon(Icons.menu), onPressed: () {})],
       ),
 
       body: SingleChildScrollView(
@@ -60,11 +55,13 @@ class _ProfilePageState extends State<ProfilePage> {
           children: [
             CircleAvatar(
               radius: 60,
-              backgroundImage: (vm.user?.profilePictureUrl != null &&
+              backgroundImage:
+                  (vm.user?.profilePictureUrl != null &&
                       vm.user!.profilePictureUrl.isNotEmpty)
                   ? NetworkImage(vm.user!.profilePictureUrl)
                   : null,
-              child: (vm.user?.profilePictureUrl == null ||
+              child:
+                  (vm.user?.profilePictureUrl == null ||
                       vm.user!.profilePictureUrl.isEmpty)
                   ? const Icon(Icons.person, size: 80)
                   : null,
@@ -78,7 +75,9 @@ class _ProfilePageState extends State<ProfilePage> {
               Text(
                 vm.user?.name ?? "No name",
                 style: const TextStyle(
-                    fontSize: 24, fontWeight: FontWeight.bold),
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
                 textAlign: TextAlign.center,
               ),
               Text(

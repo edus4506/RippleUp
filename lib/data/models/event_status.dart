@@ -1,8 +1,4 @@
-enum EventStatus {
-  planning,
-  occurring,
-  done,
-}
+enum EventStatus { planning, occurring, done }
 
 extension EventStatusExtension on EventStatus {
   String get text {

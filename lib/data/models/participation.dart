@@ -18,9 +18,6 @@ class Participation {
   }
 
   Map<String, dynamic> toMap() {
-    return {
-      'idUser': idUser,
-      'idEvent': idEvent,
-    };
+    return {'idUser': idUser, 'idEvent': idEvent};
   }
 }

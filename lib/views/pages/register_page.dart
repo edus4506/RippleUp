@@ -56,8 +56,9 @@ class _RegisterPageState extends State<RegisterPage> {
                 radius: 50,
                 backgroundImage: selectedImage != null
                     ? (kIsWeb
-                        ? NetworkImage(selectedImage!.path)
-                        : FileImage(File(selectedImage!.path)) as ImageProvider)
+                          ? NetworkImage(selectedImage!.path)
+                          : FileImage(File(selectedImage!.path))
+                                as ImageProvider)
                     : null,
                 child: selectedImage == null
                     ? const Icon(Icons.camera_alt, size: 40)
@@ -131,7 +132,7 @@ class _RegisterPageState extends State<RegisterPage> {
             TextButton(
               onPressed: () => Navigator.pop(context),
               child: const Text("I already have an account"),
-            )
+            ),
           ],
         ),
       ),

@@ -52,8 +52,7 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
       filter.maxCapacity?.toDouble() ?? 50,
     );
 
-    capacityChanged =
-        filter.minCapacity != null || filter.maxCapacity != null;
+    capacityChanged = filter.minCapacity != null || filter.maxCapacity != null;
 
     currentUsersRange = RangeValues(
       filter.minCurrentUsers?.toDouble() ?? 0,
@@ -61,8 +60,7 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
     );
 
     currentUsersChanged =
-        filter.minCurrentUsers != null ||
-        filter.maxCurrentUsers != null;
+        filter.minCurrentUsers != null || filter.maxCurrentUsers != null;
 
     selectedCountry = filter.country;
     selectedDistrict = filter.district;
@@ -74,9 +72,7 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
     final theme = Theme.of(context);
 
     return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(28),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
       clipBehavior: Clip.antiAlias,
       child: SizedBox(
         height: MediaQuery.of(context).size.height * 0.75,
@@ -130,10 +126,10 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                         physics: const NeverScrollableScrollPhysics(),
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 6,
-                          crossAxisSpacing: 8,
-                          mainAxisSpacing: 8,
-                        ),
+                              crossAxisCount: 6,
+                              crossAxisSpacing: 8,
+                              mainAxisSpacing: 8,
+                            ),
                         itemCount: 18,
                         itemBuilder: (context, index) {
                           final goal = index + 1;
@@ -192,8 +188,7 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                       const SizedBox(height: 10),
 
                       DropdownButtonFormField<String>(
-                        decoration:
-                            const InputDecoration(labelText: "Country"),
+                        decoration: const InputDecoration(labelText: "Country"),
                         value: selectedCountry,
                         items: countries.map((country) {
                           return DropdownMenuItem(
@@ -214,14 +209,17 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
 
                       if (selectedCountry != null)
                         DropdownButtonFormField<String>(
-                          decoration:
-                              const InputDecoration(labelText: "District"),
+                          decoration: const InputDecoration(
+                            labelText: "District",
+                          ),
                           value: selectedDistrict,
                           items: districts[selectedCountry]!
-                              .map((district) => DropdownMenuItem(
-                                    value: district,
-                                    child: Text(district),
-                                  ))
+                              .map(
+                                (district) => DropdownMenuItem(
+                                  value: district,
+                                  child: Text(district),
+                                ),
+                              )
                               .toList(),
                           onChanged: (value) {
                             setState(() {
@@ -235,14 +233,15 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
 
                       if (selectedDistrict != null)
                         DropdownButtonFormField<String>(
-                          decoration:
-                              const InputDecoration(labelText: "City"),
+                          decoration: const InputDecoration(labelText: "City"),
                           value: selectedCity,
                           items: cities[selectedDistrict]!
-                              .map((city) => DropdownMenuItem(
-                                    value: city,
-                                    child: Text(city),
-                                  ))
+                              .map(
+                                (city) => DropdownMenuItem(
+                                  value: city,
+                                  child: Text(city),
+                                ),
+                              )
                               .toList(),
                           onChanged: (value) {
                             setState(() {
@@ -334,16 +333,10 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                     bottomRight: Radius.circular(28),
                   ),
                   boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withAlpha(20),
-                      blurRadius: 6,
-                    ),
+                    BoxShadow(color: Colors.black.withAlpha(20), blurRadius: 6),
                   ],
                   border: Border(
-                    top: BorderSide(
-                      color: Colors.grey.shade300,
-                      width: 0.5,
-                    ),
+                    top: BorderSide(color: Colors.grey.shade300, width: 0.5),
                   ),
                 ),
                 child: Column(
@@ -381,8 +374,7 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                                 borderRadius: BorderRadius.circular(14),
                               ),
                               side: BorderSide(color: Colors.grey.shade400),
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 14),
+                              padding: const EdgeInsets.symmetric(vertical: 14),
                             ),
                             onPressed: () => Navigator.pop(context),
                             child: const Text('Cancel'),
@@ -397,30 +389,29 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(14),
                               ),
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 14),
+                              padding: const EdgeInsets.symmetric(vertical: 14),
                             ),
                             onPressed: () {
                               context.read<EventViewModel>().applyFilters(
-                                    hideFull: hideFull,
-                                    showDone: showDone,
-                                    goals: selectedGoals,
-                                    minCapacity: capacityChanged
-                                        ? capacityRange.start.round()
-                                        : null,
-                                    maxCapacity: capacityChanged
-                                        ? capacityRange.end.round()
-                                        : null,
-                                    minCurrentUsers: currentUsersChanged
-                                        ? currentUsersRange.start.round()
-                                        : null,
-                                    maxCurrentUsers: currentUsersChanged
-                                        ? currentUsersRange.end.round()
-                                        : null,
-                                    country: selectedCountry,
-                                    district: selectedDistrict,
-                                    city: selectedCity,
-                                  );
+                                hideFull: hideFull,
+                                showDone: showDone,
+                                goals: selectedGoals,
+                                minCapacity: capacityChanged
+                                    ? capacityRange.start.round()
+                                    : null,
+                                maxCapacity: capacityChanged
+                                    ? capacityRange.end.round()
+                                    : null,
+                                minCurrentUsers: currentUsersChanged
+                                    ? currentUsersRange.start.round()
+                                    : null,
+                                maxCurrentUsers: currentUsersChanged
+                                    ? currentUsersRange.end.round()
+                                    : null,
+                                country: selectedCountry,
+                                district: selectedDistrict,
+                                city: selectedCity,
+                              );
 
                               Navigator.pop(context);
                             },

@@ -27,11 +27,7 @@ class AuthViewModel extends ChangeNotifier {
       errorMessage = null;
       notifyListeners();
 
-      await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
     } on FirebaseAuthException catch (e) {
       errorMessage = _mapError(e);
     } catch (e) {
@@ -43,38 +39,29 @@ class AuthViewModel extends ChangeNotifier {
   }
 
   Future<void> register(
-      String name,
-      String email,
-      String password,
-      XFile profilePicture) async {
+    String name,
+    String email,
+    String password,
+    XFile profilePicture,
+  ) async {
     try {
       isLoading = true;
       errorMessage = null;
       notifyListeners();
 
-      final firebaseUser =
-          await _auth.createUserWithEmailAndPassword(
+      final firebaseUser = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      final imageUrl =
-          await _profileImageService.uploadProfileImage(
+      final imageUrl = await _profileImageService.uploadProfileImage(
         userId: firebaseUser.user!.uid,
         file: profilePicture,
       );
 
-      Users user = Users(
-        name: name,
-        email: email,
-        profilePictureUrl: imageUrl,
-      );
+      Users user = Users(name: name, email: email, profilePictureUrl: imageUrl);
 
-      await _userRepository.createUser(
-        uid: firebaseUser.user!.uid,
-        user: user,
-      );
-
+      await _userRepository.createUser(uid: firebaseUser.user!.uid, user: user);
     } on FirebaseAuthException catch (e) {
       errorMessage = _mapError(e);
     } finally {
@@ -97,7 +84,6 @@ class AuthViewModel extends ChangeNotifier {
 
       await user.delete();
       await _auth.signOut();
-
     } on FirebaseAuthException catch (e) {
       errorMessage = e.code == 'requires-recent-login'
           ? 'You need to log in again to delete your account'

@@ -73,23 +73,26 @@ void main() {
       expect(repo.receivedUserId, 'user-1');
     });
 
-    test('returns false and sets errorMessage when repository throws', () async {
-      final repo = FakeEventRepository(
-        shouldThrow: true,
-        exceptionMessage: 'Event is full',
-      );
-      final viewModel = EventViewModel(repo);
+    test(
+      'returns false and sets errorMessage when repository throws',
+      () async {
+        final repo = FakeEventRepository(
+          shouldThrow: true,
+          exceptionMessage: 'Event is full',
+        );
+        final viewModel = EventViewModel(repo);
 
-      final result = await viewModel.joinEvent(
-        eventId: 'event-1',
-        userId: 'user-1',
-      );
+        final result = await viewModel.joinEvent(
+          eventId: 'event-1',
+          userId: 'user-1',
+        );
 
-      expect(result, false);
-      expect(viewModel.errorMessage, 'Event is full');
-      expect(viewModel.isLoading, false);
-      expect(repo.receivedEventId, 'event-1');
-      expect(repo.receivedUserId, 'user-1');
-    });
+        expect(result, false);
+        expect(viewModel.errorMessage, 'Event is full');
+        expect(viewModel.isLoading, false);
+        expect(repo.receivedEventId, 'event-1');
+        expect(repo.receivedUserId, 'user-1');
+      },
+    );
   });
 }

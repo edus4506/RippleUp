@@ -7,11 +7,7 @@ class EventCard extends StatelessWidget {
   final Event event;
   final VoidCallback? onTap;
 
-  const EventCard({
-    super.key,
-    required this.event,
-    this.onTap,
-  });
+  const EventCard({super.key, required this.event, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +22,7 @@ class EventCard extends StatelessWidget {
           text: TextSpan(
             style: DefaultTextStyle.of(context).style,
             children: [
-              TextSpan(
-                text: '${event.city}, ${event.district} — ',
-              ),
+              TextSpan(text: '${event.city}, ${event.district} — '),
               TextSpan(
                 text: event.status.text,
                 style: TextStyle(
