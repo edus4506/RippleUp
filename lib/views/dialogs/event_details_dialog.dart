@@ -25,12 +25,7 @@ class EventDetailsDialog extends StatelessWidget {
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(
-            child: Text(
-              event.title,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
+          Expanded(child: Text(event.title, overflow: TextOverflow.ellipsis)),
 
           Row(
             children: [
@@ -50,7 +45,10 @@ class EventDetailsDialog extends StatelessWidget {
                     if (!canOpenChat) return const SizedBox();
 
                     return IconButton(
-                      icon: const Icon(Icons.forum_outlined, color: Colors.lightGreen),
+                      icon: const Icon(
+                        Icons.forum_outlined,
+                        color: Colors.lightGreen,
+                      ),
                       tooltip: "Open Chat",
                       onPressed: () {
                         Navigator.pop(context);
@@ -79,10 +77,7 @@ class EventDetailsDialog extends StatelessWidget {
                     Navigator.pushNamed(
                       context,
                       AppRoutes.feedback,
-                      arguments: {
-                        'eventId': event.id,
-                        'title': event.title,
-                      },
+                      arguments: {'eventId': event.id, 'title': event.title},
                     );
                   },
                 ),
@@ -102,7 +97,9 @@ class EventDetailsDialog extends StatelessWidget {
                         isFav ? Icons.favorite : Icons.favorite_border,
                         color: Colors.red,
                       ),
-                      tooltip: isFav ? "Remove from Favorites" : "Add to Favorites",
+                      tooltip: isFav
+                          ? "Remove from Favorites"
+                          : "Add to Favorites",
                       onPressed: () {
                         final favVm = context.read<FavoriteViewModel>();
 
@@ -112,10 +109,7 @@ class EventDetailsDialog extends StatelessWidget {
                             eventId: event.id,
                           );
                         } else {
-                          favVm.addFavorite(
-                            userId: userId,
-                            eventId: event.id,
-                          );
+                          favVm.addFavorite(userId: userId, eventId: event.id);
                         }
                       },
                     );
@@ -125,7 +119,7 @@ class EventDetailsDialog extends StatelessWidget {
           ),
         ],
       ),
-      
+
       content: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -181,7 +175,6 @@ class EventDetailsDialog extends StatelessWidget {
             ),
 
             const SizedBox(height: 8),
-
           ],
         ),
       ),
@@ -262,11 +255,11 @@ class _Actions extends StatelessWidget {
                             }
                           },
                     child: Text(isIn ? 'Leave' : 'Join'),
-                  ),                
+                  ),
                 ],
               );
             },
-          ),      
+          ),
 
         if (isCreator)
           ElevatedButton(

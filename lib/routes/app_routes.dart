@@ -33,12 +33,10 @@ class AppRoutes {
         final args = settings.arguments as Map;
 
         return MaterialPageRoute(
-          builder: (_) => FeedbackPage(
-            eventId: args['eventId'],
-            title: args['title'],
-          ),
+          builder: (_) =>
+              FeedbackPage(eventId: args['eventId'], title: args['title']),
         );
-      
+
       default:
         return null;
     }

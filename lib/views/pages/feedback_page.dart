@@ -5,18 +5,12 @@ class FeedbackPage extends StatelessWidget {
   final String eventId;
   final String title;
 
-  const FeedbackPage({
-    super.key,
-    required this.eventId,
-    required this.title,
-  });
+  const FeedbackPage({super.key, required this.eventId, required this.title});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("$title Reviews"),
-      ),
+      appBar: AppBar(title: Text("$title Reviews")),
 
       body: Column(
         children: [
@@ -34,10 +28,7 @@ class FeedbackPage extends StatelessWidget {
               children: [
                 const Text(
                   "Average Rating",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
 
                 const SizedBox(height: 8),

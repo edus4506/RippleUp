@@ -27,9 +27,9 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget _buildContent() {
     switch (selectedIndex) {
       case 0:
-        return const CurrentEventsWidget(); 
+        return const CurrentEventsWidget();
       case 1:
-        return const HistoryEventsWidget(); 
+        return const HistoryEventsWidget();
       case 2:
         return const FavoriteEventsWidget();
       default:
@@ -45,7 +45,13 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(
         title: const Text("Profile"),
         centerTitle: true,
-        actions: [IconButton(icon: const Icon(Icons.menu), tooltip: "Settings", onPressed: () {})],
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.menu),
+            tooltip: "Settings",
+            onPressed: () {},
+          ),
+        ],
       ),
 
       body: SingleChildScrollView(
