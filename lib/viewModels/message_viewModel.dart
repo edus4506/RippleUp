@@ -1,9 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:t5/data/models/user.dart';
 import 'package:t5/data/repositories/message_repository.dart';
-import '../../data/repositories/user_repository.dart';
 import '../../data/models/message.dart';
 
 class MessageViewModel extends ChangeNotifier {

@@ -345,7 +345,7 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                         onPressed: () {
                           setState(() {
                             hideFull = false;
-                            showDone = true;
+                            showDone = false;
                             selectedGoals.clear();
                             capacityChanged = false;
                             capacityRange = const RangeValues(0, 50);
