@@ -1,36 +1,33 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+//messages will be within the event at wich they correspond to, so that we can get all of them with one querie
 class Message {
   final String id;
-  final String idEvent;
-  final String idSender;
+  final String senderId;
   final String text;
-  final DateTime dateTime; //this can be precise as a timeStamp? see later
+  final DateTime createdAt;
 
   Message({
     required this.id,
-    required this.idEvent,
-    required this.idSender,
+    required this.senderId,
     required this.text,
-    required this.dateTime,
+    required this.createdAt,
   });
 
   factory Message.fromMap(Map<String, dynamic> map, String documentId) {
     return Message(
       id: documentId,
-      idEvent: map['idEvent'] ?? '',
-      idSender: map['idSender'] ?? '',
+      senderId: map['senderId'] ?? '',
       text: map['text'] ?? '',
-      dateTime: (map['dateTime'] as Timestamp).toDate(),
+      createdAt: (map['createdAt'] as Timestamp).toDate(),
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'idEvent': idEvent,
-      'idSender': idSender,
+      'senderId': senderId,
       'text': text,
-      'dateTime': Timestamp.fromDate(dateTime),
+      'createdAt': Timestamp.fromDate(createdAt),
     };
   }
 }
