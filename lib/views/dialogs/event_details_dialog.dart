@@ -8,7 +8,6 @@ import 'package:t5/viewModels/event_viewModel.dart';
 import 'package:t5/viewModels/favorite_view_model.dart';
 import 'package:t5/viewModels/user_view_model.dart';
 import 'package:t5/theme/event_status_colors.dart';
-import 'package:t5/views/pages/chat_page.dart';
 
 class EventDetailsDialog extends StatelessWidget {
   final Event event;
