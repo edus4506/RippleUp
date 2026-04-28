@@ -6,6 +6,7 @@ import 'package:t5/data/models/message.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class MockMessageRepository extends Mock implements MessageRepository {}
+
 class MockUser extends Mock implements User {}
 
 // 1. Criamos um "Fake" ou usamos uma instância real para o Fallback
@@ -28,10 +29,11 @@ void main() {
   test('Deve chamar createMessage com os dados corretos', () async {
     final mockUser = MockUser();
     when(() => mockUser.uid).thenReturn('user123');
-    
+
     // Agora o any() já sabe como se comportar para o tipo Message
-    when(() => mockRepo.createMessage(any(), any()))
-        .thenAnswer((_) async => {});
+    when(
+      () => mockRepo.createMessage(any(), any()),
+    ).thenAnswer((_) async => {});
 
     await viewModel.sendMessage('eventA', 'Olá!', currentUser: mockUser);
 

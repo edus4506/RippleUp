@@ -10,7 +10,7 @@ class AppRoutes {
   static const String register = '/register';
   static const String chat = '/chat';
 
-  // 
+  //
   static Map<String, WidgetBuilder> routes = {
     home: (context) => const HomePage(),
     login: (context) => const LoginPage(),
@@ -24,10 +24,8 @@ class AppRoutes {
         final args = settings.arguments as Map;
 
         return MaterialPageRoute(
-          builder: (_) => ChatPage(
-            eventId: args['eventId'],
-            title: args['title'],
-          ),
+          builder: (_) =>
+              ChatPage(eventId: args['eventId'], title: args['title']),
         );
 
       default:
@@ -35,4 +33,3 @@ class AppRoutes {
     }
   }
 }
-

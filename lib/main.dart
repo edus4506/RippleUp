@@ -45,7 +45,6 @@ void main() async {
         Provider(create: (_) => ParticipationRepository()),
         Provider(create: (_) => MessageRepository()),
 
-
         ProxyProvider<StorageRepository, ProfileImageService>(
           update: (_, storageRepo, __) => ProfileImageService(storageRepo),
         ),
@@ -78,9 +77,8 @@ void main() async {
         ),
 
         ChangeNotifierProvider(
-          create: (context) => MessageViewModel(
-            context.read<MessageRepository>(),
-          ),
+          create: (context) =>
+              MessageViewModel(context.read<MessageRepository>()),
         ),
       ],
       child: const MyApp(),

@@ -196,9 +196,9 @@ class _Actions extends StatelessWidget {
                           context,
                           AppRoutes.chat,
                           arguments: {
-                            'eventId' : event.id,
+                            'eventId': event.id,
                             'title': event.title,
-                          }
+                          },
                         );
                       },
                       child: const Text("Open Chat"),
@@ -217,16 +217,13 @@ class _Actions extends StatelessWidget {
               Navigator.pushNamed(
                 context,
                 AppRoutes.chat,
-                arguments: {
-                  'eventId' : event.id,
-                  'title': event.title,
-                }
+                arguments: {'eventId': event.id, 'title': event.title},
               );
             },
             child: const Text("Open Chat"),
           ),
 
-        if(isCreator)
+        if (isCreator)
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             onPressed: isLocked

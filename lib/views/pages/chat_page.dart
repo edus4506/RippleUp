@@ -26,9 +26,7 @@ class _ChatPageState extends State<ChatPage> {
     final text = _controller.text.trim();
     if (text.isEmpty) return;
 
-    await context
-        .read<MessageViewModel>()
-        .sendMessage(widget.eventId, text);
+    await context.read<MessageViewModel>().sendMessage(widget.eventId, text);
 
     _controller.clear();
     _scrollToBottom();
@@ -51,16 +49,14 @@ class _ChatPageState extends State<ChatPage> {
     final currentUserId = FirebaseAuth.instance.currentUser?.uid;
 
     return Scaffold(
-      appBar: AppBar(
-      title: Text("${widget.title} Chat"),
-    ),
+      appBar: AppBar(title: Text("${widget.title} Chat")),
       body: Column(
         children: [
           Expanded(
             child: StreamBuilder<List<Message>>(
-              stream: context
-                  .read<MessageViewModel>()
-                  .getMessages(widget.eventId),
+              stream: context.read<MessageViewModel>().getMessages(
+                widget.eventId,
+              ),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return const Center(child: CircularProgressIndicator());
@@ -84,21 +80,16 @@ class _ChatPageState extends State<ChatPage> {
                     final msg = messages[index];
                     final isMe = msg.senderId == currentUserId;
 
-                    return _MessageBubble(
-                      message: msg,
-                      isMe: isMe,
-                    );
+                    return _MessageBubble(message: msg, isMe: isMe);
                   },
                 );
               },
             ),
           ),
 
-      
           SafeArea(
             child: Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
               child: Row(
                 children: [
                   Expanded(
@@ -127,31 +118,25 @@ class _ChatPageState extends State<ChatPage> {
   }
 }
 
-
 class _MessageBubble extends StatelessWidget {
   final Message message;
   final bool isMe;
 
-  const _MessageBubble({
-    required this.message,
-    required this.isMe,
-  });
+  const _MessageBubble({required this.message, required this.isMe});
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Users?>(
-      stream: context
-          .read<UserViewModel>()
-          .userStream(message.senderId),
+      stream: context.read<UserViewModel>().userStream(message.senderId),
       builder: (context, snapshot) {
         final user = snapshot.data;
 
         return Align(
-          alignment:
-              isMe ? Alignment.centerRight : Alignment.centerLeft,
+          alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
           child: Row(
-            mainAxisAlignment:
-                isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+            mainAxisAlignment: isMe
+                ? MainAxisAlignment.end
+                : MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (!isMe) _Avatar(user: user),
@@ -159,12 +144,12 @@ class _MessageBubble extends StatelessWidget {
               Flexible(
                 child: Container(
                   margin: const EdgeInsets.symmetric(
-                      vertical: 4, horizontal: 6),
+                    vertical: 4,
+                    horizontal: 6,
+                  ),
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: isMe
-                        ? Colors.blue
-                        : Colors.grey.shade300,
+                    color: isMe ? Colors.blue : Colors.grey.shade300,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Column(
@@ -198,7 +183,6 @@ class _MessageBubble extends StatelessWidget {
     );
   }
 }
-
 
 class _Avatar extends StatelessWidget {
   final Users? user;
