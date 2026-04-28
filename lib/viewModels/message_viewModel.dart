@@ -15,8 +15,8 @@ class MessageViewModel extends ChangeNotifier{
   
 
   //user uuid will be caught in the firebase.instance
-  Future<void> sendMessage(String eventId, String text) async {
-    final firebaseUser = FirebaseAuth.instance.currentUser;
+  Future<void> sendMessage(String eventId, String text, {User? currentUser}) async {
+    final firebaseUser = currentUser ?? FirebaseAuth.instance.currentUser;
     if (firebaseUser == null) return;
 
     final message = Message(
