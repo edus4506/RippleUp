@@ -57,12 +57,17 @@ class HistoryEventsWidget extends StatelessWidget {
 
             final allEvents = eventSnap.data ?? [];
 
-            final doneEvents = allEvents
-                .where((e) =>
-                    joinedIds.contains(e.id) &&
-                    e.status == EventStatus.done)
-                .toList()
-              ..sort((a, b) => b.startDate.compareTo(a.startDate)); // mais recente primeiro
+            final doneEvents =
+                allEvents
+                    .where(
+                      (e) =>
+                          joinedIds.contains(e.id) &&
+                          e.status == EventStatus.done,
+                    )
+                    .toList()
+                  ..sort(
+                    (a, b) => b.startDate.compareTo(a.startDate),
+                  ); // mais recente primeiro
 
             if (doneEvents.isEmpty) {
               return const Center(

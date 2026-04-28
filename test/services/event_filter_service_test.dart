@@ -34,7 +34,6 @@ Event buildEvent({
 
 void main() {
   group('EventFilterService.apply', () {
-
     test('returns all events when no filters are applied', () {
       final events = [buildEvent(), buildEvent()];
 
@@ -88,10 +87,7 @@ void main() {
     });
 
     test('filters by minCapacity', () {
-      final events = [
-        buildEvent(maxUsers: 3),
-        buildEvent(maxUsers: 10),
-      ];
+      final events = [buildEvent(maxUsers: 3), buildEvent(maxUsers: 10)];
 
       final filter = EventFilter(minCapacity: 5);
 
@@ -102,10 +98,7 @@ void main() {
     });
 
     test('filters by maxCapacity', () {
-      final events = [
-        buildEvent(maxUsers: 3),
-        buildEvent(maxUsers: 10),
-      ];
+      final events = [buildEvent(maxUsers: 3), buildEvent(maxUsers: 10)];
 
       final filter = EventFilter(maxCapacity: 5);
 
@@ -116,15 +109,9 @@ void main() {
     });
 
     test('filters by current users range', () {
-      final events = [
-        buildEvent(currentUsers: 2),
-        buildEvent(currentUsers: 8),
-      ];
+      final events = [buildEvent(currentUsers: 2), buildEvent(currentUsers: 8)];
 
-      final filter = EventFilter(
-        minCurrentUsers: 5,
-        maxCurrentUsers: 10,
-      );
+      final filter = EventFilter(minCurrentUsers: 5, maxCurrentUsers: 10);
 
       final result = EventFilterService.apply(events, filter);
 
@@ -161,10 +148,7 @@ void main() {
     });
 
     test('filters by city', () {
-      final events = [
-        buildEvent(city: 'Porto'),
-        buildEvent(city: 'Vigo'),
-      ];
+      final events = [buildEvent(city: 'Porto'), buildEvent(city: 'Vigo')];
 
       final filter = EventFilter(city: 'Porto');
 
@@ -178,13 +162,14 @@ void main() {
       final events = [
         buildEvent(currentUsers: 5, maxUsers: 5), // full → remove
         buildEvent(currentUsers: 3, maxUsers: 10), // valid
-        buildEvent(currentUsers: 3, maxUsers: 10, country: 'Spain'), // wrong country
+        buildEvent(
+          currentUsers: 3,
+          maxUsers: 10,
+          country: 'Spain',
+        ), // wrong country
       ];
 
-      final filter = EventFilter(
-        hideFull: true,
-        country: 'Portugal',
-      );
+      final filter = EventFilter(hideFull: true, country: 'Portugal');
 
       final result = EventFilterService.apply(events, filter);
 

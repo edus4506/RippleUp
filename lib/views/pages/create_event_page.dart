@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import '../../data/constants/event_locations.dart';
 import '../../data/models/event.dart';
-import '../../viewModels/event_viewModel.dart';
 import '../../viewModels/authViewModel/auth_viewModel.dart';
+import '../../viewModels/event_viewModel.dart';
 
 class CreateEventPage extends StatefulWidget {
   const CreateEventPage({super.key});
@@ -27,19 +28,6 @@ class _CreateEventPageState extends State<CreateEventPage> {
   String? selectedCountry;
   String? selectedDistrict;
   String? selectedCity;
-
-  final List<String> countries = ["Portugal", "Spain"];
-
-  final Map<String, List<String>> districts = {
-    "Portugal": ["Porto", "Lisboa"],
-    "Spain": ["Galicia"],
-  };
-
-  final Map<String, List<String>> cities = {
-    "Porto": ["Porto", "Matosinhos"],
-    "Lisboa": ["Lisboa"],
-    "Galicia": ["Vigo"],
-  };
 
   @override
   void dispose() {
@@ -70,13 +58,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
 
     if (time == null) return null;
 
-    return DateTime(
-      date.year,
-      date.month,
-      date.day,
-      time.hour,
-      time.minute,
-    );
+    return DateTime(date.year, date.month, date.day, time.hour, time.minute);
   }
 
   void _createEvent() async {
@@ -119,9 +101,9 @@ class _CreateEventPageState extends State<CreateEventPage> {
     final currentUser = context.read<AuthViewModel>().currentUser;
 
     if (currentUser == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('You must be logged in')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('You must be logged in')));
       return;
     }
 
@@ -157,9 +139,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Create Event'),
-      ),
+      appBar: AppBar(title: const Text('Create Event')),
 
       bottomNavigationBar: SafeArea(
         child: Container(
@@ -167,10 +147,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
           decoration: BoxDecoration(
             color: Colors.white,
             boxShadow: [
-              BoxShadow(
-                color: Colors.black.withAlpha(20),
-                blurRadius: 6,
-              ),
+              BoxShadow(color: Colors.black.withAlpha(20), blurRadius: 6),
             ],
           ),
           child: Row(
@@ -194,7 +171,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
       ),
 
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
         child: Column(
           children: [
             TextField(
@@ -213,10 +190,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
 
             Align(
               alignment: Alignment.centerLeft,
-              child: Text(
-                'Event Capacity',
-                style: theme.textTheme.titleMedium,
-              ),
+              child: Text('Event Capacity', style: theme.textTheme.titleMedium),
             ),
 
             const SizedBox(height: 10),
@@ -229,10 +203,11 @@ class _CreateEventPageState extends State<CreateEventPage> {
                 const SizedBox(width: 10),
                 Expanded(
                   child: Slider(
-                    value: (_maxUsersController.text.isEmpty
-                            ? 0
-                            : int.parse(_maxUsersController.text))
-                        .toDouble(),
+                    value:
+                        (_maxUsersController.text.isEmpty
+                                ? 0
+                                : int.parse(_maxUsersController.text))
+                            .toDouble(),
                     min: 0,
                     max: 50,
                     divisions: 50,
@@ -262,15 +237,17 @@ class _CreateEventPageState extends State<CreateEventPage> {
                 if (picked.isBefore(DateTime.now())) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                        content: Text('Start date must be in the future')),
+                      content: Text('Start date must be in the future'),
+                    ),
                   );
                   return;
                 }
 
                 setState(() {
                   startDate = picked;
-                  _startDateController.text =
-                      DateFormat('dd/MM/yyyy HH:mm').format(picked);
+                  _startDateController.text = DateFormat(
+                    'dd/MM/yyyy HH:mm',
+                  ).format(picked);
                 });
               },
             ),
@@ -298,16 +275,17 @@ class _CreateEventPageState extends State<CreateEventPage> {
                 if (picked.isBefore(startDate!)) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                        content:
-                            Text('End date must be after start date')),
+                      content: Text('End date must be after start date'),
+                    ),
                   );
                   return;
                 }
 
                 setState(() {
                   endDate = picked;
-                  _endDateController.text =
-                      DateFormat('dd/MM/yyyy HH:mm').format(picked);
+                  _endDateController.text = DateFormat(
+                    'dd/MM/yyyy HH:mm',
+                  ).format(picked);
                 });
               },
             ),
@@ -327,8 +305,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
             GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              gridDelegate:
-                  const SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 6,
                 crossAxisSpacing: 8,
                 mainAxisSpacing: 8,
@@ -360,16 +337,13 @@ class _CreateEventPageState extends State<CreateEventPage> {
                   },
                   child: Container(
                     decoration: BoxDecoration(
-                      color: isSelected
-                          ? Colors.green
-                          : Colors.grey[300],
+                      color: isSelected ? Colors.green : Colors.grey[300],
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Center(
                       child: Text(
                         goal.toString(),
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
@@ -381,23 +355,24 @@ class _CreateEventPageState extends State<CreateEventPage> {
 
             Align(
               alignment: Alignment.centerLeft,
-              child: Text(
-                'Location',
-                style: theme.textTheme.titleMedium,
-              ),
+              child: Text('Location', style: theme.textTheme.titleMedium),
             ),
 
             const SizedBox(height: 10),
 
             DropdownButtonFormField<String>(
-              decoration: const InputDecoration(labelText: "Country"),
+              decoration: const InputDecoration(labelText: 'Country'),
               value: selectedCountry,
-              items: countries
-                  .map((c) =>
-                      DropdownMenuItem(value: c, child: Text(c)))
+              menuMaxHeight: 300,
+              isExpanded: true,
+              items: eventCountries
+                  .map(
+                    (country) =>
+                        DropdownMenuItem(value: country, child: Text(country)),
+                  )
                   .toList(),
-              onChanged: (v) => setState(() {
-                selectedCountry = v;
+              onChanged: (value) => setState(() {
+                selectedCountry = value;
                 selectedDistrict = null;
                 selectedCity = null;
               }),
@@ -406,15 +381,20 @@ class _CreateEventPageState extends State<CreateEventPage> {
             if (selectedCountry != null) ...[
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
-                decoration:
-                    const InputDecoration(labelText: "District"),
+                decoration: const InputDecoration(labelText: 'District'),
                 value: selectedDistrict,
-                items: districts[selectedCountry]!
-                    .map((d) => DropdownMenuItem(
-                        value: d, child: Text(d)))
+                menuMaxHeight: 300,
+                isExpanded: true,
+                items: eventDistrictsByCountry[selectedCountry]!
+                    .map(
+                      (district) => DropdownMenuItem(
+                        value: district,
+                        child: Text(district),
+                      ),
+                    )
                     .toList(),
-                onChanged: (v) => setState(() {
-                  selectedDistrict = v;
+                onChanged: (value) => setState(() {
+                  selectedDistrict = value;
                   selectedCity = null;
                 }),
               ),
@@ -423,15 +403,17 @@ class _CreateEventPageState extends State<CreateEventPage> {
             if (selectedDistrict != null) ...[
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
-                decoration:
-                    const InputDecoration(labelText: "City"),
+                decoration: const InputDecoration(labelText: 'City'),
                 value: selectedCity,
-                items: cities[selectedDistrict]!
-                    .map((c) => DropdownMenuItem(
-                        value: c, child: Text(c)))
+                menuMaxHeight: 300,
+                isExpanded: true,
+                items: eventCitiesByDistrict[selectedDistrict]!
+                    .map(
+                      (city) =>
+                          DropdownMenuItem(value: city, child: Text(city)),
+                    )
                     .toList(),
-                onChanged: (v) =>
-                    setState(() => selectedCity = v),
+                onChanged: (value) => setState(() => selectedCity = value),
               ),
             ],
           ],

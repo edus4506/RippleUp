@@ -9,8 +9,10 @@ class ParticipationRepository {
         .collection('participations')
         .where('idUser', isEqualTo: userId)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => Participation.fromMap(doc.data(), doc.id))
-            .toList());
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => Participation.fromMap(doc.data(), doc.id))
+              .toList(),
+        );
   }
 }
