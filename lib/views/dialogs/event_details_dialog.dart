@@ -22,7 +22,97 @@ class EventDetailsDialog extends StatelessWidget {
         event.status == EventStatus.done;
 
     return AlertDialog(
-      title: Text(event.title),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Text(
+              event.title,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+
+          Row(
+            children: [
+              // Chat icon
+              if (userId != null)
+                StreamBuilder<bool>(
+                  stream: context.read<EventViewModel>().isUserInEvent(
+                    eventId: event.id,
+                    userId: userId,
+                  ),
+                  builder: (context, snapshot) {
+                    final isIn = snapshot.data ?? false;
+                    final isCreator = event.idCreator == userId;
+
+                    final canOpenChat = isCreator || isIn;
+
+                    if (!canOpenChat) return const SizedBox();
+
+                    return IconButton(
+                      icon: const Icon(Icons.forum_outlined, color: Colors.lightGreen),
+                      onPressed: () {
+                        Navigator.pop(context);
+
+                        Navigator.pushNamed(
+                          context,
+                          AppRoutes.chat,
+                          arguments: {
+                            'eventId': event.id,
+                            'title': event.title,
+                          },
+                        );
+                      },
+                    );
+                  },
+                ),
+
+              // FeedBack icon
+              IconButton(
+                icon: const Icon(Icons.rate_review_outlined),
+                onPressed: () {
+                  // to implement
+                },
+              ),
+
+              // Favorite icon
+              if (userId != null)
+                StreamBuilder<bool>(
+                  stream: context.read<FavoriteViewModel>().isEventFavorited(
+                    userId: userId,
+                    eventId: event.id,
+                  ),
+                  builder: (context, snapshot) {
+                    final isFav = snapshot.data ?? false;
+
+                    return IconButton(
+                      icon: Icon(
+                        isFav ? Icons.favorite : Icons.favorite_border,
+                        color: Colors.red,
+                      ),
+                      onPressed: () {
+                        final favVm = context.read<FavoriteViewModel>();
+
+                        if (isFav) {
+                          favVm.removeFavorite(
+                            userId: userId,
+                            eventId: event.id,
+                          );
+                        } else {
+                          favVm.addFavorite(
+                            userId: userId,
+                            eventId: event.id,
+                          );
+                        }
+                      },
+                    );
+                  },
+                ),
+            ],
+          ),
+        ],
+      ),
+      
       content: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,31 +169,6 @@ class EventDetailsDialog extends StatelessWidget {
 
             const SizedBox(height: 8),
 
-            // Favorite button
-            if (userId != null)
-              StreamBuilder<bool>(
-                stream: context.read<FavoriteViewModel>().isEventFavorited(
-                  userId: userId,
-                  eventId: event.id,
-                ),
-                builder: (context, snapshot) {
-                  final isFav = snapshot.data ?? false;
-                  return IconButton(
-                    icon: Icon(
-                      isFav ? Icons.favorite : Icons.favorite_border,
-                      color: Colors.red,
-                    ),
-                    onPressed: () {
-                      final favVm = context.read<FavoriteViewModel>();
-                      if (isFav) {
-                        favVm.removeFavorite(userId: userId, eventId: event.id);
-                      } else {
-                        favVm.addFavorite(userId: userId, eventId: event.id);
-                      }
-                    },
-                  );
-                },
-              ),
           ],
         ),
       ),
@@ -184,43 +249,11 @@ class _Actions extends StatelessWidget {
                             }
                           },
                     child: Text(isIn ? 'Leave' : 'Join'),
-                  ),
-
-                  if (isIn)
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context); // fecha dialog
-
-                        Navigator.pushNamed(
-                          context,
-                          AppRoutes.chat,
-                          arguments: {
-                            'eventId': event.id,
-                            'title': event.title,
-                          },
-                        );
-                      },
-                      child: const Text("Open Chat"),
-                    ),
+                  ),                
                 ],
               );
             },
-          ),
-
-        // Delete — only for creator
-        if (isCreator)
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-
-              Navigator.pushNamed(
-                context,
-                AppRoutes.chat,
-                arguments: {'eventId': event.id, 'title': event.title},
-              );
-            },
-            child: const Text("Open Chat"),
-          ),
+          ),      
 
         if (isCreator)
           ElevatedButton(
