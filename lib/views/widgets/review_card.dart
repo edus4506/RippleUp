@@ -25,10 +25,9 @@ class ReviewCard extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 18,
-                  backgroundImage:
-                      user?.profilePictureUrl.isNotEmpty == true
-                          ? NetworkImage(user!.profilePictureUrl)
-                          : null,
+                  backgroundImage: user?.profilePictureUrl.isNotEmpty == true
+                      ? NetworkImage(user!.profilePictureUrl)
+                      : null,
                   child: user?.profilePictureUrl.isEmpty ?? true
                       ? const Icon(Icons.person, size: 18)
                       : null,
@@ -42,9 +41,7 @@ class ReviewCard extends StatelessWidget {
                     children: [
                       Text(
                         user?.name ?? "...",
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
 
                       const SizedBox(height: 4),

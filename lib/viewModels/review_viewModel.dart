@@ -8,11 +8,7 @@ class ReviewViewModel extends ChangeNotifier {
 
   ReviewViewModel(this._repository);
 
-  Future<void> addReview(
-    String eventId,
-    int rating,
-    String comment,
-  ) async {
+  Future<void> addReview(String eventId, int rating, String comment) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 

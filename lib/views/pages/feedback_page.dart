@@ -12,18 +12,12 @@ class FeedbackPage extends StatelessWidget {
   final String eventId;
   final String title;
 
-  const FeedbackPage({
-    super.key,
-    required this.eventId,
-    required this.title,
-  });
+  const FeedbackPage({super.key, required this.eventId, required this.title});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("$title Reviews"),
-      ),
+      appBar: AppBar(title: Text("$title Reviews")),
 
       body: Column(
         children: [
@@ -40,12 +34,9 @@ class FeedbackPage extends StatelessWidget {
 
               final reviews = snapshot.data!;
 
-              final average =
-                  ReviewService.getAverageRating(reviews);
-              final total =
-                  ReviewService.getTotalReviews(reviews);
-              final hasReviews =
-                  ReviewService.hasReviews(reviews);
+              final average = ReviewService.getAverageRating(reviews);
+              final total = ReviewService.getTotalReviews(reviews);
+              final hasReviews = ReviewService.hasReviews(reviews);
 
               return Container(
                 width: double.infinity,
@@ -72,10 +63,7 @@ class FeedbackPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: List.generate(5, (index) {
                         if (index < average.floor()) {
-                          return const Icon(
-                            Icons.star,
-                            color: Colors.amber,
-                          );
+                          return const Icon(Icons.star, color: Colors.amber);
                         } else if (index < average) {
                           return const Icon(
                             Icons.star_half,
@@ -107,25 +95,19 @@ class FeedbackPage extends StatelessWidget {
               stream: context.read<ReviewViewModel>().getReviews(eventId),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  return const Center(child: CircularProgressIndicator());
                 }
 
                 final reviews = snapshot.data!;
 
                 if (reviews.isEmpty) {
-                  return const Center(
-                    child: Text("No reviews yet"),
-                  );
+                  return const Center(child: Text("No reviews yet"));
                 }
 
                 return ListView.builder(
                   itemCount: reviews.length,
                   itemBuilder: (context, index) {
-                    return ReviewCard(
-                      review: reviews[index],
-                    );
+                    return ReviewCard(review: reviews[index]);
                   },
                 );
               },

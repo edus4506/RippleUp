@@ -84,7 +84,8 @@ void main() async {
         ),
 
         ChangeNotifierProvider(
-          create: (context) => ReviewViewModel(context.read<ReviewRepository>()),
+          create: (context) =>
+              ReviewViewModel(context.read<ReviewRepository>()),
         ),
       ],
       child: const MyApp(),

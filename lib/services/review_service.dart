@@ -4,9 +4,7 @@ class ReviewService {
   static double getAverageRating(List<Review> reviews) {
     if (reviews.isEmpty) return 0;
 
-    final total = reviews
-        .map((r) => r.rating)
-        .reduce((a, b) => a + b);
+    final total = reviews.map((r) => r.rating).reduce((a, b) => a + b);
 
     return total / reviews.length;
   }
