@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../theme/palette.dart';
 import 'package:t5/viewModels/review_viewModel.dart';
+import 'package:t5/views/widgets/review_card.dart';
 
 class FeedbackPage extends StatelessWidget {
   final String eventId;
@@ -79,11 +80,7 @@ class FeedbackPage extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final review = reviews[index];
 
-                    return ListTile(
-                      leading: const Icon(Icons.person),
-                      title: Text("Rating: ${review.rating}/5"),
-                      subtitle: Text(review.comment),
-                    );
+                    return ReviewCard(review: review);
                   },
                 );
               },
