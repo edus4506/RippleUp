@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import '../../theme/palette.dart';
+import 'package:t5/viewModels/review_viewModel.dart';
 
 class FeedbackPage extends StatelessWidget {
   final String eventId;
@@ -56,11 +59,34 @@ class FeedbackPage extends StatelessWidget {
 
           // Reviews list (empty for now)
           Expanded(
-            child: Center(
-              child: Text(
-                "Be the first to review this event 👀",
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
+            child: StreamBuilder(
+              stream: context.read<ReviewViewModel>().getReviews(eventId),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                final reviews = snapshot.data!;
+
+                if (reviews.isEmpty) {
+                  return const Center(
+                    child: Text("No reviews yet 👀"),
+                  );
+                }
+
+                return ListView.builder(
+                  itemCount: reviews.length,
+                  itemBuilder: (context, index) {
+                    final review = reviews[index];
+
+                    return ListTile(
+                      leading: const Icon(Icons.person),
+                      title: Text("Rating: ${review.rating}/5"),
+                      subtitle: Text(review.comment),
+                    );
+                  },
+                );
+              },
             ),
           ),
         ],
