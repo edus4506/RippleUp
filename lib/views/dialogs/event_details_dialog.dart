@@ -51,6 +51,7 @@ class EventDetailsDialog extends StatelessWidget {
 
                     return IconButton(
                       icon: const Icon(Icons.forum_outlined, color: Colors.lightGreen),
+                      tooltip: "Open Chat",
                       onPressed: () {
                         Navigator.pop(context);
 
@@ -67,13 +68,24 @@ class EventDetailsDialog extends StatelessWidget {
                   },
                 ),
 
-              // FeedBack icon
-              IconButton(
-                icon: const Icon(Icons.rate_review_outlined),
-                onPressed: () {
-                  // to implement
-                },
-              ),
+              // FeedBack icon (only if DONE)
+              if (event.status == EventStatus.done)
+                IconButton(
+                  icon: const Icon(Icons.rate_review_outlined),
+                  tooltip: "View Reviews",
+                  onPressed: () {
+                    Navigator.pop(context);
+
+                    Navigator.pushNamed(
+                      context,
+                      AppRoutes.feedback,
+                      arguments: {
+                        'eventId': event.id,
+                        'title': event.title,
+                      },
+                    );
+                  },
+                ),
 
               // Favorite icon
               if (userId != null)
@@ -90,6 +102,7 @@ class EventDetailsDialog extends StatelessWidget {
                         isFav ? Icons.favorite : Icons.favorite_border,
                         color: Colors.red,
                       ),
+                      tooltip: isFav ? "Remove from Favorites" : "Add to Favorites",
                       onPressed: () {
                         final favVm = context.read<FavoriteViewModel>();
 

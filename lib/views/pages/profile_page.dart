@@ -27,9 +27,9 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget _buildContent() {
     switch (selectedIndex) {
       case 0:
-        return const CurrentEventsWidget(); // to implement
+        return const CurrentEventsWidget(); 
       case 1:
-        return const HistoryEventsWidget(); // to implement
+        return const HistoryEventsWidget(); 
       case 2:
         return const FavoriteEventsWidget();
       default:
@@ -45,7 +45,7 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(
         title: const Text("Profile"),
         centerTitle: true,
-        actions: [IconButton(icon: const Icon(Icons.menu), onPressed: () {})],
+        actions: [IconButton(icon: const Icon(Icons.menu), tooltip: "Settings", onPressed: () {})],
       ),
 
       body: SingleChildScrollView(
@@ -99,6 +99,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       Icons.event_rounded,
                       color: selectedIndex == 0 ? Colors.green : Colors.grey,
                     ),
+                    tooltip: "Current Events",
                     onPressed: () {
                       setState(() => selectedIndex = 0);
                     },
@@ -108,6 +109,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       Icons.history,
                       color: selectedIndex == 1 ? Colors.green : Colors.grey,
                     ),
+                    tooltip: "Event History",
                     onPressed: () {
                       setState(() => selectedIndex = 1);
                     },
@@ -117,6 +119,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       Icons.favorite,
                       color: selectedIndex == 2 ? Colors.green : Colors.grey,
                     ),
+                    tooltip: "Favorite Events",
                     onPressed: () {
                       setState(() => selectedIndex = 2);
                     },
