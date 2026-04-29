@@ -26,5 +26,4 @@ class ParticipationRepository {
 
     return snapshot.docs.isNotEmpty;
   }
-
 }

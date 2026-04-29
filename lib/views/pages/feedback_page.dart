@@ -20,14 +20,12 @@ class FeedbackPage extends StatefulWidget {
     required this.eventId,
     required this.title,
     required this.endDate,
-    required this.currentUserId
+    required this.currentUserId,
   });
 
   @override
   State<FeedbackPage> createState() => _FeedbackPageState();
-
 }
-
 
 class _FeedbackPageState extends State<FeedbackPage> {
   bool _canReview = false;
@@ -168,93 +166,99 @@ class _FeedbackPageState extends State<FeedbackPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("${widget.title} Reviews")),
-        body: StreamBuilder<List<Review>>(
-          stream: context.read<ReviewViewModel>().getReviews(widget.eventId),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const Center(child: CircularProgressIndicator());
-            }
+      body: StreamBuilder<List<Review>>(
+        stream: context.read<ReviewViewModel>().getReviews(widget.eventId),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-            final reviews = snapshot.data!;
+          final reviews = snapshot.data!;
 
-            final average = ReviewService.getAverageRating(reviews);
-            final total = ReviewService.getTotalReviews(reviews);
-            final hasReviews = ReviewService.hasReviews(reviews);
+          final average = ReviewService.getAverageRating(reviews);
+          final total = ReviewService.getTotalReviews(reviews);
+          final hasReviews = ReviewService.hasReviews(reviews);
 
-            if (!hasReviews) {
-              return const Center(child: Text("No reviews yet"));
-            }
+          if (!hasReviews) {
+            return const Center(child: Text("No reviews yet"));
+          }
 
-            return Column(
-              children: [
-                // Header
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(16),
-                  margin: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: Palette.border),
-                  ),
-                  child: Column(
-                    children: [
-                      const Text(
-                        "Average Rating",
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(5, (index) {
-                          if (index < average.floor()) {
-                            return const Icon(Icons.star, color: Colors.amber);
-                          } else if (index < average) {
-                            return const Icon(Icons.star_half, color: Colors.amber);
-                          } else {
-                            return const Icon(Icons.star_border);
-                          }
-                        }),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        "${average.toStringAsFixed(1)} ($total reviews)",
-                        style: const TextStyle(color: Colors.grey),
-                      ),
-                    ],
-                  ),
+          return Column(
+            children: [
+              // Header
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                margin: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: Palette.border),
                 ),
-
-                // Reviews list
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: reviews.length,
-                    itemBuilder: (context, index) {
-                      return ReviewCard(review: reviews[index]);
-                    },
-                  ),
+                child: Column(
+                  children: [
+                    const Text(
+                      "Average Rating",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(5, (index) {
+                        if (index < average.floor()) {
+                          return const Icon(Icons.star, color: Colors.amber);
+                        } else if (index < average) {
+                          return const Icon(
+                            Icons.star_half,
+                            color: Colors.amber,
+                          );
+                        } else {
+                          return const Icon(Icons.star_border);
+                        }
+                      }),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      "${average.toStringAsFixed(1)} ($total reviews)",
+                      style: const TextStyle(color: Colors.grey),
+                    ),
+                  ],
                 ),
-              ],
-            );
-          },
-        ),
+              ),
+
+              // Reviews list
+              Expanded(
+                child: ListView.builder(
+                  itemCount: reviews.length,
+                  itemBuilder: (context, index) {
+                    return ReviewCard(review: reviews[index]);
+                  },
+                ),
+              ),
+            ],
+          );
+        },
+      ),
 
       floatingActionButton: _loading
-        ? null
-        : _canReview
+          ? null
+          : _canReview
           ? FloatingActionButton(
-            backgroundColor: Colors.green,
-            onPressed: _showReviewBottomSheet,
-            child: const Icon(Icons.rate_review),
+              backgroundColor: Colors.green,
+              onPressed: _showReviewBottomSheet,
+              child: const Icon(Icons.rate_review),
             )
           : _hasAlreadyReviewed
-            ? FloatingActionButton(
-                backgroundColor: Colors.grey,
-                onPressed: null,
-                tooltip: 'Already reviewed',
-                child: const Icon(Icons.check),
+          ? FloatingActionButton(
+              backgroundColor: Colors.grey,
+              onPressed: null,
+              tooltip: 'Already reviewed',
+              child: const Icon(Icons.check),
             )
-            : null
+          : null,
     );
   }
 }

@@ -45,12 +45,14 @@ class FakeParticipationRepository implements ParticipationRepository {
 }
 
 Widget createWidget(
-    FakeReviewViewModel vm, {
-      DateTime? endDate,
-      bool participated = false,
-    }) {
+  FakeReviewViewModel vm, {
+  DateTime? endDate,
+  bool participated = false,
+}) {
   final userRepo = MockUserRepository();
-  when(() => userRepo.listenToUser(any())).thenAnswer((_) => const Stream.empty());
+  when(
+    () => userRepo.listenToUser(any()),
+  ).thenAnswer((_) => const Stream.empty());
 
   return MultiProvider(
     providers: [
@@ -72,7 +74,6 @@ Widget createWidget(
 }
 
 void main() {
-
   testWidgets('Shows nothing when no reviews exist', (tester) async {
     final vm = FakeReviewViewModel();
     vm.reviewsStream = Stream<List<Review>>.value([]).asBroadcastStream();
@@ -102,15 +103,19 @@ void main() {
     expect(find.text('Great event!'), findsOneWidget);
   });
 
-  testWidgets('Shows reviews when event ended and user participated', (tester) async {
+  testWidgets('Shows reviews when event ended and user participated', (
+    tester,
+  ) async {
     final vm = FakeReviewViewModel();
     vm.reviewsStream = Stream<List<Review>>.value([]).asBroadcastStream();
 
-    await tester.pumpWidget(createWidget(
-      vm,
-      endDate: DateTime.now().subtract(const Duration(days: 1)),
-      participated: true,
-    ));
+    await tester.pumpWidget(
+      createWidget(
+        vm,
+        endDate: DateTime.now().subtract(const Duration(days: 1)),
+        participated: true,
+      ),
+    );
     await tester.pumpAndSettle();
 
     expect(find.byIcon(Icons.rate_review), findsOneWidget);
@@ -120,11 +125,13 @@ void main() {
     final vm = FakeReviewViewModel();
     vm.reviewsStream = Stream<List<Review>>.value([]).asBroadcastStream();
 
-    await tester.pumpWidget(createWidget(
-      vm,
-      endDate: DateTime.now().add(const Duration(days: 1)),
-      participated: true,
-    ));
+    await tester.pumpWidget(
+      createWidget(
+        vm,
+        endDate: DateTime.now().add(const Duration(days: 1)),
+        participated: true,
+      ),
+    );
     await tester.pumpAndSettle();
 
     expect(find.byIcon(Icons.rate_review), findsNothing);
@@ -134,11 +141,13 @@ void main() {
     final vm = FakeReviewViewModel();
     vm.reviewsStream = Stream<List<Review>>.value([]).asBroadcastStream();
 
-    await tester.pumpWidget(createWidget(
-      vm,
-      endDate: DateTime.now().subtract(const Duration(days: 1)),
-      participated: false,
-    ));
+    await tester.pumpWidget(
+      createWidget(
+        vm,
+        endDate: DateTime.now().subtract(const Duration(days: 1)),
+        participated: false,
+      ),
+    );
     await tester.pumpAndSettle();
 
     expect(find.byIcon(Icons.rate_review), findsNothing);
