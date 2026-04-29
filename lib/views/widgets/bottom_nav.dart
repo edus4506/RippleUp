@@ -27,13 +27,26 @@ class AppBottomNav extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           // HOME
-          IconButton(
-            icon: Icon(
-              Icons.home,
-              size: 28,
-              color: currentIndex == 0 ? Palette.primary : Colors.grey,
+          GestureDetector(
+            onTap: () => onTap(0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.home,
+                  size: 28,
+                  color: currentIndex == 0 ? Palette.primary : Colors.grey,
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  "Home",
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: currentIndex == 0 ? Palette.primary : Colors.grey,
+                  ),
+                ),
+              ],
             ),
-            onPressed: () => onTap(0),
           ),
 
           // BOTTON +
@@ -41,27 +54,55 @@ class AppBottomNav extends StatelessWidget {
             color: Colors.transparent,
             child: InkWell(
               onTap: onAddPressed,
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(50),
               child: Ink(
-                height: 48,
-                width: 48,
+                height: 60,
+                width: 60,
                 decoration: BoxDecoration(
-                  color: Palette.primary.withAlpha(180),
-                  borderRadius: BorderRadius.circular(14),
+                  shape: BoxShape.circle,
+                  color: Palette.primary,
+                  border: Border.all(
+                    color: Colors.white, // cor da borda
+                    width: 4,            // espessura da borda
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withAlpha(40),
+                      blurRadius: 8,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
                 ),
-                child: const Icon(Icons.add, color: Colors.white, size: 28),
+                child: const Icon(
+                  Icons.add,
+                  color: Colors.white,
+                  size: 32,
+                ),
               ),
             ),
           ),
 
           // USER
-          IconButton(
-            icon: Icon(
-              Icons.person,
-              size: 28,
-              color: currentIndex == 1 ? Palette.primary : Colors.grey,
+          GestureDetector(
+            onTap: () => onTap(1),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.person,
+                  size: 28,
+                  color: currentIndex == 1 ? Palette.primary : Colors.grey,
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  "Profile",
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: currentIndex == 1 ? Palette.primary : Colors.grey,
+                  ),
+                ),
+              ],
             ),
-            onPressed: () => onTap(1),
           ),
         ],
       ),
