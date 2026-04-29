@@ -7,6 +7,7 @@ import 'package:t5/data/repositories/message_repository.dart';
 import 'package:t5/data/repositories/participation_repository.dart';
 import 'package:t5/data/repositories/storage_repository.dart';
 import 'package:t5/data/repositories/user_repository.dart';
+import 'package:t5/data/repositories/review_repository.dart';
 
 import 'package:t5/services/profile_image_service.dart';
 
@@ -15,6 +16,7 @@ import 'package:t5/viewModels/favorite_view_model.dart';
 import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
 import 'package:t5/viewModels/message_viewModel.dart';
 import 'package:t5/viewModels/profile_viewModel.dart';
+import 'package:t5/viewModels/review_viewModel.dart';
 import 'package:t5/viewModels/user_view_model.dart';
 
 import 'routes/app_routes.dart';
@@ -44,7 +46,7 @@ void main() async {
         Provider(create: (_) => FavoriteRepository()),
         Provider(create: (_) => ParticipationRepository()),
         Provider(create: (_) => MessageRepository()),
-
+        Provider(create: (_) => ReviewRepository()),
         ProxyProvider<StorageRepository, ProfileImageService>(
           update: (_, storageRepo, __) => ProfileImageService(storageRepo),
         ),
@@ -79,6 +81,11 @@ void main() async {
         ChangeNotifierProvider(
           create: (context) =>
               MessageViewModel(context.read<MessageRepository>()),
+        ),
+
+        ChangeNotifierProvider(
+          create: (context) =>
+              ReviewViewModel(context.read<ReviewRepository>()),
         ),
       ],
       child: const MyApp(),
