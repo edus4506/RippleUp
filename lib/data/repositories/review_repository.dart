@@ -23,4 +23,16 @@ class ReviewRepository {
               .toList(),
         );
   }
+
+  Future<bool> hasUserReviewed(String eventId, String userId) async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('events')
+        .doc(eventId)
+        .collection('reviews')
+        .where('userId', isEqualTo: userId)
+        .limit(1)
+        .get();
+
+    return snapshot.docs.isNotEmpty;
+  }
 }

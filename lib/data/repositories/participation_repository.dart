@@ -15,4 +15,16 @@ class ParticipationRepository {
               .toList(),
         );
   }
+
+  Future<bool> hasUserParticipated(String userId, String eventId) async {
+    final snapshot = await _db
+        .collection('participations')
+        .where('idUser', isEqualTo: userId)
+        .where('idEvent', isEqualTo: eventId)
+        .limit(1)
+        .get();
+
+    return snapshot.docs.isNotEmpty;
+  }
+
 }

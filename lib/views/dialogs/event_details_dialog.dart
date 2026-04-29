@@ -77,7 +77,12 @@ class EventDetailsDialog extends StatelessWidget {
                     Navigator.pushNamed(
                       context,
                       AppRoutes.feedback,
-                      arguments: {'eventId': event.id, 'title': event.title},
+                      arguments: {
+                        'eventId': event.id,
+                        'title': event.title,
+                        'endDate': event.endDate,
+                        'currentUserId': userId,
+                      },
                     );
                   },
                 ),

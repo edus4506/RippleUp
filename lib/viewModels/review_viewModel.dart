@@ -26,4 +26,8 @@ class ReviewViewModel extends ChangeNotifier {
   Stream<List<Review>> getReviews(String eventId) {
     return _repository.getEventReviews(eventId);
   }
+
+  Future<bool> hasUserReviewed(String eventId, String userId) {
+    return _repository.hasUserReviewed(eventId, userId);
+  }
 }
