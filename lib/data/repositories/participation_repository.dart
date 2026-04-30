@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/participation.dart';
 
 class ParticipationRepository {
-  final FirebaseFirestore _db = FirebaseFirestore.instance;
+  FirebaseFirestore get _db => FirebaseFirestore.instance;
 
   Stream<List<Participation>> listenToUserParticipations(String userId) {
     return _db
@@ -11,9 +11,9 @@ class ParticipationRepository {
         .snapshots()
         .map(
           (snapshot) => snapshot.docs
-              .map((doc) => Participation.fromMap(doc.data(), doc.id))
-              .toList(),
-        );
+          .map((doc) => Participation.fromMap(doc.data(), doc.id))
+          .toList(),
+    );
   }
 
   Future<bool> hasUserParticipated(String userId, String eventId) async {
