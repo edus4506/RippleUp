@@ -11,9 +11,9 @@ class ParticipationRepository {
         .snapshots()
         .map(
           (snapshot) => snapshot.docs
-          .map((doc) => Participation.fromMap(doc.data(), doc.id))
-          .toList(),
-    );
+              .map((doc) => Participation.fromMap(doc.data(), doc.id))
+              .toList(),
+        );
   }
 
   Future<bool> hasUserParticipated(String userId, String eventId) async {
