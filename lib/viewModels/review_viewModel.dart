@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
 import '../data/models/review.dart';
 import '../data/repositories/review_repository.dart';
+import '../services/review_service.dart';
 
 class ReviewViewModel extends ChangeNotifier {
   final ReviewRepository _repository;
@@ -29,5 +31,20 @@ class ReviewViewModel extends ChangeNotifier {
 
   Future<bool> hasUserReviewed(String eventId, String userId) {
     return _repository.hasUserReviewed(eventId, userId);
+  }
+
+  Future<bool> deleteReview(
+    String eventId,
+    Review review,
+    String currentUserId,
+  ) async {
+    if (!ReviewService.canDeleteReview(review, currentUserId)) {
+      return false;
+    }
+
+    await _repository.deleteReview(eventId, review.id);
+    notifyListeners();
+
+    return true;
   }
 }

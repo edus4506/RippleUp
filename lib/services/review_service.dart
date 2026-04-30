@@ -16,4 +16,8 @@ class ReviewService {
   static bool hasReviews(List<Review> reviews) {
     return reviews.isNotEmpty;
   }
+
+  static bool canDeleteReview(Review review, String currentUserId) {
+    return currentUserId.isNotEmpty && review.userId == currentUserId;
+  }
 }
