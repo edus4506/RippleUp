@@ -63,7 +63,7 @@ class AppBottomNav extends StatelessWidget {
                   color: Palette.primary,
                   border: Border.all(
                     color: Colors.white, // cor da borda
-                    width: 4,            // espessura da borda
+                    width: 4, // espessura da borda
                   ),
                   boxShadow: [
                     BoxShadow(
@@ -73,11 +73,7 @@ class AppBottomNav extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: const Icon(
-                  Icons.add,
-                  color: Colors.white,
-                  size: 32,
-                ),
+                child: const Icon(Icons.add, color: Colors.white, size: 32),
               ),
             ),
           ),
