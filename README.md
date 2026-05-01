@@ -15,16 +15,28 @@ It is organised by the following activities:
 * [Business modeling](#Business-Modelling) 
   * [Product Vision](#Product-Vision)
   * [Features and Assumptions](#Features-and-Assumptions)
+
 * [Requirements](#Requirements)
   * [User stories](#User-stories)
   * [Domain model](#Domain-model)
   * [User interfaces](#User-interfaces)
   * [Validation of requirements through interviews](#Validation-of-requirements-through-interviews)
+
 * [Architecture and Design](#Architecture-And-Design)
   * [Logical architecture](#Logical-Architecture)
   * [Physical architecture](#Physical-Architecture)
   * [Functional prototype](#Functional-Prototype)
+
+* [Development Environment](#Development-Environment)
+* [Tools Used](#Tools-Used)
+* [Use of AI Tools](#Use-of-AI-Tools)
+
 * [Project management](#Project-Management)
+  * [Definition of Ready (DoR)](#Definition-of-Ready-DoR)
+  * [Product Backlog Refinement](#Product-Backlog-Refinement)
+  * [Enabling Specification](#Enabling-Specification)
+  * [INVEST Criteria](#INVEST-Criteria)
+  * [Definition of Done (DoD)](#Definition-of-Done-DoD)
   * [Sprint 0](#Sprint-0)
   * [Sprint 1](#Sprint-1)
   * [Sprint 2](#Sprint-2)
@@ -152,9 +164,9 @@ The main user interfaces of _Ripple Up_ were designed to support the core user f
 The following mockups illustrate the main screens currently considered for the application:
 
 <p align="center">
-  <img src="assets/Mockups/mockup_feed.png" alt="Feed Mockup" width="250"/>
-  <img src="assets/Mockups/mockup_event_creator.png" alt="Event Creator Mockup" width="250"/>
-  <img src="assets/Mockups/mockup_filter_event.png" alt="Filter Mockup" width="250"/>
+  <img src="assets/Mockups/feed.png" alt="Feed Mockup" width="250"/>
+  <img src="assets/Mockups/event_creator.png" alt="Event Creator Mockup" width="250"/>
+  <img src="assets/Mockups/filter_event.png" alt="Filter Mockup" width="250"/>
 </p>
 
 
@@ -515,7 +527,5 @@ A release was created in GitHub for Sprint 1:
 ### Sprint 2
 
 ### Sprint 3
-
-### Sprint 4
 
 ### Final Release
