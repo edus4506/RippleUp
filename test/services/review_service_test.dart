@@ -57,5 +57,53 @@ void main() {
 
       expect(result, false);
     });
+
+    test(
+      'canDeleteReview returns true when review belongs to current user',
+      () {
+        final review = Review(
+          id: '1',
+          userId: 'u1',
+          rating: 5,
+          comment: 'Great',
+          createdAt: DateTime.now(),
+        );
+
+        final result = ReviewService.canDeleteReview(review, 'u1');
+
+        expect(result, true);
+      },
+    );
+
+    test(
+      'canDeleteReview returns false when review belongs to another user',
+      () {
+        final review = Review(
+          id: '1',
+          userId: 'u1',
+          rating: 5,
+          comment: 'Great',
+          createdAt: DateTime.now(),
+        );
+
+        final result = ReviewService.canDeleteReview(review, 'u2');
+
+        expect(result, false);
+      },
+    );
+
+    test('canDeleteReview returns false when current user id is empty', () {
+      final review = Review(
+        id: '1',
+        userId: 'u1',
+        rating: 5,
+        comment: 'Great',
+        createdAt: DateTime.now(),
+      );
+
+      final result = ReviewService.canDeleteReview(review, '');
+
+      expect(result, false);
+    });
   });
 }

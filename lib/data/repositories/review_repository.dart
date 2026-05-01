@@ -35,4 +35,13 @@ class ReviewRepository {
 
     return snapshot.docs.isNotEmpty;
   }
+
+  Future<void> deleteReview(String eventId, String reviewId) async {
+    await FirebaseFirestore.instance
+        .collection('events')
+        .doc(eventId)
+        .collection('reviews')
+        .doc(reviewId)
+        .delete();
+  }
 }

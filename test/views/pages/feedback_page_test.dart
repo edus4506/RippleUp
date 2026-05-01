@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
-import 'package:mocktail/mocktail.dart';
 
-import 'package:t5/views/pages/feedback_page.dart';
+import 'package:t5/data/models/review.dart';
+import 'package:t5/data/models/user.dart';
+import 'package:t5/data/repositories/participation_repository.dart';
 import 'package:t5/viewModels/review_viewModel.dart';
 import 'package:t5/viewModels/user_view_model.dart';
-import 'package:t5/data/models/review.dart';
-import 'package:t5/data/repositories/participation_repository.dart';
-import 'package:t5/data/models/participation.dart';
-import 'package:t5/data/repositories/user_repository.dart';
-
-class MockUserRepository extends Mock implements UserRepository {}
+import 'package:t5/views/pages/feedback_page.dart';
 
 class FakeReviewViewModel extends ChangeNotifier implements ReviewViewModel {
   Stream<List<Review>> reviewsStream = const Stream.empty();
-  bool userHasReviewed = false;
+  bool reviewed = false;
+  bool deleteResult = true;
+  String? deletedEventId;
+  Review? deletedReview;
+  String? deletedCurrentUserId;
 
   @override
   Stream<List<Review>> getReviews(String eventId) {
@@ -27,59 +27,78 @@ class FakeReviewViewModel extends ChangeNotifier implements ReviewViewModel {
 
   @override
   Future<bool> hasUserReviewed(String eventId, String userId) async {
-    return userHasReviewed;
+    return reviewed;
+  }
+
+  @override
+  Future<bool> deleteReview(
+    String eventId,
+    Review review,
+    String currentUserId,
+  ) async {
+    deletedEventId = eventId;
+    deletedReview = review;
+    deletedCurrentUserId = currentUserId;
+
+    return deleteResult;
   }
 }
 
-class FakeParticipationRepository implements ParticipationRepository {
-  final bool participated;
-  FakeParticipationRepository({this.participated = false});
+class FakeParticipationRepository extends ParticipationRepository {
+  bool participated = true;
 
   @override
-  Stream<List<Participation>> listenToUserParticipations(String userId) =>
-      Stream.value([]);
-
-  @override
-  Future<bool> hasUserParticipated(String userId, String eventId) async =>
-      participated;
+  Future<bool> hasUserParticipated(String userId, String eventId) async {
+    return participated;
+  }
 }
 
-Widget createWidget(
-  FakeReviewViewModel vm, {
-  DateTime? endDate,
-  bool participated = false,
-}) {
-  final userRepo = MockUserRepository();
-  when(
-    () => userRepo.listenToUser(any()),
-  ).thenAnswer((_) => const Stream.empty());
+class FakeUserViewModel extends ChangeNotifier implements UserViewModel {
+  @override
+  Stream<Users?> userStream(String userId) {
+    return Stream.value(
+      Users(name: 'Test User', email: 'test@test.com', profilePictureUrl: ''),
+    );
+  }
+}
 
-  return MultiProvider(
-    providers: [
-      ChangeNotifierProvider<ReviewViewModel>.value(value: vm),
-      Provider<ParticipationRepository>.value(
-        value: FakeParticipationRepository(participated: participated),
-      ),
-      ChangeNotifierProvider(create: (_) => UserViewModel(userRepo)),
-    ],
-    child: MaterialApp(
-      home: FeedbackPage(
-        eventId: 'event1',
-        title: 'Test Event',
-        endDate: endDate ?? DateTime.now().subtract(const Duration(days: 1)),
-        currentUserId: 'user-1',
+Future<void> pumpFeedbackPage(
+  WidgetTester tester,
+  FakeReviewViewModel vm, {
+  bool participated = true,
+  DateTime? endDate,
+  String currentUserId = 'u1',
+}) async {
+  final participationRepository = FakeParticipationRepository()
+    ..participated = participated;
+
+  await tester.pumpWidget(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<ReviewViewModel>.value(value: vm),
+        Provider<ParticipationRepository>.value(value: participationRepository),
+        ChangeNotifierProvider<UserViewModel>.value(value: FakeUserViewModel()),
+      ],
+      child: MaterialApp(
+        home: FeedbackPage(
+          eventId: 'event1',
+          title: 'Beach Cleanup',
+          endDate: endDate ?? DateTime.now().subtract(const Duration(days: 1)),
+          currentUserId: currentUserId,
+        ),
       ),
     ),
   );
+
+  await tester.pump();
 }
 
 void main() {
-  testWidgets('Shows nothing when no reviews exist', (tester) async {
+  testWidgets('Shows no reviews message when no reviews exist', (tester) async {
     final vm = FakeReviewViewModel();
     vm.reviewsStream = Stream<List<Review>>.value([]).asBroadcastStream();
 
-    await tester.pumpWidget(createWidget(vm));
-    await tester.pumpAndSettle();
+    await pumpFeedbackPage(tester, vm);
 
     expect(find.text('No reviews yet'), findsOneWidget);
   });
@@ -88,68 +107,106 @@ void main() {
     final vm = FakeReviewViewModel();
     vm.reviewsStream = Stream<List<Review>>.value([
       Review(
-        id: 'r1',
-        userId: 'user-2',
-        rating: 4,
-        comment: 'Great event!',
-        createdAt: DateTime.now(),
+        id: 'review1',
+        userId: 'u1',
+        rating: 5,
+        comment: 'Great event',
+        createdAt: DateTime(2025, 1, 1),
+      ),
+      Review(
+        id: 'review2',
+        userId: 'u2',
+        rating: 3,
+        comment: 'Good event',
+        createdAt: DateTime(2025, 1, 2),
       ),
     ]).asBroadcastStream();
 
-    await tester.pumpWidget(createWidget(vm));
-    await tester.pumpAndSettle();
+    await pumpFeedbackPage(tester, vm);
 
     expect(find.text('Average Rating'), findsOneWidget);
-    expect(find.text('Great event!'), findsOneWidget);
+    expect(find.text('4.0 (2 reviews)'), findsOneWidget);
+    expect(find.text('Great event'), findsOneWidget);
+    expect(find.text('Good event'), findsOneWidget);
   });
 
-  testWidgets('Shows reviews when event ended and user participated', (
+  testWidgets('Shows review button when event ended and user participated', (
     tester,
   ) async {
     final vm = FakeReviewViewModel();
     vm.reviewsStream = Stream<List<Review>>.value([]).asBroadcastStream();
 
-    await tester.pumpWidget(
-      createWidget(
-        vm,
-        endDate: DateTime.now().subtract(const Duration(days: 1)),
-        participated: true,
-      ),
-    );
-    await tester.pumpAndSettle();
+    await pumpFeedbackPage(tester, vm, participated: true);
 
     expect(find.byIcon(Icons.rate_review), findsOneWidget);
   });
 
-  testWidgets('Hides reviews when event has not ended', (tester) async {
+  testWidgets('Hides review button when event has not ended', (tester) async {
     final vm = FakeReviewViewModel();
     vm.reviewsStream = Stream<List<Review>>.value([]).asBroadcastStream();
 
-    await tester.pumpWidget(
-      createWidget(
-        vm,
-        endDate: DateTime.now().add(const Duration(days: 1)),
-        participated: true,
-      ),
+    await pumpFeedbackPage(
+      tester,
+      vm,
+      participated: true,
+      endDate: DateTime.now().add(const Duration(days: 1)),
     );
-    await tester.pumpAndSettle();
 
     expect(find.byIcon(Icons.rate_review), findsNothing);
   });
 
-  testWidgets('Hides reviews when user did not participate', (tester) async {
+  testWidgets('Hides review button when user did not participate', (
+    tester,
+  ) async {
     final vm = FakeReviewViewModel();
     vm.reviewsStream = Stream<List<Review>>.value([]).asBroadcastStream();
 
-    await tester.pumpWidget(
-      createWidget(
-        vm,
-        endDate: DateTime.now().subtract(const Duration(days: 1)),
-        participated: false,
-      ),
-    );
-    await tester.pumpAndSettle();
+    await pumpFeedbackPage(tester, vm, participated: false);
 
     expect(find.byIcon(Icons.rate_review), findsNothing);
+  });
+
+  testWidgets('Shows already reviewed button when user already reviewed', (
+    tester,
+  ) async {
+    final vm = FakeReviewViewModel();
+    vm.reviewed = true;
+    vm.reviewsStream = Stream<List<Review>>.value([]).asBroadcastStream();
+
+    await pumpFeedbackPage(tester, vm, participated: true);
+
+    expect(find.byIcon(Icons.check), findsOneWidget);
+    expect(find.byIcon(Icons.rate_review), findsNothing);
+  });
+
+  testWidgets('Deletes own review after confirmation', (tester) async {
+    final vm = FakeReviewViewModel();
+    final review = Review(
+      id: 'review1',
+      userId: 'u1',
+      rating: 5,
+      comment: 'Great event',
+      createdAt: DateTime(2025, 1, 1),
+    );
+
+    vm.reviewed = true;
+    vm.reviewsStream = Stream<List<Review>>.value([review]).asBroadcastStream();
+
+    await pumpFeedbackPage(tester, vm, participated: true);
+
+    expect(find.byIcon(Icons.delete_outline), findsOneWidget);
+
+    await tester.tap(find.byIcon(Icons.delete_outline));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Delete review?'), findsOneWidget);
+
+    await tester.tap(find.text('Delete'));
+    await tester.pumpAndSettle();
+
+    expect(vm.deletedEventId, 'event1');
+    expect(vm.deletedReview, review);
+    expect(vm.deletedCurrentUserId, 'u1');
+    expect(find.text('Review deleted'), findsOneWidget);
   });
 }

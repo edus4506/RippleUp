@@ -54,6 +54,8 @@ class _FeedbackPageState extends State<FeedbackPage> {
         .read<ReviewViewModel>()
         .hasUserReviewed(widget.eventId, widget.currentUserId);
 
+    if (!mounted) return;
+
     setState(() {
       _canReview = participated && !alreadyReviewed;
       _hasAlreadyReviewed = alreadyReviewed;
@@ -92,7 +94,6 @@ class _FeedbackPageState extends State<FeedbackPage> {
 
                   const SizedBox(height: 16),
 
-                  // Star selector
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(5, (index) {
@@ -162,6 +163,119 @@ class _FeedbackPageState extends State<FeedbackPage> {
     );
   }
 
+  Future<void> _confirmDeleteReview(Review review) async {
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Delete review?'),
+          content: const Text('This action cannot be undone.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (shouldDelete != true) return;
+
+    final deleted = await context.read<ReviewViewModel>().deleteReview(
+      widget.eventId,
+      review,
+      widget.currentUserId,
+    );
+
+    if (!mounted) return;
+
+    if (deleted) {
+      setState(() {
+        _canReview = true;
+        _hasAlreadyReviewed = false;
+      });
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Review deleted')));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('You can only delete your own review')),
+      );
+    }
+  }
+
+  Widget _buildReviewsContent(List<Review> reviews) {
+    final average = ReviewService.getAverageRating(reviews);
+    final total = ReviewService.getTotalReviews(reviews);
+    final hasReviews = ReviewService.hasReviews(reviews);
+
+    if (!hasReviews) {
+      return const Center(child: Text("No reviews yet"));
+    }
+
+    return Column(
+      children: [
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          margin: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Palette.border),
+          ),
+          child: Column(
+            children: [
+              const Text(
+                "Average Rating",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(5, (index) {
+                  if (index < average.floor()) {
+                    return const Icon(Icons.star, color: Colors.amber);
+                  } else if (index < average) {
+                    return const Icon(Icons.star_half, color: Colors.amber);
+                  } else {
+                    return const Icon(Icons.star_border);
+                  }
+                }),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                "${average.toStringAsFixed(1)} ($total reviews)",
+                style: const TextStyle(color: Colors.grey),
+              ),
+            ],
+          ),
+        ),
+
+        Expanded(
+          child: ListView.builder(
+            itemCount: reviews.length,
+            itemBuilder: (context, index) {
+              final review = reviews[index];
+
+              return ReviewCard(
+                review: review,
+                currentUserId: widget.currentUserId,
+                onDelete: () => _confirmDeleteReview(review),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -175,74 +289,9 @@ class _FeedbackPageState extends State<FeedbackPage> {
 
           final reviews = snapshot.data!;
 
-          final average = ReviewService.getAverageRating(reviews);
-          final total = ReviewService.getTotalReviews(reviews);
-          final hasReviews = ReviewService.hasReviews(reviews);
-
-          if (!hasReviews) {
-            return const Center(child: Text("No reviews yet"));
-          }
-
-          return Column(
-            children: [
-              // Header
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                margin: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Palette.border),
-                ),
-                child: Column(
-                  children: [
-                    const Text(
-                      "Average Rating",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(5, (index) {
-                        if (index < average.floor()) {
-                          return const Icon(Icons.star, color: Colors.amber);
-                        } else if (index < average) {
-                          return const Icon(
-                            Icons.star_half,
-                            color: Colors.amber,
-                          );
-                        } else {
-                          return const Icon(Icons.star_border);
-                        }
-                      }),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      "${average.toStringAsFixed(1)} ($total reviews)",
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Reviews list
-              Expanded(
-                child: ListView.builder(
-                  itemCount: reviews.length,
-                  itemBuilder: (context, index) {
-                    return ReviewCard(review: reviews[index]);
-                  },
-                ),
-              ),
-            ],
-          );
+          return _buildReviewsContent(reviews);
         },
       ),
-
       floatingActionButton: _loading
           ? null
           : _canReview
