@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:t5/routes/app_routes.dart';
 import '../../viewModels/profile_viewModel.dart';
 import 'package:provider/provider.dart';
 import '../widgets/profile_tabs/favorite_events_widget.dart';
@@ -49,7 +50,7 @@ class _ProfilePageState extends State<ProfilePage> {
           IconButton(
             icon: const Icon(Icons.menu),
             tooltip: "Settings",
-            onPressed: () {},
+            onPressed: () => Navigator.pushNamed(context, AppRoutes.settings),
           ),
         ],
       ),
