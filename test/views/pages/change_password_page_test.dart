@@ -70,9 +70,6 @@ void main() {
     await tester.tap(find.text('Update Password'));
     await tester.pumpAndSettle();
 
-    expect(
-      find.text('Password must be at least 6 characters'),
-      findsOneWidget,
-    );
+    expect(find.text('Password must be at least 6 characters'), findsOneWidget);
   });
 }

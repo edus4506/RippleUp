@@ -45,11 +45,7 @@ void main() {
   setUp(() {
     profileVm = FakeProfileViewModel();
     profileVm.setUser(
-      Users(
-        name: 'John Doe',
-        email: 'john@example.com',
-        profilePictureUrl: '',
-      ),
+      Users(name: 'John Doe', email: 'john@example.com', profilePictureUrl: ''),
     );
   });
 
@@ -70,8 +66,8 @@ void main() {
   });
 
   testWidgets('Email field shows current email and is disabled', (
-      tester,
-      ) async {
+    tester,
+  ) async {
     await tester.pumpWidget(buildWidget(profileVm));
     await tester.pumpAndSettle();
 
@@ -81,9 +77,7 @@ void main() {
     expect(emailField.enabled, false);
   });
 
-  testWidgets('Shows loading indicator when isLoading is true', (
-      tester,
-      ) async {
+  testWidgets('Shows loading indicator when isLoading is true', (tester) async {
     profileVm.isLoading = true;
 
     await tester.pumpWidget(buildWidget(profileVm));

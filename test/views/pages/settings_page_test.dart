@@ -49,9 +49,9 @@ Widget buildWidget({
       routes: {
         AppRoutes.settings: (_) => const SettingsPage(),
         AppRoutes.editProfile: (_) =>
-        const Scaffold(body: Text('Edit Profile')),
+            const Scaffold(body: Text('Edit Profile')),
         AppRoutes.changePassword: (_) =>
-        const Scaffold(body: Text('Change Password')),
+            const Scaffold(body: Text('Change Password')),
         '/login': (_) => const Scaffold(body: Text('Login')),
       },
       home: const SettingsPage(),
@@ -75,11 +75,7 @@ void main() {
     when(() => firebaseUser.uid).thenReturn('user-1');
 
     profileVm.setUser(
-      Users(
-        name: 'John Doe',
-        email: 'john@example.com',
-        profilePictureUrl: '',
-      ),
+      Users(name: 'John Doe', email: 'john@example.com', profilePictureUrl: ''),
     );
   });
 
@@ -102,8 +98,10 @@ void main() {
     expect(find.text('Logout'), findsOneWidget);
     expect(find.text('Delete Account'), findsOneWidget);
   });
-  
-  testWidgets('Tapping Edit Profile navigates to edit profile page', (tester) async {
+
+  testWidgets('Tapping Edit Profile navigates to edit profile page', (
+    tester,
+  ) async {
     await tester.pumpWidget(buildWidget(authVm: authVm, profileVm: profileVm));
     await tester.pumpAndSettle();
 
@@ -113,7 +111,9 @@ void main() {
     expect(find.text('Edit Profile'), findsWidgets);
   });
 
-  testWidgets('Tapping Password navigates to change password page', (tester) async {
+  testWidgets('Tapping Password navigates to change password page', (
+    tester,
+  ) async {
     await tester.pumpWidget(buildWidget(authVm: authVm, profileVm: profileVm));
     await tester.pumpAndSettle();
 
@@ -147,7 +147,9 @@ void main() {
     verifyNever(() => authVm.logout());
   });
 
-  testWidgets('Confirming logout calls logout and navigates to login', (tester) async {
+  testWidgets('Confirming logout calls logout and navigates to login', (
+    tester,
+  ) async {
     when(() => authVm.logout()).thenAnswer((_) async {});
 
     await tester.pumpWidget(buildWidget(authVm: authVm, profileVm: profileVm));
@@ -162,7 +164,9 @@ void main() {
     verify(() => authVm.logout()).called(1);
   });
 
-  testWidgets('Tapping Delete Account shows confirmation dialog', (tester) async {
+  testWidgets('Tapping Delete Account shows confirmation dialog', (
+    tester,
+  ) async {
     await tester.pumpWidget(buildWidget(authVm: authVm, profileVm: profileVm));
     await tester.pumpAndSettle();
 
@@ -170,16 +174,16 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      find.text(
-        'This will permanently delete your account. Are you sure?',
-      ),
+      find.text('This will permanently delete your account. Are you sure?'),
       findsOneWidget,
     );
     expect(find.text('Cancel'), findsOneWidget);
     expect(find.text('Delete'), findsOneWidget);
   });
 
-  testWidgets('Cancelling delete account dialog does not delete', (tester) async {
+  testWidgets('Cancelling delete account dialog does not delete', (
+    tester,
+  ) async {
     await tester.pumpWidget(buildWidget(authVm: authVm, profileVm: profileVm));
     await tester.pumpAndSettle();
 
@@ -192,7 +196,9 @@ void main() {
     verifyNever(() => authVm.deleteAcc());
   });
 
-  testWidgets('Confirming delete account calls softDelete and deleteAcc', (tester) async {
+  testWidgets('Confirming delete account calls softDelete and deleteAcc', (
+    tester,
+  ) async {
     when(() => authVm.deleteAcc()).thenAnswer((_) async {});
 
     await tester.pumpWidget(buildWidget(authVm: authVm, profileVm: profileVm));
