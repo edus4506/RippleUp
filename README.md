@@ -711,8 +711,6 @@ flutter build web --release
 
 During Sprint 2, the application was validated through automated CI checks and local Flutter execution.
 
-TODO: update this section if a public deployment is configured.
-
 ---
 
 #### Branching Strategy
@@ -737,7 +735,30 @@ This workflow helped the team isolate changes, review work before integration, a
 
 #### Use of AI Tools During Sprint 2
 
-TODO: document tools used, prompts used, and how AI-assisted work was handled.
+During Sprint 2, AI tools were used as support for documentation, debugging, test planning, and development workflow decisions.
+
+AI assistance was used for:
+
+- Drafting GitHub issue and pull request descriptions
+- Suggesting commit messages
+- Explaining Flutter, Git, and CI-related errors
+- Supporting README and changelog documentation
+- Helping identify possible bugs and improvements
+- Supporting the creation of test and acceptance test descriptions
+
+Example prompts used during the sprint:
+
+| Prompt | Purpose |
+|---|---|
+| "Generate a commit message for the event location filtering feature" | Commit message support |
+| "Explain why the Flutter web server fails when running from the build/web directory" | Debugging support |
+| "Suggest a README section for documenting CI, tests and quality metrics" | Documentation support |
+| "Create bug descriptions for Sprint 2" | Bug documentation support |
+| "Explain Flutter format CI failure" | CI/debugging support |
+
+All AI-generated suggestions were reviewed, adapted, and validated by the team before being included in the project.
+
+When AI-assisted code was used, it was committed separately when applicable, and the corresponding Product Backlog Items were labeled with `MisterAI`.
 
 ---
 
