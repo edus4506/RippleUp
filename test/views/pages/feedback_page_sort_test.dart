@@ -24,8 +24,7 @@ class FakeReviewViewModel extends ChangeNotifier implements ReviewViewModel {
   Future<void> addReview(String eventId, int rating, String comment) async {}
 
   @override
-  Future<bool> hasUserReviewed(String eventId, String userId) async =>
-      reviewed;
+  Future<bool> hasUserReviewed(String eventId, String userId) async => reviewed;
 
   @override
   Future<bool> deleteReview(
@@ -133,10 +132,7 @@ void main() {
       await pumpFeedbackPage(tester, vm);
 
       final items = tester.widgetList<Text>(
-        find.descendant(
-          of: find.byType(ListView),
-          matching: find.byType(Text),
-        ),
+        find.descendant(of: find.byType(ListView), matching: find.byType(Text)),
       );
       final texts = items.map((t) => t.data ?? '').toList();
 
@@ -161,10 +157,7 @@ void main() {
       await tester.pumpAndSettle();
 
       final items = tester.widgetList<Text>(
-        find.descendant(
-          of: find.byType(ListView),
-          matching: find.byType(Text),
-        ),
+        find.descendant(of: find.byType(ListView), matching: find.byType(Text)),
       );
       final texts = items.map((t) => t.data ?? '').toList();
 
@@ -176,8 +169,9 @@ void main() {
       expect(midIdx, lessThan(highIdx));
     });
 
-    testWidgets('Selecting Highest Rating sorts from highest to lowest',
-        (tester) async {
+    testWidgets('Selecting Highest Rating sorts from highest to lowest', (
+      tester,
+    ) async {
       final vm = FakeReviewViewModel();
       vm.reviewsStream = Stream.value(_buildReviews()).asBroadcastStream();
 
@@ -190,23 +184,21 @@ void main() {
       await tester.pumpAndSettle();
 
       final items = tester.widgetList<Text>(
-        find.descendant(
-          of: find.byType(ListView),
-          matching: find.byType(Text),
-        ),
+        find.descendant(of: find.byType(ListView), matching: find.byType(Text)),
       );
       final texts = items.map((t) => t.data ?? '').toList();
 
       final highIdx = texts.indexOf('High rating recent'); // rating 5
-      final midIdx = texts.indexOf('Mid rating mid');     // rating 3
-      final lowIdx = texts.indexOf('Low rating old');     // rating 2
+      final midIdx = texts.indexOf('Mid rating mid'); // rating 3
+      final lowIdx = texts.indexOf('Low rating old'); // rating 2
 
       expect(highIdx, lessThan(midIdx));
       expect(midIdx, lessThan(lowIdx));
     });
 
-    testWidgets('Selecting Lowest Rating sorts from lowest to highest',
-        (tester) async {
+    testWidgets('Selecting Lowest Rating sorts from lowest to highest', (
+      tester,
+    ) async {
       final vm = FakeReviewViewModel();
       vm.reviewsStream = Stream.value(_buildReviews()).asBroadcastStream();
 
@@ -219,23 +211,21 @@ void main() {
       await tester.pumpAndSettle();
 
       final items = tester.widgetList<Text>(
-        find.descendant(
-          of: find.byType(ListView),
-          matching: find.byType(Text),
-        ),
+        find.descendant(of: find.byType(ListView), matching: find.byType(Text)),
       );
       final texts = items.map((t) => t.data ?? '').toList();
 
       final highIdx = texts.indexOf('High rating recent'); // rating 5
-      final midIdx = texts.indexOf('Mid rating mid');     // rating 3
-      final lowIdx = texts.indexOf('Low rating old');     // rating 2
+      final midIdx = texts.indexOf('Mid rating mid'); // rating 3
+      final lowIdx = texts.indexOf('Low rating old'); // rating 2
 
       expect(lowIdx, lessThan(midIdx));
       expect(midIdx, lessThan(highIdx));
     });
 
-    testWidgets('Sorting updates immediately without page reload',
-        (tester) async {
+    testWidgets('Sorting updates immediately without page reload', (
+      tester,
+    ) async {
       final vm = FakeReviewViewModel();
       vm.reviewsStream = Stream.value(_buildReviews()).asBroadcastStream();
 
@@ -262,11 +252,11 @@ void main() {
       expect(find.text('Highest Rating'), findsOneWidget);
     });
 
-    testWidgets('Sort dropdown is NOT visible when there are no reviews',
-        (tester) async {
+    testWidgets('Sort dropdown is NOT visible when there are no reviews', (
+      tester,
+    ) async {
       final vm = FakeReviewViewModel();
-      vm.reviewsStream =
-          Stream<List<Review>>.value([]).asBroadcastStream();
+      vm.reviewsStream = Stream<List<Review>>.value([]).asBroadcastStream();
 
       await pumpFeedbackPage(tester, vm);
 

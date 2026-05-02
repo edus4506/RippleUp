@@ -227,10 +227,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
             value: _sortOption,
             underline: const SizedBox(),
             items: ReviewSortOption.values.map((option) {
-              return DropdownMenuItem(
-                value: option,
-                child: Text(option.label),
-              );
+              return DropdownMenuItem(value: option, child: Text(option.label));
             }).toList(),
             onChanged: (option) {
               if (option != null) {
