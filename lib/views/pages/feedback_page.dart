@@ -9,6 +9,23 @@ import 'package:t5/services/review_service.dart';
 
 import '../../theme/palette.dart';
 
+enum ReviewSortOption { mostRecent, oldest, highestRating, lowestRating }
+
+extension ReviewSortOptionExtension on ReviewSortOption {
+  String get label {
+    switch (this) {
+      case ReviewSortOption.mostRecent:
+        return 'Most Recent';
+      case ReviewSortOption.oldest:
+        return 'Oldest';
+      case ReviewSortOption.highestRating:
+        return 'Highest Rating';
+      case ReviewSortOption.lowestRating:
+        return 'Lowest Rating';
+    }
+  }
+}
+
 class FeedbackPage extends StatefulWidget {
   final String eventId;
   final String title;
@@ -31,6 +48,8 @@ class _FeedbackPageState extends State<FeedbackPage> {
   bool _canReview = false;
   bool _hasAlreadyReviewed = false;
   bool _loading = true;
+
+  ReviewSortOption _sortOption = ReviewSortOption.mostRecent;
 
   @override
   void initState() {
@@ -61,6 +80,25 @@ class _FeedbackPageState extends State<FeedbackPage> {
       _hasAlreadyReviewed = alreadyReviewed;
       _loading = false;
     });
+  }
+
+  List<Review> _sortReviews(List<Review> reviews) {
+    final sorted = List<Review>.from(reviews);
+    switch (_sortOption) {
+      case ReviewSortOption.mostRecent:
+        sorted.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+        break;
+      case ReviewSortOption.oldest:
+        sorted.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+        break;
+      case ReviewSortOption.highestRating:
+        sorted.sort((a, b) => b.rating.compareTo(a.rating));
+        break;
+      case ReviewSortOption.lowestRating:
+        sorted.sort((a, b) => a.rating.compareTo(b.rating));
+        break;
+    }
+    return sorted;
   }
 
   void _showReviewBottomSheet() {
@@ -210,6 +248,33 @@ class _FeedbackPageState extends State<FeedbackPage> {
     }
   }
 
+  Widget _buildSortDropdown() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          const Text('Sort by: ', style: TextStyle(color: Colors.grey)),
+          DropdownButton<ReviewSortOption>(
+            value: _sortOption,
+            underline: const SizedBox(),
+            items: ReviewSortOption.values.map((option) {
+              return DropdownMenuItem(
+                value: option,
+                child: Text(option.label),
+              );
+            }).toList(),
+            onChanged: (option) {
+              if (option != null) {
+                setState(() => _sortOption = option);
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildReviewsContent(List<Review> reviews) {
     final average = ReviewService.getAverageRating(reviews);
     final total = ReviewService.getTotalReviews(reviews);
@@ -218,6 +283,8 @@ class _FeedbackPageState extends State<FeedbackPage> {
     if (!hasReviews) {
       return const Center(child: Text("No reviews yet"));
     }
+
+    final sortedReviews = _sortReviews(reviews);
 
     return Column(
       children: [
@@ -258,11 +325,13 @@ class _FeedbackPageState extends State<FeedbackPage> {
           ),
         ),
 
+        _buildSortDropdown(),
+
         Expanded(
           child: ListView.builder(
-            itemCount: reviews.length,
+            itemCount: sortedReviews.length,
             itemBuilder: (context, index) {
-              final review = reviews[index];
+              final review = sortedReviews[index];
 
               return ReviewCard(
                 review: review,
