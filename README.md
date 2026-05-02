@@ -526,6 +526,194 @@ A release was created in GitHub for Sprint 1:
 
 ### Sprint 2
 
+#### Sprint Planning
+
+The goal of Sprint 2 was to extend the first functional increment of *Ripple Up* by improving user interaction, event participation, communication, feedback, profile management, and overall application quality.
+
+The selected backlog items for this sprint focused on:
+
+- Improving event location handling
+- Adding communication between event participants
+- Adding event feedback and review functionality
+- Improving user profile and account management
+- Adding permissions for event-related actions
+- Improving completed event filtering and joined events visualization
+- Improving UI consistency through reusable components
+- Improving quality assurance and development workflow
+
+At the beginning of the sprint, the selected Product Backlog Items were moved into the Sprint Backlog and assigned according to team availability.
+
+<p align="center">
+  <img src="assets/scrumboard/sprint2_start_1.png" width="400"/>
+  <img src="assets/scrumboard/sprint2_start_2.png" width="400"/>
+</p>
+
+---
+
+#### Sprint Development
+
+During Sprint 2, the team continued following an incremental development process. Tasks were developed in separate branches and integrated through pull requests after implementation and validation.
+
+Main functionalities implemented during this sprint:
+
+- Event locations with improved location selection
+- Activity chat for event participants
+- Definitions page
+- Change password functionality
+- Event feedback page
+- Backend support for event reviews
+- Create review functionality
+- Delete review functionality
+- Review sorting functionality
+- User profile page
+- Event permissions
+- Completed event filtering
+- View joined events functionality
+- Reusable widgets for improved UI structure
+
+These features improved the application by making event participation more complete, adding post-event feedback, improving account-related actions, and making the interface easier to maintain.
+
+---
+
+#### Testing and Quality Assurance
+
+During Sprint 2, the team increased the automated test coverage of the application and improved the CI workflow used to validate the project.
+
+The project currently contains 14 test files organized by responsibility:
+
+- `test/services/` – tests for service logic, such as event filtering and review management
+- `test/viewModels/` – tests for view model behavior, including events, messages, and reviews
+- `test/views/dialogs/` – widget tests for dialogs such as event details and event filtering
+- `test/views/pages/` – widget tests for pages such as home, settings, feedback, profile editing, and password change
+- `test/views/widgets/` – widget tests for reusable UI components such as current events and review cards
+
+Current test structure:
+
+```txt
+test
+├── services
+│   ├── event_filter_service_test.dart
+│   └── review_service_test.dart
+├── viewModels
+│   ├── event_view_model_test.dart
+│   ├── messageViewModel_test.dart
+│   └── review_viewModel_test.dart
+└── views
+    ├── dialogs
+    │   ├── event_details_dialog_test.dart
+    │   └── event_filter_dialog_test.dart
+    ├── pages
+    │   ├── change_password_page_test.dart
+    │   ├── edit_profile_page_test.dart
+    │   ├── feedback_page_test.dart
+    │   ├── home_page_test.dart
+    │   └── settings_page_test.dart
+    └── widgets
+        ├── current_events_widget_test.dart
+        └── review_card_test.dart
+```
+
+Automated tests can be executed with:
+
+```bash
+flutter test
+```
+
+Static analysis is used to detect possible code issues before merging changes:
+
+```bash
+flutter analyze --no-fatal-infos --no-fatal-warnings
+```
+
+Code formatting is checked using Dart's formatter:
+
+```bash
+dart format --set-exit-if-changed .
+```
+
+Although the project does not currently use a separate `integration_test/` directory, several widget tests validate interactions between UI components, view models, and mocked application logic.
+
+---
+
+#### Acceptance Tests
+
+TODO: document the acceptance tests or link to the corresponding GitHub Project items.
+
+---
+
+#### Bugs, Defects, Fixes and Improvements
+
+TODO: document bugs, defects, fixes, and improvements addressed during Sprint 2.
+
+---
+
+#### DevOps and Deployment
+
+The project uses GitHub Actions for Continuous Integration.
+
+The workflow runs automatically on every push and pull request. It is divided into four jobs:
+
+- **Format** – installs dependencies and checks Dart formatting with `dart format --set-exit-if-changed .`
+- **Analyze** – runs static analysis with `flutter analyze --no-fatal-infos --no-fatal-warnings`
+- **Test** – runs the automated test suite with `flutter test`
+- **Build Web** – validates that the application can be built for web release
+
+The CI workflow helps ensure that new contributions are formatted correctly, do not introduce static analysis issues, pass the automated tests, and can still be built successfully.
+
+The application can be built locally for web using:
+
+```bash
+flutter build web --release
+```
+
+During Sprint 2, the application was validated through automated CI checks and local Flutter execution.
+
+TODO: update this section if a public deployment is configured.
+
+---
+
+#### Branching Strategy
+
+TODO: document the Git/GitHub workflow used by the team during Sprint 2.
+
+---
+
+#### Use of AI Tools During Sprint 2
+
+TODO: document tools used, prompts used, and how AI-assisted work was handled.
+
+---
+
+#### Sprint Review
+
+TODO: document the final Sprint 2 increment after all features are completed and merged.
+
+<p align="center">
+  <img src="assets/scrumboard/sprint2_end_1.png" width="400"/>
+  <img src="assets/scrumboard/sprint2_end_2.png" width="400"/>
+</p>
+
+---
+
+#### Release
+
+TODO: create and document the GitHub release after all Sprint 2 features are completed, merged into `main`, and added to `CHANGELOG.md`.
+
+---
+
+#### Sprint Retrospective
+
+TODO: add the Sprint 2 retrospective.
+
+**Did well:**
+- TODO
+
+**Do differently:**
+- TODO
+
+**Puzzles:**
+- TODO
+
 ### Sprint 3
 
 ### Final Release
