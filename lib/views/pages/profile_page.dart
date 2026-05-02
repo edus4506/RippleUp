@@ -44,7 +44,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Profile"),
+        title: Text(vm.user?.email ?? "No email", textAlign: TextAlign.center),
         centerTitle: true,
         actions: [
           IconButton(

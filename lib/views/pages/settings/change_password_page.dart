@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
 
 class ChangePasswordPage extends StatefulWidget {
   const ChangePasswordPage({super.key});
@@ -22,7 +23,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     super.dispose();
   }
 
-  Future<void> _changePassword() async {
+  Future<void> _handleChangePassword() async {
     final current = _currentController.text.trim();
     final newPass = _newController.text.trim();
     final confirm = _confirmController.text.trim();
@@ -50,41 +51,22 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
 
     setState(() => _isLoading = true);
 
-    try {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user == null || user.email == null) return;
+    final vm = context.read<AuthViewModel>();
+    await vm.changePassword(current, newPass);
 
-      final credential = EmailAuthProvider.credential(
-        email: user.email!,
-        password: current,
-      );
-      await user.reauthenticateWithCredential(credential);
+    if (!mounted) return;
 
-      await user.updatePassword(newPass);
+    setState(() => _isLoading = false);
 
-      if (!mounted) return;
+    if (vm.errorMessage != null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(vm.errorMessage!)));
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Password updated successfully')),
       );
       Navigator.pop(context);
-    } on FirebaseAuthException catch (e) {
-      String message;
-      switch (e.code) {
-        case 'wrong-password':
-          message = 'Current password is incorrect';
-          break;
-        case 'requires-recent-login':
-          message = 'Please log in again to change your password';
-          break;
-        default:
-          message = 'Something went wrong';
-      }
-      if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(message)));
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -104,9 +86,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               border: OutlineInputBorder(),
             ),
           ),
-
           const SizedBox(height: 12),
-
           TextField(
             controller: _newController,
             obscureText: true,
@@ -116,9 +96,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               border: OutlineInputBorder(),
             ),
           ),
-
           const SizedBox(height: 12),
-
           TextField(
             controller: _confirmController,
             obscureText: true,
@@ -128,11 +106,9 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               border: OutlineInputBorder(),
             ),
           ),
-
           const SizedBox(height: 24),
-
           ElevatedButton(
-            onPressed: _isLoading ? null : _changePassword,
+            onPressed: _isLoading ? null : _handleChangePassword,
             child: _isLoading
                 ? const SizedBox(
                     height: 20,

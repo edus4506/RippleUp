@@ -94,6 +94,46 @@ class AuthViewModel extends ChangeNotifier {
     }
   }
 
+  Future<void> changePassword(
+    String currentPassword,
+    String newPassword,
+  ) async {
+    try {
+      isLoading = true;
+      errorMessage = null;
+      notifyListeners();
+
+      final user = _auth.currentUser;
+
+      if (user == null || user.email == null) {
+        errorMessage = 'User not authenticated';
+        return;
+      }
+
+      final credential = EmailAuthProvider.credential(
+        email: user.email!,
+        password: currentPassword,
+      );
+
+      await user.reauthenticateWithCredential(credential);
+      await user.updatePassword(newPassword);
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case 'wrong-password':
+          errorMessage = 'Current password is incorrect';
+          break;
+        case 'requires-recent-login':
+          errorMessage = 'Please log in again';
+          break;
+        default:
+          errorMessage = 'Something went wrong';
+      }
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
   String _mapError(FirebaseAuthException e) {
     switch (e.code) {
       case 'user-not-found':
