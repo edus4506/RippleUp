@@ -717,7 +717,21 @@ TODO: update this section if a public deployment is configured.
 
 #### Branching Strategy
 
-TODO: document the Git/GitHub workflow used by the team during Sprint 2.
+During Sprint 2, the team followed a GitHub Flow-based workflow.
+
+The `main` branch was used as the stable branch of the project. New features, fixes, and improvements were developed in separate branches created from `main`.
+
+Feature branches used descriptive names related to the work being implemented, for example:
+
+- `feat/expand-event-locations`
+- `feat/join-event`
+- `feat/delete-reviews`
+
+After development, changes were submitted through pull requests. Before being merged, each pull request had to pass the available quality checks, including formatting, static analysis, automated tests, and web build validation.
+
+After a pull request was merged, the corresponding branch was deleted locally and remotely to keep the repository organized.
+
+This workflow helped the team isolate changes, review work before integration, and keep the main branch stable throughout the sprint.
 
 ---
 
