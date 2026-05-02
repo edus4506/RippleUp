@@ -637,13 +637,50 @@ Although the project does not currently use a separate `integration_test/` direc
 
 #### Acceptance Tests
 
-TODO: document the acceptance tests or link to the corresponding GitHub Project items.
+Acceptance tests were used to validate whether the implemented features satisfy the expected user interactions.
+
+The detailed acceptance criteria for each Product Backlog Item were documented in the corresponding GitHub Project items. Some scenarios were validated manually, while others were supported by Flutter widget tests located under `test/views/`.
+
+Examples of acceptance scenarios validated during Sprint 2:
+
+```gherkin
+Feature: Create event review
+
+Scenario: User creates a review for a completed event
+  Given the user participated in a completed event
+  When the user opens the feedback page and submits a review
+  Then the review should be created and displayed in the event feedback section
+```
+
+```gherkin
+Feature: View joined events
+
+Scenario: User views events they joined
+  Given the user has joined one or more events
+  When the user opens the joined events section
+  Then the system should display the events joined by that user
+```
+
+```gherkin
+Feature: Change password
+
+Scenario: User changes their password
+  Given the user is authenticated
+  When the user enters the required password information and confirms the change
+  Then the system should process the password change request
+```
+
+These acceptance tests helped confirm that the implemented features were aligned with the expected user behavior and delivered value to end-users.
 
 ---
 
 #### Bugs, Defects, Fixes and Improvements
 
-TODO: document bugs, defects, fixes, and improvements addressed during Sprint 2.
+Bugs, defects, fixes, and improvements identified during Sprint 2 were documented in a separate file to keep the README concise.
+
+The full list can be found in [`BUGS.md`](BUGS.md).
+
+This file includes the description of each issue, the expected behavior, the actual behavior, and the fix or improvement applied when applicable.
 
 ---
 
