@@ -676,11 +676,17 @@ These acceptance tests helped confirm that the implemented features were aligned
 
 #### Bugs, Defects, Fixes and Improvements
 
-Bugs, defects, fixes, and improvements identified during Sprint 2 were documented in a separate file to keep the README concise.
+Bugs, defects, fixes, and improvements identified during development and testing are documented in a separate bug log to keep the README concise.
 
-The full list can be found in [`BUGS.md`](BUGS.md).
+The full bug log can be found in [`BUGS.md`](BUGS.md).
 
-This file includes the description of each issue, the expected behavior, the actual behavior, and the fix or improvement applied when applicable.
+During Sprint 2, three new defects were added to the bug log:
+
+- **BUG-04** — City field was not reset after changing district
+- **BUG-05** — Review list was not immediately updated after deleting a review
+- **BUG-06** — Flutter web server failed when executed from the wrong directory
+
+Each bug entry includes its description, category, priority, reproduction steps, expected and actual behavior, implemented fix, and verification status.
 
 ---
 
