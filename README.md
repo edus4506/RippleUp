@@ -335,11 +335,18 @@ The same quality checks are also executed automatically through the GitHub Actio
 
 ## Tools Used
 
-- Flutter
-- Dart
-- GitHub & GitHub Actions
-- Firebase (planned)
-- AI tools for development support
+The following tools and technologies were used during the development of _Ripple Up_:
+
+- **Flutter** – framework used to develop the mobile application
+- **Dart** – programming language used with Flutter
+- **Provider** – state management solution used to connect UI components with application logic
+- **Git and GitHub** – version control, collaboration, pull requests, issues, and project management
+- **GitHub Projects** – Scrum board and backlog management
+- **GitHub Actions** – continuous integration workflow for formatting, static analysis, tests, and web build validation
+- **Firebase Authentication** – used for user authentication and account-related operations
+- **Cloud Firestore** – used as the main database for application data such as events, users, participations, messages, favorites, and reviews
+- **Supabase** – used for storage-related functionality through the application storage repository
+- **AI tools** – support for debugging, documentation, test planning, and development workflow decisions
 
 ## Use of AI Tools
 
