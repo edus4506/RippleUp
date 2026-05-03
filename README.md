@@ -298,14 +298,40 @@ At this phase, instead of a complete user story, you can simply implement a smal
 
 ## Development Environment
 
-To run the project locally:
-
-- Install Flutter (stable version)
-- Run `flutter pub get`
-- Use an emulator or physical device
-- Run `flutter run`
-
 The project was developed using Flutter and Dart.
+
+Required tools:
+- Flutter SDK stable channel
+- Dart SDK included with Flutter
+- Android Studio or Visual Studio Code
+- Android Emulator, physical Android device, or web browser
+- Git
+
+To set up the project locally:
+
+```bash
+git clone https://github.com/LEIC-ES-2025-26-2LEIC05/T5.git
+cd T5
+flutter pub get
+flutter run
+```
+
+To run the application on web:
+
+```bash
+flutter run -d chrome
+```
+
+To run the main quality checks locally:
+
+```bash
+dart format --set-exit-if-changed .
+flutter analyze --no-fatal-infos --no-fatal-warnings
+flutter test
+flutter build web --release
+```
+
+The same quality checks are also executed automatically through the GitHub Actions workflow on push and pull request.
 
 ## Tools Used
 
