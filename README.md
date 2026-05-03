@@ -764,33 +764,57 @@ When AI-assisted code was used, it was committed separately when applicable, and
 
 #### Sprint Review
 
-TODO: document the final Sprint 2 increment after all features are completed and merged.
+At the end of Sprint 2, a more complete and refined product increment was achieved, building on the core functionality developed in the previous sprint. The sprint focused on improving usability, interaction, and overall application consistency, while also addressing system organization and preparing the foundation for future enhancements such as real-time features and improved responsiveness.
+
+The application now allows users to:
+
+- Access and manage their personal profile
+- Participate in event-specific chats with other users
+- Leave feedback and reviews on events
+- Sort and manage reviews dynamically
+- View and filter completed events
+- Access joined events in a dedicated view
+- Interact with improved event permissions and controls
+- Navigate the application more smoothly with a consistent and standardized UI
+- Change their account password securely
+- Access a definitions page for better understanding of the platform
+
+This increment delivers additional value to end-users by improving interaction, personalization, and engagement within the platform.
 
 <p align="center">
   <img src="assets/scrumboard/sprint2_end_1.png" width="400"/>
   <img src="assets/scrumboard/sprint2_end_2.png" width="400"/>
+  <img src="assets/scrumboard/sprint2_end_3.png" width="400"/>
+
 </p>
 
 ---
 
 #### Release
 
-TODO: create and document the GitHub release after all Sprint 2 features are completed, merged into `main`, and added to `CHANGELOG.md`.
+TODO: create and document the GitHub release after all Sprint 2 features are completed, merged into `main`, and added to `CHANGELOG.md`. 
+ - Version v2 - Sprint 2. --reference to the release here--
+ - Includes a functional version of the application.
+ - Can be executed on mobile device or emulator.
 
 ---
 
 #### Sprint Retrospective
 
-TODO: add the Sprint 2 retrospective.
-
 **Did well:**
-- TODO
+- Bigger user stories were divided into smaller ones to avoid overwork on some team members
+- The major good principles for a good software development like separation of concerns, modularity, reusability, and clean architecture were followed, along with good communication between all team members
+- Significant improvements in UI consistency and overall application workflow
+- Reusable components/widgets were introduced, improving maintainability and scalability
 
 **Do differently:**
-- TODO
+- Allocate more time for testing and validation of features before completion
+- Enhance coordination when working on interdependent features (e.g., frontend and backend integration)
+- Define clearer acceptance criteria for user stories to avoid rework
 
 **Puzzles:**
-- TODO
+- How to implement real-time features to provide a smoother and more interactive user experience
+ - How to efficiently manage synchronization between frontend and backend for dynamic data (like reviews and event updates)
 
 ### Sprint 3
 
