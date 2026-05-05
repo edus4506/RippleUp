@@ -6,8 +6,12 @@ import 'package:t5/data/repositories/participation_repository.dart';
 import 'package:t5/viewModels/review_viewModel.dart';
 import 'package:t5/views/widgets/review_card.dart';
 import 'package:t5/services/review_service.dart';
+import 'package:t5/services/sort_review.dart';
+import 'package:t5/services/sort_review_service.dart';
 
 import '../../theme/palette.dart';
+
+export 'package:t5/services/sort_review.dart';
 
 class FeedbackPage extends StatefulWidget {
   final String eventId;
@@ -31,6 +35,8 @@ class _FeedbackPageState extends State<FeedbackPage> {
   bool _canReview = false;
   bool _hasAlreadyReviewed = false;
   bool _loading = true;
+
+  ReviewSortOption _sortOption = ReviewSortOption.mostRecent;
 
   @override
   void initState() {
@@ -210,6 +216,30 @@ class _FeedbackPageState extends State<FeedbackPage> {
     }
   }
 
+  Widget _buildSortDropdown() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          const Text('Sort by: ', style: TextStyle(color: Colors.grey)),
+          DropdownButton<ReviewSortOption>(
+            value: _sortOption,
+            underline: const SizedBox(),
+            items: ReviewSortOption.values.map((option) {
+              return DropdownMenuItem(value: option, child: Text(option.label));
+            }).toList(),
+            onChanged: (option) {
+              if (option != null) {
+                setState(() => _sortOption = option);
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildReviewsContent(List<Review> reviews) {
     final average = ReviewService.getAverageRating(reviews);
     final total = ReviewService.getTotalReviews(reviews);
@@ -218,6 +248,8 @@ class _FeedbackPageState extends State<FeedbackPage> {
     if (!hasReviews) {
       return const Center(child: Text("No reviews yet"));
     }
+
+    final sortedReviews = SortReviewService.apply(reviews, _sortOption);
 
     return Column(
       children: [
@@ -258,11 +290,13 @@ class _FeedbackPageState extends State<FeedbackPage> {
           ),
         ),
 
+        _buildSortDropdown(),
+
         Expanded(
           child: ListView.builder(
-            itemCount: reviews.length,
+            itemCount: sortedReviews.length,
             itemBuilder: (context, index) {
-              final review = reviews[index];
+              final review = sortedReviews[index];
 
               return ReviewCard(
                 review: review,
