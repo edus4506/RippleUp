@@ -8,6 +8,7 @@ import 'package:t5/data/repositories/participation_repository.dart';
 import 'package:t5/viewModels/review_viewModel.dart';
 import 'package:t5/viewModels/user_view_model.dart';
 import 'package:t5/views/pages/feedback_page.dart';
+import 'package:t5/data/models/review_history_item.dart';
 
 class FakeReviewViewModel extends ChangeNotifier implements ReviewViewModel {
   Stream<List<Review>> reviewsStream = const Stream.empty();
@@ -20,6 +21,11 @@ class FakeReviewViewModel extends ChangeNotifier implements ReviewViewModel {
   @override
   Stream<List<Review>> getReviews(String eventId) {
     return reviewsStream;
+  }
+
+  @override
+  Stream<List<ReviewHistoryItem>> getUserReviewsHistory(String userId) {
+    return Stream.value([]);
   }
 
   @override

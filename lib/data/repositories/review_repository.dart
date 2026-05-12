@@ -1,5 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+import '../models/event.dart';
 import '../models/review.dart';
+import '../models/review_history_item.dart';
 
 class ReviewRepository {
   Future<void> createReview(String eventId, Review review) async {
@@ -43,5 +46,32 @@ class ReviewRepository {
         .collection('reviews')
         .doc(reviewId)
         .delete();
+  }
+
+  Stream<List<ReviewHistoryItem>> getUserReviewsHistory(String userId) {
+    return FirebaseFirestore.instance.collection('events').snapshots().asyncMap(
+      (eventSnapshot) async {
+        final items = <ReviewHistoryItem>[];
+
+        for (final eventDoc in eventSnapshot.docs) {
+          final event = Event.fromMap(eventDoc.data(), eventDoc.id);
+
+          final reviewsSnapshot = await eventDoc.reference
+              .collection('reviews')
+              .where('userId', isEqualTo: userId)
+              .get();
+
+          for (final reviewDoc in reviewsSnapshot.docs) {
+            final review = Review.fromMap(reviewDoc.data(), reviewDoc.id);
+
+            items.add(ReviewHistoryItem(review: review, event: event));
+          }
+        }
+
+        items.sort((a, b) => b.review.createdAt.compareTo(a.review.createdAt));
+
+        return items;
+      },
+    );
   }
 }
