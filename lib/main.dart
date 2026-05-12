@@ -32,7 +32,7 @@ void main() async {
   await Supabase.initialize(
     url: 'https://zryedbkqhfitgsmpmajc.supabase.co',
     anonKey:
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpyeWVkYmtxaGZpdGdzbXBtYWpjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1OTkwNTYsImV4cCI6MjA5MTE3NTA1Nn0.TnL2cVCFWeSIids6M38f-ed3YQKcHoPzyCW9DojACk8',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpyeWVkYmtxaGZpdGdzbXBtYWpjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1OTkwNTYsImV4cCI6MjA5MTE3NTA1Nn0.TnL2cVCFWeSIids6M38f-ed3YQKcHoPzyCW9DojACk8',
   );
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);

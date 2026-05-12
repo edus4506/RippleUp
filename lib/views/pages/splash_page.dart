@@ -25,11 +25,15 @@ class _SplashPageState extends State<SplashPage>
       duration: const Duration(milliseconds: 900),
     );
 
-    _scaleAnim = CurvedAnimation(parent: _controller, curve: Curves.easeOutBack)
-        .drive(Tween(begin: 0.6, end: 1.0));
+    _scaleAnim = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOutBack,
+    ).drive(Tween(begin: 0.6, end: 1.0));
 
-    _fadeAnim = CurvedAnimation(parent: _controller, curve: Curves.easeIn)
-        .drive(Tween(begin: 0.0, end: 1.0));
+    _fadeAnim = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeIn,
+    ).drive(Tween(begin: 0.0, end: 1.0));
 
     _controller.forward();
 
