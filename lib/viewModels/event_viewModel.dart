@@ -1,14 +1,22 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:t5/data/models/event.dart';
 import 'package:t5/data/repositories/event_repository.dart';
+import 'package:t5/data/repositories/storage_repository.dart';
 
 import 'package:t5/services/event_filter.dart';
 import 'package:t5/services/event_filter_service.dart';
 
 class EventViewModel extends ChangeNotifier {
   final EventRepository _eventRepository;
+  final StorageRepository _storageRepository;
 
-  EventViewModel(this._eventRepository);
+  EventViewModel(
+    this._eventRepository,
+    this._storageRepository,
+  );
 
   bool isLoading = false;
   String? errorMessage;
@@ -51,6 +59,28 @@ class EventViewModel extends ChangeNotifier {
     );
 
     notifyListeners();
+  }
+
+  Future<List<String>> uploadEventImages({
+    required String eventId,
+    required List<XFile> images,
+  }) async {
+    List<String> urls = [];
+
+    for (int i = 0; i < images.length; i++) {
+      final image = images[i];
+
+      final bytes = await image.readAsBytes();
+
+      final url = await _storageRepository.uploadBytes(
+        path: '$eventId/image_$i.jpg',
+        bytes: bytes,
+      );
+
+      urls.add(url);
+    }
+
+    return urls;
   }
 
   Future<void> createEvent(Event event) async {

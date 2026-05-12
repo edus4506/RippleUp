@@ -15,6 +15,8 @@ class Event {
   final String district;
   final String city;
   final List<int> objectives;
+  final List<String> imageUrls;
+  final String? coverImageUrl;
 
   Event({
     required this.id,
@@ -30,6 +32,8 @@ class Event {
     required this.district,
     required this.city,
     required this.objectives,
+    required this.imageUrls,
+    this.coverImageUrl,
   });
 
   factory Event.fromMap(Map<String, dynamic> map, String documentId) {
@@ -53,6 +57,8 @@ class Event {
       district: map['district'] ?? '',
       city: map['city'] ?? '',
       objectives: List<int>.from(map['objectives'] ?? []),
+      imageUrls: List<String>.from(map['imageUrls'] ?? []),
+      coverImageUrl: map['coverImageUrl'],
     );
   }
 
@@ -70,6 +76,8 @@ class Event {
       'district': district,
       'city': city,
       'objectives': objectives,
+      'imageUrls': imageUrls,
+      'coverImageUrl': coverImageUrl,
     };
   }
 

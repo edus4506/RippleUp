@@ -1,8 +1,14 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:image_picker/image_picker.dart';
+
 import '../../data/constants/event_locations.dart';
 import '../../data/models/event.dart';
+
 import '../../viewModels/authViewModel/auth_viewModel.dart';
 import '../../viewModels/event_viewModel.dart';
 
@@ -20,10 +26,13 @@ class _CreateEventPageState extends State<CreateEventPage> {
   final TextEditingController _startDateController = TextEditingController();
   final TextEditingController _endDateController = TextEditingController();
 
+  final ImagePicker _picker = ImagePicker();
+
   DateTime? startDate;
   DateTime? endDate;
 
   List<int> selectedObjectives = [];
+  List<XFile> selectedImages = [];
 
   String? selectedCountry;
   String? selectedDistrict;
@@ -37,6 +46,16 @@ class _CreateEventPageState extends State<CreateEventPage> {
     _startDateController.dispose();
     _endDateController.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickImages() async {
+    final images = await _picker.pickMultiImage();
+
+    if (images.isNotEmpty) {
+      setState(() {
+        selectedImages = images;
+      });
+    }
   }
 
   Future<DateTime?> _pickDateTime() async {
@@ -107,8 +126,15 @@ class _CreateEventPageState extends State<CreateEventPage> {
       return;
     }
 
+    final eventId = DateTime.now().millisecondsSinceEpoch.toString();
+
+    final imageUrls = await context.read<EventViewModel>().uploadEventImages(
+      eventId: eventId,
+      images: selectedImages,
+    );
+
     final event = Event(
-      id: '',
+      id: eventId,
       title: name,
       description: description,
       createdAt: DateTime.now(),
@@ -121,6 +147,8 @@ class _CreateEventPageState extends State<CreateEventPage> {
       country: selectedCountry!,
       district: selectedDistrict!,
       city: selectedCity!,
+      imageUrls: imageUrls,
+      coverImageUrl: imageUrls.isNotEmpty ? imageUrls.first : null,
     );
 
     await context.read<EventViewModel>().createEvent(event);
@@ -184,6 +212,57 @@ class _CreateEventPageState extends State<CreateEventPage> {
             TextField(
               controller: _descriptionController,
               decoration: const InputDecoration(labelText: 'Description'),
+            ),
+
+            const SizedBox(height: 20),
+
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text('Event Photos', style: theme.textTheme.titleMedium),
+            ),
+
+            const SizedBox(height: 10),
+
+            SizedBox(
+              height: 110,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: selectedImages.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == selectedImages.length) {
+                    return GestureDetector(
+                      onTap: _pickImages,
+                      child: Container(
+                        width: 110,
+                        margin: const EdgeInsets.only(right: 10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.grey.shade400),
+                        ),
+                        child: const Icon(Icons.add_a_photo, size: 30),
+                      ),
+                    );
+                  }
+
+                  return Container(
+                    width: 110,
+                    margin: const EdgeInsets.only(right: 10),
+                    clipBehavior: Clip.antiAlias,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: kIsWeb
+                        ? Image.network(
+                            selectedImages[index].path,
+                            fit: BoxFit.cover,
+                          )
+                        : Image.file(
+                            File(selectedImages[index].path),
+                            fit: BoxFit.cover,
+                          ),
+                  );
+                },
+              ),
             ),
 
             const SizedBox(height: 20),

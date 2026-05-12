@@ -66,7 +66,7 @@ void main() async {
         ),
 
         ChangeNotifierProvider(
-          create: (context) => EventViewModel(context.read<EventRepository>()),
+          create: (context) => EventViewModel(context.read<EventRepository>(), context.read<StorageRepository>(),),
         ),
 
         ChangeNotifierProvider(
