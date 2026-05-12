@@ -41,4 +41,45 @@ class StorageRepository {
 
     await bucket.remove(paths);
   }
+
+  Future<String> uploadEventImage({
+    required File file,
+    required String eventId,
+    required String fileName,
+  }) async {
+    final path = '$eventId/$fileName';
+
+    await _client.storage
+        .from('event-images')
+        .upload(path, file, fileOptions: const FileOptions(upsert: true));
+
+    return _client.storage.from('event-images').getPublicUrl(path);
+  }
+
+  Future<String> uploadEventBytes({
+    required String path,
+    required Uint8List bytes,
+  }) async {
+    await _client.storage
+        .from('event-images')
+        .uploadBinary(
+          path,
+          bytes,
+          fileOptions: const FileOptions(upsert: true),
+        );
+
+    return _client.storage.from('event-images').getPublicUrl(path);
+  }
+
+  Future<void> deleteEventImages({required String eventId}) async {
+    final bucket = _client.storage.from('event-images');
+
+    final files = await bucket.list(path: eventId);
+
+    if (files.isEmpty) return;
+
+    final paths = files.map((file) => '$eventId/${file.name}').toList();
+
+    await bucket.remove(paths);
+  }
 }

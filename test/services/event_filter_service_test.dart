@@ -20,7 +20,7 @@ Event buildEvent({
     title: 'Test Event',
     description: '',
     createdAt: now,
-    startDate: startDate ?? now.add(const Duration(hours: 1)), // planning
+    startDate: startDate ?? now.add(const Duration(hours: 1)),
     endDate: endDate ?? now.add(const Duration(hours: 2)),
     maxUsers: maxUsers,
     currentUsers: currentUsers,
@@ -29,6 +29,8 @@ Event buildEvent({
     country: country,
     district: district,
     city: city,
+    imageUrls: const [],
+    coverImageUrl: null,
   );
 }
 
@@ -61,8 +63,8 @@ void main() {
         buildEvent(
           startDate: DateTime.now().subtract(const Duration(hours: 2)),
           endDate: DateTime.now().subtract(const Duration(hours: 1)),
-        ), // done
-        buildEvent(), // planning
+        ),
+        buildEvent(),
       ];
 
       final filter = EventFilter(showDone: false);
@@ -160,13 +162,9 @@ void main() {
 
     test('applies multiple filters together', () {
       final events = [
-        buildEvent(currentUsers: 5, maxUsers: 5), // full → remove
-        buildEvent(currentUsers: 3, maxUsers: 10), // valid
-        buildEvent(
-          currentUsers: 3,
-          maxUsers: 10,
-          country: 'Spain',
-        ), // wrong country
+        buildEvent(currentUsers: 5, maxUsers: 5),
+        buildEvent(currentUsers: 3, maxUsers: 10),
+        buildEvent(currentUsers: 3, maxUsers: 10, country: 'Spain'),
       ];
 
       final filter = EventFilter(hideFull: true, country: 'Portugal');

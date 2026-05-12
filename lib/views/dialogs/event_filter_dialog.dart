@@ -123,41 +123,39 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                         itemBuilder: (context, index) {
                           final goal = index + 1;
 
-                          if (goal == 18) {
-                            return Container(
-                              decoration: BoxDecoration(
-                                color: Colors.grey[200],
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            );
-                          }
-
                           final isSelected = selectedGoals.contains(goal);
 
                           return GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                if (isSelected) {
-                                  selectedGoals.remove(goal);
-                                } else {
-                                  selectedGoals.add(goal);
-                                }
-                              });
-                            },
-                            child: Container(
+                            onTap: goal == 18
+                                ? null
+                                : () {
+                                    setState(() {
+                                      if (isSelected) {
+                                        selectedGoals.remove(goal);
+                                      } else {
+                                        selectedGoals.add(goal);
+                                      }
+                                    });
+                                    setState(() {
+                                      if (isSelected) {
+                                        selectedGoals.remove(goal);
+                                      } else {
+                                        selectedGoals.add(goal);
+                                      }
+                                    });
+                                  },
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
                               decoration: BoxDecoration(
-                                color: isSelected
-                                    ? Colors.green
-                                    : Colors.grey[300],
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(12),
+                                border: isSelected
+                                    ? Border.all(color: Colors.green, width: 3)
+                                    : null,
                               ),
-                              child: Center(
-                                child: Text(
-                                  goal.toString(),
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                              clipBehavior: Clip.antiAlias,
+                              child: Image.asset(
+                                'assets/objectives/goal$goal.jpg',
+                                fit: BoxFit.cover,
                               ),
                             ),
                           );
