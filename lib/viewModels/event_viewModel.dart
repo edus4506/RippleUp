@@ -56,13 +56,10 @@ class EventViewModel extends ChangeNotifier {
   void updateSearchQuery(String query) {
     _debounce?.cancel();
 
-    _debounce = Timer(
-      const Duration(milliseconds: 300),
-      () {
-        _searchQuery = query;
-        notifyListeners();
-      },
-    );
+    _debounce = Timer(const Duration(milliseconds: 300), () {
+      _searchQuery = query;
+      notifyListeners();
+    });
   }
 
   // =========================
@@ -73,17 +70,11 @@ class EventViewModel extends ChangeNotifier {
     return eventsStream.map((events) {
       // SEARCH MODE
       if (_isSearching) {
-        return EventSearchService.search(
-          events,
-          _searchQuery,
-        );
+        return EventSearchService.search(events, _searchQuery);
       }
 
       // NORMAL FILTER MODE
-      return EventFilterService.apply(
-        events,
-        _filter,
-      );
+      return EventFilterService.apply(events, _filter);
     });
   }
 
@@ -166,17 +157,11 @@ class EventViewModel extends ChangeNotifier {
       errorMessage = null;
       notifyListeners();
 
-      await _eventRepository.joinEvent(
-        eventId: eventId,
-        userId: userId,
-      );
+      await _eventRepository.joinEvent(eventId: eventId, userId: userId);
 
       return true;
     } catch (e) {
-      errorMessage = e.toString().replaceFirst(
-        'Exception: ',
-        '',
-      );
+      errorMessage = e.toString().replaceFirst('Exception: ', '');
 
       return false;
     } finally {
@@ -198,17 +183,11 @@ class EventViewModel extends ChangeNotifier {
       errorMessage = null;
       notifyListeners();
 
-      await _eventRepository.leaveEvent(
-        eventId: eventId,
-        userId: userId,
-      );
+      await _eventRepository.leaveEvent(eventId: eventId, userId: userId);
 
       return true;
     } catch (e) {
-      errorMessage = e.toString().replaceFirst(
-        'Exception: ',
-        '',
-      );
+      errorMessage = e.toString().replaceFirst('Exception: ', '');
 
       return false;
     } finally {
@@ -225,10 +204,7 @@ class EventViewModel extends ChangeNotifier {
     required String eventId,
     required String userId,
   }) {
-    return _eventRepository.isUserInEvent(
-      eventId: eventId,
-      userId: userId,
-    );
+    return _eventRepository.isUserInEvent(eventId: eventId, userId: userId);
   }
 
   // =========================
@@ -245,10 +221,7 @@ class EventViewModel extends ChangeNotifier {
 
       return true;
     } catch (e) {
-      errorMessage = e.toString().replaceFirst(
-        'Exception: ',
-        '',
-      );
+      errorMessage = e.toString().replaceFirst('Exception: ', '');
 
       return false;
     } finally {

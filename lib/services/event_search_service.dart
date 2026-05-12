@@ -1,49 +1,110 @@
 import 'package:t5/data/models/event.dart';
 
 class EventSearchService {
-  static List<Event> search(
-    List<Event> events,
-    String query,
-  ) {
-    if (query.trim().isEmpty) {
+  // O(n * m)
+  // Searches and ranks events using exact, partial, prefix,
+  // and fuzzy matching based on Levenshtein distance.
+  static List<Event> search(List<Event> events, String query) {
+    final normalizedQuery = query.toLowerCase().trim();
+
+    if (normalizedQuery.isEmpty) {
       return events;
     }
 
-    final normalizedQuery = query.toLowerCase().trim();
+    final scoredEvents = events
+        .map(
+          (event) => _ScoredEvent(
+            event: event,
+            score: _calculateScore(event, normalizedQuery),
+          ),
+        )
+        .where((scoredEvent) => scoredEvent.score > 0)
+        .toList();
 
-    return events.where((event) {
-      final searchableText = [
-        event.title,
-        event.description,
-        event.city,
-        event.district,
-      ].join(' ').toLowerCase();
+    scoredEvents.sort((a, b) => b.score.compareTo(a.score));
 
-      // Exact/contains match
-      if (searchableText.contains(normalizedQuery)) {
-        return true;
-      }
-
-      // Fuzzy match
-      final words = searchableText.split(' ');
-
-      for (final word in words) {
-        final distance = _levenshteinDistance(
-          normalizedQuery,
-          word,
-        );
-
-        if (distance <= 2) {
-          return true;
-        }
-      }
-
-      return false;
-    }).toList();
+    return scoredEvents.map((scoredEvent) => scoredEvent.event).toList();
   }
 
+  // O(f)
+  // Calculates the relevance score of an event
+  // based on multiple searchable fields.
+  static int _calculateScore(Event event, String query) {
+    int score = 0;
+
+    final title = event.title.toLowerCase();
+    final description = event.description.toLowerCase();
+    final city = event.city.toLowerCase();
+    final district = event.district.toLowerCase();
+    final country = event.country.toLowerCase();
+
+    score += _scoreField(title, query, exactWeight: 120, containsWeight: 100);
+
+    score += _scoreField(
+      description,
+      query,
+      exactWeight: 60,
+      containsWeight: 40,
+    );
+
+    score += _scoreField(city, query, exactWeight: 80, containsWeight: 60);
+
+    score += _scoreField(district, query, exactWeight: 70, containsWeight: 50);
+
+    score += _scoreField(country, query, exactWeight: 50, containsWeight: 35);
+
+    return score;
+  }
+
+  // O(w * l)
+  // Scores a single text field using exact,
+  // prefix, partial, and fuzzy matching.
+  static int _scoreField(
+    String field,
+    String query, {
+    required int exactWeight,
+    required int containsWeight,
+  }) {
+    if (field.isEmpty) {
+      return 0;
+    }
+
+    if (field == query) {
+      return exactWeight;
+    }
+
+    if (field.startsWith(query)) {
+      return containsWeight + 30;
+    }
+
+    if (field.contains(query)) {
+      return containsWeight;
+    }
+
+    final words = field.split(RegExp(r'\s+'));
+
+    for (final word in words) {
+      if (word.isEmpty) continue;
+
+      if (word.startsWith(query)) {
+        return containsWeight + 20;
+      }
+
+      final distance = _levenshteinDistance(query, word);
+
+      if (word.length > 4 && distance <= 2) {
+        return 20;
+      }
+    }
+
+    return 0;
+  }
+
+  // O(a * b)
+  // Computes the Levenshtein distance between
+  // two strings for fuzzy search matching.
   static int _levenshteinDistance(String s1, String s2) {
-    List<List<int>> dp = List.generate(
+    final dp = List.generate(
       s1.length + 1,
       (_) => List.filled(s2.length + 1, 0),
     );
@@ -61,7 +122,8 @@ class EventSearchService {
         if (s1[i - 1] == s2[j - 1]) {
           dp[i][j] = dp[i - 1][j - 1];
         } else {
-          dp[i][j] = 1 +
+          dp[i][j] =
+              1 +
               [
                 dp[i - 1][j],
                 dp[i][j - 1],
@@ -73,4 +135,11 @@ class EventSearchService {
 
     return dp[s1.length][s2.length];
   }
+}
+
+class _ScoredEvent {
+  final Event event;
+  final int score;
+
+  const _ScoredEvent({required this.event, required this.score});
 }

@@ -18,8 +18,7 @@ class EventsPage extends StatefulWidget {
 }
 
 class _EventsPageState extends State<EventsPage> {
-  final TextEditingController _searchController =
-      TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
 
   void _openEventDetails(BuildContext context, Event event) {
     showDialog(
@@ -29,10 +28,7 @@ class _EventsPageState extends State<EventsPage> {
   }
 
   void _openFilterModal(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (_) => const EventFilterDialog(),
-    );
+    showDialog(context: context, builder: (_) => const EventFilterDialog());
   }
 
   void _stopSearch(BuildContext context) {
@@ -54,7 +50,6 @@ class _EventsPageState extends State<EventsPage> {
         // =========================
         // SEARCH MODE
         // =========================
-
         leading: viewModel.isSearching
             ? IconButton(
                 icon: const Icon(Icons.arrow_back),
@@ -74,9 +69,7 @@ class _EventsPageState extends State<EventsPage> {
                   border: InputBorder.none,
                 ),
                 onChanged: (value) {
-                  context
-                      .read<EventViewModel>()
-                      .updateSearchQuery(value);
+                  context.read<EventViewModel>().updateSearchQuery(value);
                 },
               )
             : const Text("Events"),
@@ -87,9 +80,7 @@ class _EventsPageState extends State<EventsPage> {
                 IconButton(
                   icon: const Icon(Icons.search),
                   onPressed: () {
-                    context
-                        .read<EventViewModel>()
-                        .startSearch();
+                    context.read<EventViewModel>().startSearch();
                   },
                 ),
               ],
@@ -99,19 +90,12 @@ class _EventsPageState extends State<EventsPage> {
         stream: viewModel.filteredEventsStream,
 
         builder: (context, snapshot) {
-          if (snapshot.connectionState ==
-              ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasError) {
-            return Center(
-              child: Text(
-                'Error: ${snapshot.error}',
-              ),
-            );
+            return Center(child: Text('Error: ${snapshot.error}'));
           }
 
           final events = snapshot.data ?? [];
@@ -134,8 +118,7 @@ class _EventsPageState extends State<EventsPage> {
 
               return EventCard(
                 event: event,
-                onTap: () =>
-                    _openEventDetails(context, event),
+                onTap: () => _openEventDetails(context, event),
               );
             },
           );
