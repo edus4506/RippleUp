@@ -8,8 +8,10 @@ import 'package:t5/views/pages/reviews_history_page.dart';
 import 'package:t5/views/pages/settings/change_password_page.dart';
 import 'package:t5/views/pages/settings/edit_profile_page.dart';
 import 'package:t5/views/pages/settings/settings_page.dart';
+import 'package:t5/views/pages/splash_page.dart';
 
 class AppRoutes {
+  static const String splash = '/splash';
   static const String home = '/home';
   static const String login = '/login';
   static const String register = '/register';
@@ -21,6 +23,7 @@ class AppRoutes {
   static const String reviewsHistory = '/reviews-history';
 
   static Map<String, WidgetBuilder> routes = {
+    splash: (context) => const SplashPage(),
     home: (context) => const HomePage(),
     login: (context) => const LoginPage(),
     register: (context) => const RegisterPage(),
@@ -30,7 +33,6 @@ class AppRoutes {
     reviewsHistory: (context) => const ReviewsHistoryPage(),
   };
 
-  //arguments
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case chat:
