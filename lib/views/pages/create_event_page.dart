@@ -412,10 +412,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
                       border: (isSelected && goal != 18)
-                          ? Border.all(
-                              color: Colors.green,
-                              width: 3,
-                            )
+                          ? Border.all(color: Colors.green, width: 3)
                           : null,
                     ),
                     clipBehavior: Clip.antiAlias,

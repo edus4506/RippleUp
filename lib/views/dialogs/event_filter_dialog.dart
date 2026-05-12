@@ -136,23 +136,20 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                                         selectedGoals.add(goal);
                                       }
                                     });
-                              setState(() {
-                                if (isSelected) {
-                                  selectedGoals.remove(goal);
-                                } else {
-                                  selectedGoals.add(goal);
-                                }
-                              });
-                            },
+                                    setState(() {
+                                      if (isSelected) {
+                                        selectedGoals.remove(goal);
+                                      } else {
+                                        selectedGoals.add(goal);
+                                      }
+                                    });
+                                  },
                             child: AnimatedContainer(
                               duration: const Duration(milliseconds: 200),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
                                 border: isSelected
-                                    ? Border.all(
-                                        color: Colors.green,
-                                        width: 3,
-                                      )
+                                    ? Border.all(color: Colors.green, width: 3)
                                     : null,
                               ),
                               clipBehavior: Clip.antiAlias,

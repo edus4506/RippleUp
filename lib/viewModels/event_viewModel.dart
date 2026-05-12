@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:t5/data/models/event.dart';
@@ -13,10 +11,7 @@ class EventViewModel extends ChangeNotifier {
   final EventRepository _eventRepository;
   final StorageRepository _storageRepository;
 
-  EventViewModel(
-    this._eventRepository,
-    this._storageRepository,
-  );
+  EventViewModel(this._eventRepository, this._storageRepository);
 
   bool isLoading = false;
   String? errorMessage;
