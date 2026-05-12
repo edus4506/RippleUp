@@ -162,4 +162,18 @@ class EventRepository {
 
     await batch.commit();
   }
+
+
+  Future<Event> getEventById(String eventId) async {
+    final doc = await _db
+        .collection('events')
+        .doc(eventId)
+        .get();
+
+    if (!doc.exists) {
+      throw Exception('Event not found');
+    }
+
+    return Event.fromMap(doc.data()!, doc.id);
+  }
 }

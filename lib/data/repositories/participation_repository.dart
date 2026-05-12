@@ -26,4 +26,23 @@ class ParticipationRepository {
 
     return snapshot.docs.isNotEmpty;
   }
+
+  Future<List<Participation>> getParticipationsByUser(
+    String userId,
+  ) async {
+
+    final snapshot = await _db
+        .collection('participations')
+        .where('idUser', isEqualTo: userId)
+        .get();
+
+    return snapshot.docs
+        .map(
+          (doc) => Participation.fromMap(
+            doc.data(),
+            doc.id,
+          ),
+        )
+        .toList();
+  }
 }
