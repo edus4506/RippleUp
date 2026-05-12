@@ -314,37 +314,35 @@ class _CreateEventPageState extends State<CreateEventPage> {
               itemBuilder: (context, index) {
                 final goal = index + 1;
 
-                if (goal == 18) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  );
-                }
-
                 final isSelected = selectedObjectives.contains(goal);
 
                 return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      if (isSelected) {
-                        selectedObjectives.remove(goal);
-                      } else {
-                        selectedObjectives.add(goal);
-                      }
-                    });
-                  },
-                  child: Container(
+                  onTap: goal == 18
+                      ? null
+                      : () {
+                          setState(() {
+                            if (isSelected) {
+                              selectedObjectives.remove(goal);
+                            } else {
+                              selectedObjectives.add(goal);
+                            }
+                          });
+                        },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
                     decoration: BoxDecoration(
-                      color: isSelected ? Colors.green : Colors.grey[300],
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(12),
+                      border: (isSelected && goal != 18)
+                          ? Border.all(
+                              color: Colors.green,
+                              width: 3,
+                            )
+                          : null,
                     ),
-                    child: Center(
-                      child: Text(
-                        goal.toString(),
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
+                    clipBehavior: Clip.antiAlias,
+                    child: Image.asset(
+                      'assets/objectives/goal$goal.jpg',
+                      fit: BoxFit.cover,
                     ),
                   ),
                 );
