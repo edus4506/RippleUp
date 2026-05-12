@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../data/models/review.dart';
+import '../data/models/review_history_item.dart';
 import '../data/repositories/review_repository.dart';
 import '../services/review_service.dart';
 
@@ -27,6 +28,10 @@ class ReviewViewModel extends ChangeNotifier {
 
   Stream<List<Review>> getReviews(String eventId) {
     return _repository.getEventReviews(eventId);
+  }
+
+  Stream<List<ReviewHistoryItem>> getUserReviewsHistory(String userId) {
+    return _repository.getUserReviewsHistory(userId);
   }
 
   Future<bool> hasUserReviewed(String eventId, String userId) {
