@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'package:t5/data/repositories/event_repository.dart';
 import 'package:t5/data/repositories/favorite_repository.dart';
+import 'package:t5/data/repositories/follow_repository.dart';
 import 'package:t5/data/repositories/message_repository.dart';
 import 'package:t5/data/repositories/participation_repository.dart';
 import 'package:t5/data/repositories/storage_repository.dart';
@@ -47,6 +48,7 @@ void main() async {
         Provider(create: (_) => ParticipationRepository()),
         Provider(create: (_) => MessageRepository()),
         Provider(create: (_) => ReviewRepository()),
+        Provider(create: (_) => FollowRepository()),
         ProxyProvider<StorageRepository, ProfileImageService>(
           update: (_, storageRepo, __) => ProfileImageService(storageRepo),
         ),
