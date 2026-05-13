@@ -1,13 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'package:t5/views/dialogs/event_details_dialog.dart';
+
 import '../../../data/models/event.dart';
+
 import '../../viewModels/event_viewModel.dart';
+
 import '../dialogs/event_filter_dialog.dart';
 import '../widgets/event_card.dart';
 
-class EventsPage extends StatelessWidget {
+class EventsPage extends StatefulWidget {
   const EventsPage({super.key});
+
+  @override
+  State<EventsPage> createState() => _EventsPageState();
+}
+
+class _EventsPageState extends State<EventsPage> {
+  final TextEditingController _searchController = TextEditingController();
 
   void _openEventDetails(BuildContext context, Event event) {
     showDialog(
@@ -20,20 +31,64 @@ class EventsPage extends StatelessWidget {
     showDialog(context: context, builder: (_) => const EventFilterDialog());
   }
 
+  void _stopSearch(BuildContext context) {
+    _searchController.clear();
+
+    FocusScope.of(context).unfocus();
+
+    context.read<EventViewModel>().stopSearch();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final viewModel = context.watch<EventViewModel>();
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Events"),
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.filter_list),
-          onPressed: () => _openFilterModal(context),
-        ),
+
+        // =========================
+        // SEARCH MODE
+        // =========================
+        leading: viewModel.isSearching
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => _stopSearch(context),
+              )
+            : IconButton(
+                icon: const Icon(Icons.filter_list),
+                onPressed: () => _openFilterModal(context),
+              ),
+
+        title: viewModel.isSearching
+            ? TextField(
+                controller: _searchController,
+                autofocus: true,
+                decoration: const InputDecoration(
+                  hintText: 'Search events...',
+                  border: InputBorder.none,
+                ),
+                onChanged: (value) {
+                  context.read<EventViewModel>().updateSearchQuery(value);
+                },
+              )
+            : const Text("Events"),
+
+        actions: viewModel.isSearching
+            ? null
+            : [
+                IconButton(
+                  icon: const Icon(Icons.search),
+                  onPressed: () {
+                    context.read<EventViewModel>().startSearch();
+                  },
+                ),
+              ],
       ),
 
       body: StreamBuilder<List<Event>>(
-        stream: context.watch<EventViewModel>().filteredEventsStream,
+        stream: viewModel.filteredEventsStream,
+
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -46,11 +101,18 @@ class EventsPage extends StatelessWidget {
           final events = snapshot.data ?? [];
 
           if (events.isEmpty) {
-            return const Center(child: Text('No events found.'));
+            return Center(
+              child: Text(
+                viewModel.isSearching
+                    ? 'No matching events found.'
+                    : 'No events found.',
+              ),
+            );
           }
 
           return ListView.builder(
             itemCount: events.length,
+
             itemBuilder: (context, index) {
               final event = events[index];
 
@@ -63,5 +125,11 @@ class EventsPage extends StatelessWidget {
         },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 }

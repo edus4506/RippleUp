@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:t5/data/models/event.dart';
@@ -6,6 +8,7 @@ import 'package:t5/data/repositories/storage_repository.dart';
 
 import 'package:t5/services/event_filter.dart';
 import 'package:t5/services/event_filter_service.dart';
+import 'package:t5/services/event_search_service.dart';
 
 class EventViewModel extends ChangeNotifier {
   final EventRepository _eventRepository;
@@ -22,11 +25,62 @@ class EventViewModel extends ChangeNotifier {
 
   EventFilter get currentFilter => _filter;
 
+  // =========================
+  // SEARCH STATE
+  // =========================
+
+  bool _isSearching = false;
+
+  String _searchQuery = '';
+
+  Timer? _debounce;
+
+  bool get isSearching => _isSearching;
+
+  String get searchQuery => _searchQuery;
+
+  void startSearch() {
+    _isSearching = true;
+    notifyListeners();
+  }
+
+  void stopSearch() {
+    _isSearching = false;
+    _searchQuery = '';
+
+    _debounce?.cancel();
+
+    notifyListeners();
+  }
+
+  void updateSearchQuery(String query) {
+    _debounce?.cancel();
+
+    _debounce = Timer(const Duration(milliseconds: 300), () {
+      _searchQuery = query;
+      notifyListeners();
+    });
+  }
+
+  // =========================
+  // EVENTS STREAM
+  // =========================
+
   Stream<List<Event>> get filteredEventsStream {
     return eventsStream.map((events) {
+      // SEARCH MODE
+      if (_isSearching) {
+        return EventSearchService.search(events, _searchQuery);
+      }
+
+      // NORMAL FILTER MODE
       return EventFilterService.apply(events, _filter);
     });
   }
+
+  // =========================
+  // FILTERS
+  // =========================
 
   void applyFilters({
     required bool hideFull,
@@ -56,6 +110,10 @@ class EventViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  // =========================
+  // IMAGES
+  // =========================
+
   Future<List<String>> uploadEventImages({
     required String eventId,
     required List<XFile> images,
@@ -78,9 +136,17 @@ class EventViewModel extends ChangeNotifier {
     return urls;
   }
 
+  // =========================
+  // CREATE EVENT
+  // =========================
+
   Future<void> createEvent(Event event) async {
     await _eventRepository.createEvent(event);
   }
+
+  // =========================
+  // JOIN EVENT
+  // =========================
 
   Future<bool> joinEvent({
     required String eventId,
@@ -96,12 +162,17 @@ class EventViewModel extends ChangeNotifier {
       return true;
     } catch (e) {
       errorMessage = e.toString().replaceFirst('Exception: ', '');
+
       return false;
     } finally {
       isLoading = false;
       notifyListeners();
     }
   }
+
+  // =========================
+  // LEAVE EVENT
+  // =========================
 
   Future<bool> leaveEvent({
     required String eventId,
@@ -117,6 +188,7 @@ class EventViewModel extends ChangeNotifier {
       return true;
     } catch (e) {
       errorMessage = e.toString().replaceFirst('Exception: ', '');
+
       return false;
     } finally {
       isLoading = false;
@@ -124,12 +196,20 @@ class EventViewModel extends ChangeNotifier {
     }
   }
 
+  // =========================
+  // USER IN EVENT
+  // =========================
+
   Stream<bool> isUserInEvent({
     required String eventId,
     required String userId,
   }) {
     return _eventRepository.isUserInEvent(eventId: eventId, userId: userId);
   }
+
+  // =========================
+  // DELETE EVENT
+  // =========================
 
   Future<bool> deleteEvent(String eventId) async {
     try {
@@ -142,10 +222,17 @@ class EventViewModel extends ChangeNotifier {
       return true;
     } catch (e) {
       errorMessage = e.toString().replaceFirst('Exception: ', '');
+
       return false;
     } finally {
       isLoading = false;
       notifyListeners();
     }
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
   }
 }
