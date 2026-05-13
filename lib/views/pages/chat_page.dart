@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:t5/viewModels/message_viewModel.dart';
+import 'package:t5/routes/app_routes.dart';
 
 import '../../viewModels/user_view_model.dart';
 import '../../data/models/message.dart';
@@ -10,7 +11,6 @@ import '../../data/models/user.dart';
 class ChatPage extends StatefulWidget {
   final String eventId;
   final String title;
-  //both are passed when the page is called in the constuctor
 
   const ChatPage({super.key, required this.eventId, required this.title});
 
@@ -79,7 +79,6 @@ class _ChatPageState extends State<ChatPage> {
                   itemBuilder: (context, index) {
                     final msg = messages[index];
                     final isMe = msg.senderId == currentUserId;
-
                     return _MessageBubble(message: msg, isMe: isMe);
                   },
                 );
@@ -124,6 +123,14 @@ class _MessageBubble extends StatelessWidget {
 
   const _MessageBubble({required this.message, required this.isMe});
 
+  void _goToProfile(BuildContext context) {
+    Navigator.pushNamed(
+      context,
+      AppRoutes.publicProfile,
+      arguments: {'userId': message.senderId},
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Users?>(
@@ -139,7 +146,11 @@ class _MessageBubble extends StatelessWidget {
                 : MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (!isMe) _Avatar(user: user),
+              if (!isMe)
+                GestureDetector(
+                  onTap: () => _goToProfile(context),
+                  child: _Avatar(user: user),
+                ),
 
               Flexible(
                 child: Container(
@@ -156,11 +167,14 @@ class _MessageBubble extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       if (!isMe)
-                        Text(
-                          user?.name ?? "...",
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12,
+                        GestureDetector(
+                          onTap: () => _goToProfile(context),
+                          child: Text(
+                            user?.name ?? "...",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
                           ),
                         ),
 
