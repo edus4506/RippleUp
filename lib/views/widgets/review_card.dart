@@ -32,7 +32,8 @@ class ReviewCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final canDelete =
-        ReviewService.canDeleteReview(review, currentUserId) && onDelete != null;
+        ReviewService.canDeleteReview(review, currentUserId) &&
+        onDelete != null;
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -50,8 +51,7 @@ class ReviewCard extends StatelessWidget {
                   onTap: isOtherUser ? () => _goToProfile(context) : null,
                   child: CircleAvatar(
                     radius: 18,
-                    backgroundImage:
-                    user?.profilePictureUrl.isNotEmpty == true
+                    backgroundImage: user?.profilePictureUrl.isNotEmpty == true
                         ? NetworkImage(user!.profilePictureUrl)
                         : null,
                     child: user?.profilePictureUrl.isEmpty ?? true
@@ -95,7 +95,7 @@ class ReviewCard extends StatelessWidget {
                       Row(
                         children: List.generate(
                           5,
-                              (index) => Icon(
+                          (index) => Icon(
                             index < review.rating
                                 ? Icons.star
                                 : Icons.star_border,

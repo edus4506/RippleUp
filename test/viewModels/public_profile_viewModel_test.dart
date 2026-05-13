@@ -8,7 +8,9 @@ import 'package:t5/data/repositories/user_repository.dart';
 import 'package:t5/viewModels/public_profile_viewModel.dart';
 
 class MockUserRepository extends Mock implements UserRepository {}
+
 class MockEventRepository extends Mock implements EventRepository {}
+
 class MockFollowRepository extends Mock implements FollowRepository {}
 
 Users buildUser() =>
@@ -61,12 +63,15 @@ void main() {
     });
 
     test('sets user and events on success', () async {
-      when(() => mockUserRepo.getUser('u1'))
-          .thenAnswer((_) async => buildUser());
-      when(() => mockEventRepo.getJoinedEventsByUser('u1'))
-          .thenAnswer((_) async => [buildEvent('j1')]);
-      when(() => mockEventRepo.getCreatedEventsByUser('u1'))
-          .thenAnswer((_) async => [buildEvent('c1'), buildEvent('c2')]);
+      when(
+        () => mockUserRepo.getUser('u1'),
+      ).thenAnswer((_) async => buildUser());
+      when(
+        () => mockEventRepo.getJoinedEventsByUser('u1'),
+      ).thenAnswer((_) async => [buildEvent('j1')]);
+      when(
+        () => mockEventRepo.getCreatedEventsByUser('u1'),
+      ).thenAnswer((_) async => [buildEvent('c1'), buildEvent('c2')]);
 
       await viewModel.loadPublicProfile('u1');
 
@@ -78,8 +83,7 @@ void main() {
     });
 
     test('sets errorMessage when user is not found', () async {
-      when(() => mockUserRepo.getUser('unknown'))
-          .thenAnswer((_) async => null);
+      when(() => mockUserRepo.getUser('unknown')).thenAnswer((_) async => null);
 
       await viewModel.loadPublicProfile('unknown');
 
@@ -89,8 +93,9 @@ void main() {
     });
 
     test('sets errorMessage when repository throws', () async {
-      when(() => mockUserRepo.getUser(any()))
-          .thenThrow(Exception('Network error'));
+      when(
+        () => mockUserRepo.getUser(any()),
+      ).thenThrow(Exception('Network error'));
 
       await viewModel.loadPublicProfile('u1');
 
@@ -99,12 +104,15 @@ void main() {
     });
 
     test('isLoading is false after load completes', () async {
-      when(() => mockUserRepo.getUser('u1'))
-          .thenAnswer((_) async => buildUser());
-      when(() => mockEventRepo.getJoinedEventsByUser('u1'))
-          .thenAnswer((_) async => []);
-      when(() => mockEventRepo.getCreatedEventsByUser('u1'))
-          .thenAnswer((_) async => []);
+      when(
+        () => mockUserRepo.getUser('u1'),
+      ).thenAnswer((_) async => buildUser());
+      when(
+        () => mockEventRepo.getJoinedEventsByUser('u1'),
+      ).thenAnswer((_) async => []);
+      when(
+        () => mockEventRepo.getCreatedEventsByUser('u1'),
+      ).thenAnswer((_) async => []);
 
       await viewModel.loadPublicProfile('u1');
 
@@ -114,10 +122,9 @@ void main() {
 
   group('PublicProfileViewModel.isFollowing', () {
     test('emits false when not following', () async {
-      when(() => mockFollowRepo.isFollowing(
-        followerId: 'me',
-        followedId: 'u1',
-      )).thenAnswer((_) => Stream.value(false));
+      when(
+        () => mockFollowRepo.isFollowing(followerId: 'me', followedId: 'u1'),
+      ).thenAnswer((_) => Stream.value(false));
 
       final result = await viewModel
           .isFollowing(followerId: 'me', followedId: 'u1')
@@ -127,10 +134,9 @@ void main() {
     });
 
     test('emits true when already following', () async {
-      when(() => mockFollowRepo.isFollowing(
-        followerId: 'me',
-        followedId: 'u1',
-      )).thenAnswer((_) => Stream.value(true));
+      when(
+        () => mockFollowRepo.isFollowing(followerId: 'me', followedId: 'u1'),
+      ).thenAnswer((_) => Stream.value(true));
 
       final result = await viewModel
           .isFollowing(followerId: 'me', followedId: 'u1')
@@ -142,10 +148,9 @@ void main() {
 
   group('PublicProfileViewModel.toggleFollow', () {
     test('calls follow when not currently following', () async {
-      when(() => mockFollowRepo.follow(
-        followerId: 'me',
-        followedId: 'u1',
-      )).thenAnswer((_) async {});
+      when(
+        () => mockFollowRepo.follow(followerId: 'me', followedId: 'u1'),
+      ).thenAnswer((_) async {});
 
       await viewModel.toggleFollow(
         followerId: 'me',
@@ -153,21 +158,21 @@ void main() {
         currentlyFollowing: false,
       );
 
-      verify(() => mockFollowRepo.follow(
-        followerId: 'me',
-        followedId: 'u1',
-      )).called(1);
-      verifyNever(() => mockFollowRepo.unfollow(
-        followerId: any(named: 'followerId'),
-        followedId: any(named: 'followedId'),
-      ));
+      verify(
+        () => mockFollowRepo.follow(followerId: 'me', followedId: 'u1'),
+      ).called(1);
+      verifyNever(
+        () => mockFollowRepo.unfollow(
+          followerId: any(named: 'followerId'),
+          followedId: any(named: 'followedId'),
+        ),
+      );
     });
 
     test('calls unfollow when currently following', () async {
-      when(() => mockFollowRepo.unfollow(
-        followerId: 'me',
-        followedId: 'u1',
-      )).thenAnswer((_) async {});
+      when(
+        () => mockFollowRepo.unfollow(followerId: 'me', followedId: 'u1'),
+      ).thenAnswer((_) async {});
 
       await viewModel.toggleFollow(
         followerId: 'me',
@@ -175,14 +180,15 @@ void main() {
         currentlyFollowing: true,
       );
 
-      verify(() => mockFollowRepo.unfollow(
-        followerId: 'me',
-        followedId: 'u1',
-      )).called(1);
-      verifyNever(() => mockFollowRepo.follow(
-        followerId: any(named: 'followerId'),
-        followedId: any(named: 'followedId'),
-      ));
+      verify(
+        () => mockFollowRepo.unfollow(followerId: 'me', followedId: 'u1'),
+      ).called(1);
+      verifyNever(
+        () => mockFollowRepo.follow(
+          followerId: any(named: 'followerId'),
+          followedId: any(named: 'followedId'),
+        ),
+      );
     });
   });
 }

@@ -17,10 +17,10 @@ class PublicProfileViewModel extends ChangeNotifier {
   String? errorMessage;
 
   PublicProfileViewModel(
-      this._userRepository,
-      this._eventRepository,
-      this._followRepository,
-      );
+    this._userRepository,
+    this._eventRepository,
+    this._followRepository,
+  );
 
   Future<void> loadPublicProfile(String uid) async {
     isLoading = true;

@@ -52,112 +52,113 @@ class _PublicProfilePageState extends State<PublicProfilePage> {
                 ? const Center(child: CircularProgressIndicator())
                 : vm.errorMessage != null
                 ? Center(
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: Text(
-                  vm.errorMessage!,
-                  style: const TextStyle(color: Colors.red),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            )
-                : SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(
-                vertical: 40,
-                horizontal: 16,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  CircleAvatar(
-                    radius: 60,
-                    backgroundImage: (vm.user?.profilePictureUrl !=
-                        null &&
-                        vm.user!.profilePictureUrl.isNotEmpty)
-                        ? NetworkImage(vm.user!.profilePictureUrl)
-                        : null,
-                    child: (vm.user?.profilePictureUrl == null ||
-                        vm.user!.profilePictureUrl.isEmpty)
-                        ? const Icon(Icons.person, size: 80)
-                        : null,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    vm.user?.name ?? 'Unknown User',
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 16),
-                  if (_currentUserId != null &&
-                      _currentUserId != widget.userId)
-                    StreamBuilder<bool>(
-                      stream: vm.isFollowing(
-                        followerId: _currentUserId!,
-                        followedId: widget.userId,
+                    child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Text(
+                        vm.errorMessage!,
+                        style: const TextStyle(color: Colors.red),
+                        textAlign: TextAlign.center,
                       ),
-                      builder: (context, snapshot) {
-                        final isFollowing = snapshot.data ?? false;
-
-                        return OutlinedButton.icon(
-                          onPressed: () => vm.toggleFollow(
-                            followerId: _currentUserId!,
-                            followedId: widget.userId,
-                            currentlyFollowing: isFollowing,
-                          ),
-                          icon: Icon(
-                            isFollowing
-                                ? Icons.person_remove
-                                : Icons.person_add,
-                            size: 18,
-                          ),
-                          label: Text(
-                            isFollowing ? 'Unfollow' : 'Follow',
-                          ),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: isFollowing
-                                ? Colors.red
-                                : Colors.green,
-                            side: BorderSide(
-                              color: isFollowing
-                                  ? Colors.red
-                                  : Colors.green,
-                            ),
-                          ),
-                        );
-                      },
                     ),
-
-                  const SizedBox(height: 40),
-
-                  _SectionTitle(
-                    icon: Icons.add_circle_outline,
-                    label: 'Created Events',
-                    count: vm.createdEvents.length,
-                  ),
-                  const SizedBox(height: 12),
-                  vm.createdEvents.isEmpty
-                      ? const _EmptyState(
-                    message: 'No events created yet.',
                   )
-                      : _EventList(events: vm.createdEvents),
-                  const SizedBox(height: 32),
-                  _SectionTitle(
-                    icon: Icons.event_rounded,
-                    label: 'Joined Events',
-                    count: vm.joinedEvents.length,
+                : SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 40,
+                      horizontal: 16,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                          radius: 60,
+                          backgroundImage:
+                              (vm.user?.profilePictureUrl != null &&
+                                  vm.user!.profilePictureUrl.isNotEmpty)
+                              ? NetworkImage(vm.user!.profilePictureUrl)
+                              : null,
+                          child:
+                              (vm.user?.profilePictureUrl == null ||
+                                  vm.user!.profilePictureUrl.isEmpty)
+                              ? const Icon(Icons.person, size: 80)
+                              : null,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          vm.user?.name ?? 'Unknown User',
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 16),
+                        if (_currentUserId != null &&
+                            _currentUserId != widget.userId)
+                          StreamBuilder<bool>(
+                            stream: vm.isFollowing(
+                              followerId: _currentUserId!,
+                              followedId: widget.userId,
+                            ),
+                            builder: (context, snapshot) {
+                              final isFollowing = snapshot.data ?? false;
+
+                              return OutlinedButton.icon(
+                                onPressed: () => vm.toggleFollow(
+                                  followerId: _currentUserId!,
+                                  followedId: widget.userId,
+                                  currentlyFollowing: isFollowing,
+                                ),
+                                icon: Icon(
+                                  isFollowing
+                                      ? Icons.person_remove
+                                      : Icons.person_add,
+                                  size: 18,
+                                ),
+                                label: Text(
+                                  isFollowing ? 'Unfollow' : 'Follow',
+                                ),
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: isFollowing
+                                      ? Colors.red
+                                      : Colors.green,
+                                  side: BorderSide(
+                                    color: isFollowing
+                                        ? Colors.red
+                                        : Colors.green,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+
+                        const SizedBox(height: 40),
+
+                        _SectionTitle(
+                          icon: Icons.add_circle_outline,
+                          label: 'Created Events',
+                          count: vm.createdEvents.length,
+                        ),
+                        const SizedBox(height: 12),
+                        vm.createdEvents.isEmpty
+                            ? const _EmptyState(
+                                message: 'No events created yet.',
+                              )
+                            : _EventList(events: vm.createdEvents),
+                        const SizedBox(height: 32),
+                        _SectionTitle(
+                          icon: Icons.event_rounded,
+                          label: 'Joined Events',
+                          count: vm.joinedEvents.length,
+                        ),
+                        const SizedBox(height: 12),
+                        vm.joinedEvents.isEmpty
+                            ? const _EmptyState(
+                                message: 'No events joined yet.',
+                              )
+                            : _EventList(events: vm.joinedEvents),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 12),
-                  vm.joinedEvents.isEmpty
-                      ? const _EmptyState(
-                    message: 'No events joined yet.',
-                  )
-                      : _EventList(events: vm.joinedEvents),
-                ],
-              ),
-            ),
           );
         },
       ),
@@ -184,10 +185,9 @@ class _SectionTitle extends StatelessWidget {
         const SizedBox(width: 8),
         Text(
           '$label ($count)',
-          style: Theme.of(context)
-              .textTheme
-              .titleMedium
-              ?.copyWith(fontWeight: FontWeight.bold),
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
         ),
       ],
     );

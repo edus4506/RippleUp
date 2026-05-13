@@ -207,5 +207,4 @@ class EventRepository {
     }
     return events;
   }
-
 }

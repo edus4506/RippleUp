@@ -54,7 +54,9 @@ class _ChatPageState extends State<ChatPage> {
         children: [
           Expanded(
             child: StreamBuilder<List<Message>>(
-              stream: context.read<MessageViewModel>().getMessages(widget.eventId),
+              stream: context.read<MessageViewModel>().getMessages(
+                widget.eventId,
+              ),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return const Center(child: CircularProgressIndicator());
@@ -139,7 +141,9 @@ class _MessageBubble extends StatelessWidget {
         return Align(
           alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
           child: Row(
-            mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+            mainAxisAlignment: isMe
+                ? MainAxisAlignment.end
+                : MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (!isMe)
@@ -150,7 +154,10 @@ class _MessageBubble extends StatelessWidget {
 
               Flexible(
                 child: Container(
-                  margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
+                  margin: const EdgeInsets.symmetric(
+                    vertical: 4,
+                    horizontal: 6,
+                  ),
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     color: isMe ? Colors.blue : Colors.grey.shade300,
