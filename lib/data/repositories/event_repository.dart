@@ -162,4 +162,50 @@ class EventRepository {
 
     await batch.commit();
   }
+
+  Future<List<Event>> getCreatedEventsByUser(String uid) async {
+    final snapshot = await _db
+        .collection('events')
+        .where('idCreator', isEqualTo: uid)
+        .get();
+
+    return snapshot.docs
+        .map((doc) => Event.fromMap(doc.data(), doc.id))
+        .toList();
+  }
+
+  Future<List<Event>> getJoinedEventsByUser(String uid) async {
+    final participationsSnapshot = await _db
+        .collection('participations')
+        .where('idUser', isEqualTo: uid)
+        .get();
+
+    if (participationsSnapshot.docs.isEmpty) return [];
+
+    final eventIds = participationsSnapshot.docs
+        .map((doc) => doc.data()['idEvent'] as String)
+        .toList();
+
+    final List<Event> events = [];
+
+    for (int i = 0; i < eventIds.length; i += 10) {
+      final batch = eventIds.sublist(
+        i,
+        (i + 10 > eventIds.length) ? eventIds.length : i + 10,
+      );
+
+      final eventsSnapshot = await _db
+          .collection('events')
+          .where(FieldPath.documentId, whereIn: batch)
+          .get();
+
+      events.addAll(
+        eventsSnapshot.docs
+            .map((doc) => Event.fromMap(doc.data(), doc.id))
+            .toList(),
+      );
+    }
+    return events;
+  }
+
 }

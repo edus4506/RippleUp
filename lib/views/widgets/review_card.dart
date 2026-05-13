@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:t5/routes/app_routes.dart';
 
 import 'package:t5/data/models/review.dart';
 import 'package:t5/data/models/user.dart';
@@ -18,11 +19,20 @@ class ReviewCard extends StatelessWidget {
     this.onDelete,
   });
 
+  void _goToProfile(BuildContext context) {
+    if (review.userId == currentUserId) return;
+
+    Navigator.pushNamed(
+      context,
+      AppRoutes.publicProfile,
+      arguments: {'userId': review.userId},
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final canDelete =
-        ReviewService.canDeleteReview(review, currentUserId) &&
-        onDelete != null;
+        ReviewService.canDeleteReview(review, currentUserId) && onDelete != null;
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -32,18 +42,22 @@ class ReviewCard extends StatelessWidget {
           stream: context.read<UserViewModel>().userStream(review.userId),
           builder: (context, snapshot) {
             final user = snapshot.data;
-
+            final isOtherUser = review.userId != currentUserId;
             return Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CircleAvatar(
-                  radius: 18,
-                  backgroundImage: user?.profilePictureUrl.isNotEmpty == true
-                      ? NetworkImage(user!.profilePictureUrl)
-                      : null,
-                  child: user?.profilePictureUrl.isEmpty ?? true
-                      ? const Icon(Icons.person, size: 18)
-                      : null,
+                GestureDetector(
+                  onTap: isOtherUser ? () => _goToProfile(context) : null,
+                  child: CircleAvatar(
+                    radius: 18,
+                    backgroundImage:
+                    user?.profilePictureUrl.isNotEmpty == true
+                        ? NetworkImage(user!.profilePictureUrl)
+                        : null,
+                    child: user?.profilePictureUrl.isEmpty ?? true
+                        ? const Icon(Icons.person, size: 18)
+                        : null,
+                  ),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
@@ -54,10 +68,18 @@ class ReviewCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
-                            child: Text(
-                              user?.name ?? "...",
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
+                            child: GestureDetector(
+                              onTap: isOtherUser
+                                  ? () => _goToProfile(context)
+                                  : null,
+                              child: Text(
+                                user?.name ?? "...",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  decoration: isOtherUser
+                                      ? TextDecoration.underline
+                                      : TextDecoration.none,
+                                ),
                               ),
                             ),
                           ),
@@ -73,7 +95,7 @@ class ReviewCard extends StatelessWidget {
                       Row(
                         children: List.generate(
                           5,
-                          (index) => Icon(
+                              (index) => Icon(
                             index < review.rating
                                 ? Icons.star
                                 : Icons.star_border,
