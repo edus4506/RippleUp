@@ -10,6 +10,7 @@ import 'package:t5/views/pages/settings/edit_profile_page.dart';
 import 'package:t5/views/pages/settings/settings_page.dart';
 import 'package:t5/views/pages/splash_page.dart';
 import 'package:t5/views/pages/public_profile_page.dart';
+import 'package:t5/views/pages/followers_following_page.dart';
 
 class AppRoutes {
   static const String splash = '/splash';
@@ -23,6 +24,7 @@ class AppRoutes {
   static const String changePassword = '/settings/change-password';
   static const String reviewsHistory = '/reviews-history';
   static const String publicProfile = '/public-profile';
+  static const String followersFollowing = '/followers-following';
 
   static Map<String, WidgetBuilder> routes = {
     splash: (context) => const SplashPage(),
@@ -59,6 +61,15 @@ class AppRoutes {
         final args = settings.arguments as Map;
         return MaterialPageRoute(
           builder: (_) => PublicProfilePage(userId: args['userId'] as String),
+        );
+
+      case followersFollowing:
+        final args = settings.arguments as Map;
+        return MaterialPageRoute(
+          builder: (_) => FollowersFollowingPage(
+            userId: args['userId'] as String,
+            initialTab: (args['initialTab'] as int?) ?? 0,
+          ),
         );
 
       default:

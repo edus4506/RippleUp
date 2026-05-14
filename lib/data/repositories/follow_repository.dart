@@ -36,4 +36,40 @@ class FollowRepository {
         .snapshots()
         .map((doc) => doc.exists);
   }
+
+  Future<List<String>> getFollowerIds(String userId) async {
+    final snapshot = await _db
+        .collection('follows')
+        .where('followedId', isEqualTo: userId)
+        .get();
+    return snapshot.docs
+        .map((doc) => doc.data()['followerId'] as String)
+        .toList();
+  }
+
+  Future<List<String>> getFollowingIds(String userId) async {
+    final snapshot = await _db
+        .collection('follows')
+        .where('followerId', isEqualTo: userId)
+        .get();
+    return snapshot.docs
+        .map((doc) => doc.data()['followedId'] as String)
+        .toList();
+  }
+
+  Stream<int> followersCountStream(String userId) {
+    return _db
+        .collection('follows')
+        .where('followedId', isEqualTo: userId)
+        .snapshots()
+        .map((snap) => snap.docs.length);
+  }
+
+  Stream<int> followingCountStream(String userId) {
+    return _db
+        .collection('follows')
+        .where('followerId', isEqualTo: userId)
+        .snapshots()
+        .map((snap) => snap.docs.length);
+  }
 }

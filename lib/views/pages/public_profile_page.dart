@@ -5,6 +5,7 @@ import 'package:t5/data/models/event.dart';
 import 'package:t5/data/repositories/event_repository.dart';
 import 'package:t5/data/repositories/follow_repository.dart';
 import 'package:t5/data/repositories/user_repository.dart';
+import 'package:t5/routes/app_routes.dart';
 import 'package:t5/viewModels/public_profile_viewModel.dart';
 
 class PublicProfilePage extends StatefulWidget {
@@ -92,6 +93,8 @@ class _PublicProfilePageState extends State<PublicProfilePage> {
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 16),
+                        _FollowCounts(userId: widget.userId),
+                        const SizedBox(height: 8),
                         if (_currentUserId != null &&
                             _currentUserId != widget.userId)
                           StreamBuilder<bool>(
@@ -166,6 +169,89 @@ class _PublicProfilePageState extends State<PublicProfilePage> {
   }
 }
 
+class _FollowCounts extends StatelessWidget {
+  final String userId;
+
+  const _FollowCounts({required this.userId});
+
+  @override
+  Widget build(BuildContext context) {
+    final followRepo = context.read<FollowRepository>();
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        StreamBuilder<int>(
+          stream: followRepo.followersCountStream(userId),
+          builder: (context, snapshot) {
+            final count = snapshot.data ?? 0;
+            return _CountButton(
+              label: 'Followers',
+              count: count,
+              onTap: () => Navigator.pushNamed(
+                context,
+                AppRoutes.followersFollowing,
+                arguments: {'userId': userId, 'initialTab': 0},
+              ),
+            );
+          },
+        ),
+        const SizedBox(width: 32),
+        StreamBuilder<int>(
+          stream: followRepo.followingCountStream(userId),
+          builder: (context, snapshot) {
+            final count = snapshot.data ?? 0;
+            return _CountButton(
+              label: 'Following',
+              count: count,
+              onTap: () => Navigator.pushNamed(
+                context,
+                AppRoutes.followersFollowing,
+                arguments: {'userId': userId, 'initialTab': 1},
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class _CountButton extends StatelessWidget {
+  final String label;
+  final int count;
+  final VoidCallback onTap;
+
+  const _CountButton({
+    required this.label,
+    required this.count,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        child: Column(
+          children: [
+            Text(
+              '$count',
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              label,
+              style: const TextStyle(color: Colors.grey, fontSize: 13),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _SectionTitle extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -219,7 +305,7 @@ class _EventList extends StatelessWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: events.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 8),
+      separatorBuilder: (context, index) => const SizedBox(height: 8),
       itemBuilder: (context, index) {
         final event = events[index];
         return Card(

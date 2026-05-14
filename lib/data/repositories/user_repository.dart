@@ -52,4 +52,20 @@ class UserRepository {
       return Users.fromMap(doc.data()!);
     });
   }
+
+  Future<Map<String, Users>> getUsersByIds(List<String> ids) async {
+    if (ids.isEmpty) return {};
+    final result = <String, Users>{};
+    for (int i = 0; i < ids.length; i += 10) {
+      final batch = ids.sublist(i, (i + 10).clamp(0, ids.length));
+      final snapshot = await _db
+          .collection('users')
+          .where(FieldPath.documentId, whereIn: batch)
+          .get();
+      for (final doc in snapshot.docs) {
+        result[doc.id] = Users.fromMap(doc.data());
+      }
+    }
+    return result;
+  }
 }

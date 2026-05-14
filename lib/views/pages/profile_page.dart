@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:t5/data/repositories/follow_repository.dart';
 import 'package:t5/routes/app_routes.dart';
 import '../../viewModels/profile_viewModel.dart';
 import 'package:provider/provider.dart';
@@ -94,7 +96,9 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ],
 
-            const SizedBox(height: 40),
+            const SizedBox(height: 16),
+            _OwnFollowCounts(),
+            const SizedBox(height: 24),
 
             SizedBox(
               width: double.infinity,
@@ -139,6 +143,88 @@ class _ProfilePageState extends State<ProfilePage> {
 
             // dynamic content (favorites, history, etc)
             _buildContent(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _OwnFollowCounts extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) return const SizedBox.shrink();
+
+    final followRepo = context.read<FollowRepository>();
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        StreamBuilder<int>(
+          stream: followRepo.followersCountStream(uid),
+          builder: (context, snapshot) {
+            final count = snapshot.data ?? 0;
+            return _ProfileCountButton(
+              label: 'Followers',
+              count: count,
+              onTap: () => Navigator.pushNamed(
+                context,
+                AppRoutes.followersFollowing,
+                arguments: {'userId': uid, 'initialTab': 0},
+              ),
+            );
+          },
+        ),
+        const SizedBox(width: 32),
+        StreamBuilder<int>(
+          stream: followRepo.followingCountStream(uid),
+          builder: (context, snapshot) {
+            final count = snapshot.data ?? 0;
+            return _ProfileCountButton(
+              label: 'Following',
+              count: count,
+              onTap: () => Navigator.pushNamed(
+                context,
+                AppRoutes.followersFollowing,
+                arguments: {'userId': uid, 'initialTab': 1},
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class _ProfileCountButton extends StatelessWidget {
+  final String label;
+  final int count;
+  final VoidCallback onTap;
+
+  const _ProfileCountButton({
+    required this.label,
+    required this.count,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        child: Column(
+          children: [
+            Text(
+              '$count',
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              label,
+              style: const TextStyle(color: Colors.grey, fontSize: 13),
+            ),
           ],
         ),
       ),
