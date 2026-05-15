@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:t5/views/dialogs/event_details_dialog.dart';
+import 'package:t5/views/widgets/notification_dropdown.dart';
 import '../../../data/models/event.dart';
 import '../../viewModels/event_viewModel.dart';
 import '../dialogs/event_filter_dialog.dart';
@@ -30,6 +31,7 @@ class EventsPage extends StatelessWidget {
           icon: const Icon(Icons.filter_list),
           onPressed: () => _openFilterModal(context),
         ),
+        actions: [ NotificationDropdown()],
       ),
 
       body: StreamBuilder<List<Event>>(

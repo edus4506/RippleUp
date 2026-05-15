@@ -47,4 +47,17 @@ class NotificationRepository {
         .doc(notification.id)
         .update(notification.toMap());
   }
+
+  Future<bool> notificationAlreadyExists({ required String uid, required String eventId}) async {
+
+    final snapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('notifications')
+        .where('eventId', isEqualTo: eventId)
+        .limit(1)
+        .get();
+
+    return snapshot.docs.isNotEmpty;
+  }
 }

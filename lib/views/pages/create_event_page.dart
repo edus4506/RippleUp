@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:t5/views/widgets/notification_dropdown.dart';
 import '../../data/constants/event_locations.dart';
 import '../../data/models/event.dart';
 import '../../viewModels/authViewModel/auth_viewModel.dart';
@@ -139,7 +140,10 @@ class _CreateEventPageState extends State<CreateEventPage> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Create Event')),
+      appBar: AppBar(
+        title: const Text('Create Event'),
+        actions: [ NotificationDropdown()],
+      ),
 
       bottomNavigationBar: SafeArea(
         child: Container(

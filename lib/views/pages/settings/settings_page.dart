@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
 import 'package:t5/viewModels/profile_viewModel.dart';
 import 'package:t5/routes/app_routes.dart';
+import 'package:t5/views/widgets/notification_dropdown.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -85,7 +86,10 @@ class _SettingsPageState extends State<SettingsPage> {
     final user = vm.user;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
+      appBar: AppBar(
+        title: const Text('Settings'),
+        actions: [NotificationDropdown()],
+      ),
       body: vm.isLoading
           ? const Center(child: CircularProgressIndicator())
           : ListView(

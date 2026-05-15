@@ -8,6 +8,7 @@ import 'package:t5/data/repositories/participation_repository.dart';
 import 'package:t5/data/repositories/storage_repository.dart';
 import 'package:t5/data/repositories/user_repository.dart';
 import 'package:t5/data/repositories/review_repository.dart';
+import 'package:t5/data/repositories/notification_repository.dart';
 
 import 'package:t5/services/profile_image_service.dart';
 
@@ -17,6 +18,7 @@ import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
 import 'package:t5/viewModels/message_viewModel.dart';
 import 'package:t5/viewModels/profile_viewModel.dart';
 import 'package:t5/viewModels/review_viewModel.dart';
+import 'package:t5/viewModels/notification_viewModel.dart';
 import 'package:t5/viewModels/user_view_model.dart';
 
 import 'routes/app_routes.dart';
@@ -41,6 +43,7 @@ void main() async {
     MultiProvider(
       providers: [
         Provider(create: (_) => UserRepository()),
+        Provider(create: (_) => NotificationRepository()),
         Provider(create: (_) => StorageRepository()),
         Provider(create: (_) => EventRepository()),
         Provider(create: (_) => FavoriteRepository()),
@@ -86,6 +89,14 @@ void main() async {
         ChangeNotifierProvider(
           create: (context) =>
               ReviewViewModel(context.read<ReviewRepository>()),
+        ),
+
+        ChangeNotifierProvider(
+          create: (context) => AppNotificationViewModel(
+            context.read<NotificationRepository>(),
+            context.read<ParticipationRepository>(),
+            context.read<EventRepository>(),
+          ),
         ),
       ],
       child: const MyApp(),
