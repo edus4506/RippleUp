@@ -17,15 +17,21 @@ class PublicProfilePage extends StatefulWidget {
   State<PublicProfilePage> createState() => _PublicProfilePageState();
 }
 
-class _PublicProfilePageState extends State<PublicProfilePage> {
+class _PublicProfilePageState extends State<PublicProfilePage> with SingleTickerProviderStateMixin {
   late final PublicProfileViewModel _vm;
   late final String? _currentUserId;
+  late final TabController _tabController;
 
   @override
   void initState() {
     super.initState();
 
     _currentUserId = FirebaseAuth.instance.currentUser?.uid;
+
+    _tabController = TabController(
+      length: 2,
+      vsync: this,
+    );
 
     _vm = PublicProfileViewModel(
       context.read<UserRepository>(),
@@ -36,6 +42,12 @@ class _PublicProfilePageState extends State<PublicProfilePage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _vm.loadPublicProfile(widget.userId);
     });
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   @override
@@ -99,7 +111,7 @@ class _PublicProfilePageState extends State<PublicProfilePage> {
                             _currentUserId != widget.userId)
                           StreamBuilder<bool>(
                             stream: vm.isFollowing(
-                              followerId: _currentUserId!,
+                              followerId: _currentUserId,
                               followedId: widget.userId,
                             ),
                             builder: (context, snapshot) {
@@ -107,7 +119,7 @@ class _PublicProfilePageState extends State<PublicProfilePage> {
 
                               return OutlinedButton.icon(
                                 onPressed: () => vm.toggleFollow(
-                                  followerId: _currentUserId!,
+                                  followerId: _currentUserId,
                                   followedId: widget.userId,
                                   currentlyFollowing: isFollowing,
                                 ),
@@ -134,31 +146,37 @@ class _PublicProfilePageState extends State<PublicProfilePage> {
                             },
                           ),
 
-                        const SizedBox(height: 40),
-
-                        _SectionTitle(
-                          icon: Icons.add_circle_outline,
-                          label: 'Created Events',
-                          count: vm.createdEvents.length,
-                        ),
-                        const SizedBox(height: 12),
-                        vm.createdEvents.isEmpty
-                            ? const _EmptyState(
-                                message: 'No events created yet.',
-                              )
-                            : _EventList(events: vm.createdEvents),
                         const SizedBox(height: 32),
-                        _SectionTitle(
-                          icon: Icons.event_rounded,
-                          label: 'Joined Events',
-                          count: vm.joinedEvents.length,
+
+                        TabBar(
+                          controller: _tabController,
+                          indicatorColor: Colors.green,
+                          labelColor: Colors.green,
+                          unselectedLabelColor: Colors.grey,
+                          tabs: [
+                            Tab(
+                              text: 'Created (${vm.createdEvents.length})',
+                            ),
+                            Tab(
+                              text: 'Joined (${vm.joinedEvents.length})',
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 12),
-                        vm.joinedEvents.isEmpty
-                            ? const _EmptyState(
-                                message: 'No events joined yet.',
-                              )
-                            : _EventList(events: vm.joinedEvents),
+
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.5,
+                          child: TabBarView(
+                            controller: _tabController,
+                            children: [
+                              _EventList(
+                                events: vm.createdEvents,
+                              ),
+                              _EventList(
+                                events: vm.joinedEvents,
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),
