@@ -76,7 +76,7 @@ void main() async {
             context.read<UserRepository>(),
           ),
         ),
-        
+
         ChangeNotifierProvider(
           create: (context) => EventViewModel(context.read<EventRepository>()),
         ),

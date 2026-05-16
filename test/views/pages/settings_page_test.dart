@@ -15,8 +15,6 @@ import 'package:t5/routes/app_routes.dart';
 
 class FakeNotificationViewModel extends ChangeNotifier
     implements AppNotificationViewModel {
-
-  
   @override
   AppNotification createNewEventNotificationTemplate(
     Users creator,
@@ -50,10 +48,7 @@ class FakeNotificationViewModel extends ChangeNotifier
   Future<void> checkUpcomingEvents(String userId) async {}
 
   @override
-  Future<void> markAsSeen(
-    AppNotification notification,
-    String userId,
-  ) async {}
+  Future<void> markAsSeen(AppNotification notification, String userId) async {}
 
   @override
   Future<void> createNewEventNotification(Event event) async {}
@@ -94,7 +89,7 @@ Widget buildWidget({
     providers: [
       ChangeNotifierProvider<AuthViewModel>.value(value: authVm),
       ChangeNotifierProvider<ProfileViewModel>.value(value: profileVm),
-      ChangeNotifierProvider<AppNotificationViewModel>.value(value: notifVm)
+      ChangeNotifierProvider<AppNotificationViewModel>.value(value: notifVm),
     ],
     child: MaterialApp(
       routes: {
@@ -128,12 +123,19 @@ void main() {
     when(() => firebaseUser.uid).thenReturn('user-1');
 
     profileVm.setUser(
-      Users(uid: 'mockId', name: 'John Doe', email: 'john@example.com', profilePictureUrl: ''),
+      Users(
+        uid: 'mockId',
+        name: 'John Doe',
+        email: 'john@example.com',
+        profilePictureUrl: '',
+      ),
     );
   });
 
   testWidgets('Shows user name and email in header', (tester) async {
-    await tester.pumpWidget(buildWidget(authVm: authVm, profileVm: profileVm, notifVm: notifVm));
+    await tester.pumpWidget(
+      buildWidget(authVm: authVm, profileVm: profileVm, notifVm: notifVm),
+    );
     await tester.pumpAndSettle();
 
     expect(find.text('John Doe'), findsOneWidget);
@@ -141,7 +143,9 @@ void main() {
   });
 
   testWidgets('Shows all settings options', (tester) async {
-    await tester.pumpWidget(buildWidget(authVm: authVm, profileVm: profileVm,notifVm: notifVm));
+    await tester.pumpWidget(
+      buildWidget(authVm: authVm, profileVm: profileVm, notifVm: notifVm),
+    );
     await tester.pumpAndSettle();
 
     expect(find.text('Edit Profile'), findsOneWidget);
@@ -155,7 +159,9 @@ void main() {
   testWidgets('Tapping Edit Profile navigates to edit profile page', (
     tester,
   ) async {
-    await tester.pumpWidget(buildWidget(authVm: authVm, profileVm: profileVm,notifVm: notifVm));
+    await tester.pumpWidget(
+      buildWidget(authVm: authVm, profileVm: profileVm, notifVm: notifVm),
+    );
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Edit Profile'));
@@ -167,7 +173,9 @@ void main() {
   testWidgets('Tapping Password navigates to change password page', (
     tester,
   ) async {
-    await tester.pumpWidget(buildWidget(authVm: authVm, profileVm: profileVm,notifVm: notifVm));
+    await tester.pumpWidget(
+      buildWidget(authVm: authVm, profileVm: profileVm, notifVm: notifVm),
+    );
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Password'));
@@ -177,7 +185,9 @@ void main() {
   });
 
   testWidgets('Tapping Logout shows confirmation dialog', (tester) async {
-    await tester.pumpWidget(buildWidget(authVm: authVm, profileVm: profileVm,notifVm: notifVm));
+    await tester.pumpWidget(
+      buildWidget(authVm: authVm, profileVm: profileVm, notifVm: notifVm),
+    );
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Logout'));
@@ -188,7 +198,9 @@ void main() {
   });
 
   testWidgets('Cancelling logout dialog does not logout', (tester) async {
-    await tester.pumpWidget(buildWidget(authVm: authVm, profileVm: profileVm,notifVm: notifVm));
+    await tester.pumpWidget(
+      buildWidget(authVm: authVm, profileVm: profileVm, notifVm: notifVm),
+    );
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Logout'));
@@ -205,7 +217,9 @@ void main() {
   ) async {
     when(() => authVm.logout()).thenAnswer((_) async {});
 
-    await tester.pumpWidget(buildWidget(authVm: authVm, profileVm: profileVm,notifVm: notifVm));
+    await tester.pumpWidget(
+      buildWidget(authVm: authVm, profileVm: profileVm, notifVm: notifVm),
+    );
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Logout'));
@@ -220,7 +234,9 @@ void main() {
   testWidgets('Tapping Delete Account shows confirmation dialog', (
     tester,
   ) async {
-    await tester.pumpWidget(buildWidget(authVm: authVm, profileVm: profileVm,notifVm: notifVm));
+    await tester.pumpWidget(
+      buildWidget(authVm: authVm, profileVm: profileVm, notifVm: notifVm),
+    );
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Delete Account'));
@@ -237,7 +253,9 @@ void main() {
   testWidgets('Cancelling delete account dialog does not delete', (
     tester,
   ) async {
-    await tester.pumpWidget(buildWidget(authVm: authVm, profileVm: profileVm,notifVm: notifVm));
+    await tester.pumpWidget(
+      buildWidget(authVm: authVm, profileVm: profileVm, notifVm: notifVm),
+    );
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Delete Account'));
@@ -254,7 +272,9 @@ void main() {
   ) async {
     when(() => authVm.deleteAcc()).thenAnswer((_) async {});
 
-    await tester.pumpWidget(buildWidget(authVm: authVm, profileVm: profileVm,notifVm: notifVm));
+    await tester.pumpWidget(
+      buildWidget(authVm: authVm, profileVm: profileVm, notifVm: notifVm),
+    );
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Delete Account'));

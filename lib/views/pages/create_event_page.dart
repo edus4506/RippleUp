@@ -8,7 +8,6 @@ import '../../viewModels/authViewModel/auth_viewModel.dart';
 import '../../viewModels/event_viewModel.dart';
 import '../../viewModels/notification_viewModel.dart';
 
-
 class CreateEventPage extends StatefulWidget {
   const CreateEventPage({super.key});
 
@@ -127,7 +126,9 @@ class _CreateEventPageState extends State<CreateEventPage> {
     );
 
     await context.read<EventViewModel>().createEvent(event);
-    await context.read<AppNotificationViewModel>().createNewEventNotification(event);
+    await context.read<AppNotificationViewModel>().createNewEventNotification(
+      event,
+    );
 
     if (!mounted) return;
 
@@ -145,7 +146,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Create Event'),
-        actions: [ NotificationDropdown()],
+        actions: [NotificationDropdown()],
       ),
 
       bottomNavigationBar: SafeArea(

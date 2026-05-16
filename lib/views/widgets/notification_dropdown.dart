@@ -4,41 +4,34 @@ import 'package:t5/data/models/notification.dart';
 import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
 import 'package:t5/viewModels/notification_viewModel.dart';
 
-
 class NotificationDropdown extends StatefulWidget {
   const NotificationDropdown({super.key});
 
   @override
-  State<NotificationDropdown> createState() =>
-      _NotificationDropdownState();
+  State<NotificationDropdown> createState() => _NotificationDropdownState();
 }
 
-class _NotificationDropdownState
-    extends State<NotificationDropdown> {
-
+class _NotificationDropdownState extends State<NotificationDropdown> {
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-
-      final currentUser =
-          context.read<AuthViewModel>().currentUser;
+      final currentUser = context.read<AuthViewModel>().currentUser;
 
       if (currentUser == null) {
         debugPrint('Current user is null');
         return;
       }
 
-      context
-          .read<AppNotificationViewModel>()
-          .checkUpcomingEvents(currentUser.uid);
+      context.read<AppNotificationViewModel>().checkUpcomingEvents(
+        currentUser.uid,
+      );
     });
   }
 
   IconData getNotificationIcon(String? type) {
     switch (type) {
-
       case 'new_event':
         return Icons.event_available;
 
@@ -54,33 +47,26 @@ class _NotificationDropdownState
   Widget build(BuildContext context) {
     final currentUser = context.watch<AuthViewModel>().currentUser;
 
-      if (currentUser == null) {
-        return const SizedBox.shrink();
-      }
+    if (currentUser == null) {
+      return const SizedBox.shrink();
+    }
 
     return StreamBuilder<List<AppNotification>>(
-      stream: context
-          .watch<AppNotificationViewModel>()
-          .getNotifications(currentUser.uid),
+      stream: context.watch<AppNotificationViewModel>().getNotifications(
+        currentUser.uid,
+      ),
 
       builder: (context, snapshot) {
-
-        if (snapshot.connectionState ==
-            ConnectionState.waiting) {
-
+        if (snapshot.connectionState == ConnectionState.waiting) {
           return const Icon(Icons.notifications);
         }
 
         final notifications = snapshot.data ?? [];
-        
 
         // newest first
-        notifications.sort(
-          (a, b) => b.createdAt.compareTo(a.createdAt),
-        );
+        notifications.sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
-        final unseen =
-            notifications.where((n) => !n.seen).toList();
+        final unseen = notifications.where((n) => !n.seen).toList();
 
         return PopupMenuButton<AppNotification>(
           icon: Badge(
@@ -90,9 +76,7 @@ class _NotificationDropdownState
           ),
 
           itemBuilder: (context) {
-
             if (unseen.isEmpty) {
-
               return [
                 const PopupMenuItem(
                   enabled: false,
@@ -102,43 +86,27 @@ class _NotificationDropdownState
             }
 
             return unseen.map((notification) {
-
               return PopupMenuItem<AppNotification>(
                 value: notification,
 
                 child: Row(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
 
                   children: [
-
                     Padding(
-                      padding:
-                          const EdgeInsets.only(
-                        right: 12,
-                        top: 2,
-                      ),
+                      padding: const EdgeInsets.only(right: 12, top: 2),
 
-                      child: Icon(
-                        getNotificationIcon(
-                          notification.type,
-                        ),
-                      ),
+                      child: Icon(getNotificationIcon(notification.type)),
                     ),
 
                     Expanded(
                       child: Column(
-                        crossAxisAlignment:
-                            CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
 
                         children: [
-
                           Text(
                             notification.title,
-                            style: const TextStyle(
-                              fontWeight:
-                                  FontWeight.bold,
-                            ),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
 
                           const SizedBox(height: 4),
@@ -157,7 +125,7 @@ class _NotificationDropdownState
                               fontSize: 12,
                               color: Colors.grey,
                             ),
-                          )
+                          ),
                         ],
                       ),
                     ),
@@ -166,16 +134,13 @@ class _NotificationDropdownState
                       value: notification.seen,
 
                       onChanged: (_) async {
-
-                        final navigator =
-                            Navigator.of(context);
+                        final navigator = Navigator.of(context);
 
                         await context
-                            .read<
-                                AppNotificationViewModel>()
-                            .markAsSeen(
-                              notification, currentUser.uid
-                            );
+                            .read<AppNotificationViewModel>()
+                            .markAsSeen(notification, currentUser.uid);
+
+                        if (!mounted) return;
 
                         navigator.pop();
                       },

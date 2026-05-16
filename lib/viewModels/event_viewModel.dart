@@ -66,7 +66,7 @@ class EventViewModel extends ChangeNotifier {
       errorMessage = null;
       notifyListeners();
 
-      await _eventRepository.joinEvent(eventId: eventId, userId: userId);      
+      await _eventRepository.joinEvent(eventId: eventId, userId: userId);
 
       return true;
     } catch (e) {

@@ -9,7 +9,8 @@ class AppNotification {
   final bool seen;
   final String type;
 
-  final String? eventId; //para depois ao clicar na notificação, ir direito para o evento
+  final String?
+  eventId; //para depois ao clicar na notificação, ir direito para o evento
 
   AppNotification({
     required this.id,
@@ -22,14 +23,13 @@ class AppNotification {
     this.eventId,
   });
 
-  factory AppNotification.fromMap(Map<String, dynamic> map,String documentId) {
+  factory AppNotification.fromMap(Map<String, dynamic> map, String documentId) {
     return AppNotification(
       id: documentId,
       //receiverId: map['receiverId'] ?? '',
       title: map['title'] ?? '',
       body: map['body'] ?? '',
-      createdAt:
-          (map['createdAt'] as Timestamp).toDate(),
+      createdAt: (map['createdAt'] as Timestamp).toDate(),
       seen: map['seen'] ?? false,
       type: map['type'] ?? '',
       eventId: map['eventId'],

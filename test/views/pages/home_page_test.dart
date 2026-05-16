@@ -16,7 +16,6 @@ import 'package:mocktail/mocktail.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:t5/views/widgets/bottom_nav.dart';
 
-
 // ================= FAKE REPOSITORY =================
 
 class FakeEventRepository implements EventRepository {
@@ -67,12 +66,10 @@ class FakeEventRepository implements EventRepository {
   Stream<List<Event>> listenToEvents() => const Stream.empty();
 }
 
-
 // ================= FAKE NOTIFICATION VIEWMODEL =================
 
 class FakeNotificationViewModel extends ChangeNotifier
     implements AppNotificationViewModel {
-
   @override
   Stream<List<AppNotification>> getNotifications(String userId) =>
       Stream.value([]);
@@ -81,10 +78,7 @@ class FakeNotificationViewModel extends ChangeNotifier
   Future<void> checkUpcomingEvents(String userId) async {}
 
   @override
-  Future<void> markAsSeen(
-    AppNotification notification,
-    String userId,
-  ) async {}
+  Future<void> markAsSeen(AppNotification notification, String userId) async {}
 
   @override
   Future<void> createUpComingEventNotification(
@@ -112,7 +106,6 @@ class FakeNotificationViewModel extends ChangeNotifier
   }
 }
 
-
 // ================= FAKE FAVORITES =================
 
 class FakeFavoriteRepository implements FavoriteRepository {
@@ -139,13 +132,11 @@ class FakeFavoriteRepository implements FavoriteRepository {
       Stream.value([]);
 }
 
-
 // ================= MOCKS =================
 
 class MockAuthViewModel extends Mock implements AuthViewModel {}
 
 class MockFirebaseUser extends Mock implements User {}
-
 
 // ================= TESTS =================
 

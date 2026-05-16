@@ -44,7 +44,12 @@ void main() {
   setUp(() {
     profileVm = FakeProfileViewModel();
     profileVm.setUser(
-      Users(uid:'mockId',name: 'John Doe', email: 'john@example.com', profilePictureUrl: ''),
+      Users(
+        uid: 'mockId',
+        name: 'John Doe',
+        email: 'john@example.com',
+        profilePictureUrl: '',
+      ),
     );
   });
 

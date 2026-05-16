@@ -31,7 +31,7 @@ class EventsPage extends StatelessWidget {
           icon: const Icon(Icons.filter_list),
           onPressed: () => _openFilterModal(context),
         ),
-        actions: [ NotificationDropdown()],
+        actions: [NotificationDropdown()],
       ),
 
       body: StreamBuilder<List<Event>>(

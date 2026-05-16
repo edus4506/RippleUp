@@ -53,7 +53,7 @@ class _ProfilePageState extends State<ProfilePage> {
             tooltip: "Settings",
             onPressed: () => Navigator.pushNamed(context, AppRoutes.settings),
           ),
-           NotificationDropdown(),
+          NotificationDropdown(),
         ],
       ),
 

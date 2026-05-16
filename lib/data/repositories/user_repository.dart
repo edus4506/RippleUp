@@ -64,5 +64,5 @@ class UserRepository {
 
       return Users.fromMap(data, doc.id);
     }).toList();
-  } 
+  }
 }

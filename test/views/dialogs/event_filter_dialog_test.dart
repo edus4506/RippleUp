@@ -25,7 +25,7 @@ class FakeRepo implements EventRepository {
       objectives: [],
     );
   }
-  
+
   @override
   Stream<List<Event>> listenToEvents() => const Stream.empty();
 
