@@ -9,12 +9,55 @@ import 'package:t5/data/models/participation.dart';
 import 'package:t5/data/repositories/event_repository.dart';
 import 'package:t5/data/repositories/favorite_repository.dart';
 import 'package:t5/data/repositories/participation_repository.dart';
+import 'package:t5/data/repositories/storage_repository.dart';
 import 'package:t5/data/repositories/user_repository.dart';
 import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
 import 'package:t5/viewModels/event_viewModel.dart';
 import 'package:t5/viewModels/favorite_view_model.dart';
 import 'package:t5/viewModels/user_view_model.dart';
 import 'package:t5/views/widgets/profile_tabs/current_events_widget.dart';
+
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:t5/data/repositories/storage_repository.dart';
+
+class FakeStorageRepository implements StorageRepository {
+  @override
+  Future<String> uploadBytes({
+    required String path,
+    required Uint8List bytes,
+  }) async {
+    return 'https://fake-url.com/$path';
+  }
+
+  @override
+  Future<String> uploadFile({required String path, required File file}) async {
+    return 'https://fake-url.com/$path';
+  }
+
+  @override
+  Future<void> deleteProfilePicture({required String uuid}) async {}
+
+  @override
+  Future<String> uploadEventImage({
+    required File file,
+    required String eventId,
+    required String fileName,
+  }) async {
+    return 'https://fake-url.com/$eventId/$fileName';
+  }
+
+  @override
+  Future<String> uploadEventBytes({
+    required String path,
+    required Uint8List bytes,
+  }) async {
+    return 'https://fake-url.com/$path';
+  }
+
+  @override
+  Future<void> deleteEventImages({required String eventId}) async {}
+}
 
 class MockAuthViewModel extends Mock implements AuthViewModel {}
 
@@ -47,9 +90,20 @@ class FakeEventRepository implements EventRepository {
   FakeEventRepository(this.events);
 
   @override
+  Future<List<Event>> getCreatedEventsByUser(String uid) async {
+    return [];
+  }
+
+  @override
+  Future<List<Event>> getJoinedEventsByUser(String uid) async {
+    return [];
+  }
+
+  @override
   Future<Event> getEventById(String eventId) async {
     return Event(
       id: eventId,
+      imageUrls: [],
       title: 'Event',
       description: '',
       createdAt: DateTime.now(),
@@ -116,6 +170,7 @@ Event buildEvent({
 }) {
   return Event(
     id: id,
+    imageUrls: [],
     title: title,
     description: 'desc',
     createdAt: DateTime.now(),
@@ -141,11 +196,12 @@ Widget buildTestable({
     () => userRepo.listenToUser(any()),
   ).thenAnswer((_) => const Stream.empty());
 
+  final stRepo = FakeStorageRepository();
   return MultiProvider(
     providers: [
       ChangeNotifierProvider<AuthViewModel>.value(value: auth),
       Provider<ParticipationRepository>.value(value: participationRepo),
-      ChangeNotifierProvider(create: (_) => EventViewModel(eventRepo)),
+      ChangeNotifierProvider(create: (_) => EventViewModel(eventRepo, stRepo)),
       ChangeNotifierProvider(
         create: (_) => FavoriteViewModel(FakeFavoriteRepository()),
       ),

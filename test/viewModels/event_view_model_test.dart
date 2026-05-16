@@ -1,7 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:t5/data/models/event.dart';
 import 'package:t5/data/repositories/event_repository.dart';
+import 'package:t5/data/repositories/storage_repository.dart';
 import 'package:t5/viewModels/event_viewModel.dart';
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:t5/data/repositories/storage_repository.dart';
 
 class FakeEventRepository implements EventRepository {
   FakeEventRepository({
@@ -15,9 +19,20 @@ class FakeEventRepository implements EventRepository {
   String? receivedUserId;
 
   @override
+  Future<List<Event>> getCreatedEventsByUser(String uid) async {
+    return [];
+  }
+
+  @override
+  Future<List<Event>> getJoinedEventsByUser(String uid) async {
+    return [];
+  }
+
+  @override
   Future<Event> getEventById(String eventId) async {
     return Event(
       id: eventId,
+      imageUrls: [],
       title: 'Event',
       description: '',
       createdAt: DateTime.now(),
@@ -74,11 +89,50 @@ class FakeEventRepository implements EventRepository {
   Future<void> deleteEvent(String eventId) async {}
 }
 
+class FakeStorageRepository implements StorageRepository {
+  @override
+  Future<String> uploadBytes({
+    required String path,
+    required Uint8List bytes,
+  }) async {
+    return 'https://fake-url.com/$path';
+  }
+
+  @override
+  Future<String> uploadFile({required String path, required File file}) async {
+    return 'https://fake-url.com/$path';
+  }
+
+  @override
+  Future<void> deleteProfilePicture({required String uuid}) async {}
+
+  @override
+  Future<String> uploadEventImage({
+    required File file,
+    required String eventId,
+    required String fileName,
+  }) async {
+    return 'https://fake-url.com/$eventId/$fileName';
+  }
+
+  @override
+  Future<String> uploadEventBytes({
+    required String path,
+    required Uint8List bytes,
+  }) async {
+    return 'https://fake-url.com/$path';
+  }
+
+  @override
+  Future<void> deleteEventImages({required String eventId}) async {}
+}
+
 void main() {
   group('EventViewModel.joinEvent', () {
     test('returns true when repository join succeeds', () async {
       final repo = FakeEventRepository();
-      final viewModel = EventViewModel(repo);
+      final stRepo = FakeStorageRepository();
+      final viewModel = EventViewModel(repo, stRepo);
 
       final result = await viewModel.joinEvent(
         eventId: 'event-1',
@@ -99,7 +153,8 @@ void main() {
           shouldThrow: true,
           exceptionMessage: 'Event is full',
         );
-        final viewModel = EventViewModel(repo);
+        final stRepo = FakeStorageRepository();
+        final viewModel = EventViewModel(repo, stRepo);
 
         final result = await viewModel.joinEvent(
           eventId: 'event-1',

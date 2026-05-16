@@ -7,6 +7,7 @@ import 'package:t5/data/models/notification.dart';
 import 'package:t5/data/models/user.dart';
 import 'package:t5/data/repositories/event_repository.dart';
 import 'package:t5/data/repositories/favorite_repository.dart';
+import 'package:t5/data/repositories/storage_repository.dart';
 import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
 import 'package:t5/viewModels/event_viewModel.dart';
 import 'package:t5/viewModels/favorite_view_model.dart';
@@ -16,13 +17,66 @@ import 'package:mocktail/mocktail.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:t5/views/widgets/bottom_nav.dart';
 
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:t5/data/repositories/storage_repository.dart';
+
+class FakeStorageRepository implements StorageRepository {
+  @override
+  Future<String> uploadBytes({
+    required String path,
+    required Uint8List bytes,
+  }) async {
+    return 'https://fake-url.com/$path';
+  }
+
+  @override
+  Future<String> uploadFile({required String path, required File file}) async {
+    return 'https://fake-url.com/$path';
+  }
+
+  @override
+  Future<void> deleteProfilePicture({required String uuid}) async {}
+
+  @override
+  Future<String> uploadEventImage({
+    required File file,
+    required String eventId,
+    required String fileName,
+  }) async {
+    return 'https://fake-url.com/$eventId/$fileName';
+  }
+
+  @override
+  Future<String> uploadEventBytes({
+    required String path,
+    required Uint8List bytes,
+  }) async {
+    return 'https://fake-url.com/$path';
+  }
+
+  @override
+  Future<void> deleteEventImages({required String eventId}) async {}
+}
+
 // ================= FAKE REPOSITORY =================
 
 class FakeEventRepository implements EventRepository {
   @override
+  Future<List<Event>> getCreatedEventsByUser(String uid) async {
+    return [];
+  }
+
+  @override
+  Future<List<Event>> getJoinedEventsByUser(String uid) async {
+    return [];
+  }
+
+  @override
   Future<Event> getEventById(String eventId) async {
     return Event(
       id: eventId,
+      imageUrls: [],
       title: 'Event',
       description: '',
       createdAt: DateTime.now(),
@@ -155,12 +209,13 @@ void main() {
   });
 
   Widget buildApp() {
+    final stRepo = FakeStorageRepository();
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<AuthViewModel>.value(value: authVm),
 
         ChangeNotifierProvider(
-          create: (_) => EventViewModel(FakeEventRepository()),
+          create: (_) => EventViewModel(FakeEventRepository(), stRepo),
         ),
 
         ChangeNotifierProvider(

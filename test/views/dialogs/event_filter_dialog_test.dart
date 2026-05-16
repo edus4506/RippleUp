@@ -3,14 +3,29 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:t5/data/models/event.dart';
 import 'package:t5/data/repositories/event_repository.dart';
+import 'package:t5/data/repositories/storage_repository.dart';
 import 'package:t5/viewModels/event_viewModel.dart';
 import 'package:t5/views/dialogs/event_filter_dialog.dart';
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:t5/data/repositories/storage_repository.dart';
 
 class FakeRepo implements EventRepository {
+  @override
+  Future<List<Event>> getCreatedEventsByUser(String uid) async {
+    return [];
+  }
+
+  @override
+  Future<List<Event>> getJoinedEventsByUser(String uid) async {
+    return [];
+  }
+
   @override
   Future<Event> getEventById(String eventId) async {
     return Event(
       id: eventId,
+      imageUrls: [],
       title: 'Event',
       description: '',
       createdAt: DateTime.now(),
@@ -54,13 +69,52 @@ class FakeRepo implements EventRepository {
   }) => Stream.value(false);
 }
 
+class FakeStorageRepository implements StorageRepository {
+  @override
+  Future<String> uploadBytes({
+    required String path,
+    required Uint8List bytes,
+  }) async {
+    return 'https://fake-url.com/$path';
+  }
+
+  @override
+  Future<String> uploadFile({required String path, required File file}) async {
+    return 'https://fake-url.com/$path';
+  }
+
+  @override
+  Future<void> deleteProfilePicture({required String uuid}) async {}
+
+  @override
+  Future<String> uploadEventImage({
+    required File file,
+    required String eventId,
+    required String fileName,
+  }) async {
+    return 'https://fake-url.com/$eventId/$fileName';
+  }
+
+  @override
+  Future<String> uploadEventBytes({
+    required String path,
+    required Uint8List bytes,
+  }) async {
+    return 'https://fake-url.com/$path';
+  }
+
+  @override
+  Future<void> deleteEventImages({required String eventId}) async {}
+}
+
 void main() {
   testWidgets('EventFilterDialog opens and shows UI', (tester) async {
     await tester.binding.setSurfaceSize(const Size(1200, 2000));
+    final stRepo = FakeStorageRepository();
 
     await tester.pumpWidget(
       ChangeNotifierProvider(
-        create: (_) => EventViewModel(FakeRepo()),
+        create: (_) => EventViewModel(FakeRepo(), stRepo),
         child: MaterialApp(
           home: Scaffold(
             body: Builder(

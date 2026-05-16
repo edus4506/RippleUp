@@ -50,6 +50,7 @@ Event buildEvent({
 }) {
   return Event(
     id: id,
+    imageUrls: [],
     title: 'Beach Cleanup',
     description: 'Let us clean the beach together.',
     createdAt: DateTime.now(),

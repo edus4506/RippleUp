@@ -153,6 +153,13 @@ class _SettingsPageState extends State<SettingsPage> {
                       Navigator.pushNamed(context, AppRoutes.changePassword),
                 ),
 
+                _SettingsOption(
+                  icon: Icons.rate_review_outlined,
+                  label: 'Reviews History',
+                  onTap: () =>
+                      Navigator.pushNamed(context, AppRoutes.reviewsHistory),
+                ),
+
                 const Divider(height: 1),
 
                 _SettingsOption(

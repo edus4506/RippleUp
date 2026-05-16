@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'package:t5/data/repositories/event_repository.dart';
 import 'package:t5/data/repositories/favorite_repository.dart';
+import 'package:t5/data/repositories/follow_repository.dart';
 import 'package:t5/data/repositories/message_repository.dart';
 import 'package:t5/data/repositories/participation_repository.dart';
 import 'package:t5/data/repositories/storage_repository.dart';
@@ -50,6 +51,7 @@ void main() async {
         Provider(create: (_) => ParticipationRepository()),
         Provider(create: (_) => MessageRepository()),
         Provider(create: (_) => ReviewRepository()),
+        Provider(create: (_) => FollowRepository()),
         ProxyProvider<StorageRepository, ProfileImageService>(
           update: (_, storageRepo, __) => ProfileImageService(storageRepo),
         ),
@@ -78,7 +80,10 @@ void main() async {
         ),
 
         ChangeNotifierProvider(
-          create: (context) => EventViewModel(context.read<EventRepository>()),
+          create: (context) => EventViewModel(
+            context.read<EventRepository>(),
+            context.read<StorageRepository>(),
+          ),
         ),
 
         ChangeNotifierProvider(
@@ -114,7 +119,7 @@ class MyApp extends StatelessWidget {
       title: 'Ripple Up',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      initialRoute: AppRoutes.login,
+      initialRoute: AppRoutes.splash,
       routes: AppRoutes.routes,
       onGenerateRoute: AppRoutes.onGenerateRoute,
     );
