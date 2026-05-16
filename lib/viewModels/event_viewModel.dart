@@ -2,16 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:t5/data/models/event.dart';
 import 'package:t5/data/repositories/event_repository.dart';
 
-import 'package:t5/viewModels/notification_viewModel.dart';
-
 import 'package:t5/services/event_filter.dart';
 import 'package:t5/services/event_filter_service.dart';
 
 class EventViewModel extends ChangeNotifier {
   final EventRepository _eventRepository;
-  final AppNotificationViewModel _notificationViewModel;
 
-  EventViewModel(this._eventRepository, this._notificationViewModel);
+  EventViewModel(this._eventRepository);
 
   bool isLoading = false;
   String? errorMessage;
@@ -58,8 +55,6 @@ class EventViewModel extends ChangeNotifier {
 
   Future<void> createEvent(Event event) async {
     await _eventRepository.createEvent(event);
-    //notifies all users
-    await _notificationViewModel.createNewEventNotification(event);
   }
 
   Future<bool> joinEvent({

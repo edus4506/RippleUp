@@ -6,6 +6,8 @@ import '../../data/constants/event_locations.dart';
 import '../../data/models/event.dart';
 import '../../viewModels/authViewModel/auth_viewModel.dart';
 import '../../viewModels/event_viewModel.dart';
+import '../../viewModels/notification_viewModel.dart';
+
 
 class CreateEventPage extends StatefulWidget {
   const CreateEventPage({super.key});
@@ -125,6 +127,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
     );
 
     await context.read<EventViewModel>().createEvent(event);
+    await context.read<AppNotificationViewModel>().createNewEventNotification(event);
 
     if (!mounted) return;
 

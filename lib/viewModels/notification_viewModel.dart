@@ -15,13 +15,11 @@ class AppNotificationViewModel extends ChangeNotifier{
   final ParticipationRepository _participationRepository;
   final EventRepository _eventRepository;
   final UserRepository _userRepository;
-  //final User _firebaseUser;
 
-  //use dependency injection for later tests
+
   AppNotificationViewModel(this._notificationRepository, this._participationRepository, this._eventRepository, this._userRepository);
-  User? get _firebaseUser => FirebaseAuth.instance.currentUser;
 
-  Future<void> createUpComingEventNotification(Event event) async{    
+  Future<void> createUpComingEventNotification(Event event, String userId) async{    
     //use firebase user to know wich collection is
     DateTime createdAt = DateTime.now();
 
@@ -39,14 +37,14 @@ class AppNotificationViewModel extends ChangeNotifier{
       eventId: event.id,
     );
 
-    await _notificationRepository.createNotification(uid: _firebaseUser!.uid, notification: notification);
+    await _notificationRepository.createNotification(uid: userId , notification: notification);
 
   }
 
   //very inneficient since the events and the participations are in 2 different collections :// 
-  Future<void> checkUpcomingEvents() async{
+  Future<void> checkUpcomingEvents(String userId) async{
     //get all user participations
-    List<Participation> participations = await _participationRepository.getParticipationsByUser(_firebaseUser!.uid);
+    List<Participation> participations = await _participationRepository.getParticipationsByUser(userId);
     //get all the events through the participations
     for(Participation p in participations){
       Event currEvent = await _eventRepository.getEventById(p.idEvent);
@@ -55,23 +53,23 @@ class AppNotificationViewModel extends ChangeNotifier{
 
       if(difference.inHours <= 48 && difference.inHours > 0){
         //need to check if the notification wasnt already created!!
-        bool exists = await _notificationRepository.notificationAlreadyExists(uid: _firebaseUser!.uid,eventId: currEvent.id,);
+        bool exists = await _notificationRepository.notificationAlreadyExists(uid: userId,eventId: currEvent.id,);
 
         if (!exists) {
-          await createUpComingEventNotification(currEvent);
+          await createUpComingEventNotification(currEvent, userId);
         }
       }
     }
 
   }
 
-  Stream<List<AppNotification>> getNotifications() {
+  Stream<List<AppNotification>> getNotifications(String userId) {
 
   return _notificationRepository
-      .listenUserNotifications(_firebaseUser!.uid);
+      .listenUserNotifications(userId);
   }
 
-  Future<void> markAsSeen(AppNotification notification) async {
+  Future<void> markAsSeen(AppNotification notification, String userId) async {
 
     final updated = AppNotification(
       id: notification.id,
@@ -83,14 +81,14 @@ class AppNotificationViewModel extends ChangeNotifier{
       eventId: notification.eventId,
     );
 
-    await _notificationRepository.updateNotification( _firebaseUser!.uid, updated);
+    await _notificationRepository.updateNotification(userId, updated);
 
   }
 
   Future<void> createNewEventNotification(Event event) async{
     //sends notification to all the users, except the one who created the event
-    String idCreator = _firebaseUser!.uid;
-    final creator = await UserRepository().getUser(idCreator);
+    String idCreator = event.idCreator;
+    final creator = await _userRepository.getUser(idCreator);
     final allUsers = await _userRepository.getAllUsers();
 
     for(Users? u in allUsers){
@@ -121,7 +119,5 @@ class AppNotificationViewModel extends ChangeNotifier{
       eventId: event.id,
     );
   }
-
-
 
 }

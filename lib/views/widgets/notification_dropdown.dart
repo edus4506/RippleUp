@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:t5/data/models/notification.dart';
+import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
 import 'package:t5/viewModels/notification_viewModel.dart';
 
 
@@ -19,10 +20,19 @@ class _NotificationDropdownState
   void initState() {
     super.initState();
 
-    Future.microtask(() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+
+      final currentUser =
+          context.read<AuthViewModel>().currentUser;
+
+      if (currentUser == null) {
+        debugPrint('Current user is null');
+        return;
+      }
+
       context
           .read<AppNotificationViewModel>()
-          .checkUpcomingEvents();
+          .checkUpcomingEvents(currentUser.uid);
     });
   }
 
@@ -42,11 +52,16 @@ class _NotificationDropdownState
 
   @override
   Widget build(BuildContext context) {
+    final currentUser = context.watch<AuthViewModel>().currentUser;
+
+      if (currentUser == null) {
+        return const SizedBox.shrink();
+      }
 
     return StreamBuilder<List<AppNotification>>(
       stream: context
           .watch<AppNotificationViewModel>()
-          .getNotifications(),
+          .getNotifications(currentUser.uid),
 
       builder: (context, snapshot) {
 
@@ -159,7 +174,7 @@ class _NotificationDropdownState
                             .read<
                                 AppNotificationViewModel>()
                             .markAsSeen(
-                              notification,
+                              notification, currentUser.uid
                             );
 
                         navigator.pop();
