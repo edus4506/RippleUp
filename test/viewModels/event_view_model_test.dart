@@ -15,6 +15,24 @@ class FakeEventRepository implements EventRepository {
   String? receivedUserId;
 
   @override
+  Future<Event> getEventById(String eventId) async {
+    return Event(
+      id: eventId,
+      title: 'Event',
+      description: '',
+      createdAt: DateTime.now(),
+      startDate: DateTime.now().add(const Duration(hours: 24)),
+      endDate: DateTime.now().add(const Duration(days: 2)),
+      maxUsers: 10,
+      currentUsers: 0,
+      idCreator: 'creator',
+      country: 'PT',
+      district: 'Porto',
+      city: 'Porto',
+      objectives: [],
+    );
+  }
+  @override
   Stream<List<Event>> listenToEvents() => const Stream.empty();
 
   @override

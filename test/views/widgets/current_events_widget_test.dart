@@ -27,6 +27,13 @@ class FakeParticipationRepository implements ParticipationRepository {
   FakeParticipationRepository(this.participations);
 
   @override
+  Future<List<Participation>> getParticipationsByUser(String userId) async {
+    return [
+      Participation(id: 'mockId', idUser: 'mockIdUser', idEvent: 'mockIdEvent'),
+    ];
+  }
+
+  @override
   Stream<List<Participation>> listenToUserParticipations(String userId) =>
       Stream.value(participations);
 
@@ -38,6 +45,25 @@ class FakeParticipationRepository implements ParticipationRepository {
 class FakeEventRepository implements EventRepository {
   final List<Event> events;
   FakeEventRepository(this.events);
+
+  @override
+  Future<Event> getEventById(String eventId) async {
+    return Event(
+      id: eventId,
+      title: 'Event',
+      description: '',
+      createdAt: DateTime.now(),
+      startDate: DateTime.now().add(const Duration(hours: 24)),
+      endDate: DateTime.now().add(const Duration(days: 2)),
+      maxUsers: 10,
+      currentUsers: 0,
+      idCreator: 'creator',
+      country: 'PT',
+      district: 'Porto',
+      city: 'Porto',
+      objectives: [],
+    );
+  }
 
   @override
   Stream<List<Event>> listenToEvents() => Stream.value(events);
