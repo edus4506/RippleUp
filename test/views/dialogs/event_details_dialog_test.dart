@@ -112,6 +112,7 @@ void main() {
     when(() => userVm.userStream(any())).thenAnswer(
       (_) => Stream.value(
         Users(
+          uid: 'mockId',
           name: 'Eduardo',
           email: 'eduardo@example.com',
           profilePictureUrl: '',

@@ -51,7 +51,7 @@ class FakeUserViewModel extends ChangeNotifier implements UserViewModel {
   @override
   Stream<Users?> userStream(String userId) {
     return Stream.value(
-      Users(name: 'Test User', email: 'test@test.com', profilePictureUrl: ''),
+      Users(uid:'mockId',name: 'Test User', email: 'test@test.com', profilePictureUrl: ''),
     );
   }
 }

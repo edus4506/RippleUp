@@ -75,7 +75,7 @@ void main() {
     when(() => firebaseUser.uid).thenReturn('user-1');
 
     profileVm.setUser(
-      Users(name: 'John Doe', email: 'john@example.com', profilePictureUrl: ''),
+      Users(uid: 'mockId', name: 'John Doe', email: 'john@example.com', profilePictureUrl: ''),
     );
   });
 
