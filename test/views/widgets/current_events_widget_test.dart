@@ -77,6 +77,13 @@ class FakeParticipationRepository implements ParticipationRepository {
   }
 
   @override
+  Future<List<Participation>> getParticipationsByEvent(String idEvent) async {
+    return [
+      Participation(id: 'mockId', idUser: 'mockIdUser', idEvent: 'mockIdEvent'),
+    ];
+  }
+
+  @override
   Stream<List<Participation>> listenToUserParticipations(String userId) =>
       Stream.value(participations);
 

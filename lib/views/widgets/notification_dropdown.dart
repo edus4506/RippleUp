@@ -38,6 +38,12 @@ class _NotificationDropdownState extends State<NotificationDropdown> {
       case 'upcoming_event':
         return Icons.access_time;
 
+      case 'new_joined_user':
+        return Icons.person_add;
+
+      case 'new_left_user':
+        return Icons.person_remove;
+
       default:
         return Icons.notifications;
     }

@@ -37,4 +37,15 @@ class ParticipationRepository {
         .map((doc) => Participation.fromMap(doc.data(), doc.id))
         .toList();
   }
+
+  Future<List<Participation>> getParticipationsByEvent(String idEvent) async {
+    final snapshot = await _db
+        .collection('participations')
+        .where('idEvent', isEqualTo: idEvent)
+        .get();
+
+    return snapshot.docs
+        .map((doc) => Participation.fromMap(doc.data(), doc.id))
+        .toList();
+  }
 }

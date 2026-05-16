@@ -134,4 +134,70 @@ class AppNotificationViewModel extends ChangeNotifier {
       eventId: event.id,
     );
   }
+
+  Future<void> createActionSameEventNotification(
+    Event event,
+    String idNewUser,
+    bool joined,
+  ) async {
+    //notifies all the current members of and event that a new member has joined
+
+    final newUser = await _userRepository.getUser(idNewUser);
+    final participations = await _participationRepository
+        .getParticipationsByEvent(event.id);
+
+    final allParticipants = await Future.wait(
+      participations.map((p) => _userRepository.getUser(p.idUser)),
+    );
+
+    AppNotification notification;
+
+    if (joined) {
+      notification = createNewJoinedUserNotificationTemplate(newUser!, event);
+    } else {
+      notification = createLeaveUserNotificationTemplate(newUser!, event);
+    }
+
+    for (Users? u in allParticipants) {
+      if (u == null || u.uid == idNewUser) continue;
+
+      await _notificationRepository.createNotification(
+        uid: u.uid,
+        notification: notification,
+      );
+    }
+  }
+
+  AppNotification createNewJoinedUserNotificationTemplate(
+    Users newUser,
+    Event event,
+  ) {
+    final createdAt = DateTime.now();
+
+    return AppNotification(
+      id: '',
+      //receiverId: '',
+      title: 'New Participant!',
+      body: '${newUser.name} just joined "${event.title}".',
+      createdAt: createdAt,
+      seen: false,
+      type: 'new_joined_user',
+      eventId: event.id,
+    );
+  }
+
+  AppNotification createLeaveUserNotificationTemplate(Users user, Event event) {
+    final createdAt = DateTime.now();
+
+    return AppNotification(
+      id: '',
+      //receiverId: '',
+      title: 'Member left!',
+      body: '${user.name} just left "${event.title}".',
+      createdAt: createdAt,
+      seen: false,
+      type: 'new_left_user',
+      eventId: event.id,
+    );
+  }
 }

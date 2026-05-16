@@ -141,10 +141,52 @@ class FakeNotificationViewModel extends ChangeNotifier
   ) async {}
 
   @override
+  Future<void> createActionSameEventNotification(
+    Event event,
+    String userId,
+    bool joined,
+  ) async {}
+
+  @override
+  Future<void> createL(Event event, String userId) async {}
+
+  @override
   Future<void> createNewEventNotification(Event event) async {}
 
   @override
   AppNotification createNewEventNotificationTemplate(
+    Users creator,
+    Event event,
+  ) {
+    return AppNotification(
+      id: '',
+      title: 'test',
+      body: 'test',
+      createdAt: DateTime.now(),
+      seen: false,
+      type: 'new_event',
+      eventId: event.id,
+    );
+  }
+
+  @override
+  AppNotification createNewJoinedUserNotificationTemplate(
+    Users creator,
+    Event event,
+  ) {
+    return AppNotification(
+      id: '',
+      title: 'test',
+      body: 'test',
+      createdAt: DateTime.now(),
+      seen: false,
+      type: 'new_event',
+      eventId: event.id,
+    );
+  }
+
+  @override
+  AppNotification createLeaveUserNotificationTemplate(
     Users creator,
     Event event,
   ) {
