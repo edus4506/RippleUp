@@ -17,7 +17,8 @@ class PublicProfilePage extends StatefulWidget {
   State<PublicProfilePage> createState() => _PublicProfilePageState();
 }
 
-class _PublicProfilePageState extends State<PublicProfilePage> with SingleTickerProviderStateMixin {
+class _PublicProfilePageState extends State<PublicProfilePage>
+    with SingleTickerProviderStateMixin {
   late final PublicProfileViewModel _vm;
   late final String? _currentUserId;
   late final TabController _tabController;
@@ -28,10 +29,7 @@ class _PublicProfilePageState extends State<PublicProfilePage> with SingleTicker
 
     _currentUserId = FirebaseAuth.instance.currentUser?.uid;
 
-    _tabController = TabController(
-      length: 2,
-      vsync: this,
-    );
+    _tabController = TabController(length: 2, vsync: this);
 
     _vm = PublicProfileViewModel(
       context.read<UserRepository>(),
@@ -154,12 +152,8 @@ class _PublicProfilePageState extends State<PublicProfilePage> with SingleTicker
                           labelColor: Colors.green,
                           unselectedLabelColor: Colors.grey,
                           tabs: [
-                            Tab(
-                              text: 'Created (${vm.createdEvents.length})',
-                            ),
-                            Tab(
-                              text: 'Joined (${vm.joinedEvents.length})',
-                            ),
+                            Tab(text: 'Created (${vm.createdEvents.length})'),
+                            Tab(text: 'Joined (${vm.joinedEvents.length})'),
                           ],
                         ),
 
@@ -168,12 +162,8 @@ class _PublicProfilePageState extends State<PublicProfilePage> with SingleTicker
                           child: TabBarView(
                             controller: _tabController,
                             children: [
-                              _EventList(
-                                events: vm.createdEvents,
-                              ),
-                              _EventList(
-                                events: vm.joinedEvents,
-                              ),
+                              _EventList(events: vm.createdEvents),
+                              _EventList(events: vm.joinedEvents),
                             ],
                           ),
                         ),
