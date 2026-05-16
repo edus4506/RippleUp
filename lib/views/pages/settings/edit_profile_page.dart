@@ -51,6 +51,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     await vm.updateUserProfile(
       updatedUser: Users(
+        uid: vm.user!.uid,
         name: _nameController.text.trim(),
         email: vm.user?.email ?? '',
         profilePictureUrl: vm.user?.profilePictureUrl ?? '',

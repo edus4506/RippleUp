@@ -20,6 +20,7 @@ import 'package:t5/viewModels/profile_viewModel.dart';
 import 'package:t5/viewModels/review_viewModel.dart';
 import 'package:t5/viewModels/notification_viewModel.dart';
 import 'package:t5/viewModels/user_view_model.dart';
+import 'package:t5/viewModels/notification_viewModel.dart';
 
 import 'routes/app_routes.dart';
 import 'theme/app_theme.dart';
@@ -69,7 +70,16 @@ void main() async {
         ),
 
         ChangeNotifierProvider(
-          create: (context) => EventViewModel(context.read<EventRepository>()),
+          create: (context) => AppNotificationViewModel(
+            context.read<NotificationRepository>(),
+            context.read<ParticipationRepository>(),
+            context.read<EventRepository>(),
+            context.read<UserRepository>(),
+          ),
+        ),
+        
+        ChangeNotifierProvider(
+          create: (context) => EventViewModel(context.read<EventRepository>(), context.read<AppNotificationViewModel>()),
         ),
 
         ChangeNotifierProvider(
@@ -89,14 +99,6 @@ void main() async {
         ChangeNotifierProvider(
           create: (context) =>
               ReviewViewModel(context.read<ReviewRepository>()),
-        ),
-
-        ChangeNotifierProvider(
-          create: (context) => AppNotificationViewModel(
-            context.read<NotificationRepository>(),
-            context.read<ParticipationRepository>(),
-            context.read<EventRepository>(),
-          ),
         ),
       ],
       child: const MyApp(),

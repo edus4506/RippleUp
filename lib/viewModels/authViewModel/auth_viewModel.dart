@@ -59,7 +59,7 @@ class AuthViewModel extends ChangeNotifier {
         file: profilePicture,
       );
 
-      Users user = Users(name: name, email: email, profilePictureUrl: imageUrl);
+      Users user = Users(uid:firebaseUser.user!.uid, name:  name, email: email, profilePictureUrl: imageUrl);
 
       await _userRepository.createUser(uid: firebaseUser.user!.uid, user: user);
     } on FirebaseAuthException catch (e) {
