@@ -5,6 +5,7 @@ import 'package:t5/data/models/notification.dart';
 import 'package:t5/data/models/participation.dart';
 import 'package:t5/data/models/user.dart';
 import 'package:t5/data/repositories/event_repository.dart';
+import 'package:t5/data/repositories/follow_repository.dart';
 import 'package:t5/data/repositories/notification_repository.dart';
 import 'package:t5/data/repositories/participation_repository.dart';
 import 'package:t5/data/repositories/user_repository.dart';
@@ -14,12 +15,14 @@ class AppNotificationViewModel extends ChangeNotifier {
   final ParticipationRepository _participationRepository;
   final EventRepository _eventRepository;
   final UserRepository _userRepository;
+  final FollowRepository _followRepository;
 
   AppNotificationViewModel(
     this._notificationRepository,
     this._participationRepository,
     this._eventRepository,
     this._userRepository,
+    this._followRepository,
   );
 
   Future<void> createUpComingEventNotification(
@@ -95,9 +98,10 @@ class AppNotificationViewModel extends ChangeNotifier {
     //sends notification to all the users, except the one who created the event
     String idCreator = event.idCreator;
     final creator = await _userRepository.getUser(idCreator);
-    final allUsers = await _userRepository.getAllUsers();
+    final followersIds = await _followRepository.getFollowerIds(idCreator);
+    final followers = await _userRepository.getUsersByIds(followersIds);
 
-    for (Users? u in allUsers) {
+    for (Users? u in followers.values) {
       if (u == null)
         continue; //model doesnt have access to uid, just do email, its is unique too so it works
       if (u.uid == creator!.uid) continue;

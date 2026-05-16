@@ -76,6 +76,7 @@ void main() async {
             context.read<ParticipationRepository>(),
             context.read<EventRepository>(),
             context.read<UserRepository>(),
+            context.read<FollowRepository>(),
           ),
         ),
 
