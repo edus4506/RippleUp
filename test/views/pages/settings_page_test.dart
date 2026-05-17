@@ -16,6 +16,22 @@ import 'package:t5/routes/app_routes.dart';
 class FakeNotificationViewModel extends ChangeNotifier
     implements AppNotificationViewModel {
   @override
+  Future<void> createNewFollowerNotification(Users u1, Users u2) async {}
+
+  @override
+  AppNotification createNewFollowerNotificationTemplate(Users u) {
+    return AppNotification(
+      id: '',
+      title: 'test',
+      body: 'test',
+      createdAt: DateTime.now(),
+      seen: false,
+      type: 'new_event',
+      eventId: 'test',
+    );
+  }
+
+  @override
   AppNotification createNewJoinedUserNotificationTemplate(
     Users creator,
     Event event,

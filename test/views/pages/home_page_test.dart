@@ -148,7 +148,20 @@ class FakeNotificationViewModel extends ChangeNotifier
   ) async {}
 
   @override
-  Future<void> createL(Event event, String userId) async {}
+  Future<void> createNewFollowerNotification(Users u1, Users u2) async {}
+
+  @override
+  AppNotification createNewFollowerNotificationTemplate(Users u) {
+    return AppNotification(
+      id: '',
+      title: 'test',
+      body: 'test',
+      createdAt: DateTime.now(),
+      seen: false,
+      type: 'new_event',
+      eventId: 'test',
+    );
+  }
 
   @override
   Future<void> createNewEventNotification(Event event) async {}

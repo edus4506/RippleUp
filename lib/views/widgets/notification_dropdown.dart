@@ -44,6 +44,9 @@ class _NotificationDropdownState extends State<NotificationDropdown> {
       case 'new_left_user':
         return Icons.person_remove;
 
+      case 'new_follower':
+        return Icons.person_add;
+
       default:
         return Icons.notifications;
     }

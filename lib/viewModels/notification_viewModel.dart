@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:t5/data/models/event.dart';
 import 'package:t5/data/models/notification.dart';
@@ -168,6 +167,19 @@ class AppNotificationViewModel extends ChangeNotifier {
     }
   }
 
+  Future<void> createNewFollowerNotification(
+    Users followed,
+    Users newFollower,
+  ) async {
+    AppNotification notification = createNewFollowerNotificationTemplate(
+      newFollower,
+    );
+    _notificationRepository.createNotification(
+      uid: followed.uid,
+      notification: notification,
+    );
+  }
+
   AppNotification createNewJoinedUserNotificationTemplate(
     Users newUser,
     Event event,
@@ -198,6 +210,20 @@ class AppNotificationViewModel extends ChangeNotifier {
       seen: false,
       type: 'new_left_user',
       eventId: event.id,
+    );
+  }
+
+  AppNotification createNewFollowerNotificationTemplate(Users newFollower) {
+    final createdAt = DateTime.now();
+
+    return AppNotification(
+      id: '',
+      //receiverId: '',
+      title: 'New Follower!',
+      body: '${newFollower.name} followed you.',
+      createdAt: createdAt,
+      seen: false,
+      type: 'new_follower',
     );
   }
 }
