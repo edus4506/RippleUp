@@ -74,16 +74,22 @@ class _SplashPageState extends State<SplashPage>
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: 120,
-                  height: 120,
+                  width: 200,
+                  height: 200,
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.15),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
-                    Icons.water_drop,
-                    size: 72,
-                    color: Colors.white,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: ClipOval(
+                      child: Image.asset(
+                        'assets/rippleup_logo.png',
+                        fit: BoxFit.cover,
+                        width: 180,
+                        height: 180,
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 28),
