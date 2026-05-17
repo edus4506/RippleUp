@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:t5/views/widgets/notification_dropdown.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../data/constants/event_locations.dart';
@@ -11,6 +12,7 @@ import '../../data/models/event.dart';
 
 import '../../viewModels/authViewModel/auth_viewModel.dart';
 import '../../viewModels/event_viewModel.dart';
+import '../../viewModels/notification_viewModel.dart';
 
 class CreateEventPage extends StatefulWidget {
   const CreateEventPage({super.key});
@@ -152,6 +154,9 @@ class _CreateEventPageState extends State<CreateEventPage> {
     );
 
     await context.read<EventViewModel>().createEvent(event);
+    await context.read<AppNotificationViewModel>().createNewEventNotification(
+      event,
+    );
 
     if (!mounted) return;
 
@@ -167,7 +172,10 @@ class _CreateEventPageState extends State<CreateEventPage> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Create Event')),
+      appBar: AppBar(
+        title: const Text('Create Event'),
+        actions: [NotificationDropdown()],
+      ),
 
       bottomNavigationBar: SafeArea(
         child: Container(

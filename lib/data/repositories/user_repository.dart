@@ -8,7 +8,7 @@ class UserRepository {
     final doc = await _db.collection('users').doc(uid).get();
 
     if (doc.exists) {
-      return Users.fromMap(doc.data()!);
+      return Users.fromMap(doc.data()!, doc.id);
     }
 
     return null;
@@ -29,6 +29,7 @@ class UserRepository {
 
   Future<void> softDeleteUser({required String uid}) async {
     Users defaultUser = Users(
+      uid: uid,
       name: "deletedUser",
       email: "deletedUser@gmail.com",
       profilePictureUrl: "",
@@ -49,8 +50,20 @@ class UserRepository {
         return null;
       }
 
-      return Users.fromMap(doc.data()!);
+      return Users.fromMap(doc.data()!, doc.id);
     });
+  }
+
+  Future<List<Users?>> getAllUsers() async {
+    final snapshot = await _db.collection('users').get();
+
+    return snapshot.docs.map((doc) {
+      final data = doc.data();
+
+      if (data.isEmpty) return null;
+
+      return Users.fromMap(data, doc.id);
+    }).toList();
   }
 
   Future<Map<String, Users>> getUsersByIds(List<String> ids) async {
@@ -63,7 +76,7 @@ class UserRepository {
           .where(FieldPath.documentId, whereIn: batch)
           .get();
       for (final doc in snapshot.docs) {
-        result[doc.id] = Users.fromMap(doc.data());
+        result[doc.id] = Users.fromMap(doc.data(), doc.id);
       }
     }
     return result;

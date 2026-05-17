@@ -3,12 +3,111 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:t5/data/models/event.dart';
+import 'package:t5/data/models/notification.dart';
 
 import 'package:t5/data/models/user.dart';
 import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
+import 'package:t5/viewModels/notification_viewModel.dart';
 import 'package:t5/viewModels/profile_viewModel.dart';
 import 'package:t5/views/pages/settings/settings_page.dart';
 import 'package:t5/routes/app_routes.dart';
+
+class FakeNotificationViewModel extends ChangeNotifier
+    implements AppNotificationViewModel {
+  @override
+  Future<void> createNewFollowerNotification(Users u1, Users u2) async {}
+
+  @override
+  AppNotification createNewFollowerNotificationTemplate(Users u) {
+    return AppNotification(
+      id: '',
+      title: 'test',
+      body: 'test',
+      createdAt: DateTime.now(),
+      seen: false,
+      type: 'new_event',
+      eventId: 'test',
+    );
+  }
+
+  @override
+  AppNotification createNewJoinedUserNotificationTemplate(
+    Users creator,
+    Event event,
+  ) {
+    return AppNotification(
+      id: '',
+      title: 'test',
+      body: 'test',
+      createdAt: DateTime.now(),
+      seen: false,
+      type: 'new_event',
+      eventId: event.id,
+    );
+  }
+
+  @override
+  AppNotification createLeaveUserNotificationTemplate(
+    Users creator,
+    Event event,
+  ) {
+    return AppNotification(
+      id: '',
+      title: 'test',
+      body: 'test',
+      createdAt: DateTime.now(),
+      seen: false,
+      type: 'new_event',
+      eventId: event.id,
+    );
+  }
+
+  @override
+  Future<void> createActionSameEventNotification(
+    Event event,
+    String userId,
+    bool joined,
+  ) async {}
+
+  @override
+  AppNotification createNewEventNotificationTemplate(
+    Users creator,
+    Event event,
+  ) {
+    final createdAt = DateTime.now();
+
+    return AppNotification(
+      id: '',
+      //receiverId: '',
+      title: 'New Event Available!',
+      body: 'test',
+      createdAt: createdAt,
+      seen: false,
+      type: 'new_event',
+      eventId: 'test',
+    );
+  }
+
+  @override
+  Stream<List<AppNotification>> getNotifications(String userId) =>
+      Stream.value([]);
+
+  @override
+  Future<void> createUpComingEventNotification(
+    Event event,
+    String userId,
+  ) async {}
+
+  @override
+  Future<void> checkUpcomingEvents(String userId) async {}
+
+  @override
+  Future<void> markAsSeen(AppNotification notification, String userId) async {}
+
+  @override
+  Future<void> createNewEventNotification(Event event) async {}
+}
 
 class MockAuthViewModel extends Mock implements AuthViewModel {}
 
@@ -39,11 +138,13 @@ class FakeProfileViewModel extends ChangeNotifier implements ProfileViewModel {
 Widget buildWidget({
   required MockAuthViewModel authVm,
   required FakeProfileViewModel profileVm,
+  required FakeNotificationViewModel notifVm,
 }) {
   return MultiProvider(
     providers: [
       ChangeNotifierProvider<AuthViewModel>.value(value: authVm),
       ChangeNotifierProvider<ProfileViewModel>.value(value: profileVm),
+      ChangeNotifierProvider<AppNotificationViewModel>.value(value: notifVm),
     ],
     child: MaterialApp(
       routes: {
@@ -63,11 +164,13 @@ void main() {
   late MockAuthViewModel authVm;
   late MockFirebaseUser firebaseUser;
   late FakeProfileViewModel profileVm;
+  late FakeNotificationViewModel notifVm;
 
   setUp(() {
     authVm = MockAuthViewModel();
     firebaseUser = MockFirebaseUser();
     profileVm = FakeProfileViewModel();
+    notifVm = FakeNotificationViewModel();
 
     when(() => authVm.addListener(any())).thenAnswer((_) {});
     when(() => authVm.removeListener(any())).thenAnswer((_) {});
@@ -75,12 +178,19 @@ void main() {
     when(() => firebaseUser.uid).thenReturn('user-1');
 
     profileVm.setUser(
-      Users(name: 'John Doe', email: 'john@example.com', profilePictureUrl: ''),
+      Users(
+        uid: 'mockId',
+        name: 'John Doe',
+        email: 'john@example.com',
+        profilePictureUrl: '',
+      ),
     );
   });
 
   testWidgets('Shows user name and email in header', (tester) async {
-    await tester.pumpWidget(buildWidget(authVm: authVm, profileVm: profileVm));
+    await tester.pumpWidget(
+      buildWidget(authVm: authVm, profileVm: profileVm, notifVm: notifVm),
+    );
     await tester.pumpAndSettle();
 
     expect(find.text('John Doe'), findsOneWidget);
@@ -88,7 +198,9 @@ void main() {
   });
 
   testWidgets('Shows all settings options', (tester) async {
-    await tester.pumpWidget(buildWidget(authVm: authVm, profileVm: profileVm));
+    await tester.pumpWidget(
+      buildWidget(authVm: authVm, profileVm: profileVm, notifVm: notifVm),
+    );
     await tester.pumpAndSettle();
 
     expect(find.text('Edit Profile'), findsOneWidget);
@@ -102,7 +214,9 @@ void main() {
   testWidgets('Tapping Edit Profile navigates to edit profile page', (
     tester,
   ) async {
-    await tester.pumpWidget(buildWidget(authVm: authVm, profileVm: profileVm));
+    await tester.pumpWidget(
+      buildWidget(authVm: authVm, profileVm: profileVm, notifVm: notifVm),
+    );
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Edit Profile'));
@@ -114,7 +228,9 @@ void main() {
   testWidgets('Tapping Password navigates to change password page', (
     tester,
   ) async {
-    await tester.pumpWidget(buildWidget(authVm: authVm, profileVm: profileVm));
+    await tester.pumpWidget(
+      buildWidget(authVm: authVm, profileVm: profileVm, notifVm: notifVm),
+    );
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Password'));
@@ -124,7 +240,9 @@ void main() {
   });
 
   testWidgets('Tapping Logout shows confirmation dialog', (tester) async {
-    await tester.pumpWidget(buildWidget(authVm: authVm, profileVm: profileVm));
+    await tester.pumpWidget(
+      buildWidget(authVm: authVm, profileVm: profileVm, notifVm: notifVm),
+    );
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Logout'));
@@ -135,7 +253,9 @@ void main() {
   });
 
   testWidgets('Cancelling logout dialog does not logout', (tester) async {
-    await tester.pumpWidget(buildWidget(authVm: authVm, profileVm: profileVm));
+    await tester.pumpWidget(
+      buildWidget(authVm: authVm, profileVm: profileVm, notifVm: notifVm),
+    );
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Logout'));
@@ -152,7 +272,9 @@ void main() {
   ) async {
     when(() => authVm.logout()).thenAnswer((_) async {});
 
-    await tester.pumpWidget(buildWidget(authVm: authVm, profileVm: profileVm));
+    await tester.pumpWidget(
+      buildWidget(authVm: authVm, profileVm: profileVm, notifVm: notifVm),
+    );
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Logout'));
@@ -167,7 +289,9 @@ void main() {
   testWidgets('Tapping Delete Account shows confirmation dialog', (
     tester,
   ) async {
-    await tester.pumpWidget(buildWidget(authVm: authVm, profileVm: profileVm));
+    await tester.pumpWidget(
+      buildWidget(authVm: authVm, profileVm: profileVm, notifVm: notifVm),
+    );
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Delete Account'));
@@ -184,7 +308,9 @@ void main() {
   testWidgets('Cancelling delete account dialog does not delete', (
     tester,
   ) async {
-    await tester.pumpWidget(buildWidget(authVm: authVm, profileVm: profileVm));
+    await tester.pumpWidget(
+      buildWidget(authVm: authVm, profileVm: profileVm, notifVm: notifVm),
+    );
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Delete Account'));
@@ -201,7 +327,9 @@ void main() {
   ) async {
     when(() => authVm.deleteAcc()).thenAnswer((_) async {});
 
-    await tester.pumpWidget(buildWidget(authVm: authVm, profileVm: profileVm));
+    await tester.pumpWidget(
+      buildWidget(authVm: authVm, profileVm: profileVm, notifVm: notifVm),
+    );
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Delete Account'));

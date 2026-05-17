@@ -31,7 +31,12 @@ class FollowersFollowingViewModel extends ChangeNotifier {
       final allIds = {...followerIds, ...followingIds}.toList();
       final usersMap = await _userRepository.getUsersByIds(allIds);
 
-      final fallback = Users(name: 'Unknown', email: '', profilePictureUrl: '');
+      final fallback = Users(
+        uid: 'mockId',
+        name: 'Unknown',
+        email: '',
+        profilePictureUrl: '',
+      );
 
       followers = followerIds
           .map((id) => MapEntry(id, usersMap[id] ?? fallback))

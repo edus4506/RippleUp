@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:t5/data/repositories/follow_repository.dart';
 import 'package:t5/routes/app_routes.dart';
+import 'package:t5/views/widgets/notification_dropdown.dart';
 import '../../viewModels/profile_viewModel.dart';
 import 'package:provider/provider.dart';
 import '../widgets/profile_tabs/favorite_events_widget.dart';
@@ -54,6 +55,7 @@ class _ProfilePageState extends State<ProfilePage> {
             tooltip: "Settings",
             onPressed: () => Navigator.pushNamed(context, AppRoutes.settings),
           ),
+          NotificationDropdown(),
         ],
       ),
 

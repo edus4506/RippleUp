@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:t5/views/dialogs/event_details_dialog.dart';
+import 'package:t5/views/widgets/notification_dropdown.dart';
 
 import '../../../data/models/event.dart';
 
@@ -47,9 +48,6 @@ class _EventsPageState extends State<EventsPage> {
       appBar: AppBar(
         centerTitle: true,
 
-        // =========================
-        // SEARCH MODE
-        // =========================
         leading: viewModel.isSearching
             ? IconButton(
                 icon: const Icon(Icons.arrow_back),
@@ -75,7 +73,7 @@ class _EventsPageState extends State<EventsPage> {
             : const Text("Events"),
 
         actions: viewModel.isSearching
-            ? null
+            ? []
             : [
                 IconButton(
                   icon: const Icon(Icons.search),
@@ -83,6 +81,7 @@ class _EventsPageState extends State<EventsPage> {
                     context.read<EventViewModel>().startSearch();
                   },
                 ),
+                NotificationDropdown(),
               ],
       ),
 

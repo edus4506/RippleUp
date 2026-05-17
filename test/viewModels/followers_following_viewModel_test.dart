@@ -9,8 +9,12 @@ class MockFollowRepository extends Mock implements FollowRepository {}
 
 class MockUserRepository extends Mock implements UserRepository {}
 
-Users _user(String name) =>
-    Users(name: name, email: '$name@test.com', profilePictureUrl: '');
+Users _user(String name) => Users(
+  uid: 'mockId',
+  name: name,
+  email: '$name@test.com',
+  profilePictureUrl: '',
+);
 
 void main() {
   late MockFollowRepository mockFollowRepo;

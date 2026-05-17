@@ -13,8 +13,12 @@ class MockEventRepository extends Mock implements EventRepository {}
 
 class MockFollowRepository extends Mock implements FollowRepository {}
 
-Users buildUser() =>
-    Users(name: 'Alice', email: 'alice@test.com', profilePictureUrl: '');
+Users buildUser() => Users(
+  uid: 'example',
+  name: 'Alice',
+  email: 'alice@test.com',
+  profilePictureUrl: '',
+);
 
 Event buildEvent(String id) {
   final now = DateTime.now();
