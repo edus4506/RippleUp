@@ -6,6 +6,7 @@ import 'package:t5/data/repositories/follow_repository.dart';
 import 'package:t5/data/repositories/user_repository.dart';
 import 'package:t5/routes/app_routes.dart';
 import 'package:t5/viewModels/followers_following_viewModel.dart';
+import 'package:t5/viewModels/notification_viewModel.dart';
 
 class FollowersFollowingPage extends StatefulWidget {
   final String userId;
@@ -178,11 +179,34 @@ class _UserList extends StatelessWidget {
                   builder: (context, snapshot) {
                     final following = snapshot.data ?? false;
                     return OutlinedButton(
-                      onPressed: () => vm.toggleFollow(
-                        followerId: currentUserId!,
-                        followedId: uid,
-                        currentlyFollowing: following,
-                      ),
+                      onPressed: () async {
+                        await vm.toggleFollow(
+                          followerId: currentUserId!,
+                          followedId: uid,
+                          currentlyFollowing: following,
+                        );
+
+                        // só envia notificação quando começa a seguir
+                        if (!following) {
+                          final notificationVm = context
+                              .read<AppNotificationViewModel>();
+
+                          final follower = await context
+                              .read<UserRepository>()
+                              .getUser(currentUserId!);
+
+                          final followed = await context
+                              .read<UserRepository>()
+                              .getUser(uid);
+
+                          if (follower != null && followed != null) {
+                            await notificationVm.createNewFollowerNotification(
+                              followed,
+                              follower,
+                            );
+                          }
+                        }
+                      },
                       style: OutlinedButton.styleFrom(
                         foregroundColor: following ? Colors.red : Colors.green,
                         side: BorderSide(
