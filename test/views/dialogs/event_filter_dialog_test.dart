@@ -8,7 +8,6 @@ import 'package:t5/viewModels/event_viewModel.dart';
 import 'package:t5/views/dialogs/event_filter_dialog.dart';
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:t5/data/repositories/storage_repository.dart';
 
 class FakeRepo implements EventRepository {
   @override

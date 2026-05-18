@@ -11,6 +11,7 @@ import 'package:t5/views/pages/settings/settings_page.dart';
 import 'package:t5/views/pages/splash_page.dart';
 import 'package:t5/views/pages/public_profile_page.dart';
 import 'package:t5/views/pages/followers_following_page.dart';
+import 'package:t5/views/pages/direct_messages_page.dart';
 
 class AppRoutes {
   static const String splash = '/splash';
@@ -25,6 +26,7 @@ class AppRoutes {
   static const String reviewsHistory = '/reviews-history';
   static const String publicProfile = '/public-profile';
   static const String followersFollowing = '/followers-following';
+  static const String directMessages = '/direct-messages';
 
   static Map<String, WidgetBuilder> routes = {
     splash: (context) => const SplashPage(),
@@ -35,6 +37,7 @@ class AppRoutes {
     editProfile: (context) => const EditProfilePage(),
     changePassword: (context) => const ChangePasswordPage(),
     reviewsHistory: (context) => const ReviewsHistoryPage(),
+    directMessages: (context) => const DirectMessagesPage(),
   };
 
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {

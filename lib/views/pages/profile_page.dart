@@ -47,6 +47,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: NotificationDropdown(),
         title: Text(vm.user?.name ?? "No name", textAlign: TextAlign.center),
         centerTitle: true,
         actions: [
@@ -55,7 +56,6 @@ class _ProfilePageState extends State<ProfilePage> {
             tooltip: "Settings",
             onPressed: () => Navigator.pushNamed(context, AppRoutes.settings),
           ),
-          NotificationDropdown(),
         ],
       ),
 

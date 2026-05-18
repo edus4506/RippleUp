@@ -10,6 +10,7 @@ import 'package:t5/data/repositories/storage_repository.dart';
 import 'package:t5/data/repositories/user_repository.dart';
 import 'package:t5/data/repositories/review_repository.dart';
 import 'package:t5/data/repositories/notification_repository.dart';
+import 'package:t5/data/repositories/direct_message_repository.dart';
 
 import 'package:t5/services/profile_image_service.dart';
 
@@ -20,7 +21,10 @@ import 'package:t5/viewModels/message_viewModel.dart';
 import 'package:t5/viewModels/profile_viewModel.dart';
 import 'package:t5/viewModels/review_viewModel.dart';
 import 'package:t5/viewModels/notification_viewModel.dart';
+import 'package:t5/viewModels/search_viewModel.dart';
+import 'package:t5/viewModels/search_users_viewModel.dart';
 import 'package:t5/viewModels/user_view_model.dart';
+import 'package:t5/viewModels/direct_message_viewModel.dart';
 
 import 'routes/app_routes.dart';
 import 'theme/app_theme.dart';
@@ -52,6 +56,7 @@ void main() async {
         Provider(create: (_) => MessageRepository()),
         Provider(create: (_) => ReviewRepository()),
         Provider(create: (_) => FollowRepository()),
+        Provider(create: (_) => DirectMessageRepository()),
         ProxyProvider<StorageRepository, ProfileImageService>(
           update: (_, storageRepo, __) => ProfileImageService(storageRepo),
         ),
@@ -104,6 +109,20 @@ void main() async {
         ChangeNotifierProvider(
           create: (context) =>
               ReviewViewModel(context.read<ReviewRepository>()),
+        ),
+
+        ChangeNotifierProvider(
+          create: (context) =>
+              SearchUsersViewModel(context.read<UserRepository>()),
+        ),
+
+        ChangeNotifierProvider(
+          create: (context) => SearchViewModel(context.read<EventViewModel>()),
+        ),
+
+        ChangeNotifierProvider(
+          create: (context) =>
+              DirectMessageViewModel(context.read<DirectMessageRepository>()),
         ),
       ],
       child: const MyApp(),
