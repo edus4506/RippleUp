@@ -3,11 +3,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import '../data/models/message.dart';
 import '../data/repositories/direct_message_repository.dart';
+import '../data/repositories/user_repository.dart';
+
+import '../services/notification_service.dart';
 
 class DirectMessageViewModel extends ChangeNotifier {
   final DirectMessageRepository _repository;
 
-  DirectMessageViewModel(this._repository);
+  final UserRepository _userRepository;
+
+  DirectMessageViewModel(this._repository, this._userRepository);
 
   Future<void> sendMessage({
     required String chatId,
@@ -28,6 +33,21 @@ class DirectMessageViewModel extends ChangeNotifier {
     );
 
     await _repository.createMessage(chatId: chatId, message: message);
+
+    final participants = chatId.split('_');
+
+    final receiverId = participants.firstWhere((id) => id != firebaseUser.uid);
+
+    final currentUserData = await _userRepository.getUser(firebaseUser.uid);
+
+    final senderName = currentUserData?.name ?? 'Someone';
+
+    await NotificationService.createOrUpdateDirectMessageNotification(
+      receiverId: receiverId,
+      senderName: senderName,
+      senderId: firebaseUser.uid,
+      chatId: chatId,
+    );
   }
 
   Stream<List<Message>> getMessages(String chatId) {

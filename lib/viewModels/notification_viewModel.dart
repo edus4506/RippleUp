@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:t5/data/models/event.dart';
 import 'package:t5/data/models/notification.dart';
 import 'package:t5/data/models/participation.dart';
@@ -225,5 +226,49 @@ class AppNotificationViewModel extends ChangeNotifier {
       seen: false,
       type: 'new_follower',
     );
+  }
+
+  List<AppNotification> sortNotifications(List<AppNotification> notifications) {
+    notifications.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+    return notifications;
+  }
+
+  List<AppNotification> getUnseenNotifications(
+    List<AppNotification> notifications,
+  ) {
+    return notifications.where((n) => !n.seen).toList();
+  }
+
+  IconData getNotificationIcon(String? type) {
+    switch (type) {
+      case 'new_event':
+        return Icons.event_available;
+
+      case 'upcoming_event':
+        return Icons.access_time;
+
+      case 'new_joined_user':
+        return Icons.person_add;
+
+      case 'new_left_user':
+        return Icons.person_remove;
+
+      case 'new_follower':
+        return Icons.person_add;
+
+      default:
+        return Icons.notifications;
+    }
+  }
+
+  Future<void> clearNotifications(String userId) async {
+    final notifications = await _notificationRepository
+        .listenUserNotifications(userId)
+        .first;
+
+    for (final notification in notifications) {
+      await _notificationRepository.deleteNotification(userId, notification.id);
+    }
   }
 }

@@ -30,28 +30,6 @@ class _NotificationDropdownState extends State<NotificationDropdown> {
     });
   }
 
-  IconData getNotificationIcon(String? type) {
-    switch (type) {
-      case 'new_event':
-        return Icons.event_available;
-
-      case 'upcoming_event':
-        return Icons.access_time;
-
-      case 'new_joined_user':
-        return Icons.person_add;
-
-      case 'new_left_user':
-        return Icons.person_remove;
-
-      case 'new_follower':
-        return Icons.person_add;
-
-      default:
-        return Icons.notifications;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final currentUser = context.watch<AuthViewModel>().currentUser;
@@ -72,10 +50,11 @@ class _NotificationDropdownState extends State<NotificationDropdown> {
 
         final notifications = snapshot.data ?? [];
 
-        // newest first
-        notifications.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+        final vm = context.read<AppNotificationViewModel>();
 
-        final unseen = notifications.where((n) => !n.seen).toList();
+        final sortedNotifications = vm.sortNotifications(notifications);
+
+        final unseen = vm.getUnseenNotifications(sortedNotifications);
 
         return PopupMenuButton<AppNotification>(
           icon: Badge(
@@ -94,70 +73,182 @@ class _NotificationDropdownState extends State<NotificationDropdown> {
               ];
             }
 
-            return unseen.map((notification) {
+            final items = unseen.map((notification) {
               return PopupMenuItem<AppNotification>(
                 value: notification,
 
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 3),
+                  padding: const EdgeInsets.all(12),
 
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 12, top: 2),
+                  decoration: BoxDecoration(
+                    color: notification.seen
+                        ? Colors.white
+                        : const Color(0xFFF3FAF4),
 
-                      child: Icon(getNotificationIcon(notification.type)),
+                    borderRadius: BorderRadius.circular(16),
+
+                    border: Border.all(
+                      color: notification.seen
+                          ? Colors.grey.shade300
+                          : Colors.green.shade200,
                     ),
+                  ),
 
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
 
-                        children: [
-                          Text(
-                            notification.title,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
+                    children: [
+                      Container(
+                        width: 42,
+                        height: 42,
 
-                          const SizedBox(height: 4),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFE7F5EA),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
 
-                          Text(notification.body),
+                        child: Icon(
+                          vm.getNotificationIcon(notification.type),
 
-                          const SizedBox(height: 6),
-
-                          Text(
-                            '${notification.createdAt.year.toString().padLeft(4, '0')}-'
-                            '${notification.createdAt.month.toString().padLeft(2, '0')}-'
-                            '${notification.createdAt.day.toString().padLeft(2, '0')} '
-                            '${notification.createdAt.hour.toString().padLeft(2, '0')}:'
-                            '${notification.createdAt.minute.toString().padLeft(2, '0')}',
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
+                          color: Colors.green.shade700,
+                          size: 22,
+                        ),
                       ),
-                    ),
 
-                    Checkbox(
-                      value: notification.seen,
+                      const SizedBox(width: 12),
 
-                      onChanged: (_) async {
-                        final navigator = Navigator.of(context);
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
 
-                        await context
-                            .read<AppNotificationViewModel>()
-                            .markAsSeen(notification, currentUser.uid);
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    notification.title,
 
-                        if (!mounted) return;
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ),
 
-                        navigator.pop();
-                      },
-                    ),
-                  ],
+                                Text(
+                                  '${notification.createdAt.hour.toString().padLeft(2, '0')}:'
+                                  '${notification.createdAt.minute.toString().padLeft(2, '0')}',
+
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: Colors.grey.shade600,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            const SizedBox(height: 6),
+
+                            Text(
+                              notification.body,
+
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey.shade800,
+                                height: 1.3,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(width: 8),
+
+                      Checkbox(
+                        value: notification.seen,
+
+                        activeColor: Colors.green,
+
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+
+                        onChanged: (_) async {
+                          final navigator = Navigator.of(context);
+
+                          await context
+                              .read<AppNotificationViewModel>()
+                              .markAsSeen(notification, currentUser.uid);
+
+                          if (!mounted) return;
+
+                          navigator.pop();
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               );
             }).toList();
+
+            items.add(
+              PopupMenuItem(
+                enabled: false,
+
+                child: Center(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFE8F5E9),
+
+                      borderRadius: BorderRadius.circular(14),
+
+                      border: Border.all(
+                        color: Colors.green.shade700,
+                        width: 1.2,
+                      ),
+                    ),
+
+                    child: TextButton.icon(
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.black,
+
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 10,
+                        ),
+                      ),
+
+                      onPressed: () async {
+                        Navigator.pop(context);
+
+                        await context
+                            .read<AppNotificationViewModel>()
+                            .clearNotifications(currentUser.uid);
+                      },
+
+                      icon: const Icon(
+                        Icons.delete,
+                        color: Colors.black,
+                        size: 22,
+                      ),
+
+                      label: const Text(
+                        'Clear notifications',
+
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
+
+            return items;
           },
         );
       },

@@ -53,4 +53,13 @@ class NotificationRepository {
 
     return snapshot.docs.isNotEmpty;
   }
+
+  Future<void> deleteNotification(String uid, String notificationId) async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('notifications')
+        .doc(notificationId)
+        .delete();
+  }
 }
