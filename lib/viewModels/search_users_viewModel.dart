@@ -10,8 +10,7 @@ class SearchUsersViewModel extends ChangeNotifier {
 
   SearchUsersViewModel(this.userRepository);
 
-  final TextEditingController searchController =
-      TextEditingController();
+  final TextEditingController searchController = TextEditingController();
 
   List<Users> _allUsers = [];
 
@@ -22,9 +21,7 @@ class SearchUsersViewModel extends ChangeNotifier {
   Future<void> loadUsers() async {
     final users = await userRepository.getAllUsers();
 
-    _allUsers = users
-        .whereType<Users>()
-        .toList();
+    _allUsers = users.whereType<Users>().toList();
 
     _filteredUsers = _allUsers;
 
@@ -32,10 +29,7 @@ class SearchUsersViewModel extends ChangeNotifier {
   }
 
   void updateSearch(String query) {
-    _filteredUsers = UserSearchService.search(
-      _allUsers,
-      query,
-    );
+    _filteredUsers = UserSearchService.search(_allUsers, query);
 
     notifyListeners();
   }

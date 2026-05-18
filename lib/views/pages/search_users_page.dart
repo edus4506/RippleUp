@@ -9,27 +9,22 @@ class SearchUsersPage extends StatefulWidget {
   const SearchUsersPage({super.key});
 
   @override
-  State<SearchUsersPage> createState() =>
-      _SearchUsersPageState();
+  State<SearchUsersPage> createState() => _SearchUsersPageState();
 }
 
-class _SearchUsersPageState
-    extends State<SearchUsersPage> {
+class _SearchUsersPageState extends State<SearchUsersPage> {
   @override
   void initState() {
     super.initState();
 
     Future.microtask(() {
-      context
-          .read<SearchUsersViewModel>()
-          .loadUsers();
+      context.read<SearchUsersViewModel>().loadUsers();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final viewModel =
-        context.watch<SearchUsersViewModel>();
+    final viewModel = context.watch<SearchUsersViewModel>();
 
     return Scaffold(
       appBar: AppBar(
@@ -52,8 +47,7 @@ class _SearchUsersPageState
         itemCount: viewModel.filteredUsers.length,
 
         itemBuilder: (context, index) {
-          final user =
-              viewModel.filteredUsers[index];
+          final user = viewModel.filteredUsers[index];
 
           return _HoverUserCard(user: user);
         },
@@ -65,17 +59,13 @@ class _SearchUsersPageState
 class _HoverUserCard extends StatefulWidget {
   final dynamic user;
 
-  const _HoverUserCard({
-    required this.user,
-  });
+  const _HoverUserCard({required this.user});
 
   @override
-  State<_HoverUserCard> createState() =>
-      _HoverUserCardState();
+  State<_HoverUserCard> createState() => _HoverUserCardState();
 }
 
-class _HoverUserCardState
-    extends State<_HoverUserCard> {
+class _HoverUserCardState extends State<_HoverUserCard> {
   bool isHovered = false;
 
   @override
@@ -103,40 +93,27 @@ class _HoverUserCardState
             context,
             AppRoutes.publicProfile,
 
-            arguments: {
-              'userId': user.uid,
-            },
+            arguments: {'userId': user.uid},
           );
         },
 
         child: AnimatedContainer(
-          duration: const Duration(
-            milliseconds: 180,
-          ),
+          duration: const Duration(milliseconds: 180),
 
-          margin: const EdgeInsets.only(
-            bottom: 14,
-          ),
+          margin: const EdgeInsets.only(bottom: 14),
 
           padding: const EdgeInsets.all(14),
 
           decoration: BoxDecoration(
-            color:
-                isHovered
-                ? const Color(0xFFF5F5F5)
-                : Colors.white,
+            color: isHovered ? const Color(0xFFF5F5F5) : Colors.white,
 
-            borderRadius:
-                BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(20),
 
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withAlpha(
-                  isHovered ? 18 : 10,
-                ),
+                color: Colors.black.withAlpha(isHovered ? 18 : 10),
 
-                blurRadius:
-                    isHovered ? 14 : 10,
+                blurRadius: isHovered ? 14 : 10,
 
                 offset: const Offset(0, 4),
               ),
@@ -148,15 +125,11 @@ class _HoverUserCardState
               CircleAvatar(
                 radius: 28,
 
-                backgroundImage:
-                    user.profilePictureUrl.isNotEmpty
-                    ? NetworkImage(
-                        user.profilePictureUrl,
-                      )
+                backgroundImage: user.profilePictureUrl.isNotEmpty
+                    ? NetworkImage(user.profilePictureUrl)
                     : null,
 
-                child:
-                    user.profilePictureUrl.isEmpty
+                child: user.profilePictureUrl.isEmpty
                     ? const Icon(Icons.person)
                     : null,
               ),
@@ -165,8 +138,7 @@ class _HoverUserCardState
 
               Expanded(
                 child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
 
                   children: [
                     Text(
@@ -174,8 +146,7 @@ class _HoverUserCardState
 
                       style: const TextStyle(
                         fontSize: 18,
-                        fontWeight:
-                            FontWeight.bold,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
 
@@ -184,9 +155,7 @@ class _HoverUserCardState
                     Text(
                       user.email,
 
-                      style: const TextStyle(
-                        color: Colors.black54,
-                      ),
+                      style: const TextStyle(color: Colors.black54),
                     ),
                   ],
                 ),

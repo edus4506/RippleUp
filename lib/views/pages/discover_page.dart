@@ -18,9 +18,7 @@ class DiscoverPage extends StatelessWidget {
 
         title: const Text("Discover"),
 
-        actions: const [
-          SizedBox(width: 48),
-        ],
+        actions: const [SizedBox(width: 48)],
       ),
 
       body: SingleChildScrollView(
@@ -39,9 +37,7 @@ class DiscoverPage extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => const SearchEventsPage(),
-                  ),
+                  MaterialPageRoute(builder: (_) => const SearchEventsPage()),
                 );
               },
             ),
@@ -55,9 +51,7 @@ class DiscoverPage extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => const SearchUsersPage(),
-                  ),
+                  MaterialPageRoute(builder: (_) => const SearchUsersPage()),
                 );
               },
             ),
@@ -134,16 +128,13 @@ class _HoverCardState extends State<_HoverCard> {
           margin: const EdgeInsets.only(bottom: 18),
 
           decoration: BoxDecoration(
-            color:
-                isHovered ? const Color(0xFFF5F5F5) : Colors.white,
+            color: isHovered ? const Color(0xFFF5F5F5) : Colors.white,
 
             borderRadius: BorderRadius.circular(24),
 
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withAlpha(
-                  isHovered ? 20 : 12,
-                ),
+                color: Colors.black.withAlpha(isHovered ? 20 : 12),
 
                 blurRadius: isHovered ? 16 : 12,
 
@@ -174,8 +165,7 @@ class _HoverCardState extends State<_HoverCard> {
 
               Expanded(
                 child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
 
                   children: [
                     Text(
@@ -202,10 +192,7 @@ class _HoverCardState extends State<_HoverCard> {
                 ),
               ),
 
-              const Icon(
-                Icons.arrow_forward_ios,
-                color: Color(0xFF0A7A3E),
-              ),
+              const Icon(Icons.arrow_forward_ios, color: Color(0xFF0A7A3E)),
             ],
           ),
         ),

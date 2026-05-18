@@ -58,18 +58,14 @@ class AppBottomNav extends StatelessWidget {
                 Icon(
                   Icons.search,
                   size: 28,
-                  color: currentIndex == 1
-                      ? Palette.primary
-                      : Colors.grey,
+                  color: currentIndex == 1 ? Palette.primary : Colors.grey,
                 ),
                 const SizedBox(height: 2),
                 Text(
                   "Search",
                   style: TextStyle(
                     fontSize: 12,
-                    color: currentIndex == 1
-                        ? Palette.primary
-                        : Colors.grey,
+                    color: currentIndex == 1 ? Palette.primary : Colors.grey,
                   ),
                 ),
               ],
@@ -114,18 +110,14 @@ class AppBottomNav extends StatelessWidget {
                 Icon(
                   Icons.chat_bubble_outline,
                   size: 28,
-                  color: currentIndex == 2
-                      ? Palette.primary
-                      : Colors.grey,
+                  color: currentIndex == 2 ? Palette.primary : Colors.grey,
                 ),
                 const SizedBox(height: 2),
                 Text(
                   "Messages",
                   style: TextStyle(
                     fontSize: 12,
-                    color: currentIndex == 2
-                        ? Palette.primary
-                        : Colors.grey,
+                    color: currentIndex == 2 ? Palette.primary : Colors.grey,
                   ),
                 ),
               ],

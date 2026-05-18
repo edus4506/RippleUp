@@ -11,8 +11,7 @@ class SearchViewModel extends ChangeNotifier {
 
   SearchViewModel(this.eventViewModel);
 
-  final TextEditingController searchController =
-      TextEditingController();
+  final TextEditingController searchController = TextEditingController();
 
   String _searchQuery = '';
 

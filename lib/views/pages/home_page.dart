@@ -16,7 +16,12 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
 
-  final List<Widget> _pages = [const EventsPage(), const DiscoverPage(), const DirectMessagesPage(), const ProfilePage()];
+  final List<Widget> _pages = [
+    const EventsPage(),
+    const DiscoverPage(),
+    const DirectMessagesPage(),
+    const ProfilePage(),
+  ];
 
   void _openCreateEvent() {
     Navigator.push(

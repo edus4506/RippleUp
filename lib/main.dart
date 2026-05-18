@@ -112,7 +112,7 @@ void main() async {
           create: (context) =>
               SearchUsersViewModel(context.read<UserRepository>()),
         ),
-        
+
         ChangeNotifierProvider(
           create: (context) => SearchViewModel(context.read<EventViewModel>()),
         ),

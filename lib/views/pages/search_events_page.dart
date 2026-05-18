@@ -51,9 +51,7 @@ class SearchEventsPage extends StatelessWidget {
           final events = searchViewModel.filterEvents(allEvents);
 
           if (events.isEmpty) {
-            return const Center(
-              child: Text('No matching events found.'),
-            );
+            return const Center(child: Text('No matching events found.'));
           }
 
           return ListView.builder(

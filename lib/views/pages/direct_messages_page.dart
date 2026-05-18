@@ -6,12 +6,8 @@ class DirectMessagesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Messages'),
-      ),
-      body: const Center(
-        child: Text('No conversations yet'),
-      ),
+      appBar: AppBar(title: const Text('Messages')),
+      body: const Center(child: Text('No conversations yet')),
     );
   }
 }
