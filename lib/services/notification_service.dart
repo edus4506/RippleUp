@@ -30,14 +30,12 @@ class NotificationService {
 
       count++;
 
-      final displayCount =
-          count >= 4 ? '4+' : count.toString();
+      final displayCount = count >= 4 ? '4+' : count.toString();
 
       await doc.reference.update({
         'messageCount': count,
 
-        'body':
-            'You received $displayCount messages from $senderName',
+        'body': 'You received $displayCount messages from $senderName',
 
         'createdAt': Timestamp.now(),
       });
@@ -91,14 +89,12 @@ class NotificationService {
 
       count++;
 
-      final displayCount =
-          count >= 4 ? '4+' : count.toString();
+      final displayCount = count >= 4 ? '4+' : count.toString();
 
       await doc.reference.update({
         'messageCount': count,
 
-        'body':
-            'You received $displayCount messages in $eventTitle',
+        'body': 'You received $displayCount messages in $eventTitle',
 
         'createdAt': Timestamp.now(),
       });
@@ -116,10 +112,6 @@ class NotificationService {
       eventId: eventId,
     );
 
-    await notificationsRef.add({
-      ...notification.toMap(),
-
-      'messageCount': 1,
-    });
+    await notificationsRef.add({...notification.toMap(), 'messageCount': 1});
   }
 }

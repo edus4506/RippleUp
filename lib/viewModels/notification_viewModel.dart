@@ -228,12 +228,8 @@ class AppNotificationViewModel extends ChangeNotifier {
     );
   }
 
-  List<AppNotification> sortNotifications(
-    List<AppNotification> notifications,
-  ) {
-    notifications.sort(
-      (a, b) => b.createdAt.compareTo(a.createdAt),
-    );
+  List<AppNotification> sortNotifications(List<AppNotification> notifications) {
+    notifications.sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
     return notifications;
   }
@@ -241,9 +237,7 @@ class AppNotificationViewModel extends ChangeNotifier {
   List<AppNotification> getUnseenNotifications(
     List<AppNotification> notifications,
   ) {
-    return notifications
-        .where((n) => !n.seen)
-        .toList();
+    return notifications.where((n) => !n.seen).toList();
   }
 
   IconData getNotificationIcon(String? type) {
@@ -269,16 +263,12 @@ class AppNotificationViewModel extends ChangeNotifier {
   }
 
   Future<void> clearNotifications(String userId) async {
-    final notifications =
-        await _notificationRepository
-            .listenUserNotifications(userId)
-            .first;
+    final notifications = await _notificationRepository
+        .listenUserNotifications(userId)
+        .first;
 
     for (final notification in notifications) {
-      await _notificationRepository.deleteNotification(
-        userId,
-        notification.id,
-      );
+      await _notificationRepository.deleteNotification(userId, notification.id);
     }
   }
 }
