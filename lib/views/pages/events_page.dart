@@ -48,41 +48,16 @@ class _EventsPageState extends State<EventsPage> {
       appBar: AppBar(
         centerTitle: true,
 
-        leading: viewModel.isSearching
-            ? IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: () => _stopSearch(context),
-              )
-            : IconButton(
-                icon: const Icon(Icons.filter_list),
-                onPressed: () => _openFilterModal(context),
-              ),
+        leading: NotificationDropdown(),
 
-        title: viewModel.isSearching
-            ? TextField(
-                controller: _searchController,
-                autofocus: true,
-                decoration: const InputDecoration(
-                  hintText: 'Search events...',
-                  border: InputBorder.none,
-                ),
-                onChanged: (value) {
-                  context.read<EventViewModel>().updateSearchQuery(value);
-                },
-              )
-            : const Text("Events"),
+        title: const Text("Events"),
 
-        actions: viewModel.isSearching
-            ? []
-            : [
-                IconButton(
-                  icon: const Icon(Icons.search),
-                  onPressed: () {
-                    context.read<EventViewModel>().startSearch();
-                  },
-                ),
-                NotificationDropdown(),
-              ],
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.filter_list),
+            onPressed: () => _openFilterModal(context),
+          ),
+        ],
       ),
 
       body: StreamBuilder<List<Event>>(
