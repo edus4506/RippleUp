@@ -3,6 +3,7 @@ import '../widgets/bottom_nav.dart';
 import 'profile_page.dart';
 import 'events_page.dart';
 import 'create_event_page.dart';
+import 'direct_messages_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,7 +15,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
 
-  final List<Widget> _pages = [const EventsPage(), const ProfilePage()];
+  final List<Widget> _pages = [const EventsPage(), const DirectMessagesPage(), const ProfilePage()];
 
   void _openCreateEvent() {
     Navigator.push(

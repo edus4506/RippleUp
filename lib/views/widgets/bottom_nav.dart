@@ -78,23 +78,50 @@ class AppBottomNav extends StatelessWidget {
             ),
           ),
 
-          // USER
+          // DIRECT MESSAGES
           GestureDetector(
             onTap: () => onTap(1),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
+                  Icons.chat_bubble_outline,
+                  size: 28,
+                  color: currentIndex == 1
+                      ? Palette.primary
+                      : Colors.grey,
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  "Messages",
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: currentIndex == 1
+                        ? Palette.primary
+                        : Colors.grey,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // USER
+          GestureDetector(
+            onTap: () => onTap(2),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
                   Icons.person,
                   size: 28,
-                  color: currentIndex == 1 ? Palette.primary : Colors.grey,
+                  color: currentIndex == 2 ? Palette.primary : Colors.grey,
                 ),
                 const SizedBox(height: 2),
                 Text(
                   "Profile",
                   style: TextStyle(
                     fontSize: 12,
-                    color: currentIndex == 1 ? Palette.primary : Colors.grey,
+                    color: currentIndex == 2 ? Palette.primary : Colors.grey,
                   ),
                 ),
               ],
