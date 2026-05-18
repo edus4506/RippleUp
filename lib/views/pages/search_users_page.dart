@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../routes/app_routes.dart';
+
 import '../../viewModels/search_users_viewModel.dart';
 
 class SearchUsersPage extends StatefulWidget {
@@ -53,87 +55,151 @@ class _SearchUsersPageState
           final user =
               viewModel.filteredUsers[index];
 
-          return Container(
-            margin: const EdgeInsets.only(
-              bottom: 14,
-            ),
+          return _HoverUserCard(user: user);
+        },
+      ),
+    );
+  }
+}
 
-            padding: const EdgeInsets.all(14),
+class _HoverUserCard extends StatefulWidget {
+  final dynamic user;
 
-            decoration: BoxDecoration(
-              color: Colors.white,
+  const _HoverUserCard({
+    required this.user,
+  });
 
-              borderRadius:
-                  BorderRadius.circular(20),
+  @override
+  State<_HoverUserCard> createState() =>
+      _HoverUserCardState();
+}
 
-              boxShadow: [
-                BoxShadow(
-                  color:
-                      Colors.black.withAlpha(10),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
+class _HoverUserCardState
+    extends State<_HoverUserCard> {
+  bool isHovered = false;
 
-            child: Row(
-              children: [
-                CircleAvatar(
-                  radius: 28,
+  @override
+  Widget build(BuildContext context) {
+    final user = widget.user;
 
-                  backgroundImage:
-                      user.profilePictureUrl.isNotEmpty
-                      ? NetworkImage(
-                          user.profilePictureUrl,
-                        )
-                      : null,
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
 
-                  child:
-                      user.profilePictureUrl.isEmpty
-                      ? const Icon(Icons.person)
-                      : null,
-                ),
+      onEnter: (_) {
+        setState(() {
+          isHovered = true;
+        });
+      },
 
-                const SizedBox(width: 16),
+      onExit: (_) {
+        setState(() {
+          isHovered = false;
+        });
+      },
 
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
+      child: GestureDetector(
+        onTap: () {
+          Navigator.pushNamed(
+            context,
+            AppRoutes.publicProfile,
 
-                    children: [
-                      Text(
-                        user.name,
-
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight:
-                              FontWeight.bold,
-                        ),
-                      ),
-
-                      const SizedBox(height: 4),
-
-                      Text(
-                        user.email,
-
-                        style: const TextStyle(
-                          color: Colors.black54,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const Icon(
-                  Icons.arrow_forward_ios,
-                  size: 18,
-                  color: Colors.black38,
-                ),
-              ],
-            ),
+            arguments: {
+              'userId': user.uid,
+            },
           );
         },
+
+        child: AnimatedContainer(
+          duration: const Duration(
+            milliseconds: 180,
+          ),
+
+          margin: const EdgeInsets.only(
+            bottom: 14,
+          ),
+
+          padding: const EdgeInsets.all(14),
+
+          decoration: BoxDecoration(
+            color:
+                isHovered
+                ? const Color(0xFFF5F5F5)
+                : Colors.white,
+
+            borderRadius:
+                BorderRadius.circular(20),
+
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withAlpha(
+                  isHovered ? 18 : 10,
+                ),
+
+                blurRadius:
+                    isHovered ? 14 : 10,
+
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+
+          child: Row(
+            children: [
+              CircleAvatar(
+                radius: 28,
+
+                backgroundImage:
+                    user.profilePictureUrl.isNotEmpty
+                    ? NetworkImage(
+                        user.profilePictureUrl,
+                      )
+                    : null,
+
+                child:
+                    user.profilePictureUrl.isEmpty
+                    ? const Icon(Icons.person)
+                    : null,
+              ),
+
+              const SizedBox(width: 16),
+
+              Expanded(
+                child: Column(
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start,
+
+                  children: [
+                    Text(
+                      user.name,
+
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight:
+                            FontWeight.bold,
+                      ),
+                    ),
+
+                    const SizedBox(height: 4),
+
+                    Text(
+                      user.email,
+
+                      style: const TextStyle(
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const Icon(
+                Icons.arrow_forward_ios,
+                size: 18,
+                color: Colors.black38,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
