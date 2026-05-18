@@ -27,7 +27,7 @@ class AppRoutes {
   static const String publicProfile = '/public-profile';
   static const String followersFollowing = '/followers-following';
   static const String directMessages = '/direct-messages';
-  
+
   static Map<String, WidgetBuilder> routes = {
     splash: (context) => const SplashPage(),
     home: (context) => const HomePage(),
