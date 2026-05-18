@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/message.dart';
+import '../models/direct_chat_preview.dart';
 
 class DirectMessageRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -15,6 +16,14 @@ class DirectMessageRepository {
 
     await chatDoc.set({
       'createdAt': FieldValue.serverTimestamp(),
+
+      'participants': chatId.split('_'),
+
+      'lastMessage': message.text,
+
+      'lastSenderId': message.senderId,
+
+      'lastMessageAt': FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));
 
     await chatDoc
@@ -43,5 +52,24 @@ class DirectMessageRepository {
         .get();
 
     return doc.exists;
+  }
+
+  Stream<List<DirectChatPreview>> getUserChats(
+    String userId,
+  ) {
+    return _db
+        .collection('direct_chats')
+        .where('participants', arrayContains: userId)
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs
+              .map(
+                (doc) => DirectChatPreview.fromMap(
+                  doc.data(),
+                  doc.id,
+                ),
+              )
+              .toList(),
+        );
   }
 }
