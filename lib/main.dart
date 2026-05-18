@@ -103,7 +103,11 @@ void main() async {
 
         ChangeNotifierProvider(
           create: (context) =>
-              MessageViewModel(context.read<MessageRepository>()),
+              MessageViewModel(
+                context.read<MessageRepository>(),
+                context.read<ParticipationRepository>(),
+                context.read<EventRepository>(),
+              ),
         ),
 
         ChangeNotifierProvider(
