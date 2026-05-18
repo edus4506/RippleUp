@@ -158,7 +158,7 @@ class _PublicProfilePageState extends State<PublicProfilePage>
 
                                   FutureBuilder<bool>(
                                     future: DirectChatService.hasExistingChat(
-                                      currentUserId: _currentUserId!,
+                                      currentUserId: _currentUserId,
                                       otherUserId: widget.userId,
 
                                       directMessageRepository:
@@ -326,7 +326,7 @@ class _CountButton extends StatelessWidget {
   }
 }
 
-class _SectionTitle extends StatelessWidget {
+/*class _SectionTitle extends StatelessWidget {
   final IconData icon;
   final String label;
   final int count;
@@ -366,7 +366,7 @@ class _EmptyState extends StatelessWidget {
       child: Text(message, style: const TextStyle(color: Colors.grey)),
     );
   }
-}
+}*/
 
 class _EventList extends StatelessWidget {
   final List<Event> events;

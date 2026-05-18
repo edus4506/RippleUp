@@ -72,7 +72,25 @@ class DiscoverPage extends StatelessWidget {
                   ),
                 ],
               ),
-            ),
+
+              child: const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(24),
+
+                  child: Text(
+                    'Future discover features coming soon...\n\nLourenço mete aqui\nos discover new events',
+
+                    textAlign: TextAlign.center,
+
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.black54,
+                      height: 1.5,
+                    ),
+                  ),
+                ),
+              ),
+            )
           ],
         ),
       ),

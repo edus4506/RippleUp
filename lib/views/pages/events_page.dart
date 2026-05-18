@@ -32,13 +32,13 @@ class _EventsPageState extends State<EventsPage> {
     showDialog(context: context, builder: (_) => const EventFilterDialog());
   }
 
-  void _stopSearch(BuildContext context) {
+  /*void _stopSearch(BuildContext context) {
     _searchController.clear();
 
     FocusScope.of(context).unfocus();
 
     context.read<EventViewModel>().stopSearch();
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {

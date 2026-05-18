@@ -65,6 +65,7 @@ class DirectMessageRepository {
     return _db
         .collection('direct_chats')
         .where('participants', arrayContains: userId)
+        .orderBy('lastMessageAt', descending: true)
         .snapshots()
         .map(
           (snapshot) => snapshot.docs

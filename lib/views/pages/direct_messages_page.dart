@@ -88,9 +88,9 @@ class DirectMessagesPage extends StatelessWidget {
                     );
                   }
 
-                  final isMe =
+                  /*final isMe =
                       chat.lastSenderId ==
-                      currentUserId;
+                      currentUserId;*/
 
                   return _HoverChatCard(
                     chat: chat,

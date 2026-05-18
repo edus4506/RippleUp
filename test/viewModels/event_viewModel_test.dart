@@ -3,7 +3,6 @@ import 'package:mocktail/mocktail.dart';
 import 'package:t5/data/models/event.dart';
 import 'package:t5/data/repositories/event_repository.dart';
 import 'package:t5/data/repositories/storage_repository.dart';
-import 'package:t5/services/event_filter.dart';
 import 'package:t5/viewModels/event_viewModel.dart';
 
 class MockEventRepository extends Mock implements EventRepository {}
