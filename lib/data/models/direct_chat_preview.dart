@@ -29,22 +29,16 @@ class DirectChatPreview {
     return DirectChatPreview(
       chatId: documentId,
 
-      participants: List<String>.from(
-        map['participants'] ?? [],
-      ),
+      participants: List<String>.from(map['participants'] ?? []),
 
       lastMessage: map['lastMessage'] ?? '',
 
       lastSenderId: map['lastSenderId'] ?? '',
 
-      lastMessageAt:
-          map['lastMessageAt'] != null
-              ? (map['lastMessageAt'] as Timestamp)
-                    .toDate()
-              : null,
-      lastSeenBy: List<String>.from(
-        map['lastSeenBy'] ?? [],
-      ),
+      lastMessageAt: map['lastMessageAt'] != null
+          ? (map['lastMessageAt'] as Timestamp).toDate()
+          : null,
+      lastSeenBy: List<String>.from(map['lastSeenBy'] ?? []),
     );
   }
 }

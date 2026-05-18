@@ -27,10 +27,7 @@ class DirectMessageViewModel extends ChangeNotifier {
       createdAt: DateTime.now(),
     );
 
-    await _repository.createMessage(
-      chatId: chatId,
-      message: message,
-    );
+    await _repository.createMessage(chatId: chatId, message: message);
   }
 
   Stream<List<Message>> getMessages(String chatId) {
@@ -41,9 +38,6 @@ class DirectMessageViewModel extends ChangeNotifier {
     required String chatId,
     required String userId,
   }) async {
-    await _repository.markChatAsSeen(
-      chatId: chatId,
-      userId: userId,
-    );
+    await _repository.markChatAsSeen(chatId: chatId, userId: userId);
   }
 }

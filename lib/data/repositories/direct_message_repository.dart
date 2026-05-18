@@ -10,9 +10,7 @@ class DirectMessageRepository {
     required String chatId,
     required Message message,
   }) async {
-    final chatDoc = _db
-        .collection('direct_chats')
-        .doc(chatId);
+    final chatDoc = _db.collection('direct_chats').doc(chatId);
 
     await chatDoc.set({
       'createdAt': FieldValue.serverTimestamp(),
@@ -25,15 +23,10 @@ class DirectMessageRepository {
 
       'lastMessageAt': FieldValue.serverTimestamp(),
 
-      'lastSeenBy': [
-        message.senderId,
-      ],
-
+      'lastSeenBy': [message.senderId],
     }, SetOptions(merge: true));
 
-    await chatDoc
-        .collection('messages')
-        .add(message.toMap());
+    await chatDoc.collection('messages').add(message.toMap());
   }
 
   Stream<List<Message>> getMessages(String chatId) {
@@ -51,17 +44,12 @@ class DirectMessageRepository {
   }
 
   Future<bool> chatExists(String chatId) async {
-    final doc = await _db
-        .collection('direct_chats')
-        .doc(chatId)
-        .get();
+    final doc = await _db.collection('direct_chats').doc(chatId).get();
 
     return doc.exists;
   }
 
-  Stream<List<DirectChatPreview>> getUserChats(
-    String userId,
-  ) {
+  Stream<List<DirectChatPreview>> getUserChats(String userId) {
     return _db
         .collection('direct_chats')
         .where('participants', arrayContains: userId)
@@ -69,12 +57,7 @@ class DirectMessageRepository {
         .snapshots()
         .map(
           (snapshot) => snapshot.docs
-              .map(
-                (doc) => DirectChatPreview.fromMap(
-                  doc.data(),
-                  doc.id,
-                ),
-              )
+              .map((doc) => DirectChatPreview.fromMap(doc.data(), doc.id))
               .toList(),
         );
   }
@@ -83,13 +66,8 @@ class DirectMessageRepository {
     required String chatId,
     required String userId,
   }) async {
-    await _db
-        .collection('direct_chats')
-        .doc(chatId)
-        .set({
-          'lastSeenBy': FieldValue.arrayUnion(
-            [userId],
-          ),
-        }, SetOptions(merge: true));
+    await _db.collection('direct_chats').doc(chatId).set({
+      'lastSeenBy': FieldValue.arrayUnion([userId]),
+    }, SetOptions(merge: true));
   }
 }

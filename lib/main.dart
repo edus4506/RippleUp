@@ -121,9 +121,8 @@ void main() async {
         ),
 
         ChangeNotifierProvider(
-          create: (context) => DirectMessageViewModel(
-            context.read<DirectMessageRepository>(),
-          ),
+          create: (context) =>
+              DirectMessageViewModel(context.read<DirectMessageRepository>()),
         ),
       ],
       child: const MyApp(),

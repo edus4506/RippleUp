@@ -90,7 +90,7 @@ class DiscoverPage extends StatelessWidget {
                   ),
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),

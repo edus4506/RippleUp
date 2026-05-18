@@ -42,15 +42,12 @@ class _DirectChatPageState extends State<DirectChatPage> {
       widget.otherUserId,
     );
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final currentUserId =
-          FirebaseAuth.instance.currentUser!.uid;
+      final currentUserId = FirebaseAuth.instance.currentUser!.uid;
 
-      context
-          .read<DirectMessageViewModel>()
-          .markChatAsSeen(
-            chatId: chatId,
-            userId: currentUserId,
-          );
+      context.read<DirectMessageViewModel>().markChatAsSeen(
+        chatId: chatId,
+        userId: currentUserId,
+      );
     });
   }
 
@@ -88,31 +85,25 @@ class _DirectChatPageState extends State<DirectChatPage> {
     final currentUserId = FirebaseAuth.instance.currentUser?.uid;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.otherUserName),
-      ),
+      appBar: AppBar(title: Text(widget.otherUserName)),
 
       body: Column(
         children: [
           Expanded(
             child: StreamBuilder<List<Message>>(
-              stream: context
-                  .read<DirectMessageViewModel>()
-                  .getMessages(chatId),
+              stream: context.read<DirectMessageViewModel>().getMessages(
+                chatId,
+              ),
 
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  return const Center(child: CircularProgressIndicator());
                 }
 
                 final messages = snapshot.data!;
 
                 if (messages.isEmpty) {
-                  return const Center(
-                    child: Text('No messages yet'),
-                  );
+                  return const Center(child: Text('No messages yet'));
                 }
 
                 WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -129,10 +120,7 @@ class _DirectChatPageState extends State<DirectChatPage> {
 
                     final isMe = msg.senderId == currentUserId;
 
-                    return _MessageBubble(
-                      message: msg,
-                      isMe: isMe,
-                    );
+                    return _MessageBubble(message: msg, isMe: isMe);
                   },
                 );
               },
@@ -141,10 +129,7 @@ class _DirectChatPageState extends State<DirectChatPage> {
 
           SafeArea(
             child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8,
-                vertical: 6,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
 
               child: Row(
                 children: [
@@ -184,38 +169,28 @@ class _MessageBubble extends StatelessWidget {
 
   final bool isMe;
 
-  const _MessageBubble({
-    required this.message,
-    required this.isMe,
-  });
+  const _MessageBubble({required this.message, required this.isMe});
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Users?>(
-      stream: context
-          .read<UserViewModel>()
-          .userStream(message.senderId),
+      stream: context.read<UserViewModel>().userStream(message.senderId),
 
       builder: (context, snapshot) {
         final user = snapshot.data;
 
         return Align(
-          alignment:
-              isMe
-                  ? Alignment.centerRight
-                  : Alignment.centerLeft,
+          alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
 
           child: Row(
-            mainAxisAlignment:
-                isMe
-                    ? MainAxisAlignment.end
-                    : MainAxisAlignment.start,
+            mainAxisAlignment: isMe
+                ? MainAxisAlignment.end
+                : MainAxisAlignment.start,
 
             crossAxisAlignment: CrossAxisAlignment.start,
 
             children: [
-              if (!isMe)
-                _Avatar(user: user),
+              if (!isMe) _Avatar(user: user),
 
               Flexible(
                 child: Container(
@@ -227,10 +202,7 @@ class _MessageBubble extends StatelessWidget {
                   padding: const EdgeInsets.all(10),
 
                   decoration: BoxDecoration(
-                    color:
-                        isMe
-                            ? Colors.blue
-                            : Colors.grey.shade300,
+                    color: isMe ? Colors.blue : Colors.grey.shade300,
 
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -238,18 +210,12 @@ class _MessageBubble extends StatelessWidget {
                   child: Text(
                     message.text,
 
-                    style: TextStyle(
-                      color:
-                          isMe
-                              ? Colors.white
-                              : Colors.black,
-                    ),
+                    style: TextStyle(color: isMe ? Colors.white : Colors.black),
                   ),
                 ),
               ),
 
-              if (isMe)
-                _Avatar(user: user),
+              if (isMe) _Avatar(user: user),
             ],
           ),
         );
@@ -271,15 +237,13 @@ class _Avatar extends StatelessWidget {
       child: CircleAvatar(
         radius: 16,
 
-        backgroundImage:
-            user?.profilePictureUrl.isNotEmpty == true
-                ? NetworkImage(user!.profilePictureUrl)
-                : null,
+        backgroundImage: user?.profilePictureUrl.isNotEmpty == true
+            ? NetworkImage(user!.profilePictureUrl)
+            : null,
 
-        child:
-            user?.profilePictureUrl.isEmpty ?? true
-                ? const Icon(Icons.person, size: 16)
-                : null,
+        child: user?.profilePictureUrl.isEmpty ?? true
+            ? const Icon(Icons.person, size: 16)
+            : null,
       ),
     );
   }

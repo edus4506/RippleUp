@@ -136,22 +136,18 @@ class _PublicProfilePageState extends State<PublicProfilePage>
                                     ),
 
                                     label: Text(
-                                      isFollowing
-                                          ? 'Unfollow'
-                                          : 'Follow',
+                                      isFollowing ? 'Unfollow' : 'Follow',
                                     ),
 
                                     style: OutlinedButton.styleFrom(
-                                      foregroundColor:
-                                          isFollowing
-                                              ? Colors.red
-                                              : Colors.green,
+                                      foregroundColor: isFollowing
+                                          ? Colors.red
+                                          : Colors.green,
 
                                       side: BorderSide(
-                                        color:
-                                            isFollowing
-                                                ? Colors.red
-                                                : Colors.green,
+                                        color: isFollowing
+                                            ? Colors.red
+                                            : Colors.green,
                                       ),
                                     ),
                                   ),
@@ -161,16 +157,15 @@ class _PublicProfilePageState extends State<PublicProfilePage>
                                       currentUserId: _currentUserId,
                                       otherUserId: widget.userId,
 
-                                      directMessageRepository:
-                                          context.read<DirectMessageRepository>(),
+                                      directMessageRepository: context
+                                          .read<DirectMessageRepository>(),
                                     ),
 
                                     builder: (context, chatSnapshot) {
                                       final hasChat =
                                           chatSnapshot.data ?? false;
 
-                                      final canMessage =
-                                          isFollowing || hasChat;
+                                      final canMessage = isFollowing || hasChat;
 
                                       if (!canMessage) {
                                         return const SizedBox.shrink();
@@ -185,12 +180,15 @@ class _PublicProfilePageState extends State<PublicProfilePage>
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
-                                                  builder: (_) => DirectChatPage(
-                                                    otherUserId: widget.userId,
+                                                  builder: (_) =>
+                                                      DirectChatPage(
+                                                        otherUserId:
+                                                            widget.userId,
 
-                                                    otherUserName:
-                                                        vm.user?.name ?? 'User',
-                                                  ),
+                                                        otherUserName:
+                                                            vm.user?.name ??
+                                                            'User',
+                                                      ),
                                                 ),
                                               );
                                             },

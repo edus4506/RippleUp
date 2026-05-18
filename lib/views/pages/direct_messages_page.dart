@@ -19,8 +19,7 @@ class DirectMessagesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentUserId =
-        FirebaseAuth.instance.currentUser!.uid;
+    final currentUserId = FirebaseAuth.instance.currentUser!.uid;
 
     return Scaffold(
       appBar: AppBar(
@@ -29,23 +28,19 @@ class DirectMessagesPage extends StatelessWidget {
       ),
 
       body: StreamBuilder<List<DirectChatPreview>>(
-        stream: context
-            .read<DirectMessageRepository>()
-            .getUserChats(currentUserId),
+        stream: context.read<DirectMessageRepository>().getUserChats(
+          currentUserId,
+        ),
 
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
 
           final chats = snapshot.data!;
 
           if (chats.isEmpty) {
-            return const Center(
-              child: Text('No conversations yet'),
-            );
+            return const Center(child: Text('No conversations yet'));
           }
 
           return ListView.builder(
@@ -56,35 +51,27 @@ class DirectMessagesPage extends StatelessWidget {
             itemBuilder: (context, index) {
               final chat = chats[index];
 
-              final otherUserId = chat.participants
-                  .firstWhere(
-                    (id) => id != currentUserId,
-                  );
+              final otherUserId = chat.participants.firstWhere(
+                (id) => id != currentUserId,
+              );
 
               return StreamBuilder<Users?>(
-                stream: context
-                    .read<UserViewModel>()
-                    .userStream(otherUserId),
+                stream: context.read<UserViewModel>().userStream(otherUserId),
 
                 builder: (context, userSnapshot) {
                   final user = userSnapshot.data;
 
-                  if (userSnapshot.connectionState ==
-                      ConnectionState.waiting) {
+                  if (userSnapshot.connectionState == ConnectionState.waiting) {
                     return const Padding(
                       padding: EdgeInsets.all(24),
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
+                      child: Center(child: CircularProgressIndicator()),
                     );
                   }
 
                   if (user == null) {
                     return Container(
                       padding: const EdgeInsets.all(20),
-                      child: Text(
-                        'User not found: $otherUserId',
-                      ),
+                      child: Text('User not found: $otherUserId'),
                     );
                   }
 
@@ -151,26 +138,19 @@ class _HoverChatCard extends StatefulWidget {
   });
 
   @override
-  State<_HoverChatCard> createState() =>
-      _HoverChatCardState();
+  State<_HoverChatCard> createState() => _HoverChatCardState();
 }
 
-class _HoverChatCardState
-    extends State<_HoverChatCard> {
+class _HoverChatCardState extends State<_HoverChatCard> {
   bool isHovered = false;
 
   @override
   Widget build(BuildContext context) {
-    final isMe =
-        widget.chat.lastSenderId ==
-        widget.currentUserId;
+    final isMe = widget.chat.lastSenderId == widget.currentUserId;
 
     final isUnread =
-      !widget.chat.lastSeenBy.contains(
-        widget.currentUserId,
-      ) &&
-      widget.chat.lastSenderId !=
-          widget.currentUserId;
+        !widget.chat.lastSeenBy.contains(widget.currentUserId) &&
+        widget.chat.lastSenderId != widget.currentUserId;
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -193,46 +173,33 @@ class _HoverChatCardState
             context,
             MaterialPageRoute(
               builder: (_) => DirectChatPage(
-                otherUserId:
-                    widget.otherUserId,
+                otherUserId: widget.otherUserId,
 
-                otherUserName:
-                    widget.user.name,
+                otherUserName: widget.user.name,
               ),
             ),
           );
         },
 
         child: AnimatedContainer(
-          duration: const Duration(
-            milliseconds: 180,
-          ),
+          duration: const Duration(milliseconds: 180),
 
           width: double.infinity,
 
           padding: const EdgeInsets.all(14),
 
-          margin: const EdgeInsets.only(
-            bottom: 12,
-          ),
+          margin: const EdgeInsets.only(bottom: 12),
 
           decoration: BoxDecoration(
-            color:
-                isHovered
-                    ? const Color(0xFFF2F2F2)
-                    : Colors.white,
+            color: isHovered ? const Color(0xFFF2F2F2) : Colors.white,
 
-            borderRadius:
-                BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(18),
 
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withAlpha(
-                  isHovered ? 18 : 10,
-                ),
+                color: Colors.black.withAlpha(isHovered ? 18 : 10),
 
-                blurRadius:
-                    isHovered ? 12 : 8,
+                blurRadius: isHovered ? 12 : 8,
 
                 offset: const Offset(0, 3),
               ),
@@ -244,30 +211,20 @@ class _HoverChatCardState
               CircleAvatar(
                 radius: 28,
 
-                backgroundImage:
-                    widget.user.profilePictureUrl
-                            .isNotEmpty
-                        ? NetworkImage(
-                            widget.user
-                                .profilePictureUrl,
-                          )
-                        : null,
+                backgroundImage: widget.user.profilePictureUrl.isNotEmpty
+                    ? NetworkImage(widget.user.profilePictureUrl)
+                    : null,
 
-                child:
-                    widget.user.profilePictureUrl
-                            .isEmpty
-                        ? const Icon(
-                            Icons.person,
-                          )
-                        : null,
+                child: widget.user.profilePictureUrl.isEmpty
+                    ? const Icon(Icons.person)
+                    : null,
               ),
 
               const SizedBox(width: 16),
 
               Expanded(
                 child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
 
                   children: [
                     Text(
@@ -276,8 +233,7 @@ class _HoverChatCardState
                       style: const TextStyle(
                         fontSize: 18,
 
-                        fontWeight:
-                            FontWeight.bold,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
 
@@ -289,10 +245,9 @@ class _HoverChatCardState
                       style: TextStyle(
                         color: Colors.black54,
 
-                        fontWeight:
-                            isUnread
-                                ? FontWeight.w900
-                                : FontWeight.normal,
+                        fontWeight: isUnread
+                            ? FontWeight.w900
+                            : FontWeight.normal,
                       ),
                     ),
                   ],

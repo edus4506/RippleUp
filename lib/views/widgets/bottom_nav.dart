@@ -113,10 +113,7 @@ class AppBottomNav extends StatelessWidget {
                   child: Icon(
                     Icons.send_outlined,
                     size: 28,
-                    color:
-                        currentIndex == 2
-                            ? Palette.primary
-                            : Colors.grey,
+                    color: currentIndex == 2 ? Palette.primary : Colors.grey,
                   ),
                 ),
                 const SizedBox(height: 2),
