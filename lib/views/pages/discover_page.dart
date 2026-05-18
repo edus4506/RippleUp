@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../widgets/notification_dropdown.dart';
 
 import 'search_events_page.dart';
+import 'search_users_page.dart';
 
 class DiscoverPage extends StatelessWidget {
   const DiscoverPage({super.key});
@@ -51,7 +52,14 @@ class DiscoverPage extends StatelessWidget {
               description:
                   "Discover people with similar interests and connect together.",
 
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const SearchUsersPage(),
+                  ),
+                );
+              },
             ),
 
             Container(

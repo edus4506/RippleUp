@@ -21,6 +21,7 @@ import 'package:t5/viewModels/profile_viewModel.dart';
 import 'package:t5/viewModels/review_viewModel.dart';
 import 'package:t5/viewModels/notification_viewModel.dart';
 import 'package:t5/viewModels/search_viewModel.dart';
+import 'package:t5/viewModels/search_users_viewModel.dart';
 import 'package:t5/viewModels/user_view_model.dart';
 
 import 'routes/app_routes.dart';
@@ -107,6 +108,11 @@ void main() async {
               ReviewViewModel(context.read<ReviewRepository>()),
         ),
 
+        ChangeNotifierProvider(
+          create: (context) =>
+              SearchUsersViewModel(context.read<UserRepository>()),
+        ),
+        
         ChangeNotifierProvider(
           create: (context) => SearchViewModel(context.read<EventViewModel>()),
         ),
