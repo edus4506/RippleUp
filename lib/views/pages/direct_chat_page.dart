@@ -41,6 +41,17 @@ class _DirectChatPageState extends State<DirectChatPage> {
       currentUserId,
       widget.otherUserId,
     );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final currentUserId =
+          FirebaseAuth.instance.currentUser!.uid;
+
+      context
+          .read<DirectMessageViewModel>()
+          .markChatAsSeen(
+            chatId: chatId,
+            userId: currentUserId,
+          );
+    });
   }
 
   Future<void> _sendMessage() async {

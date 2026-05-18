@@ -24,6 +24,11 @@ class DirectMessageRepository {
       'lastSenderId': message.senderId,
 
       'lastMessageAt': FieldValue.serverTimestamp(),
+
+      'lastSeenBy': [
+        message.senderId,
+      ],
+
     }, SetOptions(merge: true));
 
     await chatDoc
@@ -71,5 +76,19 @@ class DirectMessageRepository {
               )
               .toList(),
         );
+  }
+
+  Future<void> markChatAsSeen({
+    required String chatId,
+    required String userId,
+  }) async {
+    await _db
+        .collection('direct_chats')
+        .doc(chatId)
+        .set({
+          'lastSeenBy': FieldValue.arrayUnion(
+            [userId],
+          ),
+        }, SetOptions(merge: true));
   }
 }

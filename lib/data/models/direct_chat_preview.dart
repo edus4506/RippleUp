@@ -11,12 +11,15 @@ class DirectChatPreview {
 
   final DateTime? lastMessageAt;
 
+  final List<String> lastSeenBy;
+
   DirectChatPreview({
     required this.chatId,
     required this.participants,
     required this.lastMessage,
     required this.lastSenderId,
     required this.lastMessageAt,
+    required this.lastSeenBy,
   });
 
   factory DirectChatPreview.fromMap(
@@ -39,6 +42,9 @@ class DirectChatPreview {
               ? (map['lastMessageAt'] as Timestamp)
                     .toDate()
               : null,
+      lastSeenBy: List<String>.from(
+        map['lastSeenBy'] ?? [],
+      ),
     );
   }
 }

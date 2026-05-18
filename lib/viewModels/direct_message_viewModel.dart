@@ -36,4 +36,14 @@ class DirectMessageViewModel extends ChangeNotifier {
   Stream<List<Message>> getMessages(String chatId) {
     return _repository.getMessages(chatId);
   }
+
+  Future<void> markChatAsSeen({
+    required String chatId,
+    required String userId,
+  }) async {
+    await _repository.markChatAsSeen(
+      chatId: chatId,
+      userId: userId,
+    );
+  }
 }

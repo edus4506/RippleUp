@@ -56,13 +56,13 @@ class AppBottomNav extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
-                  Icons.search,
+                  Icons.travel_explore,
                   size: 28,
                   color: currentIndex == 1 ? Palette.primary : Colors.grey,
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  "Search",
+                  "Discover",
                   style: TextStyle(
                     fontSize: 12,
                     color: currentIndex == 1 ? Palette.primary : Colors.grey,
@@ -107,10 +107,17 @@ class AppBottomNav extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.chat_bubble_outline,
-                  size: 28,
-                  color: currentIndex == 2 ? Palette.primary : Colors.grey,
+                Transform.rotate(
+                  angle: -0.8,
+
+                  child: Icon(
+                    Icons.send_outlined,
+                    size: 28,
+                    color:
+                        currentIndex == 2
+                            ? Palette.primary
+                            : Colors.grey,
+                  ),
                 ),
                 const SizedBox(height: 2),
                 Text(
