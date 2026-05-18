@@ -7,6 +7,9 @@ import 'package:t5/data/repositories/follow_repository.dart';
 import 'package:t5/data/repositories/user_repository.dart';
 import 'package:t5/routes/app_routes.dart';
 import 'package:t5/viewModels/public_profile_viewModel.dart';
+import 'direct_chat_page.dart';
+import '../../services/direct_chat_service.dart';
+import '../../data/repositories/direct_message_repository.dart';
 
 class PublicProfilePage extends StatefulWidget {
   final String userId;
@@ -112,34 +115,97 @@ class _PublicProfilePageState extends State<PublicProfilePage>
                               followerId: _currentUserId,
                               followedId: widget.userId,
                             ),
+
                             builder: (context, snapshot) {
                               final isFollowing = snapshot.data ?? false;
 
-                              return OutlinedButton.icon(
-                                onPressed: () => vm.toggleFollow(
-                                  followerId: _currentUserId,
-                                  followedId: widget.userId,
-                                  currentlyFollowing: isFollowing,
-                                ),
-                                icon: Icon(
-                                  isFollowing
-                                      ? Icons.person_remove
-                                      : Icons.person_add,
-                                  size: 18,
-                                ),
-                                label: Text(
-                                  isFollowing ? 'Unfollow' : 'Follow',
-                                ),
-                                style: OutlinedButton.styleFrom(
-                                  foregroundColor: isFollowing
-                                      ? Colors.red
-                                      : Colors.green,
-                                  side: BorderSide(
-                                    color: isFollowing
-                                        ? Colors.red
-                                        : Colors.green,
+                              return Column(
+                                children: [
+                                  OutlinedButton.icon(
+                                    onPressed: () => vm.toggleFollow(
+                                      followerId: _currentUserId,
+                                      followedId: widget.userId,
+                                      currentlyFollowing: isFollowing,
+                                    ),
+
+                                    icon: Icon(
+                                      isFollowing
+                                          ? Icons.person_remove
+                                          : Icons.person_add,
+                                      size: 18,
+                                    ),
+
+                                    label: Text(
+                                      isFollowing
+                                          ? 'Unfollow'
+                                          : 'Follow',
+                                    ),
+
+                                    style: OutlinedButton.styleFrom(
+                                      foregroundColor:
+                                          isFollowing
+                                              ? Colors.red
+                                              : Colors.green,
+
+                                      side: BorderSide(
+                                        color:
+                                            isFollowing
+                                                ? Colors.red
+                                                : Colors.green,
+                                      ),
+                                    ),
                                   ),
-                                ),
+
+                                  FutureBuilder<bool>(
+                                    future: DirectChatService.hasExistingChat(
+                                      currentUserId: _currentUserId!,
+                                      otherUserId: widget.userId,
+
+                                      directMessageRepository:
+                                          context.read<DirectMessageRepository>(),
+                                    ),
+
+                                    builder: (context, chatSnapshot) {
+                                      final hasChat =
+                                          chatSnapshot.data ?? false;
+
+                                      final canMessage =
+                                          isFollowing || hasChat;
+
+                                      if (!canMessage) {
+                                        return const SizedBox.shrink();
+                                      }
+
+                                      return Column(
+                                        children: [
+                                          const SizedBox(height: 12),
+
+                                          ElevatedButton.icon(
+                                            onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (_) => DirectChatPage(
+                                                    otherUserId: widget.userId,
+
+                                                    otherUserName:
+                                                        vm.user?.name ?? 'User',
+                                                  ),
+                                                ),
+                                              );
+                                            },
+
+                                            icon: const Icon(
+                                              Icons.chat_bubble_outline,
+                                            ),
+
+                                            label: const Text('Message'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ],
                               );
                             },
                           ),
