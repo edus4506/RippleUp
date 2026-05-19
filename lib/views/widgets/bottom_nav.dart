@@ -15,15 +15,10 @@ class AppBottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bottomPad =
-        MediaQuery.of(context).padding.bottom;
+    final bottomPad = MediaQuery.of(context).padding.bottom;
 
     return Padding(
-      padding: EdgeInsets.only(
-        left: 12,
-        right: 12,
-        bottom: bottomPad + 10,
-      ),
+      padding: EdgeInsets.only(left: 12, right: 12, bottom: bottomPad + 10),
 
       child: Container(
         height: 72,
@@ -31,19 +26,13 @@ class AppBottomNav extends StatelessWidget {
         decoration: BoxDecoration(
           color: Palette.ink0,
 
-          borderRadius:
-              BorderRadius.circular(28),
+          borderRadius: BorderRadius.circular(28),
 
-          border: Border.all(
-            color: Palette.ink300,
-            width: 1.2,
-          ),
+          border: Border.all(color: Palette.ink300, width: 1.2),
 
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(
-                0.08,
-              ),
+              color: Colors.black.withOpacity(0.08),
 
               blurRadius: 16,
 
@@ -56,19 +45,15 @@ class AppBottomNav extends StatelessWidget {
           children: [
             _NavItem(
               icon: Icons.home_outlined,
-              iconActive:
-                  Icons.home_rounded,
+              iconActive: Icons.home_rounded,
               label: 'Home',
               active: currentIndex == 0,
               onTap: () => onTap(0),
             ),
 
             _NavItem(
-              icon:
-                  Icons
-                      .travel_explore_outlined,
-              iconActive:
-                  Icons.travel_explore,
+              icon: Icons.travel_explore_outlined,
+              iconActive: Icons.travel_explore,
               label: 'Discover',
               active: currentIndex == 1,
               onTap: () => onTap(1),
@@ -84,40 +69,24 @@ class AppBottomNav extends StatelessWidget {
                     height: 72,
 
                     decoration: BoxDecoration(
-                      color:
-                          Palette.accentDark,
+                      color: Palette.accentDark,
 
                       shape: BoxShape.circle,
 
-                      border: Border.all(
-                        color: Palette.ink0,
-                        width: 5,
-                      ),
+                      border: Border.all(color: Palette.ink0, width: 5),
 
                       boxShadow: [
                         BoxShadow(
-                          color: Palette
-                              .accentDark
-                              .withOpacity(
-                                0.45,
-                              ),
+                          color: Palette.accentDark.withOpacity(0.45),
 
                           blurRadius: 18,
 
-                          offset:
-                              const Offset(
-                                0,
-                                6,
-                              ),
+                          offset: const Offset(0, 6),
                         ),
                       ],
                     ),
 
-                    child: const Icon(
-                      Icons.add,
-                      color: Colors.white,
-                      size: 34,
-                    ),
+                    child: const Icon(Icons.add, color: Colors.white, size: 34),
                   ),
                 ),
               ),
@@ -165,42 +134,25 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color =
-        active
-            ? Palette.accentDark
-            : Palette.ink400;
+    final color = active ? Palette.accentDark : Palette.ink400;
 
     return Expanded(
       child: InkWell(
         onTap: onTap,
 
-        borderRadius:
-            BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12),
 
         child: Padding(
-          padding:
-              const EdgeInsets.symmetric(
-                vertical: 4,
-              ),
+          padding: const EdgeInsets.symmetric(vertical: 4),
 
           child: Column(
             mainAxisSize: MainAxisSize.min,
 
             children: [
               Transform.rotate(
-                angle:
-                    rotateIcon
-                        ? -0.785398
-                        : 0,
+                angle: rotateIcon ? -0.785398 : 0,
 
-                child: Icon(
-                  active
-                      ? iconActive
-                      : icon,
-
-                  size: 24,
-                  color: color,
-                ),
+                child: Icon(active ? iconActive : icon, size: 24, color: color),
               ),
 
               const SizedBox(height: 3),
@@ -212,10 +164,7 @@ class _NavItem extends StatelessWidget {
                   fontSize: 11,
                   color: color,
 
-                  fontWeight:
-                      active
-                          ? FontWeight.w700
-                          : FontWeight.w500,
+                  fontWeight: active ? FontWeight.w700 : FontWeight.w500,
                 ),
               ),
             ],
