@@ -171,9 +171,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Create Event')
-      ),
+      appBar: AppBar(title: const Text('Create Event')),
 
       bottomNavigationBar: SafeArea(
         child: Container(

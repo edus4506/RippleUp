@@ -7,11 +7,10 @@ import 'package:t5/views/widgets/notification_dropdown.dart';
 
 import '../../data/models/direct_chat_preview.dart';
 import '../../data/models/user.dart';
+import '../../data/models/event_chat_preview.dart';
 
+import '../../data/repositories/event_chat_repository.dart';
 import '../../data/repositories/direct_message_repository.dart';
-import '../../data/repositories/participation_repository.dart';
-import '../../data/repositories/event_repository.dart';
-import '../../data/repositories/message_repository.dart';
 
 import '../../viewModels/user_view_model.dart';
 
@@ -20,390 +19,166 @@ import 'direct_chat_page.dart';
 import '../../routes/app_routes.dart';
 
 class DirectMessagesPage extends StatelessWidget {
-  const DirectMessagesPage({
-    super.key,
-  });
+  const DirectMessagesPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final currentUserId =
-        FirebaseAuth
-            .instance
-            .currentUser!
-            .uid;
-
-    final participationRepo =
-        context.read<
-          ParticipationRepository
-        >();
-
-    final eventRepo =
-        context.read<EventRepository>();
+    final currentUserId = FirebaseAuth.instance.currentUser!.uid;
 
     return Scaffold(
       appBar: AppBar(
-        leading:
-            const NotificationDropdown(),
-
-        title: const Text(
-          'Messages',
-        ),
+        leading: const NotificationDropdown(),
+        title: const Text('Messages'),
       ),
-
-      body: StreamBuilder<
-        List<DirectChatPreview>
-      >(
-        stream:
-            context
-                .read<
-                  DirectMessageRepository
-                >()
-                .getUserChats(
-                  currentUserId,
-                ),
-
-        builder: (
-          context,
-          snapshot,
-        ) {
+      body: StreamBuilder<List<DirectChatPreview>>(
+        stream: context.read<DirectMessageRepository>().getUserChats(
+          currentUserId,
+        ),
+        builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return const Center(
-              child:
-                  CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
 
-          final chats =
-              snapshot.data!;
+          final chats = snapshot.data!;
 
-          return FutureBuilder(
-            future:
-                participationRepo
-                    .getParticipationsByUser(
-                      currentUserId,
-                    ),
-
-            builder: (
-              context,
-              participationSnapshot,
-            ) {
-              if (!participationSnapshot
-                  .hasData) {
-                return const Center(
-                  child:
-                      CircularProgressIndicator(),
-                );
+          return StreamBuilder<List<EventChatPreview>>(
+            stream: context.read<EventChatRepository>().getUserEventChats(
+              currentUserId,
+            ),
+            builder: (context, eventSnapshot) {
+              if (!eventSnapshot.hasData) {
+                return const Center(child: CircularProgressIndicator());
               }
 
-              final participations =
-                  participationSnapshot.data!;
+              final events = eventSnapshot.data!;
 
-              final participatedEventIds =
-                  participations
-                      .map((p) => p.idEvent)
-                      .toSet();
+              if (events.isEmpty && chats.isEmpty) {
+                return const Center(child: Text('No conversations yet'));
+              }
 
-              return FutureBuilder(
-                future: context
-                    .read<MessageRepository>()
-                    .getUserEventHistory(
-                      currentUserId,
-                    ),
+              return ListView(
+                padding: const EdgeInsets.all(12),
+                children: [
+                  ...events.map((event) {
+                    final isMe = event.lastSenderId == currentUserId;
+                    final isUnread = event.lastSenderId != currentUserId;
 
-                builder: (
-                  context,
-                  joinedSnapshot,
-                ) {
-                  if (!joinedSnapshot.hasData) {
-                    return const Center(
-                      child:
-                          CircularProgressIndicator(),
-                    );
-                  }
-
-                  final historyEventIds =
-                      joinedSnapshot.data!;
-
-                  return FutureBuilder(
-                    future: Future.wait(
-                      historyEventIds.map(
-                        (eventId) async {
-                          final event =
-                              await eventRepo
-                                  .getEventById(
-                                    eventId,
-                                  );
-
-                          return {
-                            'event': event,
-
-                            'isParticipant':
-                                participatedEventIds
-                                    .contains(
-                                      eventId,
-                                    ),
-
-                            'hasHistory': true,
-                          };
-                        },
-                      ),
-                    ),
-
-                    builder: (
-                      context,
-                      eventSnapshot,
-                    ) {
-                      if (!eventSnapshot.hasData) {
-                        return const Center(
-                          child:
-                              CircularProgressIndicator(),
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          AppRoutes.chat,
+                          arguments: {
+                            'eventId': event.eventId,
+                            'title': event.title,
+                          },
                         );
-                      }
-
-                      final eventData =
-                          eventSnapshot.data!;
-
-                      final events =
-                          eventData
-                              .where(
-                                (e) =>
-                                    e['isParticipant'] ==
-                                        true ||
-                                    e['hasHistory'] ==
-                                        true,
-                              )
-                              .toList();
-
-                  if (events.isEmpty &&
-                      chats.isEmpty) {
-                    return const Center(
-                      child: Text(
-                        'No conversations yet',
-                      ),
-                    );
-                  }
-
-                  return ListView(
-                    padding:
-                        const EdgeInsets.all(
-                          12,
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 180),
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(14),
+                        margin: const EdgeInsets.only(bottom: 12),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(18),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withAlpha(10),
+                              blurRadius: 8,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
                         ),
-
-                    children: [
-                      ...events.map((event) {
-                        final realEvent = event['event'] as dynamic;
-
-                        return FutureBuilder(
-                          future: context
-                              .read<MessageRepository>()
-                              .getLastMessage(realEvent.id),
-
-                          builder: (
-                            context,
-                            messageSnapshot,
-                          ) {
-                            final lastMessage =
-                                messageSnapshot.data;
-
-                            final isMe =
-                                lastMessage?.senderId ==
-                                currentUserId;
-
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  AppRoutes.chat,
-
-                                  arguments: {
-                                    'eventId': realEvent.id,
-                                    'title': realEvent.title,
-                                  },
-                                );
-                              },
-
-                              child: AnimatedContainer(
-                                duration: const Duration(
-                                  milliseconds: 180,
-                                ),
-
-                                width: double.infinity,
-
-                                padding: const EdgeInsets.all(
-                                  14,
-                                ),
-
-                                margin: const EdgeInsets.only(
-                                  bottom: 12,
-                                ),
-
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-
-                                  borderRadius:
-                                      BorderRadius.circular(18),
-
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withAlpha(
-                                        10,
-                                      ),
-
-                                      blurRadius: 8,
-
-                                      offset: const Offset(
-                                        0,
-                                        3,
-                                      ),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 56,
+                              height: 56,
+                              decoration: const BoxDecoration(
+                                color: Color(0xFFE8F3E4),
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.groups,
+                                color: Color(0xFF4A693D),
+                                size: 28,
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    event.title,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                  ],
-                                ),
-
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 56,
-                                      height: 56,
-
-                                      decoration: BoxDecoration(
-                                        color: const Color(
-                                          0xFFE8F3E4,
-                                        ),
-
-                                        shape: BoxShape.circle,
-                                      ),
-
-                                      child: const Icon(
-                                        Icons.groups,
-                                        color: Color(0xFF4A693D),
-                                        size: 28,
-                                      ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    '${isMe ? 'Sent' : 'Received'} • ${formatRelativeTime(event.lastMessageAt)}',
+                                    style: TextStyle(
+                                      color: Colors.black54,
+                                      fontWeight: isUnread
+                                          ? FontWeight.w700
+                                          : FontWeight.normal,
                                     ),
-
-                                    const SizedBox(width: 16),
-
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-
-                                        children: [
-                                          Text(
-                                            realEvent.title,
-
-                                            style: const TextStyle(
-                                              fontSize: 18,
-
-                                              fontWeight:
-                                                  FontWeight.bold,
-                                            ),
-                                          ),
-
-                                          const SizedBox(height: 4),
-
-                                          Text(
-                                            lastMessage == null
-                                                ? 'Event Chat'
-                                                : '${isMe ? 'Sent' : 'Received'} • ${formatRelativeTime(lastMessage.createdAt)}',
-
-                                            style: TextStyle(
-                                              color: Colors.black54,
-
-                                              fontWeight:
-                                                  !isMe
-                                                      ? FontWeight.w700
-                                                      : FontWeight.normal,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    if (!isMe &&
-                                        lastMessage != null)
-                                      Container(
-                                        width: 12,
-                                        height: 12,
-
-                                        decoration: const BoxDecoration(
-                                          color: Colors.green,
-                                          shape: BoxShape.circle,
-                                        ),
-                                      ),
-                                  ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            if (isUnread)
+                              Container(
+                                width: 12,
+                                height: 12,
+                                decoration: const BoxDecoration(
+                                  color: Colors.green,
+                                  shape: BoxShape.circle,
                                 ),
                               ),
-                            );
-                          },
+                          ],
+                        ),
+                      ),
+                    );
+                  }),
+
+                  ...chats.map((chat) {
+                    final otherUserId = chat.participants.firstWhere(
+                      (id) => id != currentUserId,
+                    );
+
+                    return StreamBuilder<Users?>(
+                      stream: context.read<UserViewModel>().userStream(
+                        otherUserId,
+                      ),
+                      builder: (context, userSnapshot) {
+                        final user = userSnapshot.data;
+
+                        if (userSnapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Padding(
+                            padding: EdgeInsets.all(24),
+                            child: Center(child: CircularProgressIndicator()),
+                          );
+                        }
+
+                        if (user == null) {
+                          return const SizedBox();
+                        }
+
+                        return _HoverChatCard(
+                          chat: chat,
+                          user: user,
+                          currentUserId: currentUserId,
+                          otherUserId: otherUserId,
                         );
-                      }),
-
-                      ...chats.map((chat) {
-                        final otherUserId =
-                            chat.participants
-                                .firstWhere(
-                                  (id) =>
-                                      id !=
-                                      currentUserId,
-                                );
-
-                        return StreamBuilder<
-                          Users?
-                        >(
-                          stream:
-                              context
-                                  .read<
-                                    UserViewModel
-                                  >()
-                                  .userStream(
-                                    otherUserId,
-                                  ),
-
-                          builder: (
-                            context,
-                            userSnapshot,
-                          ) {
-                            final user =
-                                userSnapshot.data;
-
-                            if (userSnapshot
-                                    .connectionState ==
-                                ConnectionState
-                                    .waiting) {
-                              return const Padding(
-                                padding:
-                                    EdgeInsets.all(
-                                      24,
-                                    ),
-
-                                child: Center(
-                                  child:
-                                      CircularProgressIndicator(),
-                                ),
-                              );
-                            }
-
-                            if (user == null) {
-                              return const SizedBox();
-                            }
-
-                            return _HoverChatCard(
-                              chat: chat,
-                              user: user,
-
-                              currentUserId:
-                                  currentUserId,
-
-                              otherUserId:
-                                  otherUserId,
-                            );
-                          },
-                        );
-                      }),
-                    ],
-                  );
-                    },
-                  );
-                },
+                      },
+                    );
+                  }),
+                ],
               );
             },
           );

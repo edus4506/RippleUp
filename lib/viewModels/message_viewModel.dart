@@ -4,6 +4,7 @@ import 'package:t5/data/repositories/message_repository.dart';
 import '../data/repositories/participation_repository.dart';
 import '../data/repositories/event_repository.dart';
 import '../../data/models/message.dart';
+import '../data/repositories/event_chat_repository.dart';
 import '../services/notification_service.dart';
 
 class MessageViewModel extends ChangeNotifier {
@@ -13,10 +14,13 @@ class MessageViewModel extends ChangeNotifier {
 
   final EventRepository _eventRepository;
 
+  final EventChatRepository _eventChatRepository;
+
   MessageViewModel(
     this._messageRepository,
     this._participationRepository,
     this._eventRepository,
+    this._eventChatRepository,
   );
 
   //user uuid will be caught in the firebase.instance
@@ -28,12 +32,10 @@ class MessageViewModel extends ChangeNotifier {
     final firebaseUser = currentUser ?? FirebaseAuth.instance.currentUser;
     if (firebaseUser == null) return;
 
-    final isParticipant =
-        await _participationRepository
-            .hasUserParticipated(
-              firebaseUser.uid,
-              eventId,
-            );
+    final isParticipant = await _participationRepository.hasUserParticipated(
+      firebaseUser.uid,
+      eventId,
+    );
 
     if (!isParticipant) {
       return;
@@ -46,12 +48,22 @@ class MessageViewModel extends ChangeNotifier {
       createdAt: DateTime.now(),
     );
 
-    await _messageRepository.createMessage(eventId, message);
+    final event = await _eventRepository.getEventById(eventId);
 
     final participations = await _participationRepository
         .getParticipationsByEvent(eventId);
 
-    final event = await _eventRepository.getEventById(eventId);
+    await _messageRepository.createMessage(eventId, message);
+
+    await _eventChatRepository.updateEventChatPreview(
+      eventId: eventId,
+
+      eventTitle: event.title,
+
+      message: message,
+
+      participantIds: participations.map((p) => p.idUser).toList(),
+    );
 
     for (final participation in participations) {
       if (participation.idUser == firebaseUser.uid) {

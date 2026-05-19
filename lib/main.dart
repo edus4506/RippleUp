@@ -11,6 +11,7 @@ import 'package:t5/data/repositories/user_repository.dart';
 import 'package:t5/data/repositories/review_repository.dart';
 import 'package:t5/data/repositories/notification_repository.dart';
 import 'package:t5/data/repositories/direct_message_repository.dart';
+import 'package:t5/data/repositories/event_chat_repository.dart';
 
 import 'package:t5/services/profile_image_service.dart';
 
@@ -57,6 +58,7 @@ void main() async {
         Provider(create: (_) => ReviewRepository()),
         Provider(create: (_) => FollowRepository()),
         Provider(create: (_) => DirectMessageRepository()),
+        Provider(create: (_) => EventChatRepository()),
         ProxyProvider<StorageRepository, ProfileImageService>(
           update: (_, storageRepo, __) => ProfileImageService(storageRepo),
         ),
@@ -106,6 +108,7 @@ void main() async {
             context.read<MessageRepository>(),
             context.read<ParticipationRepository>(),
             context.read<EventRepository>(),
+            EventChatRepository(),
           ),
         ),
 
