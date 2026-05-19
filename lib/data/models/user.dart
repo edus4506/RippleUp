@@ -11,7 +11,7 @@ class Users {
     required this.profilePictureUrl,
   });
 
- factory Users.fromMap(Map<String, dynamic>? map, String documentId) {
+  factory Users.fromMap(Map<String, dynamic>? map, String documentId) {
     // Se o mapa for nulo, devolvemos um objeto vazio/seguro
     if (map == null) {
       return Users(
@@ -21,7 +21,7 @@ class Users {
         profilePictureUrl: '',
       );
     }
-    
+
     // Se o mapa existir, usamos os valores ou devolvemos um default
     return Users(
       uid: documentId,

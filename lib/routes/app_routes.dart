@@ -28,7 +28,8 @@ class AppRoutes {
   static const String directMessages = '/direct-messages';
   static const String publicProfile = '/public-profile';
   static const String followersFollowing = '/followers-following';
-  static const String participants = '/participants'; // 🚀 Nova constante de rota
+  static const String participants =
+      '/participants'; // 🚀 Nova constante de rota
 
   static final Map<String, WidgetBuilder> routes = {
     splash: (context) => const SplashPage(),
@@ -47,7 +48,8 @@ class AppRoutes {
       case chat:
         final args = settings.arguments as Map;
         return MaterialPageRoute(
-          builder: (_) => ChatPage(eventId: args['eventId'], title: args['title']),
+          builder: (_) =>
+              ChatPage(eventId: args['eventId'], title: args['title']),
         );
 
       case feedback:

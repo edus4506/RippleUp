@@ -6,11 +6,7 @@ class EventCard extends StatelessWidget {
   final Event event;
   final VoidCallback onTap;
 
-  const EventCard({
-    super.key,
-    required this.event,
-    required this.onTap,
-  });
+  const EventCard({super.key, required this.event, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +33,11 @@ class EventCard extends StatelessWidget {
                   color: Palette.secondary.withOpacity(0.3),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Icon(Icons.event_available_rounded, color: Palette.primary, size: 28),
+                child: const Icon(
+                  Icons.event_available_rounded,
+                  color: Palette.primary,
+                  size: 28,
+                ),
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -46,19 +46,38 @@ class EventCard extends StatelessWidget {
                   children: [
                     Text(
                       event.title,
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Palette.textPrimary),
-                      maxLines: 1, overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Palette.textPrimary,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 4),
-                    Text('${event.city}, ${event.district}', style: const TextStyle(fontSize: 13, color: Palette.textSecondary)),
+                    Text(
+                      '${event.city}, ${event.district}',
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: Palette.textSecondary,
+                      ),
+                    ),
                     const SizedBox(height: 8),
                     Row(
                       children: [
-                        Icon(Icons.people_alt_outlined, size: 16, color: isFull ? Colors.red : Palette.accent),
+                        Icon(
+                          Icons.people_alt_outlined,
+                          size: 16,
+                          color: isFull ? Colors.red : Palette.accent,
+                        ),
                         const SizedBox(width: 6),
                         Text(
                           '${event.currentUsers} / ${event.maxUsers} participants',
-                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: isFull ? Colors.red : Palette.textSecondary),
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: isFull ? Colors.red : Palette.textSecondary,
+                          ),
                         ),
                       ],
                     ),

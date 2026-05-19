@@ -24,26 +24,20 @@ class _ParticipantsPageState extends State<ParticipantsPage> {
   @override
   void initState() {
     super.initState();
-    _participantsFuture =
-        context.read<ParticipantsViewModel>().getEventParticipants(
-              widget.eventId,
-            );
+    _participantsFuture = context
+        .read<ParticipantsViewModel>()
+        .getEventParticipants(widget.eventId);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Participants'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Participants'), centerTitle: true),
       body: FutureBuilder<List<Users>>(
         future: _participantsFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasError) {
@@ -58,10 +52,9 @@ class _ParticipantsPageState extends State<ParticipantsPage> {
                   ElevatedButton(
                     onPressed: () {
                       setState(() {
-                        _participantsFuture =
-                            context.read<ParticipantsViewModel>().getEventParticipants(
-                                  widget.eventId,
-                                );
+                        _participantsFuture = context
+                            .read<ParticipantsViewModel>()
+                            .getEventParticipants(widget.eventId);
                       });
                     },
                     child: const Text('Tentar novamente'),
@@ -74,9 +67,7 @@ class _ParticipantsPageState extends State<ParticipantsPage> {
           final participants = snapshot.data ?? [];
 
           if (participants.isEmpty) {
-            return const Center(
-              child: Text('Sem participants'),
-            );
+            return const Center(child: Text('Sem participants'));
           }
 
           return ListView.builder(
@@ -101,10 +92,7 @@ class _ParticipantTile extends StatelessWidget {
   final Users participant;
   final bool isCreator;
 
-  const _ParticipantTile({
-    required this.participant,
-    required this.isCreator,
-  });
+  const _ParticipantTile({required this.participant, required this.isCreator});
 
   @override
   Widget build(BuildContext context) {
@@ -125,9 +113,7 @@ class _ParticipantTile extends StatelessWidget {
       ),
       title: Row(
         children: [
-          Expanded(
-            child: Text(participant.name),
-          ),
+          Expanded(child: Text(participant.name)),
           if (isCreator)
             Chip(
               label: const Text('Host'),

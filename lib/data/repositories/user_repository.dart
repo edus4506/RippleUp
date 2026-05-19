@@ -7,11 +7,10 @@ class UserRepository {
   Future<Users?> getUser(String uid) async {
     final doc = await _db.collection('users').doc(uid).get();
 
-  
     final data = doc.data();
 
     if (doc.exists && data != null) {
-      return Users.fromMap(data, doc.id); 
+      return Users.fromMap(data, doc.id);
     }
 
     return null;

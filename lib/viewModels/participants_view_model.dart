@@ -7,10 +7,7 @@ class ParticipantsViewModel extends ChangeNotifier {
   final ParticipationRepository _participationRepository;
   final UserRepository _userRepository;
 
-  ParticipantsViewModel(
-    this._participationRepository,
-    this._userRepository,
-  );
+  ParticipantsViewModel(this._participationRepository, this._userRepository);
 
   bool isLoading = false;
   String? errorMessage;
@@ -22,8 +19,8 @@ class ParticipantsViewModel extends ChangeNotifier {
       errorMessage = null;
       notifyListeners();
 
-      final participations =
-          await _participationRepository.getParticipationsByEvent(eventId);
+      final participations = await _participationRepository
+          .getParticipationsByEvent(eventId);
       final participants = <Users>[];
 
       for (final participation in participations) {
@@ -53,18 +50,18 @@ class ParticipantsViewModel extends ChangeNotifier {
     return _participationRepository
         .listenToEventParticipations(eventId)
         .asyncMap((participations) async {
-      final participants = <Users>[];
-      for (final participation in participations) {
-        try {
-          final user = await _userRepository.getUser(participation.idUser);
-          if (user != null) {
-            participants.add(user);
+          final participants = <Users>[];
+          for (final participation in participations) {
+            try {
+              final user = await _userRepository.getUser(participation.idUser);
+              if (user != null) {
+                participants.add(user);
+              }
+            } catch (e) {
+              continue;
+            }
           }
-        } catch (e) {
-          continue;
-        }
-      }
-      return participants;
-    });
+          return participants;
+        });
   }
 }
