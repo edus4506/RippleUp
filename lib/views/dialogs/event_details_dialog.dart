@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
+
 import 'package:t5/data/models/event.dart';
 import 'package:t5/data/models/event_status.dart';
 import 'package:t5/routes/app_routes.dart';
 import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
 import 'package:t5/viewModels/event_viewModel.dart';
 import 'package:t5/viewModels/favorite_view_model.dart';
-import 'package:t5/viewModels/user_view_model.dart';
+import 'package:t5/data/repositories/favorite_repository.dart';
 import 'package:t5/theme/event_status_colors.dart';
 
 class EventDetailsDialog extends StatelessWidget {
@@ -17,42 +19,65 @@ class EventDetailsDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userId = context.watch<AuthViewModel>().currentUser?.uid;
+    final isCreator = userId == event.idCreator;
     final isLocked =
         event.status == EventStatus.occurring ||
         event.status == EventStatus.done;
 
     return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(child: Text(event.title, overflow: TextOverflow.ellipsis)),
+          Expanded(
+            child: Text(
+              event.title,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          if (userId != null)
+            StreamBuilder<bool>(
+              stream: context.read<FavoriteRepository>().isEventFavorited(
+                userId: userId,
+                eventId: event.id,
+              ),
+              builder: (context, snapshot) {
+                final isFavorited = snapshot.data ?? false;
 
-          Row(
-            children: [
-              // Chat icon
-              if (userId != null)
-                StreamBuilder<bool>(
-                  stream: context.read<EventViewModel>().isUserInEvent(
-                    eventId: event.id,
-                    userId: userId,
+                return PopupMenuButton<String>(
+                  padding: EdgeInsets.zero,
+                  icon: const Icon(Icons.more_vert, color: Colors.grey),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  builder: (context, snapshot) {
-                    final isIn = snapshot.data ?? false;
-                    final isCreator = event.idCreator == userId;
-
-                    final canOpenChat = isCreator || isIn;
-
-                    if (!canOpenChat) return const SizedBox();
-
-                    return IconButton(
-                      icon: const Icon(
-                        Icons.forum_outlined,
-                        color: Colors.lightGreen,
-                      ),
-                      tooltip: "Open Chat",
-                      onPressed: () {
-                        Navigator.pop(context);
-
+                  onSelected: (value) async {
+                    switch (value) {
+                      case 'favorite':
+                        final vm = context.read<FavoriteViewModel>();
+                        if (isFavorited) {
+                          await vm.removeFavorite(
+                            userId: userId,
+                            eventId: event.id,
+                          );
+                        } else {
+                          await vm.addFavorite(
+                            userId: userId,
+                            eventId: event.id,
+                          );
+                        }
+                        break;
+                      case 'participants':
+                        Navigator.pop(context); // fecha o dialog primeiro
+                        Navigator.pushNamed(
+                          context,
+                          AppRoutes.participants,
+                          arguments: {
+                            'eventId': event.id,
+                            'creatorId': event.idCreator,
+                          },
+                        );
+                        break;
+                      case 'chat':
                         Navigator.pushNamed(
                           context,
                           AppRoutes.chat,
@@ -61,237 +86,109 @@ class EventDetailsDialog extends StatelessWidget {
                             'title': event.title,
                           },
                         );
-                      },
-                    );
+                        break;
+                    }
                   },
-                ),
-
-              // FeedBack icon (only if DONE)
-              if (event.status == EventStatus.done)
-                IconButton(
-                  icon: const Icon(Icons.rate_review_outlined),
-                  tooltip: "View Reviews",
-                  onPressed: () {
-                    Navigator.pop(context);
-
-                    Navigator.pushNamed(
-                      context,
-                      AppRoutes.feedback,
-                      arguments: {
-                        'eventId': event.id,
-                        'title': event.title,
-                        'endDate': event.endDate,
-                        'currentUserId': userId,
-                      },
-                    );
-                  },
-                ),
-
-              // Favorite icon
-              if (userId != null)
-                StreamBuilder<bool>(
-                  stream: context.read<FavoriteViewModel>().isEventFavorited(
-                    userId: userId,
-                    eventId: event.id,
-                  ),
-                  builder: (context, snapshot) {
-                    final isFav = snapshot.data ?? false;
-
-                    return IconButton(
-                      icon: Icon(
-                        isFav ? Icons.favorite : Icons.favorite_border,
-                        color: Colors.red,
+                  itemBuilder: (context) => [
+                    PopupMenuItem<String>(
+                      value: 'favorite',
+                      child: Row(
+                        children: [
+                          Icon(
+                            isFavorited
+                                ? Icons.favorite
+                                : Icons.favorite_border,
+                            color: Colors.red,
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            isFavorited ? 'Remove Favorite' : 'Add Favorite',
+                          ),
+                        ],
                       ),
-                      tooltip: isFav
-                          ? "Remove from Favorites"
-                          : "Add to Favorites",
-                      onPressed: () {
-                        final favVm = context.read<FavoriteViewModel>();
-
-                        if (isFav) {
-                          favVm.removeFavorite(
-                            userId: userId,
-                            eventId: event.id,
-                          );
-                        } else {
-                          favVm.addFavorite(userId: userId, eventId: event.id);
-                        }
-                      },
-                    );
-                  },
-                ),
-            ],
-          ),
+                    ),
+                    const PopupMenuDivider(),
+                    const PopupMenuItem<String>(
+                      value: 'participants',
+                      child: Row(
+                        children: [
+                          Icon(Icons.people_outline),
+                          const SizedBox(width: 10),
+                          Text('Participants'),
+                        ],
+                      ),
+                    ),
+                    const PopupMenuItem<String>(
+                      value: 'chat',
+                      child: Row(
+                        children: [
+                          Icon(Icons.chat_bubble_outline),
+                          const SizedBox(width: 10),
+                          Text('Open Chat'),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
         ],
       ),
-
       content: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Creator info
-            if (userId != null)
-              StreamBuilder(
-                stream: context.read<UserViewModel>().userStream(
-                  event.idCreator,
-                ),
-                builder: (context, snapshot) {
-                  final creatorName = snapshot.data?.name ?? '...';
-                  return Text('Created by: $creatorName');
-                },
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: getEventStatusColor(event.status).withOpacity(0.2),
+                borderRadius: BorderRadius.circular(8),
               ),
-
-            const SizedBox(height: 8),
-
-            // Status badge
-            Row(
-              children: [
-                const Text('Status: '),
-                Text(
-                  event.status.text,
-                  style: TextStyle(
-                    color: getEventStatusColor(event.status),
-                    fontWeight: FontWeight.bold,
-                  ),
+              child: Text(
+                event.status.text,
+                style: TextStyle(
+                  color: getEventStatusColor(event.status),
+                  fontWeight: FontWeight.bold,
                 ),
-              ],
+              ),
             ),
-
-            const SizedBox(height: 8),
-
+            const SizedBox(height: 12),
             Text(event.description),
-
-            const SizedBox(height: 8),
-
-            Text('${event.city}, ${event.district}, ${event.country}'),
-
-            const SizedBox(height: 4),
-
-            Text('Participants: ${event.currentUsers}/${event.maxUsers}'),
-
-            const SizedBox(height: 4),
-
+            const SizedBox(height: 12),
+            Text('Location: ${event.city}, ${event.district}'),
+            Text('Participants: ${event.currentUsers} / ${event.maxUsers}'),
             Text(
-              'Start: ${event.startDate.day}/${event.startDate.month}/${event.startDate.year}',
+              'Date: ${DateFormat('dd/MM/yyyy HH:mm').format(event.startDate)}',
             ),
-            Text(
-              'End: ${event.endDate.day}/${event.endDate.month}/${event.endDate.year}',
-            ),
-
-            const SizedBox(height: 8),
           ],
         ),
       ),
-      actions: [_Actions(event: event, userId: userId, isLocked: isLocked)],
-    );
-  }
-}
-
-class _Actions extends StatelessWidget {
-  final Event event;
-  final String? userId;
-  final bool isLocked;
-
-  const _Actions({
-    required this.event,
-    required this.userId,
-    required this.isLocked,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    if (userId == null) {
-      return TextButton(
-        onPressed: () => Navigator.pop(context),
-        child: const Text('Close'),
-      );
-    }
-
-    final isCreator = event.idCreator == userId;
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        // Join / Leave — only for non-creators
-        if (!isCreator)
+      actions: [
+        if (userId != null && !isCreator)
           StreamBuilder<bool>(
             stream: context.read<EventViewModel>().isUserInEvent(
               eventId: event.id,
-              userId: userId!,
+              userId: userId,
             ),
             builder: (context, snapshot) {
               final isIn = snapshot.data ?? false;
-
-              return Column(
-                children: [
-                  ElevatedButton(
-                    onPressed: isLocked
-                        ? null
-                        : () async {
-                            final vm = context.read<EventViewModel>();
-                            bool success;
-
-                            if (isIn) {
-                              success = await vm.leaveEvent(
-                                eventId: event.id,
-                                userId: userId!,
-                              );
-                            } else {
-                              success = await vm.joinEvent(
-                                eventId: event.id,
-                                userId: userId!,
-                              );
-                            }
-
-                            if (!context.mounted) return;
-
-                            if (!success) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    vm.errorMessage ?? 'Something went wrong',
-                                  ),
-                                ),
-                              );
-                            } else {
-                              Navigator.pop(context);
-                            }
-                          },
-                    child: Text(isIn ? 'Leave' : 'Join'),
-                  ),
-                ],
+              if (isLocked && !isIn) return const SizedBox.shrink();
+              return ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: isIn ? Colors.red : Colors.green,
+                ),
+                onPressed: () async {
+                  final vm = context.read<EventViewModel>();
+                  final success = isIn
+                      ? await vm.leaveEvent(eventId: event.id, userId: userId)
+                      : await vm.joinEvent(eventId: event.id, userId: userId);
+                  if (success && context.mounted) Navigator.pop(context);
+                },
+                child: Text(isIn ? 'Leave Event' : 'Join Event'),
               );
             },
           ),
-
-        if (isCreator)
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            onPressed: isLocked
-                ? null
-                : () async {
-                    final vm = context.read<EventViewModel>();
-                    final success = await vm.deleteEvent(event.id);
-
-                    if (!context.mounted) return;
-
-                    if (!success) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            vm.errorMessage ?? 'Something went wrong',
-                          ),
-                        ),
-                      );
-                    } else {
-                      Navigator.pop(context);
-                    }
-                  },
-            child: const Text('Delete'),
-          ),
-
         TextButton(
           onPressed: () => Navigator.pop(context),
           child: const Text('Close'),

@@ -12,6 +12,7 @@ import 'package:t5/views/pages/splash_page.dart';
 import 'package:t5/views/pages/public_profile_page.dart';
 import 'package:t5/views/pages/followers_following_page.dart';
 import 'package:t5/views/pages/direct_messages_page.dart';
+import 'package:t5/views/pages/participants_page.dart'; // 🚀 Importado o teu ecrã de participantes
 
 class AppRoutes {
   static const String splash = '/splash';
@@ -24,11 +25,13 @@ class AppRoutes {
   static const String editProfile = '/settings/edit-profile';
   static const String changePassword = '/settings/change-password';
   static const String reviewsHistory = '/reviews-history';
+  static const String directMessages = '/direct-messages';
   static const String publicProfile = '/public-profile';
   static const String followersFollowing = '/followers-following';
-  static const String directMessages = '/direct-messages';
+  static const String participants =
+      '/participants'; // 🚀 Nova constante de rota
 
-  static Map<String, WidgetBuilder> routes = {
+  static final Map<String, WidgetBuilder> routes = {
     splash: (context) => const SplashPage(),
     home: (context) => const HomePage(),
     login: (context) => const LoginPage(),
@@ -72,6 +75,16 @@ class AppRoutes {
           builder: (_) => FollowersFollowingPage(
             userId: args['userId'] as String,
             initialTab: (args['initialTab'] as int?) ?? 0,
+          ),
+        );
+
+      // 🚀 Nova rota dinâmica adicionada de forma limpa para os participantes
+      case participants:
+        final args = settings.arguments as Map;
+        return MaterialPageRoute(
+          builder: (_) => ParticipantsPage(
+            eventId: args['eventId'] as String,
+            creatorId: args['creatorId'] as String,
           ),
         );
 
