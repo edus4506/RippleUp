@@ -26,6 +26,7 @@ import 'package:t5/viewModels/search_viewModel.dart';
 import 'package:t5/viewModels/search_users_viewModel.dart';
 import 'package:t5/viewModels/user_view_model.dart';
 import 'package:t5/viewModels/direct_message_viewModel.dart';
+import 'package:t5/viewModels/participants_view_model.dart'; // ✅ ADICIONADO
 
 import 'routes/app_routes.dart';
 import 'theme/app_theme.dart';
@@ -129,6 +130,14 @@ void main() async {
         ChangeNotifierProvider(
           create: (context) => DirectMessageViewModel(
             context.read<DirectMessageRepository>(),
+            context.read<UserRepository>(),
+          ),
+        ),
+
+        // ✅ ADICIONADO: ParticipantsViewModel
+        ChangeNotifierProvider(
+          create: (context) => ParticipantsViewModel(
+            context.read<ParticipationRepository>(),
             context.read<UserRepository>(),
           ),
         ),

@@ -87,6 +87,10 @@ class FakeParticipationRepository implements ParticipationRepository {
       Stream.value(participations);
 
   @override
+  Stream<List<Participation>> listenToEventParticipations(String eventId) =>
+      Stream.value(participations);
+
+  @override
   Future<bool> hasUserParticipated(String userId, String eventId) async =>
       participations.any((p) => p.idUser == userId && p.idEvent == eventId);
 }

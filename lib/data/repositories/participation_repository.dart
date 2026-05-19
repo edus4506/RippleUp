@@ -48,4 +48,16 @@ class ParticipationRepository {
         .map((doc) => Participation.fromMap(doc.data(), doc.id))
         .toList();
   }
+
+  Stream<List<Participation>> listenToEventParticipations(String eventId) {
+    return _db
+        .collection('participations')
+        .where('idEvent', isEqualTo: eventId)
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => Participation.fromMap(doc.data(), doc.id))
+              .toList(),
+        );
+  }
 }
