@@ -7,89 +7,246 @@ import 'package:t5/views/widgets/notification_dropdown.dart';
 
 import '../../data/models/direct_chat_preview.dart';
 import '../../data/models/user.dart';
+import '../../data/models/event_chat_preview.dart';
 
 import '../../data/repositories/direct_message_repository.dart';
+import '../../data/repositories/participation_repository.dart';
+import '../../data/repositories/event_repository.dart';
 
 import '../../viewModels/user_view_model.dart';
 
 import 'direct_chat_page.dart';
 
+import '../../routes/app_routes.dart';
+
 class DirectMessagesPage extends StatelessWidget {
-  const DirectMessagesPage({super.key});
+  const DirectMessagesPage({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final currentUserId = FirebaseAuth.instance.currentUser!.uid;
+    final currentUserId =
+        FirebaseAuth
+            .instance
+            .currentUser!
+            .uid;
+
+    final participationRepo =
+        context.read<
+          ParticipationRepository
+        >();
+
+    final eventRepo =
+        context.read<EventRepository>();
 
     return Scaffold(
       appBar: AppBar(
-        leading: NotificationDropdown(),
-        title: const Text('Messages'),
+        leading:
+            const NotificationDropdown(),
+
+        title: const Text(
+          'Messages',
+        ),
       ),
 
-      body: StreamBuilder<List<DirectChatPreview>>(
-        stream: context.read<DirectMessageRepository>().getUserChats(
-          currentUserId,
-        ),
+      body: StreamBuilder<
+        List<DirectChatPreview>
+      >(
+        stream:
+            context
+                .read<
+                  DirectMessageRepository
+                >()
+                .getUserChats(
+                  currentUserId,
+                ),
 
-        builder: (context, snapshot) {
+        builder: (
+          context,
+          snapshot,
+        ) {
           if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child:
+                  CircularProgressIndicator(),
+            );
           }
 
-          final chats = snapshot.data!;
+          final chats =
+              snapshot.data!;
 
-          if (chats.isEmpty) {
-            return const Center(child: Text('No conversations yet'));
-          }
+          return FutureBuilder(
+            future:
+                participationRepo
+                    .getParticipationsByUser(
+                      currentUserId,
+                    ),
 
-          return ListView.builder(
-            padding: const EdgeInsets.all(12),
+            builder: (
+              context,
+              participationSnapshot,
+            ) {
+              if (!participationSnapshot
+                  .hasData) {
+                return const Center(
+                  child:
+                      CircularProgressIndicator(),
+                );
+              }
 
-            itemCount: chats.length,
+              final participations =
+                  participationSnapshot.data!;
 
-            itemBuilder: (context, index) {
-              final chat = chats[index];
+              return FutureBuilder(
+                future: Future.wait(
+                  participations.map(
+                    (p) => eventRepo.getEventById(
+                      p.idEvent,
+                    ),
+                  ),
+                ),
 
-              final otherUserId = chat.participants.firstWhere(
-                (id) => id != currentUserId,
-              );
-
-              return StreamBuilder<Users?>(
-                stream: context.read<UserViewModel>().userStream(otherUserId),
-
-                builder: (context, userSnapshot) {
-                  final user = userSnapshot.data;
-
-                  if (userSnapshot.connectionState == ConnectionState.waiting) {
-                    return const Padding(
-                      padding: EdgeInsets.all(24),
-                      child: Center(child: CircularProgressIndicator()),
+                builder: (
+                  context,
+                  eventSnapshot,
+                ) {
+                  if (!eventSnapshot.hasData) {
+                    return const Center(
+                      child:
+                          CircularProgressIndicator(),
                     );
                   }
 
-                  if (user == null) {
-                    return Container(
-                      padding: const EdgeInsets.all(20),
-                      child: Text('User not found: $otherUserId'),
+                  final events =
+                      eventSnapshot.data!;
+
+                  if (events.isEmpty &&
+                      chats.isEmpty) {
+                    return const Center(
+                      child: Text(
+                        'No conversations yet',
+                      ),
                     );
                   }
 
-                  /*final isMe =
-                      chat.lastSenderId ==
-                      currentUserId;*/
+                  return ListView(
+                    padding:
+                        const EdgeInsets.all(
+                          12,
+                        ),
 
-                  return _HoverChatCard(
-                    chat: chat,
-                    user: user,
-                    currentUserId: currentUserId,
-                    otherUserId: otherUserId,
+                    children: [
+                      ...events.map((event) {
+                        return Card(
+                          margin:
+                              const EdgeInsets.only(
+                                bottom: 12,
+                              ),
+
+                          child: ListTile(
+                            leading:
+                                const CircleAvatar(
+                                  child: Icon(
+                                    Icons.groups,
+                                  ),
+                                ),
+
+                            title: Text(
+                              event.title,
+                            ),
+
+                            subtitle: const Text(
+                              'Event Chat',
+                            ),
+
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                AppRoutes.chat,
+
+                                arguments: {
+                                  'eventId':
+                                      event.id,
+
+                                  'title':
+                                      event.title,
+                                },
+                              );
+                            },
+                          ),
+                        );
+                      }),
+
+                      ...chats.map((chat) {
+                        final otherUserId =
+                            chat.participants
+                                .firstWhere(
+                                  (id) =>
+                                      id !=
+                                      currentUserId,
+                                );
+
+                        return StreamBuilder<
+                          Users?
+                        >(
+                          stream:
+                              context
+                                  .read<
+                                    UserViewModel
+                                  >()
+                                  .userStream(
+                                    otherUserId,
+                                  ),
+
+                          builder: (
+                            context,
+                            userSnapshot,
+                          ) {
+                            final user =
+                                userSnapshot.data;
+
+                            if (userSnapshot
+                                    .connectionState ==
+                                ConnectionState
+                                    .waiting) {
+                              return const Padding(
+                                padding:
+                                    EdgeInsets.all(
+                                      24,
+                                    ),
+
+                                child: Center(
+                                  child:
+                                      CircularProgressIndicator(),
+                                ),
+                              );
+                            }
+
+                            if (user == null) {
+                              return const SizedBox();
+                            }
+
+                            return _HoverChatCard(
+                              chat: chat,
+                              user: user,
+
+                              currentUserId:
+                                  currentUserId,
+
+                              otherUserId:
+                                  otherUserId,
+                            );
+                          },
+                        );
+                      }),
+                    ],
                   );
                 },
               );
             },
           );
-        },
+        }
       ),
     );
   }
