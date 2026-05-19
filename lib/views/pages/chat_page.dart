@@ -22,21 +22,14 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   final TextEditingController _controller = TextEditingController();
 
-  final ScrollController _scrollController =
-      ScrollController();
+  final ScrollController _scrollController = ScrollController();
 
   void _sendMessage() async {
-    final text =
-        _controller.text.trim();
+    final text = _controller.text.trim();
 
     if (text.isEmpty) return;
 
-    await context
-        .read<MessageViewModel>()
-        .sendMessage(
-          widget.eventId,
-          text,
-        );
+    await context.read<MessageViewModel>().sendMessage(widget.eventId, text);
 
     _controller.clear();
 
@@ -44,215 +37,118 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _scrollToBottom() {
-    Future.delayed(
-      const Duration(
-        milliseconds: 100,
-      ),
-      () {
-        if (_scrollController
-            .hasClients) {
-          _scrollController.animateTo(
-            _scrollController
-                .position
-                .maxScrollExtent,
+    Future.delayed(const Duration(milliseconds: 100), () {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
 
-            duration: const Duration(
-              milliseconds: 300,
-            ),
+          duration: const Duration(milliseconds: 300),
 
-            curve: Curves.easeOut,
-          );
-        }
-      },
-    );
+          curve: Curves.easeOut,
+        );
+      }
+    });
   }
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
-    final currentUserId =
-        FirebaseAuth
-            .instance
-            .currentUser
-            ?.uid;
+  Widget build(BuildContext context) {
+    final currentUserId = FirebaseAuth.instance.currentUser?.uid;
 
-    final participationRepo =
-        context.read<
-          ParticipationRepository
-        >();
+    final participationRepo = context.read<ParticipationRepository>();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "${widget.title} Chat",
-        ),
-      ),
+      appBar: AppBar(title: Text("${widget.title} Chat")),
 
       body: FutureBuilder<bool>(
-        future:
-            participationRepo
-                .hasUserParticipated(
-                  currentUserId!,
-                  widget.eventId,
-                ),
+        future: participationRepo.hasUserParticipated(
+          currentUserId!,
+          widget.eventId,
+        ),
 
-        builder: (
-          context,
-          participationSnapshot,
-        ) {
-          if (!participationSnapshot
-              .hasData) {
-            return const Center(
-              child:
-                  CircularProgressIndicator(),
-            );
+        builder: (context, participationSnapshot) {
+          if (!participationSnapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
           }
 
-          final canSend =
-              participationSnapshot
-                  .data!;
+          final canSend = participationSnapshot.data!;
 
           return Column(
             children: [
               Expanded(
-                child:
-                    StreamBuilder<
-                      List<Message>
-                    >(
-                      stream:
-                          context
-                              .read<
-                                MessageViewModel
-                              >()
-                              .getMessages(
-                                widget
-                                    .eventId,
-                              ),
+                child: StreamBuilder<List<Message>>(
+                  stream: context.read<MessageViewModel>().getMessages(
+                    widget.eventId,
+                  ),
 
-                      builder: (
-                        context,
-                        snapshot,
-                      ) {
-                        if (!snapshot
-                            .hasData) {
-                          return const Center(
-                            child:
-                                CircularProgressIndicator(),
-                          );
-                        }
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
 
-                        final messages =
-                            snapshot.data!;
+                    final messages = snapshot.data!;
 
-                        if (messages
-                            .isEmpty) {
-                          return const Center(
-                            child: Text(
-                              "No messages yet",
-                            ),
-                          );
-                        }
+                    if (messages.isEmpty) {
+                      return const Center(child: Text("No messages yet"));
+                    }
 
-                        WidgetsBinding
-                            .instance
-                            .addPostFrameCallback(
-                              (_) {
-                                _scrollToBottom();
-                              },
-                            );
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      _scrollToBottom();
+                    });
 
-                        return ListView.builder(
-                          controller:
-                              _scrollController,
+                    return ListView.builder(
+                      controller: _scrollController,
 
-                          padding:
-                              const EdgeInsets.all(
-                                8,
-                              ),
+                      padding: const EdgeInsets.all(8),
 
-                          itemCount:
-                              messages
-                                  .length,
+                      itemCount: messages.length,
 
-                          itemBuilder:
-                              (
-                                context,
-                                index,
-                              ) {
-                                final msg =
-                                    messages[index];
+                      itemBuilder: (context, index) {
+                        final msg = messages[index];
 
-                                final isMe =
-                                    msg.senderId ==
-                                    currentUserId;
+                        final isMe = msg.senderId == currentUserId;
 
-                                return _MessageBubble(
-                                  message:
-                                      msg,
-
-                                  isMe:
-                                      isMe,
-                                );
-                              },
-                        );
+                        return _MessageBubble(message: msg, isMe: isMe);
                       },
-                    ),
+                    );
+                  },
+                ),
               ),
 
               SafeArea(
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 6,
-                      ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 6,
+                  ),
 
                   child: Row(
                     children: [
                       Expanded(
                         child: TextField(
-                          controller:
-                              _controller,
+                          controller: _controller,
 
-                          enabled:
-                              canSend,
+                          enabled: canSend,
 
-                          textInputAction:
-                              TextInputAction.send,
+                          textInputAction: TextInputAction.send,
 
-                          onSubmitted:
-                              canSend
-                                  ? (_) =>
-                                        _sendMessage()
-                                  : null,
+                          onSubmitted: canSend ? (_) => _sendMessage() : null,
 
-                          decoration:
-                              InputDecoration(
-                                hintText:
-                                    canSend
-                                        ? "Type a message..."
-                                        : "You left this event",
+                          decoration: InputDecoration(
+                            hintText: canSend
+                                ? "Type a message..."
+                                : "You left this event",
 
-                                border:
-                                    const OutlineInputBorder(),
-                              ),
+                            border: const OutlineInputBorder(),
+                          ),
                         ),
                       ),
 
-                      const SizedBox(
-                        width: 8,
-                      ),
+                      const SizedBox(width: 8),
 
                       IconButton(
-                        icon: const Icon(
-                          Icons.send,
-                        ),
+                        icon: const Icon(Icons.send),
 
-                        onPressed:
-                            canSend
-                                ? _sendMessage
-                                : null,
+                        onPressed: canSend ? _sendMessage : null,
                       ),
                     ],
                   ),

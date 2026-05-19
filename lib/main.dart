@@ -58,7 +58,7 @@ void main() async {
         Provider(create: (_) => ReviewRepository()),
         Provider(create: (_) => FollowRepository()),
         Provider(create: (_) => DirectMessageRepository()),
-        Provider(create:  (_) => EventChatRepository()),
+        Provider(create: (_) => EventChatRepository()),
         ProxyProvider<StorageRepository, ProfileImageService>(
           update: (_, storageRepo, __) => ProfileImageService(storageRepo),
         ),

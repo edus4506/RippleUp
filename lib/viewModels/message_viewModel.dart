@@ -32,12 +32,10 @@ class MessageViewModel extends ChangeNotifier {
     final firebaseUser = currentUser ?? FirebaseAuth.instance.currentUser;
     if (firebaseUser == null) return;
 
-    final isParticipant =
-        await _participationRepository
-            .hasUserParticipated(
-              firebaseUser.uid,
-              eventId,
-            );
+    final isParticipant = await _participationRepository.hasUserParticipated(
+      firebaseUser.uid,
+      eventId,
+    );
 
     if (!isParticipant) {
       return;
@@ -55,27 +53,17 @@ class MessageViewModel extends ChangeNotifier {
     final participations = await _participationRepository
         .getParticipationsByEvent(eventId);
 
-    await _messageRepository
-        .createMessage(
-          eventId,
-          message,
-        );
+    await _messageRepository.createMessage(eventId, message);
 
-    await _eventChatRepository
-        .updateEventChatPreview(
-          eventId: eventId,
+    await _eventChatRepository.updateEventChatPreview(
+      eventId: eventId,
 
-          eventTitle: event.title,
+      eventTitle: event.title,
 
-          message: message,
+      message: message,
 
-          participantIds:
-              participations
-                  .map(
-                    (p) => p.idUser,
-                  )
-                  .toList(),
-        );
+      participantIds: participations.map((p) => p.idUser).toList(),
+    );
 
     for (final participation in participations) {
       if (participation.idUser == firebaseUser.uid) {

@@ -31,9 +31,9 @@ class DirectMessagesPage extends StatelessWidget {
         title: const Text('Messages'),
       ),
       body: StreamBuilder<List<DirectChatPreview>>(
-        stream: context
-            .read<DirectMessageRepository>()
-            .getUserChats(currentUserId),
+        stream: context.read<DirectMessageRepository>().getUserChats(
+          currentUserId,
+        ),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
@@ -42,9 +42,9 @@ class DirectMessagesPage extends StatelessWidget {
           final chats = snapshot.data!;
 
           return StreamBuilder<List<EventChatPreview>>(
-            stream: context
-                .read<EventChatRepository>()
-                .getUserEventChats(currentUserId),
+            stream: context.read<EventChatRepository>().getUserEventChats(
+              currentUserId,
+            ),
             builder: (context, eventSnapshot) {
               if (!eventSnapshot.hasData) {
                 return const Center(child: CircularProgressIndicator());
@@ -151,9 +151,9 @@ class DirectMessagesPage extends StatelessWidget {
                     );
 
                     return StreamBuilder<Users?>(
-                      stream: context
-                          .read<UserViewModel>()
-                          .userStream(otherUserId),
+                      stream: context.read<UserViewModel>().userStream(
+                        otherUserId,
+                      ),
                       builder: (context, userSnapshot) {
                         final user = userSnapshot.data;
 

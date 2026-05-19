@@ -11,8 +11,7 @@ class EventChatPreview {
 
   final String lastSenderId;
 
-  final List<String>
-  participantsHistory;
+  final List<String> participantsHistory;
 
   EventChatPreview({
     required this.eventId,
@@ -37,24 +36,15 @@ class EventChatPreview {
 
       title: map['title'] ?? '',
 
-      lastMessage:
-          map['lastMessage'] ?? '',
+      lastMessage: map['lastMessage'] ?? '',
 
-      lastMessageAt:
-          map['lastMessageAt'] != null
-              ? (map['lastMessageAt']
-                      as Timestamp)
-                  .toDate()
-              : null,
+      lastMessageAt: map['lastMessageAt'] != null
+          ? (map['lastMessageAt'] as Timestamp).toDate()
+          : null,
 
-      lastSenderId:
-          map['lastSenderId'] ?? '',
+      lastSenderId: map['lastSenderId'] ?? '',
 
-      participantsHistory:
-          List<String>.from(
-            map['participantsHistory'] ??
-                [],
-          ),
+      participantsHistory: List<String>.from(map['participantsHistory'] ?? []),
     );
   }
 
@@ -64,18 +54,13 @@ class EventChatPreview {
 
       'lastMessage': lastMessage,
 
-      'lastMessageAt':
-          lastMessageAt != null
-              ? Timestamp.fromDate(
-                  lastMessageAt!,
-                )
-              : null,
+      'lastMessageAt': lastMessageAt != null
+          ? Timestamp.fromDate(lastMessageAt!)
+          : null,
 
-      'lastSenderId':
-          lastSenderId,
+      'lastSenderId': lastSenderId,
 
-      'participantsHistory':
-          participantsHistory,
+      'participantsHistory': participantsHistory,
     };
   }
 }
