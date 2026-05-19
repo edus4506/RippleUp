@@ -47,7 +47,9 @@ void main() {
     expect(allText, contains('Lisboa'));
   });
 
-  testWidgets('EventCard shows PLANNING status for future event', (tester) async {
+  testWidgets('EventCard shows PLANNING status for future event', (
+    tester,
+  ) async {
     final event = buildEvent();
     await tester.pumpWidget(wrap(EventCard(event: event)));
     final richTexts = tester.widgetList<RichText>(find.byType(RichText));

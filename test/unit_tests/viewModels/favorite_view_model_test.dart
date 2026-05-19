@@ -107,9 +107,7 @@ void main() {
 
   group('FavoriteViewModel.userFavoritesStream', () {
     test('returns favorites list from repository', () async {
-      final favorites = [
-        Favorite(id: 'f1', idUser: 'u1', idEvent: 'e1'),
-      ];
+      final favorites = [Favorite(id: 'f1', idUser: 'u1', idEvent: 'e1')];
       when(
         () => mockRepo.listenToUserFavorites('u1'),
       ).thenAnswer((_) => Stream.value(favorites));

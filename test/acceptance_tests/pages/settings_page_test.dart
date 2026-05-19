@@ -100,52 +100,44 @@ void main() {
   });
 
   testWidgets('shows Edit Profile option', (tester) async {
-    await tester.pumpWidget(buildWidget(
-      authVm: authVm,
-      profileVm: profileVm,
-      notifVm: notifVm,
-    ));
+    await tester.pumpWidget(
+      buildWidget(authVm: authVm, profileVm: profileVm, notifVm: notifVm),
+    );
     await tester.pumpAndSettle();
     expect(find.text('Edit Profile'), findsOneWidget);
   });
 
   testWidgets('shows Password option', (tester) async {
-    await tester.pumpWidget(buildWidget(
-      authVm: authVm,
-      profileVm: profileVm,
-      notifVm: notifVm,
-    ));
+    await tester.pumpWidget(
+      buildWidget(authVm: authVm, profileVm: profileVm, notifVm: notifVm),
+    );
     await tester.pumpAndSettle();
     expect(find.text('Password'), findsOneWidget);
   });
 
   testWidgets('shows Logout option', (tester) async {
-    await tester.pumpWidget(buildWidget(
-      authVm: authVm,
-      profileVm: profileVm,
-      notifVm: notifVm,
-    ));
+    await tester.pumpWidget(
+      buildWidget(authVm: authVm, profileVm: profileVm, notifVm: notifVm),
+    );
     await tester.pumpAndSettle();
     expect(find.text('Logout'), findsOneWidget);
   });
 
   testWidgets('shows user name and email', (tester) async {
-    await tester.pumpWidget(buildWidget(
-      authVm: authVm,
-      profileVm: profileVm,
-      notifVm: notifVm,
-    ));
+    await tester.pumpWidget(
+      buildWidget(authVm: authVm, profileVm: profileVm, notifVm: notifVm),
+    );
     await tester.pumpAndSettle();
     expect(find.text('John Doe'), findsOneWidget);
     expect(find.text('john@example.com'), findsOneWidget);
   });
 
-  testWidgets('tap Edit Profile navigates to edit profile page', (tester) async {
-    await tester.pumpWidget(buildWidget(
-      authVm: authVm,
-      profileVm: profileVm,
-      notifVm: notifVm,
-    ));
+  testWidgets('tap Edit Profile navigates to edit profile page', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildWidget(authVm: authVm, profileVm: profileVm, notifVm: notifVm),
+    );
     await tester.pumpAndSettle();
     await tester.tap(find.text('Edit Profile'));
     await tester.pumpAndSettle();
@@ -153,11 +145,9 @@ void main() {
   });
 
   testWidgets('tap Logout shows confirmation dialog', (tester) async {
-    await tester.pumpWidget(buildWidget(
-      authVm: authVm,
-      profileVm: profileVm,
-      notifVm: notifVm,
-    ));
+    await tester.pumpWidget(
+      buildWidget(authVm: authVm, profileVm: profileVm, notifVm: notifVm),
+    );
     await tester.pumpAndSettle();
     await tester.tap(find.text('Logout'));
     await tester.pumpAndSettle();

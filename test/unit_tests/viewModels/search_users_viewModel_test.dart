@@ -6,12 +6,8 @@ import 'package:t5/viewModels/search_users_viewModel.dart';
 
 class MockUserRepository extends Mock implements UserRepository {}
 
-Users _user(String id, String name) => Users(
-  uid: id,
-  name: name,
-  email: '$name@test.com',
-  profilePictureUrl: '',
-);
+Users _user(String id, String name) =>
+    Users(uid: id, name: name, email: '$name@test.com', profilePictureUrl: '');
 
 void main() {
   late MockUserRepository mockRepo;

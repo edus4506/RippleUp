@@ -35,7 +35,9 @@ void main() {
     when(() => authVm.currentUser).thenReturn(null);
   });
 
-  testWidgets('shows Email and Password fields and LOGIN button', (tester) async {
+  testWidgets('shows Email and Password fields and LOGIN button', (
+    tester,
+  ) async {
     await tester.pumpWidget(buildWidget(authVm));
     expect(find.widgetWithText(TextField, 'Email'), findsOneWidget);
     expect(find.widgetWithText(TextField, 'Password'), findsOneWidget);
@@ -67,10 +69,10 @@ void main() {
     expect(button.onPressed, isNull);
   });
 
-  testWidgets('tap LOGIN calls vm.login with entered credentials', (tester) async {
-    when(
-      () => authVm.login(any(), any()),
-    ).thenAnswer((_) async {});
+  testWidgets('tap LOGIN calls vm.login with entered credentials', (
+    tester,
+  ) async {
+    when(() => authVm.login(any(), any())).thenAnswer((_) async {});
     await tester.pumpWidget(buildWidget(authVm));
     await tester.enterText(find.widgetWithText(TextField, 'Email'), 'a@b.com');
     await tester.enterText(

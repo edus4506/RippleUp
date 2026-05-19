@@ -59,13 +59,22 @@ void main() {
     mockParticipationRepo = MockParticipationRepository();
     mockEventRepo = MockEventRepository();
     mockUser = MockUser();
-    vm = MessageViewModel(mockMessageRepo, mockParticipationRepo, mockEventRepo);
+    vm = MessageViewModel(
+      mockMessageRepo,
+      mockParticipationRepo,
+      mockEventRepo,
+    );
   });
 
   group('MessageViewModel.getMessages', () {
     test('delegates to repository stream', () {
       final messages = [
-        Message(id: 'm1', senderId: 'u1', text: 'hello', createdAt: DateTime.now()),
+        Message(
+          id: 'm1',
+          senderId: 'u1',
+          text: 'hello',
+          createdAt: DateTime.now(),
+        ),
       ];
       when(
         () => mockMessageRepo.getEventMessages('e1'),

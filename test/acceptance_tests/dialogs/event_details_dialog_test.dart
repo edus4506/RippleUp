@@ -147,7 +147,12 @@ void main() {
     );
     final event = buildEvent();
     await tester.pumpWidget(
-      buildTestable(auth: authVm, eventVm: eventVm, userVm: userVm, event: event),
+      buildTestable(
+        auth: authVm,
+        eventVm: eventVm,
+        userVm: userVm,
+        event: event,
+      ),
     );
     await tester.pumpAndSettle();
     expect(find.text('Join'), findsOneWidget);
@@ -164,7 +169,12 @@ void main() {
     );
     final event = buildEvent();
     await tester.pumpWidget(
-      buildTestable(auth: authVm, eventVm: eventVm, userVm: userVm, event: event),
+      buildTestable(
+        auth: authVm,
+        eventVm: eventVm,
+        userVm: userVm,
+        event: event,
+      ),
     );
     await tester.pumpAndSettle();
     await tester.pump();
@@ -189,7 +199,12 @@ void main() {
 
     final event = buildEvent();
     await tester.pumpWidget(
-      buildTestable(auth: authVm, eventVm: eventVm, userVm: userVm, event: event),
+      buildTestable(
+        auth: authVm,
+        eventVm: eventVm,
+        userVm: userVm,
+        event: event,
+      ),
     );
     await tester.pumpAndSettle();
     await tester.tap(find.text('Join'));
@@ -211,7 +226,12 @@ void main() {
     );
     final event = buildEvent();
     await tester.pumpWidget(
-      buildTestable(auth: authVm, eventVm: eventVm, userVm: userVm, event: event),
+      buildTestable(
+        auth: authVm,
+        eventVm: eventVm,
+        userVm: userVm,
+        event: event,
+      ),
     );
     await tester.pumpAndSettle();
     expect(find.text('Beach Cleanup'), findsOneWidget);

@@ -44,9 +44,7 @@ void main() {
     });
 
     test('returns true when chat exists', () async {
-      when(
-        () => mockDmRepo.chatExists('a_b'),
-      ).thenAnswer((_) async => true);
+      when(() => mockDmRepo.chatExists('a_b')).thenAnswer((_) async => true);
 
       final result = await DirectChatService.hasExistingChat(
         currentUserId: 'a',
@@ -58,9 +56,7 @@ void main() {
     });
 
     test('returns false when chat does not exist', () async {
-      when(
-        () => mockDmRepo.chatExists('a_b'),
-      ).thenAnswer((_) async => false);
+      when(() => mockDmRepo.chatExists('a_b')).thenAnswer((_) async => false);
 
       final result = await DirectChatService.hasExistingChat(
         currentUserId: 'a',
@@ -72,9 +68,7 @@ void main() {
     });
 
     test('chat id is the same regardless of argument order', () async {
-      when(
-        () => mockDmRepo.chatExists('a_b'),
-      ).thenAnswer((_) async => true);
+      when(() => mockDmRepo.chatExists('a_b')).thenAnswer((_) async => true);
 
       final result = await DirectChatService.hasExistingChat(
         currentUserId: 'b',
@@ -113,27 +107,27 @@ void main() {
       expect(result, true);
     });
 
-    test('returns true when chat already exists even without mutual follow',
-        () async {
-      when(
-        () => mockFollowRepo.isFollowing(followerId: 'u1', followedId: 'u2'),
-      ).thenAnswer((_) => Stream.value(false));
-      when(
-        () => mockFollowRepo.isFollowing(followerId: 'u2', followedId: 'u1'),
-      ).thenAnswer((_) => Stream.value(false));
-      when(
-        () => mockDmRepo.chatExists(any()),
-      ).thenAnswer((_) async => true);
+    test(
+      'returns true when chat already exists even without mutual follow',
+      () async {
+        when(
+          () => mockFollowRepo.isFollowing(followerId: 'u1', followedId: 'u2'),
+        ).thenAnswer((_) => Stream.value(false));
+        when(
+          () => mockFollowRepo.isFollowing(followerId: 'u2', followedId: 'u1'),
+        ).thenAnswer((_) => Stream.value(false));
+        when(() => mockDmRepo.chatExists(any())).thenAnswer((_) async => true);
 
-      final result = await DirectChatService.canUsersMessage(
-        currentUserId: 'u1',
-        otherUserId: 'u2',
-        followRepository: mockFollowRepo,
-        directMessageRepository: mockDmRepo,
-      );
+        final result = await DirectChatService.canUsersMessage(
+          currentUserId: 'u1',
+          otherUserId: 'u2',
+          followRepository: mockFollowRepo,
+          directMessageRepository: mockDmRepo,
+        );
 
-      expect(result, true);
-    });
+        expect(result, true);
+      },
+    );
 
     test('returns false when no follow and no existing chat', () async {
       when(
@@ -142,9 +136,7 @@ void main() {
       when(
         () => mockFollowRepo.isFollowing(followerId: 'u2', followedId: 'u1'),
       ).thenAnswer((_) => Stream.value(false));
-      when(
-        () => mockDmRepo.chatExists(any()),
-      ).thenAnswer((_) async => false);
+      when(() => mockDmRepo.chatExists(any())).thenAnswer((_) async => false);
 
       final result = await DirectChatService.canUsersMessage(
         currentUserId: 'u1',

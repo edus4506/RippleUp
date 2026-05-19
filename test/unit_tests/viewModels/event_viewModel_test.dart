@@ -161,36 +161,42 @@ void main() {
       expect(viewModel.searchQuery, 'beach');
     });
 
-    test('filteredEventsStream returns search results when isSearching', () async {
-      final events = [buildEvent()];
-      when(
-        () => mockEventRepo.listenToEvents(),
-      ).thenAnswer((_) => Stream.value(events));
+    test(
+      'filteredEventsStream returns search results when isSearching',
+      () async {
+        final events = [buildEvent()];
+        when(
+          () => mockEventRepo.listenToEvents(),
+        ).thenAnswer((_) => Stream.value(events));
 
-      viewModel.startSearch();
-      viewModel.updateSearchQuery('Test');
+        viewModel.startSearch();
+        viewModel.updateSearchQuery('Test');
 
-      await Future.delayed(const Duration(milliseconds: 350));
+        await Future.delayed(const Duration(milliseconds: 350));
 
-      final result = await viewModel.filteredEventsStream.first;
-      expect(result, isNotEmpty);
-    });
+        final result = await viewModel.filteredEventsStream.first;
+        expect(result, isNotEmpty);
+      },
+    );
 
-    test('filteredEventsStream returns filtered results when not searching', () async {
-      final events = [buildEvent()];
-      when(
-        () => mockEventRepo.listenToEvents(),
-      ).thenAnswer((_) => Stream.value(events));
+    test(
+      'filteredEventsStream returns filtered results when not searching',
+      () async {
+        final events = [buildEvent()];
+        when(
+          () => mockEventRepo.listenToEvents(),
+        ).thenAnswer((_) => Stream.value(events));
 
-      viewModel.applyFilters(
-        hideFull: false,
-        showDone: true,
-        goals: const {},
-      );
+        viewModel.applyFilters(
+          hideFull: false,
+          showDone: true,
+          goals: const {},
+        );
 
-      final result = await viewModel.filteredEventsStream.first;
-      expect(result, isNotEmpty);
-    });
+        final result = await viewModel.filteredEventsStream.first;
+        expect(result, isNotEmpty);
+      },
+    );
   });
 
   group('EventViewModel.applyFilters', () {
