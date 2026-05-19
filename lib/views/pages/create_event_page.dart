@@ -173,8 +173,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create Event'),
-        actions: [NotificationDropdown()],
+        title: const Text('Create Event')
       ),
 
       bottomNavigationBar: SafeArea(

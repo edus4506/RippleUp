@@ -12,6 +12,7 @@ import '../../data/models/event_chat_preview.dart';
 import '../../data/repositories/direct_message_repository.dart';
 import '../../data/repositories/participation_repository.dart';
 import '../../data/repositories/event_repository.dart';
+import '../../data/repositories/message_repository.dart';
 
 import '../../viewModels/user_view_model.dart';
 
@@ -138,43 +139,150 @@ class DirectMessagesPage extends StatelessWidget {
 
                     children: [
                       ...events.map((event) {
-                        return Card(
-                          margin:
-                              const EdgeInsets.only(
-                                bottom: 12,
-                              ),
-
-                          child: ListTile(
-                            leading:
-                                const CircleAvatar(
-                                  child: Icon(
-                                    Icons.groups,
+                        return FutureBuilder(
+                          future:
+                              context
+                                  .read<MessageRepository>()
+                                  .getLastMessage(
+                                    event.id,
                                   ),
+
+                          builder: (
+                            context,
+                            messageSnapshot,
+                          ) {
+                            final lastMessage =
+                                messageSnapshot.data;
+
+                            final isMe =
+                                lastMessage?.senderId ==
+                                currentUserId;
+
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  AppRoutes.chat,
+
+                                  arguments: {
+                                    'eventId': event.id,
+                                    'title': event.title,
+                                  },
+                                );
+                              },
+
+                              child: AnimatedContainer(
+                                duration: const Duration(
+                                  milliseconds: 180,
                                 ),
 
-                            title: Text(
-                              event.title,
-                            ),
+                                width: double.infinity,
 
-                            subtitle: const Text(
-                              'Event Chat',
-                            ),
+                                padding: const EdgeInsets.all(
+                                  14,
+                                ),
 
-                            onTap: () {
-                              Navigator.pushNamed(
-                                context,
-                                AppRoutes.chat,
+                                margin: const EdgeInsets.only(
+                                  bottom: 12,
+                                ),
 
-                                arguments: {
-                                  'eventId':
-                                      event.id,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
 
-                                  'title':
-                                      event.title,
-                                },
-                              );
-                            },
-                          ),
+                                  borderRadius:
+                                      BorderRadius.circular(18),
+
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withAlpha(
+                                        10,
+                                      ),
+
+                                      blurRadius: 8,
+
+                                      offset: const Offset(
+                                        0,
+                                        3,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 56,
+                                      height: 56,
+
+                                      decoration: BoxDecoration(
+                                        color: const Color(
+                                          0xFFE8F3E4,
+                                        ),
+
+                                        shape: BoxShape.circle,
+                                      ),
+
+                                      child: const Icon(
+                                        Icons.groups,
+                                        color: Color(0xFF4A693D),
+                                        size: 28,
+                                      ),
+                                    ),
+
+                                    const SizedBox(width: 16),
+
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+
+                                        children: [
+                                          Text(
+                                            event.title,
+
+                                            style: const TextStyle(
+                                              fontSize: 18,
+
+                                              fontWeight:
+                                                  FontWeight.bold,
+                                            ),
+                                          ),
+
+                                          const SizedBox(height: 4),
+
+                                          Text(
+                                            lastMessage == null
+                                                ? 'Event Chat'
+                                                : '${isMe ? 'Sent' : 'Received'} • ${formatRelativeTime(lastMessage.createdAt)}',
+
+                                            style: TextStyle(
+                                              color: Colors.black54,
+
+                                              fontWeight:
+                                                  !isMe
+                                                      ? FontWeight.w700
+                                                      : FontWeight.normal,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    if (!isMe &&
+                                        lastMessage != null)
+                                      Container(
+                                        width: 12,
+                                        height: 12,
+
+                                        decoration: const BoxDecoration(
+                                          color: Colors.green,
+                                          shape: BoxShape.circle,
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
                         );
                       }),
 

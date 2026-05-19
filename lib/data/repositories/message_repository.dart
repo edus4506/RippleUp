@@ -23,4 +23,29 @@ class MessageRepository {
               .toList(),
         );
   }
+
+  Future<Message?> getLastMessage(
+    String eventId,
+  ) async {
+    final snapshot =
+        await FirebaseFirestore.instance
+            .collection('events')
+            .doc(eventId)
+            .collection('messages')
+            .orderBy(
+              'createdAt',
+              descending: true,
+            )
+            .limit(1)
+            .get();
+
+    if (snapshot.docs.isEmpty) {
+      return null;
+    }
+
+    return Message.fromMap(
+      snapshot.docs.first.data(),
+      snapshot.docs.first.id,
+    );
+  }
 }
