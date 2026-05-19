@@ -15,142 +15,161 @@ class AppBottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 65,
-      decoration: BoxDecoration(
-        color: Palette.background,
-        boxShadow: [
-          BoxShadow(color: Colors.black.withAlpha(25), blurRadius: 6),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          // HOME
-          GestureDetector(
-            onTap: () => onTap(0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.home,
-                  size: 28,
-                  color: currentIndex == 0 ? Palette.primary : Colors.grey,
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  "Home",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: currentIndex == 0 ? Palette.primary : Colors.grey,
-                  ),
-                ),
-              ],
-            ),
-          ),
+    final bottomPad = MediaQuery.of(context).padding.bottom;
 
-          // SEARCH
-          GestureDetector(
-            onTap: () => onTap(1),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.travel_explore,
-                  size: 28,
-                  color: currentIndex == 1 ? Palette.primary : Colors.grey,
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  "Discover",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: currentIndex == 1 ? Palette.primary : Colors.grey,
-                  ),
-                ),
-              ],
-            ),
-          ),
+    return Padding(
+      padding: EdgeInsets.only(left: 12, right: 12, bottom: bottomPad + 10),
 
-          // BOTTON +
-          Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: onAddPressed,
-              borderRadius: BorderRadius.circular(50),
-              child: Ink(
-                height: 60,
-                width: 60,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Palette.primary,
-                  border: Border.all(
-                    color: Colors.white, // cor da borda
-                    width: 4, // espessura da borda
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withAlpha(40),
-                      blurRadius: 8,
-                      offset: const Offset(0, 3),
+      child: Container(
+        height: 72,
+
+        decoration: BoxDecoration(
+          color: Palette.ink0,
+
+          borderRadius: BorderRadius.circular(28),
+
+          border: Border.all(color: Palette.ink300, width: 1.2),
+
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.08),
+
+              blurRadius: 16,
+
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+
+        child: Row(
+          children: [
+            _NavItem(
+              icon: Icons.home_outlined,
+              iconActive: Icons.home_rounded,
+              label: 'Home',
+              active: currentIndex == 0,
+              onTap: () => onTap(0),
+            ),
+
+            _NavItem(
+              icon: Icons.travel_explore_outlined,
+              iconActive: Icons.travel_explore,
+              label: 'Discover',
+              active: currentIndex == 1,
+              onTap: () => onTap(1),
+            ),
+
+            Expanded(
+              child: Center(
+                child: GestureDetector(
+                  onTap: onAddPressed,
+
+                  child: Container(
+                    width: 72,
+                    height: 72,
+
+                    decoration: BoxDecoration(
+                      color: Palette.accentDark,
+
+                      shape: BoxShape.circle,
+
+                      border: Border.all(color: Palette.ink0, width: 5),
+
+                      boxShadow: [
+                        BoxShadow(
+                          color: Palette.accentDark.withOpacity(0.45),
+
+                          blurRadius: 18,
+
+                          offset: const Offset(0, 6),
+                        ),
+                      ],
                     ),
-                  ],
+
+                    child: const Icon(Icons.add, color: Colors.white, size: 34),
+                  ),
                 ),
-                child: const Icon(Icons.add, color: Colors.white, size: 32),
               ),
             ),
-          ),
 
-          // DIRECT MESSAGES
-          GestureDetector(
-            onTap: () => onTap(2),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Transform.rotate(
-                  angle: -0.8,
-
-                  child: Icon(
-                    Icons.send_outlined,
-                    size: 28,
-                    color: currentIndex == 2 ? Palette.primary : Colors.grey,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  "Messages",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: currentIndex == 2 ? Palette.primary : Colors.grey,
-                  ),
-                ),
-              ],
+            _NavItem(
+              icon: Icons.send_outlined,
+              iconActive: Icons.send,
+              label: 'Messages',
+              active: currentIndex == 2,
+              onTap: () => onTap(2),
+              rotateIcon: true,
             ),
-          ),
 
-          // USER
-          GestureDetector(
-            onTap: () => onTap(3),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.person,
-                  size: 28,
-                  color: currentIndex == 3 ? Palette.primary : Colors.grey,
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  "Profile",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: currentIndex == 3 ? Palette.primary : Colors.grey,
-                  ),
-                ),
-              ],
+            _NavItem(
+              icon: Icons.person_outline,
+              iconActive: Icons.person,
+              label: 'Profile',
+              active: currentIndex == 3,
+              onTap: () => onTap(3),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _NavItem extends StatelessWidget {
+  final IconData icon;
+  final IconData iconActive;
+  final String label;
+  final bool active;
+  final VoidCallback onTap;
+  final bool rotateIcon;
+
+  const _NavItem({
+    required this.icon,
+    required this.iconActive,
+    required this.label,
+    required this.active,
+    required this.onTap,
+    this.rotateIcon = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color = active ? Palette.accentDark : Palette.ink400;
+
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+
+        borderRadius: BorderRadius.circular(12),
+
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+
+            children: [
+              Transform.rotate(
+                angle: rotateIcon ? -0.785398 : 0,
+
+                child: Icon(active ? iconActive : icon, size: 24, color: color),
+              ),
+
+              const SizedBox(height: 3),
+
+              Text(
+                label,
+
+                style: TextStyle(
+                  fontSize: 11,
+                  color: color,
+
+                  fontWeight: active ? FontWeight.w700 : FontWeight.w500,
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
