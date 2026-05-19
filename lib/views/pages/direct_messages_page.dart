@@ -7,7 +7,6 @@ import 'package:t5/views/widgets/notification_dropdown.dart';
 
 import '../../data/models/direct_chat_preview.dart';
 import '../../data/models/user.dart';
-import '../../data/models/event_chat_preview.dart';
 
 import '../../data/repositories/direct_message_repository.dart';
 import '../../data/repositories/participation_repository.dart';
@@ -99,28 +98,81 @@ class DirectMessagesPage extends StatelessWidget {
               final participations =
                   participationSnapshot.data!;
 
+              final participatedEventIds =
+                  participations
+                      .map((p) => p.idEvent)
+                      .toSet();
+
               return FutureBuilder(
-                future: Future.wait(
-                  participations.map(
-                    (p) => eventRepo.getEventById(
-                      p.idEvent,
+                future: context
+                    .read<MessageRepository>()
+                    .getUserEventHistory(
+                      currentUserId,
                     ),
-                  ),
-                ),
 
                 builder: (
                   context,
-                  eventSnapshot,
+                  joinedSnapshot,
                 ) {
-                  if (!eventSnapshot.hasData) {
+                  if (!joinedSnapshot.hasData) {
                     return const Center(
                       child:
                           CircularProgressIndicator(),
                     );
                   }
 
-                  final events =
-                      eventSnapshot.data!;
+                  final historyEventIds =
+                      joinedSnapshot.data!;
+
+                  return FutureBuilder(
+                    future: Future.wait(
+                      historyEventIds.map(
+                        (eventId) async {
+                          final event =
+                              await eventRepo
+                                  .getEventById(
+                                    eventId,
+                                  );
+
+                          return {
+                            'event': event,
+
+                            'isParticipant':
+                                participatedEventIds
+                                    .contains(
+                                      eventId,
+                                    ),
+
+                            'hasHistory': true,
+                          };
+                        },
+                      ),
+                    ),
+
+                    builder: (
+                      context,
+                      eventSnapshot,
+                    ) {
+                      if (!eventSnapshot.hasData) {
+                        return const Center(
+                          child:
+                              CircularProgressIndicator(),
+                        );
+                      }
+
+                      final eventData =
+                          eventSnapshot.data!;
+
+                      final events =
+                          eventData
+                              .where(
+                                (e) =>
+                                    e['isParticipant'] ==
+                                        true ||
+                                    e['hasHistory'] ==
+                                        true,
+                              )
+                              .toList();
 
                   if (events.isEmpty &&
                       chats.isEmpty) {
@@ -139,13 +191,12 @@ class DirectMessagesPage extends StatelessWidget {
 
                     children: [
                       ...events.map((event) {
+                        final realEvent = event['event'] as dynamic;
+
                         return FutureBuilder(
-                          future:
-                              context
-                                  .read<MessageRepository>()
-                                  .getLastMessage(
-                                    event.id,
-                                  ),
+                          future: context
+                              .read<MessageRepository>()
+                              .getLastMessage(realEvent.id),
 
                           builder: (
                             context,
@@ -165,8 +216,8 @@ class DirectMessagesPage extends StatelessWidget {
                                   AppRoutes.chat,
 
                                   arguments: {
-                                    'eventId': event.id,
-                                    'title': event.title,
+                                    'eventId': realEvent.id,
+                                    'title': realEvent.title,
                                   },
                                 );
                               },
@@ -238,7 +289,7 @@ class DirectMessagesPage extends StatelessWidget {
 
                                         children: [
                                           Text(
-                                            event.title,
+                                            realEvent.title,
 
                                             style: const TextStyle(
                                               fontSize: 18,
@@ -350,11 +401,13 @@ class DirectMessagesPage extends StatelessWidget {
                       }),
                     ],
                   );
+                    },
+                  );
                 },
               );
             },
           );
-        }
+        },
       ),
     );
   }

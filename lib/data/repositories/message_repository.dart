@@ -48,4 +48,53 @@ class MessageRepository {
       snapshot.docs.first.id,
     );
   }
+
+  Future<bool> hasUserSentMessages({
+    required String eventId,
+    required String userId,
+  }) async {
+    final snapshot =
+        await FirebaseFirestore.instance
+            .collection('events')
+            .doc(eventId)
+            .collection('messages')
+            .where(
+              'senderId',
+              isEqualTo: userId,
+            )
+            .limit(1)
+            .get();
+
+    return snapshot.docs.isNotEmpty;
+  }
+
+  Future<List<String>> getUserEventHistory(
+    String userId,
+  ) async {
+    final eventsSnapshot =
+        await FirebaseFirestore.instance
+            .collection('events')
+            .get();
+
+    List<String> eventIds = [];
+
+    for (final eventDoc
+        in eventsSnapshot.docs) {
+      final messages =
+          await eventDoc.reference
+              .collection('messages')
+              .where(
+                'senderId',
+                isEqualTo: userId,
+              )
+              .limit(1)
+              .get();
+
+      if (messages.docs.isNotEmpty) {
+        eventIds.add(eventDoc.id);
+      }
+    }
+
+    return eventIds;
+  }
 }

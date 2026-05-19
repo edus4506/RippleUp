@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import 'package:t5/views/widgets/notification_dropdown.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../data/constants/event_locations.dart';

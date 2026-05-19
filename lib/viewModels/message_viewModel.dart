@@ -28,6 +28,17 @@ class MessageViewModel extends ChangeNotifier {
     final firebaseUser = currentUser ?? FirebaseAuth.instance.currentUser;
     if (firebaseUser == null) return;
 
+    final isParticipant =
+        await _participationRepository
+            .hasUserParticipated(
+              firebaseUser.uid,
+              eventId,
+            );
+
+    if (!isParticipant) {
+      return;
+    }
+
     final message = Message(
       id: '', //gerado automaticamente
       senderId: firebaseUser.uid,
