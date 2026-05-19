@@ -126,6 +126,79 @@ void main() {
     );
   });
 
+  group('EventViewModel.createEvent', () {
+    test('delegates to repository', () async {
+      final event = buildEvent();
+      when(() => mockEventRepo.createEvent(event)).thenAnswer((_) async {});
+
+      await viewModel.createEvent(event);
+
+      verify(() => mockEventRepo.createEvent(event)).called(1);
+    });
+  });
+
+  group('EventViewModel search state', () {
+    test('startSearch sets isSearching to true', () {
+      viewModel.startSearch();
+
+      expect(viewModel.isSearching, true);
+    });
+
+    test('stopSearch sets isSearching to false and clears query', () {
+      viewModel.startSearch();
+      viewModel.stopSearch();
+
+      expect(viewModel.isSearching, false);
+      expect(viewModel.searchQuery, '');
+    });
+
+    test('updateSearchQuery updates searchQuery after debounce', () async {
+      viewModel.startSearch();
+      viewModel.updateSearchQuery('beach');
+
+      await Future.delayed(const Duration(milliseconds: 350));
+
+      expect(viewModel.searchQuery, 'beach');
+    });
+
+    test(
+      'filteredEventsStream returns search results when isSearching',
+      () async {
+        final events = [buildEvent()];
+        when(
+          () => mockEventRepo.listenToEvents(),
+        ).thenAnswer((_) => Stream.value(events));
+
+        viewModel.startSearch();
+        viewModel.updateSearchQuery('Test');
+
+        await Future.delayed(const Duration(milliseconds: 350));
+
+        final result = await viewModel.filteredEventsStream.first;
+        expect(result, isNotEmpty);
+      },
+    );
+
+    test(
+      'filteredEventsStream returns filtered results when not searching',
+      () async {
+        final events = [buildEvent()];
+        when(
+          () => mockEventRepo.listenToEvents(),
+        ).thenAnswer((_) => Stream.value(events));
+
+        viewModel.applyFilters(
+          hideFull: false,
+          showDone: true,
+          goals: const {},
+        );
+
+        final result = await viewModel.filteredEventsStream.first;
+        expect(result, isNotEmpty);
+      },
+    );
+  });
+
   group('EventViewModel.applyFilters', () {
     test('updates currentFilter with provided values', () {
       viewModel.applyFilters(
