@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:t5/data/models/review.dart';
+import 'package:t5/data/models/review_history_item.dart';
 import 'package:t5/data/repositories/review_repository.dart';
 import 'package:t5/viewModels/review_viewModel.dart';
 
@@ -9,6 +10,7 @@ class FakeReviewRepository extends ReviewRepository {
   String? deletedReviewId;
   bool reviewed = false;
   Stream<List<Review>> reviewsStream = const Stream.empty();
+  Stream<List<ReviewHistoryItem>> historyStream = const Stream.empty();
 
   @override
   Future<void> createReview(String eventId, Review review) async {}
@@ -28,6 +30,11 @@ class FakeReviewRepository extends ReviewRepository {
   Future<void> deleteReview(String eventId, String reviewId) async {
     deletedEventId = eventId;
     deletedReviewId = reviewId;
+  }
+
+  @override
+  Stream<List<ReviewHistoryItem>> getUserReviewsHistory(String userId) {
+    return historyStream;
   }
 }
 
@@ -101,6 +108,15 @@ void main() {
       expect(result, false);
       expect(fakeRepository.deletedEventId, isNull);
       expect(fakeRepository.deletedReviewId, isNull);
+    });
+
+    test('getUserReviewsHistory delegates to repository stream', () {
+      final items = <ReviewHistoryItem>[];
+      fakeRepository.historyStream = Stream.value(items);
+
+      final stream = viewModel.getUserReviewsHistory('u1');
+
+      expect(stream, emits(items));
     });
   });
 }
