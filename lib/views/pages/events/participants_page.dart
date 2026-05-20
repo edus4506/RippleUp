@@ -115,12 +115,54 @@ class _ParticipantTile extends StatelessWidget {
         children: [
           Expanded(child: Text(participant.name)),
           if (isCreator)
-            Chip(
-              label: const Text('Host'),
-              backgroundColor: Colors.lightGreen.withValues(alpha: 0.3),
-              labelStyle: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 10,
+                vertical: 5,
+              ),
+
+              decoration: BoxDecoration(
+                color: const Color(0xFFE8F5E9),
+
+                borderRadius: BorderRadius.circular(12),
+
+                border: Border.all(
+                  color: Colors.green.shade700,
+                  width: 1.1,
+                ),
+
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.green.withOpacity(0.08),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+
+                children: [
+                  Icon(
+                    Icons.workspace_premium,
+                    size: 15,
+                    color: Colors.green.shade700,
+                  ),
+
+                  const SizedBox(width: 5),
+
+                  Text(
+                    'Host',
+
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.green.shade800,
+                      letterSpacing: 0.2,
+                    ),
+                  ),
+                ],
               ),
             ),
         ],
