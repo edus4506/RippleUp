@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:t5/data/models/event.dart';
-import 'package:t5/data/models/user.dart';
-import 'package:t5/data/repositories/event_repository.dart';
-import 'package:t5/data/repositories/follow_repository.dart';
-import 'package:t5/data/repositories/user_repository.dart';
-import 'package:t5/viewModels/public_profile_viewModel.dart';
+import 'package:t5/data/models/events/event.dart';
+import 'package:t5/data/models/social/user.dart';
+import 'package:t5/data/repositories/events/event_repository.dart';
+import 'package:t5/data/repositories/social/follow_repository.dart';
+import 'package:t5/data/repositories/social/user_repository.dart';
+import 'package:t5/viewModels/social/public_profile_viewModel.dart';
 
 class MockUserRepository extends Mock implements UserRepository {}
 

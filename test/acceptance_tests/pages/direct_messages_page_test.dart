@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:t5/views/pages/direct_messages_page.dart';
+import 'package:t5/views/pages/messages/direct_messages_page.dart';
 
 void main() {
   test('formatRelativeTime returns now', () {

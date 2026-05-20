@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
-import 'package:t5/data/models/review.dart';
-import 'package:t5/data/models/user.dart';
-import 'package:t5/data/repositories/participation_repository.dart';
-import 'package:t5/viewModels/review_viewModel.dart';
-import 'package:t5/viewModels/user_view_model.dart';
-import 'package:t5/views/pages/feedback_page.dart';
-import 'package:t5/data/models/review_history_item.dart';
+import 'package:t5/data/models/reviews/review.dart';
+import 'package:t5/data/models/social/user.dart';
+import 'package:t5/data/repositories/social/participation_repository.dart';
+import 'package:t5/viewModels/reviews/review_viewModel.dart';
+import 'package:t5/viewModels/social/user_view_model.dart';
+import 'package:t5/views/pages/events/feedback_page.dart';
+import 'package:t5/data/models/reviews/review_history_item.dart';
 
 class FakeReviewViewModel extends ChangeNotifier implements ReviewViewModel {
   Stream<List<Review>> reviewsStream = const Stream.empty();

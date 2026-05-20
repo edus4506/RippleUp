@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
-import 'package:t5/data/models/event.dart';
-import 'package:t5/data/repositories/event_repository.dart';
-import 'package:t5/data/repositories/storage_repository.dart';
-import 'package:t5/viewModels/event_viewModel.dart';
+import 'package:t5/data/models/events/event.dart';
+import 'package:t5/data/repositories/events/event_repository.dart';
+import 'package:t5/services/storage/storage_service.dart';
+import 'package:t5/viewModels/events/event_viewModel.dart';
 import 'package:t5/views/dialogs/event_filter_dialog.dart';
 import 'dart:io';
 import 'dart:typed_data';

@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:t5/data/models/favorite_userEvent.dart';
-import 'package:t5/data/repositories/favorite_repository.dart';
-import 'package:t5/viewModels/favorite_view_model.dart';
+import 'package:t5/data/models/events/favorite_event.dart';
+import 'package:t5/data/repositories/events/favorite_event_repository.dart';
+import 'package:t5/viewModels/events/favorite_event_viewModel.dart';
 
 class MockFavoriteRepository extends Mock implements FavoriteRepository {}
 

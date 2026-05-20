@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:t5/data/models/review.dart';
-import 'package:t5/data/models/review_history_item.dart';
-import 'package:t5/data/repositories/review_repository.dart';
-import 'package:t5/viewModels/review_viewModel.dart';
+import 'package:t5/data/models/reviews/review.dart';
+import 'package:t5/data/models/reviews/review_history_item.dart';
+import 'package:t5/data/repositories/reviews/review_repository.dart';
+import 'package:t5/viewModels/reviews/review_viewModel.dart';
 
 class FakeReviewRepository extends ReviewRepository {
   String? receivedEventId;

@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:t5/data/models/event.dart';
-import 'package:t5/data/repositories/event_repository.dart';
-import 'package:t5/data/repositories/storage_repository.dart';
-import 'package:t5/viewModels/event_viewModel.dart';
+import 'package:t5/data/models/events/event.dart';
+import 'package:t5/data/repositories/events/event_repository.dart';
+import 'package:t5/services/storage/storage_service.dart';
+import 'package:t5/viewModels/events/event_viewModel.dart';
 import 'dart:io';
 import 'dart:typed_data';
 

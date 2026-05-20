@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:provider/provider.dart';
-import 'package:t5/data/models/event.dart';
-import 'package:t5/data/models/favorite_userEvent.dart';
-import 'package:t5/data/models/user.dart';
-import 'package:t5/data/repositories/favorite_repository.dart';
-import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
-import 'package:t5/viewModels/event_viewModel.dart';
-import 'package:t5/viewModels/favorite_view_model.dart';
-import 'package:t5/viewModels/user_view_model.dart';
+import 'package:t5/data/models/events/event.dart';
+import 'package:t5/data/models/events/favorite_event.dart';
+import 'package:t5/data/models/social/user.dart';
+import 'package:t5/data/repositories/events/favorite_event_repository.dart';
+import 'package:t5/viewModels/authenthication/auth_viewModel.dart';
+import 'package:t5/viewModels/events/event_viewModel.dart';
+import 'package:t5/viewModels/events/favorite_event_viewModel.dart';
+import 'package:t5/viewModels/social/user_view_model.dart';
 import 'package:t5/views/dialogs/event_details_dialog.dart';
 
 class MockAuthViewModel extends Mock implements AuthViewModel {}

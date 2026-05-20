@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:t5/data/models/user.dart';
+import 'package:t5/data/models/social/user.dart';
 
-import 'package:t5/services/user_search_service.dart';
+import 'package:t5/services/search/user_search_service.dart';
 
 void main() {
   final users = [

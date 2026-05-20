@@ -4,10 +4,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:provider/provider.dart';
 
-import 'package:t5/data/models/user.dart';
-import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
-import 'package:t5/viewModels/notification_viewModel.dart';
-import 'package:t5/viewModels/profile_viewModel.dart';
+import 'package:t5/data/models/social/user.dart';
+import 'package:t5/viewModels/authenthication/auth_viewModel.dart';
+import 'package:t5/viewModels/social/notification_viewModel.dart';
+import 'package:t5/viewModels/social/profile_viewModel.dart';
 import 'package:t5/views/pages/settings/settings_page.dart';
 import 'package:t5/routes/app_routes.dart';
 

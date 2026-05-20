@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:provider/provider.dart';
-import 'package:t5/data/models/user.dart';
-import 'package:t5/data/repositories/follow_repository.dart';
-import 'package:t5/data/repositories/user_repository.dart';
-import 'package:t5/views/pages/followers_following_page.dart';
+import 'package:t5/data/models/social/user.dart';
+import 'package:t5/data/repositories/social/follow_repository.dart';
+import 'package:t5/data/repositories/social/user_repository.dart';
+import 'package:t5/views/pages/social/followers_following_page.dart';
 
 class MockFollowRepository extends Mock implements FollowRepository {}
 

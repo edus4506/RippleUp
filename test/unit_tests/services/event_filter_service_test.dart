@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:t5/data/models/event.dart';
-import 'package:t5/services/event_filter.dart';
-import 'package:t5/services/event_filter_service.dart';
+import 'package:t5/data/models/events/event.dart';
+import 'package:t5/data/models/events/event_filter.dart';
+import 'package:t5/services/filters/event_filter_service.dart';
 
 Event buildEvent({
   int currentUsers = 1,

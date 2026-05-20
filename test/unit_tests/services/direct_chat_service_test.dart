@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:t5/data/repositories/direct_message_repository.dart';
-import 'package:t5/data/repositories/follow_repository.dart';
-import 'package:t5/services/direct_chat_service.dart';
+import 'package:t5/data/repositories/messages/direct_message_repository.dart';
+import 'package:t5/data/repositories/social/follow_repository.dart';
+import 'package:t5/services/messages/direct_chat_service.dart';
 
 class MockFollowRepository extends Mock implements FollowRepository {}
 

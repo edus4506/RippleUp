@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:t5/data/models/user.dart';
-import 'package:t5/data/repositories/user_repository.dart';
-import 'package:t5/viewModels/search_users_viewModel.dart';
+import 'package:t5/data/models/social/user.dart';
+import 'package:t5/data/repositories/social/user_repository.dart';
+import 'package:t5/viewModels/search/search_users_viewModel.dart';
 
 class MockUserRepository extends Mock implements UserRepository {}
 

@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:t5/data/models/review.dart';
-import 'package:t5/services/review_service.dart';
+import 'package:t5/data/models/reviews/review.dart';
+import 'package:t5/services/reviews/review_service.dart';
 
 void main() {
   group('ReviewService', () {

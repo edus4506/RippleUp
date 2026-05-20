@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:t5/data/models/review.dart';
-import 'package:t5/services/sort_review_service.dart';
-import 'package:t5/services/sort_review.dart';
+import 'package:t5/data/models/reviews/review.dart';
+import 'package:t5/services/sort/sort_review_service.dart';
+import 'package:t5/data/models/reviews/sort_review.dart';
 
 void main() {
   final reviews = [

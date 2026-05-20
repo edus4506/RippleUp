@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:t5/data/models/event.dart';
+import 'package:t5/data/models/events/event.dart';
 import 'package:t5/theme/palette.dart';
 
 class EventCard extends StatelessWidget {

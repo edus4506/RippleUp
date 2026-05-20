@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:t5/routes/app_routes.dart';
 
-import 'package:t5/data/models/review.dart';
-import 'package:t5/data/models/user.dart';
-import 'package:t5/services/review_service.dart';
-import 'package:t5/viewModels/user_view_model.dart';
+import 'package:t5/data/models/reviews/review.dart';
+import 'package:t5/data/models/social/user.dart';
+import 'package:t5/services/reviews/review_service.dart';
+import 'package:t5/viewModels/social/user_view_model.dart';
 
 class ReviewCard extends StatelessWidget {
   final Review review;

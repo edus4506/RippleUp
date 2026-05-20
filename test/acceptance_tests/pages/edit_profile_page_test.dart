@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
-import 'package:t5/data/models/user.dart';
-import 'package:t5/viewModels/profile_viewModel.dart';
+import 'package:t5/data/models/social/user.dart';
+import 'package:t5/viewModels/social/profile_viewModel.dart';
 import 'package:t5/views/pages/settings/edit_profile_page.dart';
 
 class FakeProfileViewModel extends ChangeNotifier implements ProfileViewModel {

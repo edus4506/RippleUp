@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:t5/data/models/event.dart';
-import 'package:t5/services/event_search_service.dart';
+import 'package:t5/data/models/events/event.dart';
+import 'package:t5/services/search/event_search_service.dart';
 
 Event buildEvent({
   String title = 'Test Event',

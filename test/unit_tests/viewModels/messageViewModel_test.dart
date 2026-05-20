@@ -1,14 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:t5/data/models/event.dart';
-import 'package:t5/data/models/message.dart';
-import 'package:t5/data/models/participation.dart';
-import 'package:t5/data/repositories/event_repository.dart';
-import 'package:t5/data/repositories/message_repository.dart';
-import 'package:t5/data/repositories/event_chat_repository.dart';
-import 'package:t5/data/repositories/participation_repository.dart';
-import 'package:t5/viewModels/message_viewModel.dart';
+//import 'package:t5/data/models/event.dart';
+import 'package:t5/data/models/messages/message.dart';
+//import 'package:t5/data/models/participation.dart';
+import 'package:t5/data/repositories/events/event_repository.dart';
+import 'package:t5/data/repositories/messages/message_repository.dart';
+import 'package:t5/data/repositories/messages/event_chat_repository.dart';
+import 'package:t5/data/repositories/social/participation_repository.dart';
+import 'package:t5/viewModels/messages/message_viewModel.dart';
 
 class MockMessageRepository extends Mock implements MessageRepository {}
 
@@ -24,7 +24,7 @@ class MockUser extends Mock implements User {
   String get uid => 'sender-uid';
 }
 
-Event _event() {
+/*Event _event() {
   final now = DateTime.now();
   return Event(
     id: 'e1',
@@ -42,7 +42,7 @@ Event _event() {
     city: 'Porto',
     imageUrls: const [],
   );
-}
+}*/
 
 void main() {
   late MockMessageRepository mockMessageRepo;
@@ -50,7 +50,7 @@ void main() {
   late MockEventRepository mockEventRepo;
   late MockEventChatRepository mockEventChatRepo;
   late MessageViewModel vm;
-  late MockUser mockUser;
+  //late MockUser mockUser;
 
   setUpAll(() {
     registerFallbackValue(
@@ -63,7 +63,7 @@ void main() {
     mockParticipationRepo = MockParticipationRepository();
     mockEventRepo = MockEventRepository();
     mockEventChatRepo = MockEventChatRepository();
-    mockUser = MockUser();
+    //mockUser = MockUser();
 
     vm = MessageViewModel(
       mockMessageRepo,

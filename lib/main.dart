@@ -1,32 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:t5/data/repositories/event_repository.dart';
-import 'package:t5/data/repositories/favorite_repository.dart';
-import 'package:t5/data/repositories/follow_repository.dart';
-import 'package:t5/data/repositories/message_repository.dart';
-import 'package:t5/data/repositories/participation_repository.dart';
-import 'package:t5/data/repositories/storage_repository.dart';
-import 'package:t5/data/repositories/user_repository.dart';
-import 'package:t5/data/repositories/review_repository.dart';
-import 'package:t5/data/repositories/notification_repository.dart';
-import 'package:t5/data/repositories/direct_message_repository.dart';
-import 'package:t5/data/repositories/event_chat_repository.dart';
+import 'package:t5/data/repositories/events/event_repository.dart';
+import 'package:t5/data/repositories/events/favorite_event_repository.dart';
+import 'package:t5/data/repositories/social/follow_repository.dart';
+import 'package:t5/data/repositories/messages/message_repository.dart';
+import 'package:t5/data/repositories/social/participation_repository.dart';
+import 'package:t5/services/storage/storage_service.dart';
+import 'package:t5/data/repositories/social/user_repository.dart';
+import 'package:t5/data/repositories/reviews/review_repository.dart';
+import 'package:t5/data/repositories/social/notification_repository.dart';
+import 'package:t5/data/repositories/messages/direct_message_repository.dart';
+import 'package:t5/data/repositories/messages/event_chat_repository.dart';
 
-import 'package:t5/services/profile_image_service.dart';
+import 'package:t5/services/social/profile_image_service.dart';
 
-import 'package:t5/viewModels/event_viewModel.dart';
-import 'package:t5/viewModels/favorite_view_model.dart';
-import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
-import 'package:t5/viewModels/message_viewModel.dart';
-import 'package:t5/viewModels/profile_viewModel.dart';
-import 'package:t5/viewModels/review_viewModel.dart';
-import 'package:t5/viewModels/notification_viewModel.dart';
-import 'package:t5/viewModels/search_viewModel.dart';
-import 'package:t5/viewModels/search_users_viewModel.dart';
-import 'package:t5/viewModels/user_view_model.dart';
-import 'package:t5/viewModels/direct_message_viewModel.dart';
-import 'package:t5/viewModels/participants_view_model.dart'; // ✅ ADICIONADO
+import 'package:t5/viewModels/events/event_viewModel.dart';
+import 'package:t5/viewModels/events/favorite_event_viewModel.dart';
+import 'package:t5/viewModels/authenthication/auth_viewModel.dart';
+import 'package:t5/viewModels/messages/message_viewModel.dart';
+import 'package:t5/viewModels/social/profile_viewModel.dart';
+import 'package:t5/viewModels/reviews/review_viewModel.dart';
+import 'package:t5/viewModels/social/notification_viewModel.dart';
+import 'package:t5/viewModels/search/search_viewModel.dart';
+import 'package:t5/viewModels/search/search_users_viewModel.dart';
+import 'package:t5/viewModels/social/user_view_model.dart';
+import 'package:t5/viewModels/messages/direct_message_viewModel.dart';
+import 'package:t5/viewModels/events/participants_view_model.dart'; // ✅ ADICIONADO
 
 import 'routes/app_routes.dart';
 import 'theme/app_theme.dart';
