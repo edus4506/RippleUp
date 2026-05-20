@@ -174,6 +174,9 @@ class EventDetailsDialog extends StatelessWidget {
             builder: (context, snapshot) {
               final isIn = snapshot.data ?? false;
               if (isLocked && !isIn) return const SizedBox.shrink();
+              if (event.status != EventStatus.planning && isIn) {
+                return const SizedBox.shrink();
+              }
               return ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: isIn ? Colors.red : Colors.green,
