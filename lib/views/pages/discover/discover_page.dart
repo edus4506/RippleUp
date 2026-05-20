@@ -12,12 +12,7 @@ class DiscoverPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: TopBar(
-        leftWidget:
-            NotificationDropdown(),
-
-        title: 'Discover',
-      ),
+      appBar: TopBar(leftWidget: NotificationDropdown(), title: 'Discover'),
 
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),

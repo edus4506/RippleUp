@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class TopBar extends StatelessWidget
-    implements PreferredSizeWidget {
+class TopBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget? leftWidget;
 
   final String title;
@@ -39,19 +38,12 @@ class TopBar extends StatelessWidget
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
 
-                colors: [
-                  Color(0xFF43A047),
-                  Color(0xFF2E7D32),
-                ],
+                colors: [Color(0xFF43A047), Color(0xFF2E7D32)],
               ),
 
               borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(
-                  34,
-                ),
-                bottomRight: Radius.circular(
-                  34,
-                ),
+                bottomLeft: Radius.circular(34),
+                bottomRight: Radius.circular(34),
               ),
             ),
 
@@ -94,18 +86,18 @@ class TopBar extends StatelessWidget
 
                   child: _buildCircleButton(
                     child:
-                      leftWidget ??
-                      Opacity(
-                        opacity: 0.18,
+                        leftWidget ??
+                        Opacity(
+                          opacity: 0.18,
 
-                        child: Icon(
-                          Icons.local_florist_rounded,
+                          child: Icon(
+                            Icons.local_florist_rounded,
 
-                          color: Colors.white,
+                            color: Colors.white,
 
-                          size: 26,
+                            size: 26,
+                          ),
                         ),
-                      ),
                   ),
                 ),
 
@@ -116,18 +108,18 @@ class TopBar extends StatelessWidget
 
                   child: _buildCircleButton(
                     child:
-                      rightWidget ??
-                      Opacity(
-                        opacity: 0.18,
+                        rightWidget ??
+                        Opacity(
+                          opacity: 0.18,
 
-                        child: Icon(
-                          Icons.local_florist_rounded,
+                          child: Icon(
+                            Icons.local_florist_rounded,
 
-                          color: Colors.white,
+                            color: Colors.white,
 
-                          size: 26,
+                            size: 26,
+                          ),
                         ),
-                      ),
                   ),
                 ),
 
@@ -139,122 +131,79 @@ class TopBar extends StatelessWidget
                     height: 60,
 
                     decoration: BoxDecoration(
-                      color: const Color(
-                        0xFFF4F7EF,
-                      ),
+                      color: const Color(0xFFF4F7EF),
 
-                      borderRadius:
-                          BorderRadius.circular(
-                            30,
-                          ),
+                      borderRadius: BorderRadius.circular(30),
 
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black
-                              .withOpacity(0.10),
+                          color: Colors.black.withOpacity(0.10),
 
                           blurRadius: 18,
 
-                          offset: const Offset(
-                            0,
-                            8,
-                          ),
+                          offset: const Offset(0, 8),
                         ),
                       ],
                     ),
 
                     child: Center(
                       child: Transform.translate(
-                        offset: const Offset(
-                          0,
-                          -2,
-                        ),
+                        offset: const Offset(0, -2),
 
                         child: Row(
-                          mainAxisSize:
-                              MainAxisSize.min,
+                          mainAxisSize: MainAxisSize.min,
 
-                          crossAxisAlignment:
-                              CrossAxisAlignment
-                                  .center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
 
                           children: [
                             Transform.translate(
-                              offset:
-                                  const Offset(
-                                    0,
-                                    2,
-                                  ),
+                              offset: const Offset(0, 2),
 
-                              child:
-                                  Transform.rotate(
-                                    angle: -1.57,
+                              child: Transform.rotate(
+                                angle: -1.57,
 
-                                    child: Icon(
-                                      Icons
-                                          .grass_rounded,
+                                child: Icon(
+                                  Icons.grass_rounded,
 
-                                      size: 22,
+                                  size: 22,
 
-                                      color: Colors
-                                          .green
-                                          .shade300,
-                                    ),
-                                  ),
+                                  color: Colors.green.shade300,
+                                ),
+                              ),
                             ),
 
-                            const SizedBox(
-                              width: 6,
-                            ),
+                            const SizedBox(width: 6),
 
                             Text(
                               title,
 
-                              style:
-                                  GoogleFonts
-                                      .dmSerifDisplay(
-                                        fontSize:
-                                            40,
+                              style: GoogleFonts.dmSerifDisplay(
+                                fontSize: 40,
 
-                                        color:
-                                            const Color(
-                                              0xFF2E7D32,
-                                            ),
+                                color: const Color(0xFF2E7D32),
 
-                                        height:
-                                            1,
+                                height: 1,
 
-                                        letterSpacing:
-                                            -1,
-                                      ),
+                                letterSpacing: -1,
+                              ),
                             ),
 
-                            const SizedBox(
-                              width: 6,
-                            ),
+                            const SizedBox(width: 6),
 
                             Transform.translate(
-                              offset:
-                                  const Offset(
-                                    0,
-                                    2,
-                                  ),
+                              offset: const Offset(0, 2),
 
-                              child:
-                                  Transform.rotate(
-                                    angle: 1.57,
+                              child: Transform.rotate(
+                                angle: 1.57,
 
-                                    child: Icon(
-                                      Icons
-                                          .grass_rounded,
+                                child: Icon(
+                                  Icons.grass_rounded,
 
-                                      size: 22,
+                                  size: 22,
 
-                                      color: Colors
-                                          .green
-                                          .shade300,
-                                    ),
-                                  ),
+                                  color: Colors.green.shade300,
+                                ),
+                              ),
                             ),
                           ],
                         ),
@@ -270,49 +219,33 @@ class TopBar extends StatelessWidget
     );
   }
 
-  Widget _buildCircleButton({
-    required Widget child,
-  }) {
+  Widget _buildCircleButton({required Widget child}) {
     return Container(
       width: 52,
       height: 52,
 
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(
-          0.14,
-        ),
+        color: Colors.white.withOpacity(0.14),
 
         shape: BoxShape.circle,
 
-        border: Border.all(
-          color: Colors.white.withOpacity(
-            0.10,
-          ),
-        ),
+        border: Border.all(color: Colors.white.withOpacity(0.10)),
 
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(
-              0.08,
-            ),
+            color: Colors.black.withOpacity(0.08),
 
             blurRadius: 12,
 
-            offset: const Offset(
-              0,
-              4,
-            ),
+            offset: const Offset(0, 4),
           ),
         ],
       ),
 
-      child: Center(
-        child: child,
-      ),
+      child: Center(child: child),
     );
   }
 
   @override
-  Size get preferredSize =>
-      Size.fromHeight(height);
+  Size get preferredSize => Size.fromHeight(height);
 }

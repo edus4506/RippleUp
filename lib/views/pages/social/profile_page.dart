@@ -49,15 +49,11 @@ class _ProfilePageState extends State<ProfilePage> {
 
     return Scaffold(
       appBar: TopBar(
-        leftWidget:
-            NotificationDropdown(),
+        leftWidget: NotificationDropdown(),
 
-        title:
-            vm.user?.name ??
-            'Profile',
+        title: vm.user?.name ?? 'Profile',
 
-        rightWidget:
-            SettingsButton(),
+        rightWidget: SettingsButton(),
       ),
 
       body: SingleChildScrollView(

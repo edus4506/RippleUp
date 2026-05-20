@@ -27,12 +27,7 @@ class DirectMessagesPage extends StatelessWidget {
     final currentUserId = FirebaseAuth.instance.currentUser!.uid;
 
     return Scaffold(
-      appBar: TopBar(
-        leftWidget:
-            NotificationDropdown(),
-
-        title: "DM' s",
-      ),
+      appBar: TopBar(leftWidget: NotificationDropdown(), title: "DM' s"),
       body: StreamBuilder<List<DirectChatPreview>>(
         stream: context.read<DirectMessageRepository>().getUserChats(
           currentUserId,

@@ -116,20 +116,14 @@ class _ParticipantTile extends StatelessWidget {
           Expanded(child: Text(participant.name)),
           if (isCreator)
             Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 10,
-                vertical: 5,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
 
               decoration: BoxDecoration(
                 color: const Color(0xFFE8F5E9),
 
                 borderRadius: BorderRadius.circular(12),
 
-                border: Border.all(
-                  color: Colors.green.shade700,
-                  width: 1.1,
-                ),
+                border: Border.all(color: Colors.green.shade700, width: 1.1),
 
                 boxShadow: [
                   BoxShadow(

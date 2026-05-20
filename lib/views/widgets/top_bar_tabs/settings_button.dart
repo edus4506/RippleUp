@@ -2,29 +2,20 @@ import 'package:flutter/material.dart';
 
 import '../../../routes/app_routes.dart';
 
-class SettingsButton
-    extends StatefulWidget {
-
-  const SettingsButton({
-    super.key,
-  });
+class SettingsButton extends StatefulWidget {
+  const SettingsButton({super.key});
 
   @override
-  State<SettingsButton>
-  createState() =>
-      _SettingsButtonState();
+  State<SettingsButton> createState() => _SettingsButtonState();
 }
 
-class _SettingsButtonState
-    extends State<SettingsButton> {
-
+class _SettingsButtonState extends State<SettingsButton> {
   bool isHovered = false;
 
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
-      cursor:
-          SystemMouseCursors.click,
+      cursor: SystemMouseCursors.click,
 
       onEnter: (_) {
         setState(() {
@@ -39,18 +30,13 @@ class _SettingsButtonState
       },
 
       child: AnimatedContainer(
-        duration:
-            const Duration(
-              milliseconds: 150,
-            ),
+        duration: const Duration(milliseconds: 150),
 
         decoration: BoxDecoration(
           shape: BoxShape.circle,
 
           color: isHovered
-              ? Colors.white.withOpacity(
-                  0.12,
-                )
+              ? Colors.white.withOpacity(0.12)
               : Colors.transparent,
         ),
 
@@ -60,19 +46,10 @@ class _SettingsButtonState
           splashRadius: 24,
 
           onPressed: () {
-            Navigator.pushNamed(
-              context,
-              AppRoutes.settings,
-            );
+            Navigator.pushNamed(context, AppRoutes.settings);
           },
 
-          icon: const Icon(
-            Icons.menu_rounded,
-
-            color: Colors.white,
-
-            size: 28,
-          ),
+          icon: const Icon(Icons.menu_rounded, color: Colors.white, size: 28),
         ),
       ),
     );

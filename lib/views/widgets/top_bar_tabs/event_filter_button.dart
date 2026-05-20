@@ -2,29 +2,20 @@ import 'package:flutter/material.dart';
 
 import '../../dialogs/event_filter_dialog.dart';
 
-class EventFilterButton
-    extends StatefulWidget {
-
-  const EventFilterButton({
-    super.key,
-  });
+class EventFilterButton extends StatefulWidget {
+  const EventFilterButton({super.key});
 
   @override
-  State<EventFilterButton>
-  createState() =>
-      _EventFilterButtonState();
+  State<EventFilterButton> createState() => _EventFilterButtonState();
 }
 
-class _EventFilterButtonState
-    extends State<EventFilterButton> {
-
+class _EventFilterButtonState extends State<EventFilterButton> {
   bool isHovered = false;
 
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
-      cursor:
-          SystemMouseCursors.click,
+      cursor: SystemMouseCursors.click,
 
       onEnter: (_) {
         setState(() {
@@ -39,18 +30,13 @@ class _EventFilterButtonState
       },
 
       child: AnimatedContainer(
-        duration:
-            const Duration(
-              milliseconds: 150,
-            ),
+        duration: const Duration(milliseconds: 150),
 
         decoration: BoxDecoration(
           shape: BoxShape.circle,
 
           color: isHovered
-              ? Colors.white.withOpacity(
-                  0.12,
-                )
+              ? Colors.white.withOpacity(0.12)
               : Colors.transparent,
         ),
 
@@ -63,19 +49,11 @@ class _EventFilterButtonState
             showDialog(
               context: context,
 
-              builder:
-                  (_) =>
-                      const EventFilterDialog(),
+              builder: (_) => const EventFilterDialog(),
             );
           },
 
-          icon: const Icon(
-            Icons.tune_rounded,
-
-            color: Colors.white,
-
-            size: 28,
-          ),
+          icon: const Icon(Icons.tune_rounded, color: Colors.white, size: 28),
         ),
       ),
     );

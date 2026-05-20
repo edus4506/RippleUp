@@ -9,8 +9,6 @@ import '../../../data/models/events/event.dart';
 
 import '../../../viewModels/events/event_viewModel.dart';
 
-import '../../dialogs/event_filter_dialog.dart';
-
 import '../../widgets/top_bar_tabs/top_bar.dart';
 import '../../widgets/event_card.dart';
 
