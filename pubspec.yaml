@@ -32,6 +32,7 @@ dependencies:
     sdk: flutter
   mockito: ^5.4.4
   build_runner: ^2.4.8
+  google_fonts: ^6.2.1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -73,7 +74,7 @@ flutter:
 
   assets:
     - assets/objectives/
-    - assets/rippleup_logo.png
+    - assets/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

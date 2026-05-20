@@ -45,7 +45,11 @@ class _NotificationDropdownState extends State<NotificationDropdown> {
 
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Icon(Icons.notifications);
+          return const Icon(
+            Icons.notifications_rounded,
+            color: Colors.white,
+            size: 28,
+          );
         }
 
         final notifications = snapshot.data ?? [];
@@ -60,7 +64,11 @@ class _NotificationDropdownState extends State<NotificationDropdown> {
           icon: Badge(
             label: Text(unseen.length.toString()),
             isLabelVisible: unseen.isNotEmpty,
-            child: const Icon(Icons.notifications),
+            child: const Icon(
+              Icons.notifications_rounded,
+              color: Colors.white,
+              size: 28,
+            ),
           ),
 
           itemBuilder: (context) {

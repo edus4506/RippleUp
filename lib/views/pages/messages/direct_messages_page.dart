@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
-import 'package:t5/views/widgets/notification_dropdown.dart';
+import 'package:t5/views/widgets/top_bar_tabs/notification_dropdown.dart';
+import 'package:t5/views/widgets/top_bar_tabs/top_bar.dart';
 
 import '../../../data/models/messages/direct_chat_preview.dart';
 import '../../../data/models/social/user.dart';
@@ -26,10 +27,7 @@ class DirectMessagesPage extends StatelessWidget {
     final currentUserId = FirebaseAuth.instance.currentUser!.uid;
 
     return Scaffold(
-      appBar: AppBar(
-        leading: const NotificationDropdown(),
-        title: const Text('Messages'),
-      ),
+      appBar: TopBar(leftWidget: NotificationDropdown(), title: "DM' s"),
       body: StreamBuilder<List<DirectChatPreview>>(
         stream: context.read<DirectMessageRepository>().getUserChats(
           currentUserId,

@@ -2,7 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:t5/data/repositories/social/follow_repository.dart';
 import 'package:t5/routes/app_routes.dart';
-import 'package:t5/views/widgets/notification_dropdown.dart';
+import 'package:t5/views/widgets/top_bar_tabs/top_bar.dart';
+import 'package:t5/views/widgets/top_bar_tabs/notification_dropdown.dart';
+import 'package:t5/views/widgets/top_bar_tabs/settings_button.dart';
 import '../../../viewModels/social/profile_viewModel.dart';
 import 'package:provider/provider.dart';
 import '../../widgets/profile_tabs/favorite_events_widget.dart';
@@ -46,17 +48,12 @@ class _ProfilePageState extends State<ProfilePage> {
     final vm = context.watch<ProfileViewModel>();
 
     return Scaffold(
-      appBar: AppBar(
-        leading: NotificationDropdown(),
-        title: Text(vm.user?.name ?? "No name", textAlign: TextAlign.center),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.menu),
-            tooltip: "Settings",
-            onPressed: () => Navigator.pushNamed(context, AppRoutes.settings),
-          ),
-        ],
+      appBar: TopBar(
+        leftWidget: NotificationDropdown(),
+
+        title: vm.user?.name ?? 'Profile',
+
+        rightWidget: SettingsButton(),
       ),
 
       body: SingleChildScrollView(

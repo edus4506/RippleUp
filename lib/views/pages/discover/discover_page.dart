@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../widgets/notification_dropdown.dart';
+import '../../widgets/top_bar_tabs/notification_dropdown.dart';
+import 'package:t5/views/widgets/top_bar_tabs/top_bar.dart';
 
 import 'search_events_page.dart';
 import 'search_users_page.dart';
@@ -11,15 +12,7 @@ class DiscoverPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: NotificationDropdown(),
-
-        centerTitle: true,
-
-        title: const Text("Discover"),
-
-        actions: const [SizedBox(width: 48)],
-      ),
+      appBar: TopBar(leftWidget: NotificationDropdown(), title: 'Discover'),
 
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
