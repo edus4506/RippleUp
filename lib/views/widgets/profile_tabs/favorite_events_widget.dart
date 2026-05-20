@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:t5/data/models/event.dart';
-import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
-import 'package:t5/viewModels/event_viewModel.dart';
-import 'package:t5/viewModels/favorite_view_model.dart';
+import 'package:t5/data/models/events/event.dart';
+import 'package:t5/viewModels/authenthication/auth_viewModel.dart';
+import 'package:t5/viewModels/events/event_viewModel.dart';
+import 'package:t5/viewModels/events/favorite_event_viewModel.dart';
 import 'package:t5/views/dialogs/event_details_dialog.dart';
 import '../event_card.dart';
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
+import 'package:t5/viewModels/authenthication/auth_viewModel.dart';
 
 class ChangePasswordPage extends StatefulWidget {
   const ChangePasswordPage({super.key});

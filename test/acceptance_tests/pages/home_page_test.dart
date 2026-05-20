@@ -5,15 +5,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-import 'package:t5/data/models/event.dart';
-import 'package:t5/data/models/favorite_userEvent.dart';
+import 'package:t5/data/models/events/event.dart';
+import 'package:t5/data/models/events/favorite_event.dart';
 
-import 'package:t5/data/repositories/event_repository.dart';
-import 'package:t5/data/repositories/favorite_repository.dart';
-import 'package:t5/data/repositories/storage_repository.dart';
+import 'package:t5/data/repositories/events/event_repository.dart';
+import 'package:t5/data/repositories/events/favorite_event_repository.dart';
+import 'package:t5/services/storage/storage_service.dart';
 
-import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
-import 'package:t5/viewModels/notification_viewModel.dart';
+import 'package:t5/viewModels/authenthication/auth_viewModel.dart';
+import 'package:t5/viewModels/social/notification_viewModel.dart';
 
 import 'package:t5/views/pages/home_page.dart';
 import 'package:t5/views/widgets/bottom_nav.dart';

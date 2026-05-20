@@ -1,7 +1,7 @@
 //David por favor corrige os testes.
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:t5/data/models/event.dart';
+import 'package:t5/data/models/events/event.dart';
 import 'package:t5/views/widgets/event_card.dart';
 
 Event buildEvent({

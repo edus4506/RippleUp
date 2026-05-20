@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:t5/data/models/notification.dart';
-import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
-import 'package:t5/viewModels/notification_viewModel.dart';
+import 'package:t5/data/models/social/notification.dart';
+import 'package:t5/viewModels/authenthication/auth_viewModel.dart';
+import 'package:t5/viewModels/social/notification_viewModel.dart';
 
 class NotificationDropdown extends StatefulWidget {
   const NotificationDropdown({super.key});

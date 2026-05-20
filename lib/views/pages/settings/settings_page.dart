@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
-import 'package:t5/viewModels/profile_viewModel.dart';
+import 'package:t5/viewModels/authenthication/auth_viewModel.dart';
+import 'package:t5/viewModels/social/profile_viewModel.dart';
 import 'package:t5/routes/app_routes.dart';
 
 class SettingsPage extends StatefulWidget {

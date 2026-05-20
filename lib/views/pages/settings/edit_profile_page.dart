@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
-import 'package:t5/data/models/user.dart';
-import 'package:t5/viewModels/profile_viewModel.dart';
+import 'package:t5/data/models/social/user.dart';
+import 'package:t5/viewModels/social/profile_viewModel.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});

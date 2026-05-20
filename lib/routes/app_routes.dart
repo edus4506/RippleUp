@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:t5/views/pages/login_page.dart';
-import 'package:t5/views/pages/register_page.dart';
+import 'package:t5/views/pages/authentication/login_page.dart';
+import 'package:t5/views/pages/authentication/register_page.dart';
 import 'package:t5/views/pages/home_page.dart';
-import 'package:t5/views/pages/chat_page.dart';
-import 'package:t5/views/pages/feedback_page.dart';
-import 'package:t5/views/pages/reviews_history_page.dart';
+import 'package:t5/views/pages/messages/chat_page.dart';
+import 'package:t5/views/pages/events/feedback_page.dart';
+import 'package:t5/views/pages/events/reviews_history_page.dart';
 import 'package:t5/views/pages/settings/change_password_page.dart';
 import 'package:t5/views/pages/settings/edit_profile_page.dart';
 import 'package:t5/views/pages/settings/settings_page.dart';
 import 'package:t5/views/pages/splash_page.dart';
-import 'package:t5/views/pages/public_profile_page.dart';
-import 'package:t5/views/pages/followers_following_page.dart';
-import 'package:t5/views/pages/direct_messages_page.dart';
-import 'package:t5/views/pages/participants_page.dart'; // 🚀 Importado o teu ecrã de participantes
+import 'package:t5/views/pages/social/public_profile_page.dart';
+import 'package:t5/views/pages/social/followers_following_page.dart';
+import 'package:t5/views/pages/messages/direct_messages_page.dart';
+import 'package:t5/views/pages/events/participants_page.dart'; // 🚀 Importado o teu ecrã de participantes
 
 class AppRoutes {
   static const String splash = '/splash';

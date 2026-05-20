@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import '../widgets/bottom_nav.dart';
-import 'profile_page.dart';
-import 'events_page.dart';
-import 'create_event_page.dart';
-import 'direct_messages_page.dart';
-import 'discover_page.dart';
+import 'social/profile_page.dart';
+import 'events/events_page.dart';
+import 'events/create_event_page.dart';
+import 'messages/direct_messages_page.dart';
+import 'discover/discover_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

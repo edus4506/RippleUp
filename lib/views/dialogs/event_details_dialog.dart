@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
-import 'package:t5/data/models/event.dart';
-import 'package:t5/data/models/event_status.dart';
+import 'package:t5/data/models/events/event.dart';
+import 'package:t5/data/models/events/event_status.dart';
 import 'package:t5/routes/app_routes.dart';
-import 'package:t5/viewModels/authViewModel/auth_viewModel.dart';
-import 'package:t5/viewModels/event_viewModel.dart';
-import 'package:t5/viewModels/favorite_view_model.dart';
-import 'package:t5/data/repositories/favorite_repository.dart';
+import 'package:t5/viewModels/authenthication/auth_viewModel.dart';
+import 'package:t5/viewModels/events/event_viewModel.dart';
+import 'package:t5/viewModels/events/favorite_event_viewModel.dart';
+import 'package:t5/data/repositories/events/favorite_event_repository.dart';
 import 'package:t5/theme/event_status_colors.dart';
 
 class EventDetailsDialog extends StatelessWidget {
@@ -174,6 +174,9 @@ class EventDetailsDialog extends StatelessWidget {
             builder: (context, snapshot) {
               final isIn = snapshot.data ?? false;
               if (isLocked && !isIn) return const SizedBox.shrink();
+              if (event.status != EventStatus.planning && isIn) {
+                return const SizedBox.shrink();
+              }
               return ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: isIn ? Colors.red : Colors.green,

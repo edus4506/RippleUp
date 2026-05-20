@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:t5/data/constants/event_locations.dart';
-import 'package:t5/viewModels/event_viewModel.dart';
+import 'package:t5/viewModels/events/event_viewModel.dart';
 
 class EventFilterDialog extends StatefulWidget {
   const EventFilterDialog({super.key});

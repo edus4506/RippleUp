@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
-import 'package:t5/data/models/review.dart';
-import 'package:t5/data/models/user.dart';
-import 'package:t5/viewModels/user_view_model.dart';
+import 'package:t5/data/models/reviews/review.dart';
+import 'package:t5/data/models/social/user.dart';
+import 'package:t5/viewModels/social/user_view_model.dart';
 import 'package:t5/views/widgets/review_card.dart';
 
 class FakeUserViewModel extends ChangeNotifier implements UserViewModel {
