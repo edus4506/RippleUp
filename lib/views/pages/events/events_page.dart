@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:t5/views/dialogs/event_details_dialog.dart';
-import 'package:t5/views/widgets/notification_dropdown.dart';
+import 'package:t5/views/widgets/top_bar_tabs/notification_dropdown.dart';
+import 'package:t5/views/widgets/top_bar_tabs/event_filter_button.dart';
 
 import '../../../data/models/events/event.dart';
 
 import '../../../viewModels/events/event_viewModel.dart';
 
 import '../../dialogs/event_filter_dialog.dart';
+
+import '../../widgets/top_bar_tabs/top_bar.dart';
 import '../../widgets/event_card.dart';
 
 class EventsPage extends StatefulWidget {
@@ -28,9 +31,9 @@ class _EventsPageState extends State<EventsPage> {
     );
   }
 
-  void _openFilterModal(BuildContext context) {
+  /*void _openFilterModal(BuildContext context) {
     showDialog(context: context, builder: (_) => const EventFilterDialog());
-  }
+  }*/
 
   /*void _stopSearch(BuildContext context) {
     _searchController.clear();
@@ -45,19 +48,12 @@ class _EventsPageState extends State<EventsPage> {
     final viewModel = context.watch<EventViewModel>();
 
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
+      appBar: TopBar(
+        leftWidget: NotificationDropdown(),
 
-        leading: NotificationDropdown(),
+        title: 'Events',
 
-        title: const Text("Events"),
-
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.filter_list),
-            onPressed: () => _openFilterModal(context),
-          ),
-        ],
+        rightWidget: EventFilterButton(),
       ),
 
       body: StreamBuilder<List<Event>>(
