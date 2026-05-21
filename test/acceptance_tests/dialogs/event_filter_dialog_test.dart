@@ -140,6 +140,8 @@ void main() {
       ),
     );
     await tester.tap(find.text('Open'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.pumpAndSettle();
     expect(find.text('Filters'), findsOneWidget);
     expect(find.text('Apply'), findsOneWidget);
@@ -150,6 +152,8 @@ void main() {
     await tester.binding.setSurfaceSize(const Size(1200, 2000));
     await tester.pumpWidget(buildWithDialog());
     await tester.tap(find.text('Open'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.pumpAndSettle();
     expect(find.text('Cancel'), findsOneWidget);
     await tester.tap(find.text('Cancel'));
@@ -161,6 +165,8 @@ void main() {
     await tester.binding.setSurfaceSize(const Size(1200, 2000));
     await tester.pumpWidget(buildWithDialog());
     await tester.tap(find.text('Open'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Apply'));
     await tester.pumpAndSettle();
@@ -171,6 +177,8 @@ void main() {
     await tester.binding.setSurfaceSize(const Size(1200, 2000));
     await tester.pumpWidget(buildWithDialog());
     await tester.tap(find.text('Open'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.pumpAndSettle();
     final checkbox = find.widgetWithText(CheckboxListTile, 'Hide full events');
     expect(tester.widget<CheckboxListTile>(checkbox).value, false);
@@ -183,6 +191,8 @@ void main() {
     await tester.binding.setSurfaceSize(const Size(1200, 2000));
     await tester.pumpWidget(buildWithDialog());
     await tester.tap(find.text('Open'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.pumpAndSettle();
     final checkbox = find.widgetWithText(
       CheckboxListTile,
@@ -200,6 +210,8 @@ void main() {
     await tester.binding.setSurfaceSize(const Size(1200, 2000));
     await tester.pumpWidget(buildWithDialog());
     await tester.tap(find.text('Open'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.pumpAndSettle();
     final checkbox = find.widgetWithText(
       CheckboxListTile,
@@ -238,6 +250,8 @@ void main() {
       ),
     );
     await tester.tap(find.text('Open'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.pumpAndSettle();
     await tester.enterText(
       find.widgetWithText(TextField, 'Start Date'),
@@ -280,6 +294,8 @@ void main() {
       ),
     );
     await tester.tap(find.text('Open'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(CheckboxListTile, 'Hide full events'));
     await tester.pump();
