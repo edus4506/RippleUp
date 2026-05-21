@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:t5/viewModels/authenthication/auth_viewModel.dart';
+import 'package:t5/viewModels/events/event_viewModel.dart';
 import 'package:t5/viewModels/social/profile_viewModel.dart';
 import 'package:t5/routes/app_routes.dart';
 
@@ -42,6 +43,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
     if (confirmed != true || !mounted) return;
 
+    context.read<EventViewModel>().resetFilters();
     await context.read<AuthViewModel>().logout();
 
     if (!mounted) return;
@@ -72,6 +74,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
     if (confirmed != true || !mounted) return;
 
+    context.read<EventViewModel>().resetFilters();
     await context.read<ProfileViewModel>().softDeleteAcc();
     await context.read<AuthViewModel>().deleteAcc();
 

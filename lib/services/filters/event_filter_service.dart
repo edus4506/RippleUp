@@ -13,6 +13,14 @@ class EventFilterService {
         return false;
       }
 
+      if (filter.canJoin && event.status != EventStatus.planning) {
+        return false;
+      }
+
+      if (filter.excludeCreatedBy != null && event.idCreator == filter.excludeCreatedBy) {
+        return false;
+      }
+
       if (filter.goals.isNotEmpty) {
         final hasMatch = event.objectives.any(
           (goal) => filter.goals.contains(goal),
@@ -48,6 +56,18 @@ class EventFilterService {
 
       if (filter.city != null && event.city != filter.city) {
         return false;
+      }
+
+      if (filter.startDate != null) {
+        if (event.startDate.isBefore(filter.startDate!)) {
+          return false;
+        }
+      }
+
+      if (filter.endDate != null) {
+        if (event.startDate.isAfter(filter.endDate!)) {
+          return false;
+        }
       }
 
       return true;

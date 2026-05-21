@@ -85,6 +85,8 @@ class EventViewModel extends ChangeNotifier {
   void applyFilters({
     required bool hideFull,
     required bool showDone,
+    required bool canJoin,
+    String? excludeCreatedBy,
     required Set<int> goals,
     int? minCapacity,
     int? maxCapacity,
@@ -93,10 +95,14 @@ class EventViewModel extends ChangeNotifier {
     String? country,
     String? district,
     String? city,
+    DateTime? startDate,
+    DateTime? endDate,
   }) {
     _filter = EventFilter(
       hideFull: hideFull,
       showDone: showDone,
+      canJoin: canJoin,
+      excludeCreatedBy: excludeCreatedBy,
       goals: goals,
       minCapacity: minCapacity,
       maxCapacity: maxCapacity,
@@ -105,8 +111,15 @@ class EventViewModel extends ChangeNotifier {
       country: country,
       district: district,
       city: city,
+      startDate: startDate,
+      endDate: endDate,
     );
 
+    notifyListeners();
+  }
+
+  void resetFilters() {
+    _filter = const EventFilter();
     notifyListeners();
   }
 
