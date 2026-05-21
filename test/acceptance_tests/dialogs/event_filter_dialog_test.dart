@@ -145,18 +145,17 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Filters'), findsOneWidget);
     expect(find.text('Apply'), findsOneWidget);
-    expect(find.text('Cancel'), findsOneWidget);
   });
 
-  testWidgets('tap Cancel closes the dialog', (tester) async {
+  testWidgets('tap X closes the dialog', (tester) async {
     await tester.binding.setSurfaceSize(const Size(1200, 2000));
     await tester.pumpWidget(buildWithDialog());
     await tester.tap(find.text('Open'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 500));
     await tester.pumpAndSettle();
-    expect(find.text('Cancel'), findsOneWidget);
-    await tester.tap(find.text('Cancel'));
+    expect(find.text('Filters'), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.close_rounded));
     await tester.pumpAndSettle();
     expect(find.text('Filters'), findsNothing);
   });
