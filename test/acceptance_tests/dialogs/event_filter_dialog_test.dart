@@ -106,7 +106,7 @@ Widget buildWithDialog() {
               context: context,
               builder: (_) => ChangeNotifierProvider.value(
                 value: context.read<EventViewModel>(),
-                child: const EventFilterDialog(),
+                child: const EventFilterDialog(currentUserId: 'test-user'),
               ),
             ),
             child: const Text('Open'),
@@ -129,7 +129,8 @@ void main() {
               builder: (context) => ElevatedButton(
                 onPressed: () => showDialog(
                   context: context,
-                  builder: (_) => const EventFilterDialog(),
+                  builder: (_) =>
+                      const EventFilterDialog(currentUserId: 'test-user'),
                 ),
                 child: const Text('Open'),
               ),
@@ -139,19 +140,22 @@ void main() {
       ),
     );
     await tester.tap(find.text('Open'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.pumpAndSettle();
     expect(find.text('Filters'), findsOneWidget);
     expect(find.text('Apply'), findsOneWidget);
-    expect(find.text('Cancel'), findsOneWidget);
   });
 
-  testWidgets('tap Cancel closes the dialog', (tester) async {
+  testWidgets('tap X closes the dialog', (tester) async {
     await tester.binding.setSurfaceSize(const Size(1200, 2000));
     await tester.pumpWidget(buildWithDialog());
     await tester.tap(find.text('Open'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.pumpAndSettle();
-    expect(find.text('Cancel'), findsOneWidget);
-    await tester.tap(find.text('Cancel'));
+    expect(find.text('Filters'), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.close_rounded));
     await tester.pumpAndSettle();
     expect(find.text('Filters'), findsNothing);
   });
@@ -160,6 +164,8 @@ void main() {
     await tester.binding.setSurfaceSize(const Size(1200, 2000));
     await tester.pumpWidget(buildWithDialog());
     await tester.tap(find.text('Open'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Apply'));
     await tester.pumpAndSettle();
@@ -170,12 +176,96 @@ void main() {
     await tester.binding.setSurfaceSize(const Size(1200, 2000));
     await tester.pumpWidget(buildWithDialog());
     await tester.tap(find.text('Open'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.pumpAndSettle();
     final checkbox = find.widgetWithText(CheckboxListTile, 'Hide full events');
     expect(tester.widget<CheckboxListTile>(checkbox).value, false);
     await tester.tap(checkbox);
     await tester.pump();
     expect(tester.widget<CheckboxListTile>(checkbox).value, true);
+  });
+
+  testWidgets('Show finished events checkbox can be toggled', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1200, 2000));
+    await tester.pumpWidget(buildWithDialog());
+    await tester.tap(find.text('Open'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pumpAndSettle();
+    final checkbox = find.widgetWithText(
+      CheckboxListTile,
+      'Show finished events',
+    );
+    expect(tester.widget<CheckboxListTile>(checkbox).value, false);
+    await tester.tap(checkbox);
+    await tester.pump();
+    expect(tester.widget<CheckboxListTile>(checkbox).value, true);
+  });
+
+  testWidgets('Show only events you can join checkbox can be toggled', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(1200, 2000));
+    await tester.pumpWidget(buildWithDialog());
+    await tester.tap(find.text('Open'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pumpAndSettle();
+    final checkbox = find.widgetWithText(
+      CheckboxListTile,
+      'Show only events you can join',
+    );
+    expect(tester.widget<CheckboxListTile>(checkbox).value, false);
+    await tester.tap(checkbox);
+    await tester.pump();
+    expect(tester.widget<CheckboxListTile>(checkbox).value, true);
+  });
+
+  testWidgets('tap Apply applies startDate and endDate filters', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(1200, 2000));
+    final vm = EventViewModel(FakeRepo(), FakeStorageRepository());
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(
+        value: vm,
+        child: MaterialApp(
+          home: Scaffold(
+            body: Builder(
+              builder: (context) => ElevatedButton(
+                onPressed: () => showDialog(
+                  context: context,
+                  builder: (_) => ChangeNotifierProvider.value(
+                    value: vm,
+                    child: const EventFilterDialog(currentUserId: 'test-user'),
+                  ),
+                ),
+                child: const Text('Open'),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.text('Open'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.widgetWithText(TextField, 'Start Date'),
+      '01/01/2026',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextField, 'End Date'),
+      '10/01/2026',
+    );
+    await tester.tap(find.text('Apply'));
+    await tester.pumpAndSettle();
+    expect(vm.currentFilter.startDate, isNotNull);
+    expect(vm.currentFilter.endDate, isNotNull);
+    expect(vm.currentFilter.startDate!.day, 1);
+    expect(vm.currentFilter.endDate!.day, 10);
   });
 
   testWidgets('tap Apply applies hideFull filter when checked', (tester) async {
@@ -192,7 +282,7 @@ void main() {
                   context: context,
                   builder: (_) => ChangeNotifierProvider.value(
                     value: vm,
-                    child: const EventFilterDialog(),
+                    child: const EventFilterDialog(currentUserId: 'test-user'),
                   ),
                 ),
                 child: const Text('Open'),
@@ -203,6 +293,8 @@ void main() {
       ),
     );
     await tester.tap(find.text('Open'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(CheckboxListTile, 'Hide full events'));
     await tester.pump();
