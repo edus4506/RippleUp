@@ -20,24 +20,14 @@ import 'direct_chat_page.dart';
 
 import '../../../routes/app_routes.dart';
 
-class DirectMessagesPage
-    extends StatefulWidget {
-
-  const DirectMessagesPage({
-    super.key,
-  });
+class DirectMessagesPage extends StatefulWidget {
+  const DirectMessagesPage({super.key});
 
   @override
-  State<DirectMessagesPage>
-      createState() =>
-          _DirectMessagesPageState();
+  State<DirectMessagesPage> createState() => _DirectMessagesPageState();
 }
 
-class _DirectMessagesPageState
-    extends State<
-      DirectMessagesPage
-    > {
-
+class _DirectMessagesPageState extends State<DirectMessagesPage> {
   bool showEventChats = false;
 
   @override
@@ -46,23 +36,19 @@ class _DirectMessagesPageState
 
     return Scaffold(
       appBar: TopBar(
-        leftWidget:
-            NotificationDropdown(),
+        leftWidget: NotificationDropdown(),
 
         title: "DM' s",
 
-        rightWidget:
-            SwapDMButton(
-              showingEvents:
-                  showEventChats,
+        rightWidget: SwapDMButton(
+          showingEvents: showEventChats,
 
-              onPressed: () {
-                setState(() {
-                  showEventChats =
-                      !showEventChats;
-                });
-              },
-            ),
+          onPressed: () {
+            setState(() {
+              showEventChats = !showEventChats;
+            });
+          },
+        ),
       ),
       body: StreamBuilder<List<DirectChatPreview>>(
         stream: context.read<DirectMessageRepository>().getUserChats(
@@ -93,17 +79,12 @@ class _DirectMessagesPageState
               return ListView(
                 padding: const EdgeInsets.all(12),
 
-                children:
-                    showEventChats
+                children: showEventChats
                     ? [
                         ...events.map((event) {
-                          final isMe =
-                              event.lastSenderId ==
-                              currentUserId;
+                          final isMe = event.lastSenderId == currentUserId;
 
-                          final isUnread =
-                              event.lastSenderId !=
-                              currentUserId;
+                          final isUnread = event.lastSenderId != currentUserId;
 
                           return GestureDetector(
                             onTap: () {
@@ -112,63 +93,37 @@ class _DirectMessagesPageState
                                 AppRoutes.chat,
 
                                 arguments: {
-                                  'eventId':
-                                      event.eventId,
+                                  'eventId': event.eventId,
 
-                                  'title':
-                                      event.title,
+                                  'title': event.title,
                                 },
                               );
                             },
 
                             child: AnimatedContainer(
-                              duration:
-                                  const Duration(
-                                    milliseconds:
-                                        180,
+                              duration: const Duration(milliseconds: 180),
+
+                              width: double.infinity,
+
+                              padding: const EdgeInsets.all(14),
+
+                              margin: const EdgeInsets.only(bottom: 12),
+
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+
+                                borderRadius: BorderRadius.circular(18),
+
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withAlpha(10),
+
+                                    blurRadius: 8,
+
+                                    offset: const Offset(0, 3),
                                   ),
-
-                              width:
-                                  double.infinity,
-
-                              padding:
-                                  const EdgeInsets.all(
-                                    14,
-                                  ),
-
-                              margin:
-                                  const EdgeInsets.only(
-                                    bottom: 12,
-                                  ),
-
-                              decoration:
-                                  BoxDecoration(
-                                    color:
-                                        Colors.white,
-
-                                    borderRadius:
-                                        BorderRadius.circular(
-                                          18,
-                                        ),
-
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors
-                                            .black
-                                            .withAlpha(
-                                              10,
-                                            ),
-
-                                        blurRadius: 8,
-
-                                        offset:
-                                            const Offset(
-                                              0,
-                                              3,
-                                            ),
-                                      ),
-                                    ],
-                                  ),
+                                ],
+                              ),
 
                               child: Row(
                                 children: [
@@ -176,75 +131,51 @@ class _DirectMessagesPageState
                                     width: 56,
                                     height: 56,
 
-                                    decoration:
-                                        const BoxDecoration(
-                                          color:
-                                              Color(
-                                                0xFFE8F3E4,
-                                              ),
+                                    decoration: const BoxDecoration(
+                                      color: Color(0xFFE8F3E4),
 
-                                          shape:
-                                              BoxShape
-                                                  .circle,
-                                        ),
+                                      shape: BoxShape.circle,
+                                    ),
 
-                                    child:
-                                        const Icon(
-                                          Icons.groups,
+                                    child: const Icon(
+                                      Icons.groups,
 
-                                          color:
-                                              Color(
-                                                0xFF4A693D,
-                                              ),
+                                      color: Color(0xFF4A693D),
 
-                                          size: 28,
-                                        ),
+                                      size: 28,
+                                    ),
                                   ),
 
-                                  const SizedBox(
-                                    width: 16,
-                                  ),
+                                  const SizedBox(width: 16),
 
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment
-                                              .start,
+                                          CrossAxisAlignment.start,
 
                                       children: [
                                         Text(
                                           event.title,
 
-                                          style:
-                                              const TextStyle(
-                                                fontSize:
-                                                    18,
+                                          style: const TextStyle(
+                                            fontSize: 18,
 
-                                                fontWeight:
-                                                    FontWeight
-                                                        .bold,
-                                              ),
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
 
-                                        const SizedBox(
-                                          height: 4,
-                                        ),
+                                        const SizedBox(height: 4),
 
                                         Text(
                                           '${isMe ? 'Sent' : 'Received'} • ${formatRelativeTime(event.lastMessageAt)}',
 
-                                          style:
-                                              TextStyle(
-                                                color: Colors
-                                                    .black54,
+                                          style: TextStyle(
+                                            color: Colors.black54,
 
-                                                fontWeight:
-                                                    isUnread
-                                                    ? FontWeight
-                                                          .w700
-                                                    : FontWeight
-                                                          .normal,
-                                              ),
+                                            fontWeight: isUnread
+                                                ? FontWeight.w700
+                                                : FontWeight.normal,
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -255,15 +186,11 @@ class _DirectMessagesPageState
                                       width: 12,
                                       height: 12,
 
-                                      decoration:
-                                          const BoxDecoration(
-                                            color:
-                                                Colors.green,
+                                      decoration: const BoxDecoration(
+                                        color: Colors.green,
 
-                                            shape:
-                                                BoxShape
-                                                    .circle,
-                                          ),
+                                        shape: BoxShape.circle,
+                                      ),
                                     ),
                                 ],
                               ),
@@ -273,45 +200,25 @@ class _DirectMessagesPageState
                       ]
                     : [
                         ...chats.map((chat) {
-                          final otherUserId =
-                              chat.participants
-                                  .firstWhere(
-                                    (id) =>
-                                        id !=
-                                        currentUserId,
-                                  );
+                          final otherUserId = chat.participants.firstWhere(
+                            (id) => id != currentUserId,
+                          );
 
-                          return StreamBuilder<
-                            Users?
-                          >(
-                            stream: context
-                                .read<
-                                  UserViewModel
-                                >()
-                                .userStream(
-                                  otherUserId,
-                                ),
+                          return StreamBuilder<Users?>(
+                            stream: context.read<UserViewModel>().userStream(
+                              otherUserId,
+                            ),
 
-                            builder: (
-                              context,
-                              userSnapshot,
-                            ) {
-                              final user =
-                                  userSnapshot.data;
+                            builder: (context, userSnapshot) {
+                              final user = userSnapshot.data;
 
-                              if (userSnapshot
-                                      .connectionState ==
-                                  ConnectionState
-                                      .waiting) {
+                              if (userSnapshot.connectionState ==
+                                  ConnectionState.waiting) {
                                 return const Padding(
-                                  padding:
-                                      EdgeInsets.all(
-                                        24,
-                                      ),
+                                  padding: EdgeInsets.all(24),
 
                                   child: Center(
-                                    child:
-                                        CircularProgressIndicator(),
+                                    child: CircularProgressIndicator(),
                                   ),
                                 );
                               }
@@ -325,17 +232,15 @@ class _DirectMessagesPageState
 
                                 user: user,
 
-                                currentUserId:
-                                    currentUserId,
+                                currentUserId: currentUserId,
 
-                                otherUserId:
-                                    otherUserId,
+                                otherUserId: otherUserId,
                               );
                             },
                           );
                         }),
                       ],
-              );             
+              );
             },
           );
         },
