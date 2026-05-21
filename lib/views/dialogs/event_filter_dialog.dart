@@ -598,8 +598,12 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(16),
                                 ),
-                                side: const BorderSide(color: Color(0xFF43A047)),
-                                padding: const EdgeInsets.symmetric(vertical: 15),
+                                side: const BorderSide(
+                                  color: Color(0xFF43A047),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 15,
+                                ),
                               ),
                               onPressed: () {
                                 setState(() {
