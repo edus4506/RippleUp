@@ -101,24 +101,66 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    const Align(
+                    Align(
                       alignment: Alignment.centerLeft,
-                      child: Icon(Icons.tune_rounded, color: Colors.white),
-                    ),
-                    Text(
-                      'Filters',
-                      style: GoogleFonts.dmSerifDisplay(
-                        fontSize: 40,
-                        color: Colors.white,
+                      child: _buildCircleButton(
+                        child: const Icon(
+                          Icons.tune_rounded,
+                          color: Colors.white,
+                          size: 26,
+                        ),
                       ),
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Transform.translate(
+                          offset: const Offset(0, 2),
+                          child: Transform.rotate(
+                            angle: -1.57,
+                            child: Icon(
+                              Icons.grass_rounded,
+                              size: 22,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(width: 6),
+
+                        Text(
+                          'Filters',
+                          style: GoogleFonts.dmSerifDisplay(
+                            fontSize: 40,
+                            color: Colors.white,
+                          ),
+                        ),
+
+                        const SizedBox(width: 6),
+
+                        Transform.translate(
+                          offset: const Offset(0, 2),
+                          child: Transform.rotate(
+                            angle: 1.57,
+                            child: Icon(
+                              Icons.grass_rounded,
+                              size: 22,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     Align(
                       alignment: Alignment.centerRight,
-                      child: IconButton(
-                        onPressed: () => Navigator.pop(context),
-                        icon: const Icon(
-                          Icons.close_rounded,
-                          color: Colors.white,
+                      child: GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: _buildCircleButton(
+                          child: const Icon(
+                            Icons.close_rounded,
+                            color: Colors.white,
+                            size: 26,
+                          ),
                         ),
                       ),
                     ),
@@ -736,6 +778,33 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildCircleButton({required Widget child}) {
+    return Container(
+      width: 52,
+      height: 52,
+
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.14),
+
+        shape: BoxShape.circle,
+
+        border: Border.all(color: Colors.white.withOpacity(0.10)),
+
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+
+            blurRadius: 12,
+
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+
+      child: Center(child: child),
     );
   }
 }
