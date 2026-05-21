@@ -42,7 +42,6 @@ class _NotificationDropdownState extends State<NotificationDropdown> {
       stream: context.watch<AppNotificationViewModel>().getNotifications(
         currentUser.uid,
       ),
-
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Icon(
@@ -53,23 +52,12 @@ class _NotificationDropdownState extends State<NotificationDropdown> {
         }
 
         final notifications = snapshot.data ?? [];
-
         final vm = context.read<AppNotificationViewModel>();
-
         final sortedNotifications = vm.sortNotifications(notifications);
-
         final unseen = vm.getUnseenNotifications(sortedNotifications);
 
         return PopupMenuButton<AppNotification>(
-          icon: Badge(
-            label: Text(unseen.length.toString()),
-            isLabelVisible: unseen.isNotEmpty,
-            child: const Icon(
-              Icons.notifications_rounded,
-              color: Colors.white,
-              size: 28,
-            ),
-          ),
+          child: _NotificationIcon(unseenCount: unseen.length),
 
           itemBuilder: (context) {
             if (unseen.isEmpty) {
@@ -118,7 +106,6 @@ class _NotificationDropdownState extends State<NotificationDropdown> {
 
                         child: Icon(
                           vm.getNotificationIcon(notification.type),
-
                           color: Colors.green.shade700,
                           size: 22,
                         ),
@@ -176,7 +163,6 @@ class _NotificationDropdownState extends State<NotificationDropdown> {
 
                       Checkbox(
                         value: notification.seen,
-
                         activeColor: Colors.green,
 
                         shape: RoundedRectangleBorder(
@@ -209,7 +195,6 @@ class _NotificationDropdownState extends State<NotificationDropdown> {
                   child: Container(
                     decoration: BoxDecoration(
                       color: const Color(0xFFE8F5E9),
-
                       borderRadius: BorderRadius.circular(14),
 
                       border: Border.all(
@@ -260,6 +245,59 @@ class _NotificationDropdownState extends State<NotificationDropdown> {
           },
         );
       },
+    );
+  }
+}
+
+class _NotificationIcon extends StatefulWidget {
+  final int unseenCount;
+  const _NotificationIcon({required this.unseenCount});
+
+  @override
+  State<_NotificationIcon> createState() => _NotificationIconState();
+}
+
+class _NotificationIconState extends State<_NotificationIcon> {
+  bool isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => isHovered = true),
+      onExit: (_) => setState(() => isHovered = false),
+
+      child: Container(
+        width: 52,
+        height: 52,
+        alignment: Alignment.center,
+
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          width: 44,
+          height: 44,
+
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: isHovered
+                ? Colors.white.withOpacity(0.12)
+                : Colors.transparent,
+          ),
+
+          alignment: Alignment.center,
+
+          child: Badge(
+            label: Text(widget.unseenCount.toString()),
+            isLabelVisible: widget.unseenCount > 0,
+
+            child: const Icon(
+              Icons.notifications_rounded,
+              color: Colors.white,
+              size: 28,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
