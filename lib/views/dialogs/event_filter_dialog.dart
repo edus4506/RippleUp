@@ -63,12 +63,12 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
 
     if (filter.startDate != null) {
       startDateController.text =
-      '${filter.startDate!.day.toString().padLeft(2, '0')}/${filter.startDate!.month.toString().padLeft(2, '0')}/${filter.startDate!.year}';
+          '${filter.startDate!.day.toString().padLeft(2, '0')}/${filter.startDate!.month.toString().padLeft(2, '0')}/${filter.startDate!.year}';
     }
 
     if (filter.endDate != null) {
       endDateController.text =
-      '${filter.endDate!.day.toString().padLeft(2, '0')}/${filter.endDate!.month.toString().padLeft(2, '0')}/${filter.endDate!.year}';
+          '${filter.endDate!.day.toString().padLeft(2, '0')}/${filter.endDate!.month.toString().padLeft(2, '0')}/${filter.endDate!.year}';
     }
   }
 
@@ -95,15 +95,10 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                   horizontal: 18,
                   vertical: 16,
                 ),
-                decoration: const BoxDecoration(
-                  color: Color(0xFF3E5F36),
-                ),
+                decoration: const BoxDecoration(color: Color(0xFF3E5F36)),
                 child: Row(
                   children: [
-                    const Icon(
-                      Icons.tune_rounded,
-                      color: Colors.white,
-                    ),
+                    const Icon(Icons.tune_rounded, color: Colors.white),
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
@@ -266,11 +261,11 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 6,
-                            crossAxisSpacing: 8,
-                            mainAxisSpacing: 8,
-                          ),
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 6,
+                                crossAxisSpacing: 8,
+                                mainAxisSpacing: 8,
+                              ),
                           itemCount: 18,
                           itemBuilder: (context, index) {
                             final goal = index + 1;
@@ -281,20 +276,23 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                               onTap: goal == 18
                                   ? null
                                   : () {
-                                setState(() {
-                                  if (isSelected) {
-                                    selectedGoals.remove(goal);
-                                  } else {
-                                    selectedGoals.add(goal);
-                                  }
-                                });
-                              },
+                                      setState(() {
+                                        if (isSelected) {
+                                          selectedGoals.remove(goal);
+                                        } else {
+                                          selectedGoals.add(goal);
+                                        }
+                                      });
+                                    },
                               child: AnimatedContainer(
                                 duration: const Duration(milliseconds: 200),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(14),
                                   border: isSelected
-                                      ? Border.all(color: const Color(0xFF3E5F36), width: 3)
+                                      ? Border.all(
+                                          color: const Color(0xFF3E5F36),
+                                          width: 3,
+                                        )
                                       : null,
                                   boxShadow: [
                                     if (isSelected)
@@ -360,10 +358,10 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                           items: eventCountries
                               .map(
                                 (country) => DropdownMenuItem(
-                              value: country,
-                              child: Text(country),
-                            ),
-                          )
+                                  value: country,
+                                  child: Text(country),
+                                ),
+                              )
                               .toList(),
                           onChanged: (value) {
                             setState(() {
@@ -393,10 +391,10 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                             items: eventDistrictsByCountry[selectedCountry]!
                                 .map(
                                   (district) => DropdownMenuItem(
-                                value: district,
-                                child: Text(district),
-                              ),
-                            )
+                                    value: district,
+                                    child: Text(district),
+                                  ),
+                                )
                                 .toList(),
                             onChanged: (value) {
                               setState(() {
@@ -425,10 +423,10 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                             items: eventCitiesByDistrict[selectedDistrict]!
                                 .map(
                                   (city) => DropdownMenuItem(
-                                value: city,
-                                child: Text(city),
-                              ),
-                            )
+                                    value: city,
+                                    child: Text(city),
+                                  ),
+                                )
                                 .toList(),
                             onChanged: (value) {
                               setState(() {
@@ -456,10 +454,8 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                             Expanded(
                               child: SliderTheme(
                                 data: SliderTheme.of(context).copyWith(
-                                  activeTrackColor:
-                                  const Color(0xFF3E5F36),
-                                  thumbColor:
-                                  const Color(0xFF3E5F36),
+                                  activeTrackColor: const Color(0xFF3E5F36),
+                                  thumbColor: const Color(0xFF3E5F36),
                                 ),
                                 child: RangeSlider(
                                   values: capacityRange,
@@ -497,10 +493,8 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                             Expanded(
                               child: SliderTheme(
                                 data: SliderTheme.of(context).copyWith(
-                                  activeTrackColor:
-                                  const Color(0xFF3E5F36),
-                                  thumbColor:
-                                  const Color(0xFF3E5F36),
+                                  activeTrackColor: const Color(0xFF3E5F36),
+                                  thumbColor: const Color(0xFF3E5F36),
                                 ),
                                 child: RangeSlider(
                                   values: currentUsersRange,
@@ -536,7 +530,10 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                       bottomRight: Radius.circular(28),
                     ),
                     boxShadow: [
-                      BoxShadow(color: Colors.black.withAlpha(15), blurRadius: 8),
+                      BoxShadow(
+                        color: Colors.black.withAlpha(15),
+                        blurRadius: 8,
+                      ),
                     ],
                   ),
                   child: Column(
@@ -546,8 +543,7 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                         width: double.infinity,
                         child: TextButton(
                           style: TextButton.styleFrom(
-                            foregroundColor:
-                            const Color(0xFF3E5F36),
+                            foregroundColor: const Color(0xFF3E5F36),
                           ),
                           onPressed: () {
                             setState(() {
@@ -569,9 +565,7 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                           },
                           child: const Text(
                             'Clear filters',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                            ),
+                            style: TextStyle(fontWeight: FontWeight.w600),
                           ),
                         ),
                       ),
@@ -589,7 +583,9 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                                   borderRadius: BorderRadius.circular(16),
                                 ),
                                 side: BorderSide(color: Colors.grey.shade300),
-                                padding: const EdgeInsets.symmetric(vertical: 15),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 15,
+                                ),
                               ),
                               onPressed: () => Navigator.pop(context),
                               child: const Text('Cancel'),
@@ -605,7 +601,9 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(16),
                                 ),
-                                padding: const EdgeInsets.symmetric(vertical: 15),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 15,
+                                ),
                               ),
                               onPressed: () {
                                 DateTime? startDate;
@@ -613,8 +611,8 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
 
                                 try {
                                   if (startDateController.text.isNotEmpty) {
-                                    final parts =
-                                    startDateController.text.split('/');
+                                    final parts = startDateController.text
+                                        .split('/');
                                     startDate = DateTime(
                                       int.parse(parts[2]),
                                       int.parse(parts[1]),
@@ -623,8 +621,9 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                                   }
 
                                   if (endDateController.text.isNotEmpty) {
-                                    final parts =
-                                    endDateController.text.split('/');
+                                    final parts = endDateController.text.split(
+                                      '/',
+                                    );
                                     endDate = DateTime(
                                       int.parse(parts[2]),
                                       int.parse(parts[1]),
@@ -664,9 +663,7 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                               },
                               child: const Text(
                                 'Apply',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                ),
+                                style: TextStyle(fontWeight: FontWeight.w600),
                               ),
                             ),
                           ),

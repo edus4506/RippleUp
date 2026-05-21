@@ -17,7 +17,8 @@ class EventFilterService {
         return false;
       }
 
-      if (filter.excludeCreatedBy != null && event.idCreator == filter.excludeCreatedBy) {
+      if (filter.excludeCreatedBy != null &&
+          event.idCreator == filter.excludeCreatedBy) {
         return false;
       }
 

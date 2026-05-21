@@ -51,7 +51,8 @@ class _EventFilterButtonState extends State<EventFilterButton> {
               context: context,
 
               builder: (_) => EventFilterDialog(
-                currentUserId: context.read<AuthViewModel>().currentUser?.uid ?? '',
+                currentUserId:
+                    context.read<AuthViewModel>().currentUser?.uid ?? '',
               ),
             );
           },
