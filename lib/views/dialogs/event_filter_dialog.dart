@@ -127,9 +127,9 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                     padding: const EdgeInsets.all(16),
                     child: Column(
                       children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
+                        Card(
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: CheckboxListTile(
@@ -146,9 +146,9 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
 
                         const SizedBox(height: 10),
 
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
+                        Card(
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: CheckboxListTile(
@@ -165,9 +165,9 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
 
                         const SizedBox(height: 10),
 
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
+                        Card(
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: CheckboxListTile(
