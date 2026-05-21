@@ -153,14 +153,12 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                     ),
                     Align(
                       alignment: Alignment.centerRight,
-                      child: GestureDetector(
+                      child: _buildCircleButton(
                         onTap: () => Navigator.pop(context),
-                        child: _buildCircleButton(
-                          child: const Icon(
-                            Icons.close_rounded,
-                            color: Colors.white,
-                            size: 26,
-                          ),
+                        child: const Icon(
+                          Icons.close_rounded,
+                          color: Colors.white,
+                          size: 26,
                         ),
                       ),
                     ),
@@ -785,30 +783,57 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
     );
   }
 
-  Widget _buildCircleButton({required Widget child}) {
-    return Container(
-      width: 52,
-      height: 52,
+  Widget _buildCircleButton({required Widget child, VoidCallback? onTap}) {
+    return _HoverCircleButton(child: child, onTap: onTap);
+  }
+}
 
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.14),
+class _HoverCircleButton extends StatefulWidget {
+  final Widget child;
+  final VoidCallback? onTap;
 
-        shape: BoxShape.circle,
+  const _HoverCircleButton({required this.child, this.onTap});
 
-        border: Border.all(color: Colors.white.withOpacity(0.10)),
+  @override
+  State<_HoverCircleButton> createState() => _HoverCircleButtonState();
+}
 
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+class _HoverCircleButtonState extends State<_HoverCircleButton> {
+  bool isHovered = false;
 
-            blurRadius: 12,
-
-            offset: const Offset(0, 4),
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => isHovered = true),
+      onExit: (_) => setState(() => isHovered = false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          width: 52,
+          height: 52,
+          decoration: BoxDecoration(
+            color: isHovered
+                ? Colors.white.withOpacity(0.25)
+                : Colors.white.withOpacity(0.14),
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: isHovered
+                  ? Colors.white.withOpacity(0.25)
+                  : Colors.white.withOpacity(0.10),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.08),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
-        ],
+          child: Center(child: widget.child),
+        ),
       ),
-
-      child: Center(child: child),
     );
   }
 }
