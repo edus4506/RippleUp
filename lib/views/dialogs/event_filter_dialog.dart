@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:t5/data/constants/event_locations.dart';
 import 'package:t5/viewModels/events/event_viewModel.dart';
 
+import 'package:google_fonts/google_fonts.dart';
+
 class EventFilterDialog extends StatefulWidget {
   final String currentUserId;
   const EventFilterDialog({super.key, required this.currentUserId});
@@ -95,25 +97,29 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                   horizontal: 18,
                   vertical: 16,
                 ),
-                decoration: const BoxDecoration(color: Color(0xFF3E5F36)),
-                child: Row(
+                decoration: const BoxDecoration(color: Color(0xFF43A047)),
+                child: Stack(
+                  alignment: Alignment.center,
                   children: [
-                    const Icon(Icons.tune_rounded, color: Colors.white),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        'Filters',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
-                        ),
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Icon(Icons.tune_rounded, color: Colors.white),
+                    ),
+                    Text(
+                      'Filters',
+                      style: GoogleFonts.dmSerifDisplay(
+                        fontSize: 40,
+                        color: Colors.white,
                       ),
                     ),
-                    IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: const Icon(
-                        Icons.close_rounded,
-                        color: Colors.white,
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: const Icon(
+                          Icons.close_rounded,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ],
@@ -596,7 +602,7 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 elevation: 0,
-                                backgroundColor: const Color(0xFF3E5F36),
+                                backgroundColor: const Color(0xFF43A047),
                                 foregroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(16),
