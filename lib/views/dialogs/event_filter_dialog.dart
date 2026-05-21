@@ -318,58 +318,60 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
 
                             final isSelected = selectedGoals.contains(goal);
 
-                            return GestureDetector(
-                              onTap: goal == 18
-                                  ? null
-                                  : () {
-                                      setState(() {
-                                        if (isSelected) {
-                                          selectedGoals.remove(goal);
-                                        } else {
-                                          selectedGoals.add(goal);
-                                        }
-                                      });
-                                    },
-                              child: AnimatedContainer(
-                                duration: const Duration(milliseconds: 200),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(14),
-                                  border: isSelected
-                                      ? Border.all(
-                                          color: const Color(0xFF3E5F36),
-                                          width: 3,
-                                        )
-                                      : null,
-                                  boxShadow: [
-                                    if (isSelected)
-                                      BoxShadow(
-                                        color: const Color(
-                                          0xFF3E5F36,
-                                        ).withOpacity(0.25),
-                                        blurRadius: 8,
-                                      ),
-                                  ],
-                                ),
-                                clipBehavior: Clip.antiAlias,
-                                child: Stack(
-                                  fit: StackFit.expand,
-                                  children: [
-                                    Image.asset(
-                                      'assets/objectives/goal$goal.jpg',
-                                      fit: BoxFit.cover,
+                            return Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(14),
+                                onTap: goal == 18
+                                    ? null
+                                    : () {
+                                  setState(() {
+                                    if (isSelected) {
+                                      selectedGoals.remove(goal);
+                                    } else {
+                                      selectedGoals.add(goal);
+                                    }
+                                  });
+                                },
+                                child: Ink(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(14),
+                                    border: Border.all(
+                                      color: isSelected
+                                          ? const Color(0xFF3E5F36)
+                                          : Colors.grey.shade300,
+                                      width: isSelected ? 3 : 1,
                                     ),
-                                    if (isSelected)
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.black.withOpacity(0.35),
+                                    boxShadow: isSelected
+                                        ? [
+                                      BoxShadow(
+                                        color: const Color(0xFF3E5F36).withOpacity(0.25),
+                                        blurRadius: 8,
+                                      )
+                                    ]
+                                        : [],
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(14),
+                                    child: Stack(
+                                      fit: StackFit.expand,
+                                      children: [
+                                        Image.asset(
+                                          'assets/objectives/goal$goal.jpg',
+                                          fit: BoxFit.cover,
                                         ),
-                                        child: const Icon(
-                                          Icons.check_circle_rounded,
-                                          color: Colors.white,
-                                          size: 28,
-                                        ),
-                                      ),
-                                  ],
+                                        if (isSelected)
+                                          Container(
+                                            color: Colors.black.withOpacity(0.35),
+                                            child: const Icon(
+                                              Icons.check_circle_rounded,
+                                              color: Colors.white,
+                                              size: 28,
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ),
                             );
@@ -755,28 +757,43 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
   Widget _dateChip(String text, int index) {
     final isSelected = selectedQuickDate == index;
 
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          selectedQuickDate = index;
-          _applyQuickDate(index);
-        });
-      },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-        decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF3E5F36) : Colors.white,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: isSelected ? const Color(0xFF3E5F36) : Colors.grey.shade300,
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(14),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(14),
+        onTap: () {
+          setState(() {
+            selectedQuickDate = index;
+            _applyQuickDate(index);
+          });
+        },
+        child: Ink(
+          decoration: BoxDecoration(
+            color: isSelected
+                ? const Color(0xFF3E5F36)
+                : Colors.white,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: isSelected
+                  ? const Color(0xFF3E5F36)
+                  : Colors.grey.shade300,
+            ),
           ),
-        ),
-        child: Text(
-          text,
-          style: TextStyle(
-            color: isSelected ? Colors.white : Colors.black87,
-            fontWeight: FontWeight.w600,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 14,
+              vertical: 10,
+            ),
+            child: Text(
+              text,
+              style: TextStyle(
+                color: isSelected
+                    ? Colors.white
+                    : Colors.black87,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
         ),
       ),
