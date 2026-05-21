@@ -190,6 +190,7 @@ void main() {
         viewModel.applyFilters(
           hideFull: false,
           showDone: true,
+          canJoin: false,
           goals: const {},
         );
 
@@ -204,6 +205,7 @@ void main() {
       viewModel.applyFilters(
         hideFull: true,
         showDone: false,
+        canJoin: true,
         goals: {1, 2},
         country: 'Portugal',
         district: 'Porto',
@@ -213,6 +215,7 @@ void main() {
       final filter = viewModel.currentFilter;
       expect(filter.hideFull, true);
       expect(filter.showDone, false);
+      expect(filter.canJoin, true);
       expect(filter.goals, {1, 2});
       expect(filter.country, 'Portugal');
       expect(filter.district, 'Porto');
@@ -220,12 +223,23 @@ void main() {
     });
 
     test('resets to empty filter when called with defaults', () {
-      viewModel.applyFilters(hideFull: true, showDone: true, goals: {3});
+      viewModel.applyFilters(
+        hideFull: true,
+        showDone: true,
+        canJoin: false,
+        goals: {3},
+      );
 
-      viewModel.applyFilters(hideFull: false, showDone: true, goals: const {});
+      viewModel.applyFilters(
+        hideFull: false,
+        showDone: true,
+        canJoin: true,
+        goals: const {},
+      );
 
       final filter = viewModel.currentFilter;
       expect(filter.hideFull, false);
+      expect(filter.canJoin, true);
       expect(filter.goals, isEmpty);
       expect(filter.country, isNull);
     });
