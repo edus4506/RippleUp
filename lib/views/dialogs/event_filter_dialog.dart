@@ -545,56 +545,42 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      SizedBox(
-                        width: double.infinity,
-                        child: TextButton(
-                          style: TextButton.styleFrom(
-                            foregroundColor: const Color(0xFF3E5F36),
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              hideFull = false;
-                              showDone = false;
-                              canJoin = false;
-                              selectedGoals.clear();
-                              capacityChanged = false;
-                              capacityRange = const RangeValues(0, 50);
-                              currentUsersChanged = false;
-                              currentUsersRange = const RangeValues(0, 50);
-                              selectedCountry = null;
-                              selectedDistrict = null;
-                              selectedCity = null;
-                              selectedQuickDate = -1;
-                              startDateController.clear();
-                              endDateController.clear();
-                            });
-                          },
-                          child: const Text(
-                            'Clear filters',
-                            style: TextStyle(fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                      ),
-
                       const SizedBox(height: 10),
-
                       Row(
                         children: [
                           Expanded(
                             child: OutlinedButton(
                               style: OutlinedButton.styleFrom(
-                                foregroundColor: Colors.black87,
+                                foregroundColor: const Color(0xFF43A047),
                                 backgroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(16),
                                 ),
-                                side: BorderSide(color: Colors.grey.shade300),
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 15,
-                                ),
+                                side: const BorderSide(color: Color(0xFF43A047)),
+                                padding: const EdgeInsets.symmetric(vertical: 15),
                               ),
-                              onPressed: () => Navigator.pop(context),
-                              child: const Text('Cancel'),
+                              onPressed: () {
+                                setState(() {
+                                  hideFull = false;
+                                  showDone = false;
+                                  canJoin = false;
+                                  selectedGoals.clear();
+                                  capacityChanged = false;
+                                  capacityRange = const RangeValues(0, 50);
+                                  currentUsersChanged = false;
+                                  currentUsersRange = const RangeValues(0, 50);
+                                  selectedCountry = null;
+                                  selectedDistrict = null;
+                                  selectedCity = null;
+                                  selectedQuickDate = -1;
+                                  startDateController.clear();
+                                  endDateController.clear();
+                                });
+                              },
+                              child: const Text(
+                                'Clear filters',
+                                style: TextStyle(fontWeight: FontWeight.w600),
+                              ),
                             ),
                           ),
                           const SizedBox(width: 10),
