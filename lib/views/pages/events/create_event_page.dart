@@ -13,6 +13,7 @@ import '../../../data/models/events/event.dart';
 import '../../../viewModels/authenthication/auth_viewModel.dart';
 import '../../../viewModels/events/event_viewModel.dart';
 import '../../../viewModels/social/notification_viewModel.dart';
+import '../../widgets/top_bar_tabs//top_bar.dart';
 
 class CreateEventPage extends StatefulWidget {
   const CreateEventPage({super.key});
@@ -228,10 +229,9 @@ class _CreateEventPageState extends State<CreateEventPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF4F7F2),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF43A047),
-        elevation: 0,
-        leading: _CircleButton(
+      appBar: TopBar(
+        title: 'Create',
+        leftWidget: _CircleButton(
           onTap: () => Navigator.pop(context),
           child: const Icon(
             Icons.arrow_back_rounded,
@@ -239,43 +239,6 @@ class _CreateEventPageState extends State<CreateEventPage> {
             size: 22,
           ),
         ),
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Transform.translate(
-              offset: const Offset(0, 2),
-              child: Transform.rotate(
-                angle: -1.57,
-                child: const Icon(
-                  Icons.grass_rounded,
-                  size: 20,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            const SizedBox(width: 6),
-            Text(
-              'Create Event',
-              style: GoogleFonts.dmSerifDisplay(
-                fontSize: 38,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(width: 6),
-            Transform.translate(
-              offset: const Offset(0, 2),
-              child: Transform.rotate(
-                angle: 1.57,
-                child: const Icon(
-                  Icons.grass_rounded,
-                  size: 20,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ],
-        ),
-        centerTitle: true,
       ),
 
       bottomNavigationBar: SafeArea(
@@ -830,7 +793,7 @@ class _WheelTimePickerState extends State<_WheelTimePicker> {
                       Text(
                         'Pick Time',
                         style: GoogleFonts.dmSerifDisplay(
-                          fontSize: 28,
+                          fontSize: 38,
                           color: Colors.white,
                         ),
                       ),
