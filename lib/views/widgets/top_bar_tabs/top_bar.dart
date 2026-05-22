@@ -91,11 +91,11 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
                           opacity: 0.18,
 
                           child: Icon(
-                            Icons.local_florist_rounded,
+                            Icons.public,
 
                             color: Colors.white,
 
-                            size: 26,
+                            size: 40,
                           ),
                         ),
                   ),

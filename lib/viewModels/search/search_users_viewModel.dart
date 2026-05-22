@@ -18,7 +18,7 @@ class SearchUsersViewModel extends ChangeNotifier {
 
   List<Users> get filteredUsers => _filteredUsers;
 
-  static const int kSearchUsersMaxResults = 7;  
+  static const int kSearchUsersMaxResults = 7;
 
   Future<void> loadUsers() async {
     final users = await userRepository.getAllUsers();
@@ -29,7 +29,9 @@ class SearchUsersViewModel extends ChangeNotifier {
 
   void updateSearch(String query) {
     final results = UserSearchService.search(_allUsers, query);
-    _filteredUsers = results.take(kSearchUsersMaxResults).toList(); // ← limita a 7
+    _filteredUsers = results
+        .take(kSearchUsersMaxResults)
+        .toList(); // ← limita a 7
     notifyListeners();
   }
 

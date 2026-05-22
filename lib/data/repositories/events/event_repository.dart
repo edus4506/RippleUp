@@ -31,7 +31,7 @@ class EventRepository {
   /// Se [startAfter] for null começa do início.
   /// Devolve também o último documento para usar como cursor na próxima página.
   Future<({List<Event> events, DocumentSnapshot? lastDoc, bool hasMore})>
-      fetchEventsPaged({DocumentSnapshot? startAfter}) async {
+  fetchEventsPaged({DocumentSnapshot? startAfter}) async {
     Query query = _db
         .collection('events')
         .orderBy('createdAt', descending: true)

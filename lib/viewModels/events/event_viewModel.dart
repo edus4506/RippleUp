@@ -22,7 +22,8 @@ class EventViewModel extends ChangeNotifier {
 
   Stream<List<Event>> get eventsStream => _eventRepository.listenToEvents();
 
-  Stream<List<Event>> get recentEventsStream => _eventRepository.listenToRecentEvents();
+  Stream<List<Event>> get recentEventsStream =>
+      _eventRepository.listenToRecentEvents();
 
   EventFilter _filter = const EventFilter();
 
@@ -314,8 +315,9 @@ class EventViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final result =
-          await _eventRepository.fetchEventsPaged(startAfter: _lastDoc);
+      final result = await _eventRepository.fetchEventsPaged(
+        startAfter: _lastDoc,
+      );
       _pagedEvents = [..._pagedEvents, ...result.events];
       _lastDoc = result.lastDoc;
       _hasMore = result.hasMore;

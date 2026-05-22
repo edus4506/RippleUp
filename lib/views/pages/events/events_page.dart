@@ -51,34 +51,34 @@ class _EventsPageState extends State<EventsPage> {
       body: viewModel.isLoading && events.isEmpty
           ? const Center(child: CircularProgressIndicator())
           : events.isEmpty
-              ? const Center(child: Text('No events found.'))
-              : ListView.builder(
-                  // +1 para o item "Load More" no fim
-                  itemCount: events.length + (viewModel.hasMore ? 1 : 0),
-                  itemBuilder: (context, index) {
-                    // Último item — botão Load More
-                    if (index == events.length) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        child: Center(
-                          child: viewModel.isLoadingMore
-                              ? const CircularProgressIndicator()
-                              : TextButton.icon(
-                                  onPressed: viewModel.loadMoreEvents,
-                                  icon: const Icon(Icons.expand_more),
-                                  label: const Text('Load more'),
-                                ),
-                        ),
-                      );
-                    }
+          ? const Center(child: Text('No events found.'))
+          : ListView.builder(
+              // +1 para o item "Load More" no fim
+              itemCount: events.length + (viewModel.hasMore ? 1 : 0),
+              itemBuilder: (context, index) {
+                // Último item — botão Load More
+                if (index == events.length) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Center(
+                      child: viewModel.isLoadingMore
+                          ? const CircularProgressIndicator()
+                          : TextButton.icon(
+                              onPressed: viewModel.loadMoreEvents,
+                              icon: const Icon(Icons.expand_more),
+                              label: const Text('Load more'),
+                            ),
+                    ),
+                  );
+                }
 
-                    final event = events[index];
-                    return EventCard(
-                      event: event,
-                      onTap: () => _openEventDetails(context, event),
-                    );
-                  },
-                ),
+                final event = events[index];
+                return EventCard(
+                  event: event,
+                  onTap: () => _openEventDetails(context, event),
+                );
+              },
+            ),
     );
   }
 

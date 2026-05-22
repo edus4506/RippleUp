@@ -95,7 +95,7 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 18,
-                  vertical: 16,
+                  vertical: 8,
                 ),
                 decoration: const BoxDecoration(color: Color(0xFF43A047)),
                 child: Stack(
@@ -150,6 +150,34 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                           ),
                         ),
                       ],
+                    ),
+                    Positioned(
+                      top: -0,
+                      left: 50,
+
+                      child: Opacity(
+                        opacity: 0.05,
+
+                        child: Icon(
+                          Icons.eco_rounded,
+                          size: 60,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: -0,
+                      right: 50,
+
+                      child: Opacity(
+                        opacity: 0.05,
+
+                        child: Icon(
+                          Icons.eco_rounded,
+                          size: 60,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                     Align(
                       alignment: Alignment.centerRight,
