@@ -206,7 +206,11 @@ class _EditEventPageState extends State<EditEventPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Event updated successfully!')),
       );
-      Navigator.pop(context, true);
+      // Add a small delay to allow the snackbar to be rendered before navigation
+      await Future.delayed(const Duration(milliseconds: 100));
+      if (mounted) {
+        Navigator.pop(context, true);
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(vm.errorMessage ?? 'Failed to update event')),

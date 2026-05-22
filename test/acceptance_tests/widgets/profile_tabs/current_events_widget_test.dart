@@ -150,6 +150,9 @@ class FakeEventRepository implements EventRepository {
     required String eventId,
     required String userId,
   }) => Stream.value(false);
+
+  @override
+  Future<void> updateEvent(Event event) async {}
 }
 
 class FakeFavoriteRepository implements FavoriteRepository {

@@ -62,6 +62,9 @@ class FakeRepo implements EventRepository {
     required String eventId,
     required String userId,
   }) => Stream.value(false);
+
+  @override
+  Future<void> updateEvent(Event event) async {}
 }
 
 class FakeStorageRepository implements StorageRepository {
