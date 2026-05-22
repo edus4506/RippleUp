@@ -6,6 +6,46 @@ import '../../models/messages/direct_chat_preview.dart';
 class DirectMessageRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
+  Future<
+    ({List<DirectChatPreview> chats, DocumentSnapshot? lastDoc, bool hasMore})
+  >
+  fetchChatsPaged({
+    required String userId,
+    DocumentSnapshot? startAfter,
+    int pageSize = 10,
+  }) async {
+    Query query = _db
+        .collection('direct_chats')
+        .where('participants', arrayContains: userId) // ← ver nota abaixo
+        .orderBy('lastMessageAt', descending: true)
+        .limit(pageSize + 1);
+
+    if (startAfter != null) {
+      query = query.startAfterDocument(startAfter);
+    }
+
+    final snapshot = await query.get();
+    final docs = snapshot.docs;
+
+    final hasMore = docs.length > pageSize;
+    final pageDocs = hasMore ? docs.sublist(0, pageSize) : docs;
+
+    final chats = pageDocs
+        .map(
+          (doc) => DirectChatPreview.fromMap(
+            doc.data() as Map<String, dynamic>,
+            doc.id,
+          ),
+        )
+        .toList();
+
+    return (
+      chats: chats,
+      lastDoc: pageDocs.isNotEmpty ? pageDocs.last : null,
+      hasMore: hasMore,
+    );
+  }
+
   Future<void> createMessage({
     required String chatId,
     required Message message,
@@ -47,19 +87,6 @@ class DirectMessageRepository {
     final doc = await _db.collection('direct_chats').doc(chatId).get();
 
     return doc.exists;
-  }
-
-  Stream<List<DirectChatPreview>> getUserChats(String userId) {
-    return _db
-        .collection('direct_chats')
-        .where('participants', arrayContains: userId)
-        .orderBy('lastMessageAt', descending: true)
-        .snapshots()
-        .map(
-          (snapshot) => snapshot.docs
-              .map((doc) => DirectChatPreview.fromMap(doc.data(), doc.id))
-              .toList(),
-        );
   }
 
   Future<void> markChatAsSeen({
