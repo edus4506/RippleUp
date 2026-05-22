@@ -13,7 +13,7 @@ import '../../../data/models/events/event.dart';
 import '../../../viewModels/authenthication/auth_viewModel.dart';
 import '../../../viewModels/events/event_viewModel.dart';
 import '../../../viewModels/social/notification_viewModel.dart';
-import '../../widgets/top_bar_tabs//top_bar.dart';
+import '../../widgets/top_bar_tabs/top_bar.dart';
 
 class CreateEventPage extends StatefulWidget {
   const CreateEventPage({super.key});
@@ -283,7 +283,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                   ),
                   onPressed: _createEvent,
                   child: const Text(
-                    'Create',
+                    'Create Event',
                     style: TextStyle(fontWeight: FontWeight.w600),
                   ),
                 ),

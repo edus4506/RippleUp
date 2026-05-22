@@ -127,7 +127,10 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
                   alignment: Alignment.center,
 
                   child: Container(
-                    width: 220,
+                    constraints: const BoxConstraints(
+                      minWidth: 220,
+                      maxWidth: 320,
+                    ),
                     height: 60,
 
                     decoration: BoxDecoration(
