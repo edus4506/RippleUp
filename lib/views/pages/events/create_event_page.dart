@@ -54,9 +54,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
     final images = await _picker.pickMultiImage();
 
     if (images.isNotEmpty) {
-      setState(() {
-        selectedImages = images;
-      });
+      setState(() => selectedImages = images);
     }
   }
 
@@ -167,11 +165,50 @@ class _CreateEventPageState extends State<CreateEventPage> {
     Navigator.pop(context);
   }
 
+  Widget _sectionLabel(String text) => Padding(
+    padding: const EdgeInsets.only(bottom: 10),
+    child: Text(
+      text,
+      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Color(0xFF3E5F36)),
+    ),
+  );
+
+  Widget _card(Widget child) => Card(
+    color: Colors.white,
+    elevation: 0,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    child: child,
+  );
+
+  InputDecoration _inputDec(String label, {Widget? prefix}) => InputDecoration(
+    labelText: label,
+    labelStyle: const TextStyle(color: Colors.black54),
+    filled: true,
+    fillColor: Colors.white,
+    prefixIcon: prefix,
+    border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(14),
+      borderSide: const BorderSide(color: Color(0xFF3E5F36), width: 1.5),
+    ),
+  );
+
+  InputDecoration _dropDec(String label) => InputDecoration(
+    labelText: label,
+    filled: true,
+    fillColor: Colors.white,
+    border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(14),
+      borderSide: const BorderSide(color: Color(0xFF3E5F36), width: 1.5),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
 
     return Scaffold(
+      backgroundColor: const Color(0xFFF4F7F2),
       appBar: AppBar(
         backgroundColor: const Color(0xFF43A047),
         elevation: 0,
@@ -209,11 +246,11 @@ class _CreateEventPageState extends State<CreateEventPage> {
 
       bottomNavigationBar: SafeArea(
         child: Container(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: Colors.white,
             boxShadow: [
-              BoxShadow(color: Colors.black.withAlpha(20), blurRadius: 6),
+              BoxShadow(color: Colors.black.withAlpha(15), blurRadius: 8),
             ],
           ),
           child: Row(
@@ -250,30 +287,30 @@ class _CreateEventPageState extends State<CreateEventPage> {
       ),
 
       body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
+        padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextField(
-              controller: _nameController,
-              decoration: const InputDecoration(labelText: 'Event name'),
+            _sectionLabel('Event Info'),
+            _card(
+              Padding(
+                padding: const EdgeInsets.all(14),
+                child: Column(
+                  children: [
+                    TextField(
+                        controller: _nameController,
+                        decoration: _inputDec('Event name'),
+                    ),
+                    const SizedBox(height: 10),
+                    TextField(controller: _descriptionController, maxLines: 3, decoration: _inputDec('Description')),
+                  ],
+                ),
+              ),
             ),
 
-            const SizedBox(height: 10),
+            const SizedBox(height: 24),
 
-            TextField(
-              controller: _descriptionController,
-              decoration: const InputDecoration(labelText: 'Description'),
-            ),
-
-            const SizedBox(height: 20),
-
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text('Event Photos', style: theme.textTheme.titleMedium),
-            ),
-
-            const SizedBox(height: 10),
-
+            _sectionLabel('Event Photos'),
             SizedBox(
               height: 110,
               child: ListView.builder(
@@ -287,10 +324,18 @@ class _CreateEventPageState extends State<CreateEventPage> {
                         width: 110,
                         margin: const EdgeInsets.only(right: 10),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.grey.shade400),
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: Colors.grey.shade300),
                         ),
-                        child: const Icon(Icons.add_a_photo, size: 30),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.add_a_photo_outlined, size: 28, color: Colors.grey.shade400),
+                            const SizedBox(height: 4),
+                            Text('Add', style: TextStyle(color: Colors.grey.shade500, fontSize: 12)),
+                          ],
+                        ),
                       ),
                     );
                   }
@@ -300,7 +345,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                     margin: const EdgeInsets.only(right: 10),
                     clipBehavior: Clip.antiAlias,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(16),
                     ),
                     child: kIsWeb
                         ? Image.network(
@@ -316,15 +361,9 @@ class _CreateEventPageState extends State<CreateEventPage> {
               ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 24),
 
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text('Event Capacity', style: theme.textTheme.titleMedium),
-            ),
-
-            const SizedBox(height: 10),
-
+            _sectionLabel('Event Capacity'),
             Row(
               children: [
                 Text(
@@ -332,33 +371,38 @@ class _CreateEventPageState extends State<CreateEventPage> {
                 ),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: Slider(
-                    value:
+                  child: SliderTheme(
+                    data: SliderTheme.of(context).copyWith(
+                      activeTrackColor: const Color(0xFF3E5F36),
+                      thumbColor: const Color(0xFF3E5F36),
+                    ),
+                    child: Slider(
+                      value:
                         (_maxUsersController.text.isEmpty
                                 ? 0
                                 : int.parse(_maxUsersController.text))
                             .toDouble(),
-                    min: 0,
-                    max: 50,
-                    divisions: 50,
-                    onChanged: (value) {
-                      setState(() {
-                        _maxUsersController.text = value.round().toString();
-                      });
-                    },
+                      min: 0,
+                      max: 50,
+                      divisions: 50,
+                      onChanged: (value) {
+                        setState(() => _maxUsersController.text = value.round().toString());
+                      },
+                    ),
                   ),
                 ),
               ],
             ),
 
-            const SizedBox(height: 10),
+            const SizedBox(height: 24),
 
+            _sectionLabel('Event Dates'),
             TextField(
               controller: _startDateController,
               readOnly: true,
-              decoration: const InputDecoration(
-                labelText: 'Start Date',
-                prefixIcon: Icon(Icons.calendar_today),
+              decoration: _inputDec(
+                'Start Date & Time',
+                prefix: const Icon(Icons.calendar_today_outlined, color: Color(0xFF3E5F36)),
               ),
               onTap: () async {
                 final picked = await _pickDateTime();
@@ -387,21 +431,19 @@ class _CreateEventPageState extends State<CreateEventPage> {
             TextField(
               controller: _endDateController,
               readOnly: true,
-              decoration: const InputDecoration(
-                labelText: 'End Date',
-                prefixIcon: Icon(Icons.calendar_today),
+              decoration: _inputDec(
+                'End Date & Time',
+                prefix: const Icon(Icons.event_available_outlined, color: Color(0xFF3E5F36)),
               ),
               onTap: () async {
-                final picked = await _pickDateTime();
-                if (picked == null) return;
-
                 if (startDate == null) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Select start date first')),
                   );
                   return;
                 }
-
+                final picked = await _pickDateTime();
+                if (picked == null) return;
                 if (picked.isBefore(startDate!)) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
@@ -420,18 +462,9 @@ class _CreateEventPageState extends State<CreateEventPage> {
               },
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 24),
 
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Environmental Goals',
-                style: theme.textTheme.titleMedium,
-              ),
-            ),
-
-            const SizedBox(height: 10),
-
+            _sectionLabel('Environmental Goals'),
             GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -450,14 +483,14 @@ class _CreateEventPageState extends State<CreateEventPage> {
                   onTap: goal == 18
                       ? null
                       : () {
-                          setState(() {
-                            if (isSelected) {
-                              selectedObjectives.remove(goal);
-                            } else {
-                              selectedObjectives.add(goal);
-                            }
-                          });
-                        },
+                    setState(() {
+                      if (isSelected) {
+                        selectedObjectives.remove(goal);
+                      } else {
+                        selectedObjectives.add(goal);
+                      }
+                    });
+                  },
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
                     decoration: BoxDecoration(
@@ -476,17 +509,11 @@ class _CreateEventPageState extends State<CreateEventPage> {
               },
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 24),
 
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text('Location', style: theme.textTheme.titleMedium),
-            ),
-
-            const SizedBox(height: 10),
-
+            _sectionLabel('Location'),
             DropdownButtonFormField<String>(
-              decoration: const InputDecoration(labelText: 'Country'),
+              decoration: _dropDec('Country'),
               value: selectedCountry,
               menuMaxHeight: 300,
               isExpanded: true,
@@ -506,7 +533,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
             if (selectedCountry != null) ...[
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
-                decoration: const InputDecoration(labelText: 'District'),
+                decoration: _dropDec('District'),
                 value: selectedDistrict,
                 menuMaxHeight: 300,
                 isExpanded: true,
@@ -528,7 +555,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
             if (selectedDistrict != null) ...[
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
-                decoration: const InputDecoration(labelText: 'City'),
+                decoration: _dropDec('City'),
                 value: selectedCity,
                 menuMaxHeight: 300,
                 isExpanded: true,
