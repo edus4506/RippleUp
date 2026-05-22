@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../models/events/event.dart';
 import '../../models/events/event_status.dart';
 
+const int kEventsPageSize = 7;
+
 class EventRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
@@ -22,6 +24,39 @@ class EventRepository {
 
     await batch.commit();
   }
+
+  // ─── PAGINAÇÃO ───────────────────────────────────────────────────────────────
+
+  /// Devolve [kEventsPageSize] eventos a partir do cursor [startAfter].
+  /// Se [startAfter] for null começa do início.
+  /// Devolve também o último documento para usar como cursor na próxima página.
+  Future<({List<Event> events, DocumentSnapshot? lastDoc, bool hasMore})>
+      fetchEventsPaged({DocumentSnapshot? startAfter}) async {
+    Query query = _db
+        .collection('events')
+        .orderBy('createdAt', descending: true)
+        .limit(kEventsPageSize + 1); // +1 para saber se há mais
+
+    if (startAfter != null) {
+      query = query.startAfterDocument(startAfter);
+    }
+
+    final snapshot = await query.get();
+    final docs = snapshot.docs;
+
+    final hasMore = docs.length > kEventsPageSize;
+    final pageDocs = hasMore ? docs.sublist(0, kEventsPageSize) : docs;
+
+    final events = pageDocs
+        .map((doc) => Event.fromMap(doc.data() as Map<String, dynamic>, doc.id))
+        .toList();
+
+    final lastDoc = pageDocs.isNotEmpty ? pageDocs.last : null;
+
+    return (events: events, lastDoc: lastDoc, hasMore: hasMore);
+  }
+
+  // ─── STREAM (mantida para outros usos internos) ───────────────────────────
 
   Stream<List<Event>> listenToEvents() {
     return _db

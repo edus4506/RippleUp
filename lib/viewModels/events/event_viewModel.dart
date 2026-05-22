@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -116,11 +117,13 @@ class EventViewModel extends ChangeNotifier {
     );
 
     notifyListeners();
+    refreshPaged();
   }
 
   void resetFilters() {
     _filter = const EventFilter();
     notifyListeners();
+    refreshPaged();
   }
 
   // =========================
@@ -265,6 +268,65 @@ class EventViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  // =========================
+  // PAGINAÇÃO
+  // =========================
+
+  List<Event> _pagedEvents = [];
+  DocumentSnapshot? _lastDoc;
+  bool _hasMore = true;
+  bool _isLoadingMore = false;
+
+  List<Event> get pagedEvents => _pagedEvents;
+  bool get hasMore => _hasMore;
+  bool get isLoadingMore => _isLoadingMore;
+
+  /// Carrega a primeira página (ou reinicia se [reset] for true).
+  Future<void> loadFirstPage() async {
+    _pagedEvents = [];
+    _lastDoc = null;
+    _hasMore = true;
+    isLoading = true;
+    errorMessage = null;
+    notifyListeners();
+
+    try {
+      final result = await _eventRepository.fetchEventsPaged();
+      _pagedEvents = result.events;
+      _lastDoc = result.lastDoc;
+      _hasMore = result.hasMore;
+    } catch (e) {
+      errorMessage = e.toString().replaceFirst('Exception: ', '');
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  /// Carrega a próxima página e adiciona à lista existente.
+  Future<void> loadMoreEvents() async {
+    if (!_hasMore || _isLoadingMore) return;
+
+    _isLoadingMore = true;
+    notifyListeners();
+
+    try {
+      final result =
+          await _eventRepository.fetchEventsPaged(startAfter: _lastDoc);
+      _pagedEvents = [..._pagedEvents, ...result.events];
+      _lastDoc = result.lastDoc;
+      _hasMore = result.hasMore;
+    } catch (e) {
+      errorMessage = e.toString().replaceFirst('Exception: ', '');
+    } finally {
+      _isLoadingMore = false;
+      notifyListeners();
+    }
+  }
+
+  /// Chama quando filtros/pesquisa mudam — reinicia a paginação.
+  void refreshPaged() => loadFirstPage();
 
   @override
   void dispose() {
