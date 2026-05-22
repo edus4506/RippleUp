@@ -22,6 +22,8 @@ class EventViewModel extends ChangeNotifier {
 
   Stream<List<Event>> get eventsStream => _eventRepository.listenToEvents();
 
+  Stream<List<Event>> get recentEventsStream => _eventRepository.listenToRecentEvents();
+
   EventFilter _filter = const EventFilter();
 
   EventFilter get currentFilter => _filter;

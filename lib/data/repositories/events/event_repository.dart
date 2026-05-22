@@ -124,6 +124,20 @@ class EventRepository {
         .map((doc) => doc.exists);
   }
 
+  /// Stream limitado para a página de pesquisa — evita carregar tudo.
+  Stream<List<Event>> listenToRecentEvents({int limit = 50}) {
+    return _db
+        .collection('events')
+        .orderBy('createdAt', descending: true)
+        .limit(limit)
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => Event.fromMap(doc.data(), doc.id))
+              .toList(),
+        );
+  }
+
   Future<void> leaveEvent({
     required String eventId,
     required String userId,
