@@ -84,10 +84,18 @@ class _DirectMessagesPageState extends State<DirectMessagesPage> {
                         ...events.map((event) {
                           final isMe = event.lastSenderId == currentUserId;
 
-                          final isUnread = event.lastSenderId != currentUserId;
+                          final isUnread =
+                              !event.lastSeenBy.contains(currentUserId) &&
+                              event.lastSenderId != currentUserId;
 
                           return GestureDetector(
                             onTap: () {
+                              context
+                                  .read<EventChatRepository>()
+                                  .markEventChatAsSeen(
+                                    eventId: event.eventId,
+                                    userId: currentUserId,
+                                  );
                               Navigator.pushNamed(
                                 context,
                                 AppRoutes.chat,

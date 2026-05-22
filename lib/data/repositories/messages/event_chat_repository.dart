@@ -18,6 +18,7 @@ class EventChatRepository {
       'lastMessageAt': FieldValue.serverTimestamp(),
       'lastSenderId': message.senderId,
       'participantsHistory': FieldValue.arrayUnion(participantIds),
+      'lastSeenBy': [message.senderId],
     }, SetOptions(merge: true));
   }
 
@@ -32,5 +33,14 @@ class EventChatRepository {
               .map((doc) => EventChatPreview.fromMap(doc.data(), doc.id))
               .toList(),
         );
+  }
+
+  Future<void> markEventChatAsSeen({
+    required String eventId,
+    required String userId,
+  }) async {
+    await _db.collection('event_chats').doc(eventId).set({
+      'lastSeenBy': FieldValue.arrayUnion([userId]),
+    }, SetOptions(merge: true));
   }
 }

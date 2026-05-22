@@ -13,6 +13,8 @@ class EventChatPreview {
 
   final List<String> participantsHistory;
 
+  final List<String> lastSeenBy;
+
   EventChatPreview({
     required this.eventId,
 
@@ -25,6 +27,8 @@ class EventChatPreview {
     required this.lastSenderId,
 
     required this.participantsHistory,
+
+    this.lastSeenBy = const [],
   });
 
   factory EventChatPreview.fromMap(
@@ -45,6 +49,7 @@ class EventChatPreview {
       lastSenderId: map['lastSenderId'] ?? '',
 
       participantsHistory: List<String>.from(map['participantsHistory'] ?? []),
+      lastSeenBy: List<String>.from(map['lastSeenBy'] ?? []),
     );
   }
 
