@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../../data/constants/event_locations.dart';
 import '../../../data/models/events/event.dart';
@@ -12,6 +13,7 @@ import '../../../data/models/events/event.dart';
 import '../../../viewModels/authenthication/auth_viewModel.dart';
 import '../../../viewModels/events/event_viewModel.dart';
 import '../../../viewModels/social/notification_viewModel.dart';
+import '../../widgets/top_bar_tabs/top_bar.dart';
 
 class CreateEventPage extends StatefulWidget {
   const CreateEventPage({super.key});
@@ -53,9 +55,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
     final images = await _picker.pickMultiImage();
 
     if (images.isNotEmpty) {
-      setState(() {
-        selectedImages = images;
-      });
+      setState(() => selectedImages = images);
     }
   }
 
@@ -67,13 +67,23 @@ class _CreateEventPageState extends State<CreateEventPage> {
       initialDate: now,
       firstDate: now,
       lastDate: DateTime(2100),
+      builder: (context, child) => Theme(
+        data: Theme.of(context).copyWith(
+          colorScheme: const ColorScheme.light(
+            primary: Color(0xFF3E5F36),
+            onPrimary: Colors.white,
+            surface: Colors.white,
+          ),
+        ),
+        child: child!,
+      ),
     );
 
     if (date == null) return null;
 
-    final time = await showTimePicker(
+    TimeOfDay? time = await showDialog<TimeOfDay>(
       context: context,
-      initialTime: TimeOfDay.now(),
+      builder: (context) => _WheelTimePicker(initial: TimeOfDay.now()),
     );
 
     if (time == null) return null;
@@ -166,35 +176,116 @@ class _CreateEventPageState extends State<CreateEventPage> {
     Navigator.pop(context);
   }
 
+  Widget _sectionLabel(String text) => Padding(
+    padding: const EdgeInsets.only(bottom: 10),
+    child: Text(
+      text,
+      style: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+        color: Color(0xFF3E5F36),
+      ),
+    ),
+  );
+
+  Widget _card(Widget child) => Card(
+    color: Colors.white,
+    elevation: 0,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    child: child,
+  );
+
+  InputDecoration _inputDec(String label, {Widget? prefix}) => InputDecoration(
+    labelText: label,
+    labelStyle: const TextStyle(color: Colors.black54),
+    filled: true,
+    fillColor: Colors.white,
+    prefixIcon: prefix,
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(14),
+      borderSide: BorderSide.none,
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(14),
+      borderSide: const BorderSide(color: Color(0xFF3E5F36), width: 1.5),
+    ),
+  );
+
+  InputDecoration _dropDec(String label) => InputDecoration(
+    labelText: label,
+    filled: true,
+    fillColor: Colors.white,
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(14),
+      borderSide: BorderSide.none,
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(14),
+      borderSide: const BorderSide(color: Color(0xFF3E5F36), width: 1.5),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Scaffold(
-      appBar: AppBar(title: const Text('Create Event')),
+      backgroundColor: const Color(0xFFF4F7F2),
+      appBar: TopBar(
+        title: 'Create',
+        leftWidget: _CircleButton(
+          onTap: () => Navigator.pop(context),
+          child: const Icon(
+            Icons.arrow_back_rounded,
+            color: Colors.white,
+            size: 22,
+          ),
+        ),
+      ),
 
       bottomNavigationBar: SafeArea(
         child: Container(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: Colors.white,
             boxShadow: [
-              BoxShadow(color: Colors.black.withAlpha(20), blurRadius: 6),
+              BoxShadow(color: Colors.black.withAlpha(15), blurRadius: 8),
             ],
           ),
           child: Row(
             children: [
               Expanded(
                 child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: const Color(0xFF43A047),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    side: const BorderSide(color: Color(0xFF43A047)),
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                  ),
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('Cancel'),
+                  child: const Text(
+                    'Cancel',
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                  ),
                 ),
               ),
               const SizedBox(width: 10),
               Expanded(
                 child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    elevation: 0,
+                    backgroundColor: const Color(0xFF43A047),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                  ),
                   onPressed: _createEvent,
-                  child: const Text('Create'),
+                  child: const Text(
+                    'Create Event',
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                  ),
                 ),
               ),
             ],
@@ -203,30 +294,34 @@ class _CreateEventPageState extends State<CreateEventPage> {
       ),
 
       body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
+        padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextField(
-              controller: _nameController,
-              decoration: const InputDecoration(labelText: 'Event name'),
+            _sectionLabel('Event Info'),
+            _card(
+              Padding(
+                padding: const EdgeInsets.all(14),
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: _nameController,
+                      decoration: _inputDec('Event name'),
+                    ),
+                    const SizedBox(height: 10),
+                    TextField(
+                      controller: _descriptionController,
+                      maxLines: 3,
+                      decoration: _inputDec('Description'),
+                    ),
+                  ],
+                ),
+              ),
             ),
 
-            const SizedBox(height: 10),
+            const SizedBox(height: 24),
 
-            TextField(
-              controller: _descriptionController,
-              decoration: const InputDecoration(labelText: 'Description'),
-            ),
-
-            const SizedBox(height: 20),
-
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text('Event Photos', style: theme.textTheme.titleMedium),
-            ),
-
-            const SizedBox(height: 10),
-
+            _sectionLabel('Event Photos'),
             SizedBox(
               height: 110,
               child: ListView.builder(
@@ -240,44 +335,79 @@ class _CreateEventPageState extends State<CreateEventPage> {
                         width: 110,
                         margin: const EdgeInsets.only(right: 10),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.grey.shade400),
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: Colors.grey.shade300),
                         ),
-                        child: const Icon(Icons.add_a_photo, size: 30),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.add_a_photo_outlined,
+                              size: 28,
+                              color: Colors.grey.shade400,
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Add',
+                              style: TextStyle(
+                                color: Colors.grey.shade500,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   }
-
-                  return Container(
-                    width: 110,
-                    margin: const EdgeInsets.only(right: 10),
-                    clipBehavior: Clip.antiAlias,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: kIsWeb
-                        ? Image.network(
-                            selectedImages[index].path,
-                            fit: BoxFit.cover,
-                          )
-                        : Image.file(
-                            File(selectedImages[index].path),
-                            fit: BoxFit.cover,
+                  return Stack(
+                    children: [
+                      Container(
+                        width: 110,
+                        margin: const EdgeInsets.only(right: 10),
+                        clipBehavior: Clip.antiAlias,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: kIsWeb
+                            ? Image.network(
+                                selectedImages[index].path,
+                                fit: BoxFit.cover,
+                              )
+                            : Image.file(
+                                File(selectedImages[index].path),
+                                fit: BoxFit.cover,
+                              ),
+                      ),
+                      Positioned(
+                        top: 4,
+                        right: 14,
+                        child: GestureDetector(
+                          onTap: () =>
+                              setState(() => selectedImages.removeAt(index)),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.5),
+                              shape: BoxShape.circle,
+                            ),
+                            padding: const EdgeInsets.all(3),
+                            child: const Icon(
+                              Icons.close,
+                              color: Colors.white,
+                              size: 14,
+                            ),
                           ),
+                        ),
+                      ),
+                    ],
                   );
                 },
               ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 24),
 
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text('Event Capacity', style: theme.textTheme.titleMedium),
-            ),
-
-            const SizedBox(height: 10),
-
+            _sectionLabel('Event Capacity'),
             Row(
               children: [
                 Text(
@@ -285,106 +415,123 @@ class _CreateEventPageState extends State<CreateEventPage> {
                 ),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: Slider(
-                    value:
-                        (_maxUsersController.text.isEmpty
-                                ? 0
-                                : int.parse(_maxUsersController.text))
-                            .toDouble(),
-                    min: 0,
-                    max: 50,
-                    divisions: 50,
-                    onChanged: (value) {
-                      setState(() {
-                        _maxUsersController.text = value.round().toString();
-                      });
-                    },
+                  child: SliderTheme(
+                    data: SliderTheme.of(context).copyWith(
+                      activeTrackColor: const Color(0xFF3E5F36),
+                      thumbColor: const Color(0xFF3E5F36),
+                    ),
+                    child: Slider(
+                      value:
+                          (_maxUsersController.text.isEmpty
+                                  ? 0
+                                  : int.parse(_maxUsersController.text))
+                              .toDouble(),
+                      min: 0,
+                      max: 50,
+                      divisions: 50,
+                      onChanged: (value) {
+                        setState(
+                          () => _maxUsersController.text = value
+                              .round()
+                              .toString(),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ],
             ),
 
-            const SizedBox(height: 10),
+            const SizedBox(height: 24),
 
-            TextField(
-              controller: _startDateController,
-              readOnly: true,
-              decoration: const InputDecoration(
-                labelText: 'Start Date',
-                prefixIcon: Icon(Icons.calendar_today),
-              ),
-              onTap: () async {
-                final picked = await _pickDateTime();
-                if (picked == null) return;
+            _sectionLabel('Event Dates'),
+            _card(
+              Padding(
+                padding: const EdgeInsets.all(14),
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: _startDateController,
+                      readOnly: true,
+                      decoration: _inputDec(
+                        'Start Date & Time',
+                        prefix: const Icon(
+                          Icons.calendar_today_outlined,
+                          color: Color(0xFF3E5F36),
+                        ),
+                      ),
+                      onTap: () async {
+                        final picked = await _pickDateTime();
+                        if (picked == null) return;
 
-                if (picked.isBefore(DateTime.now())) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Start date must be in the future'),
+                        if (picked.isBefore(DateTime.now())) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Start date must be in the future'),
+                            ),
+                          );
+                          return;
+                        }
+
+                        setState(() {
+                          startDate = picked;
+                          _startDateController.text = DateFormat(
+                            'dd/MM/yyyy HH:mm',
+                          ).format(picked);
+                        });
+                      },
                     ),
-                  );
-                  return;
-                }
 
-                setState(() {
-                  startDate = picked;
-                  _startDateController.text = DateFormat(
-                    'dd/MM/yyyy HH:mm',
-                  ).format(picked);
-                });
-              },
-            ),
+                    const SizedBox(height: 10),
 
-            const SizedBox(height: 10),
+                    TextField(
+                      controller: _endDateController,
+                      readOnly: true,
+                      decoration: _inputDec(
+                        'End Date & Time',
+                        prefix: const Icon(
+                          Icons.event_available_outlined,
+                          color: Color(0xFF3E5F36),
+                        ),
+                      ),
+                      onTap: () async {
+                        if (startDate == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Select start date first'),
+                            ),
+                          );
+                          return;
+                        }
+                        final picked = await _pickDateTime();
+                        if (picked == null) return;
+                        if (picked.isBefore(startDate!)) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'End date must be after start date',
+                              ),
+                            ),
+                          );
+                          return;
+                        }
 
-            TextField(
-              controller: _endDateController,
-              readOnly: true,
-              decoration: const InputDecoration(
-                labelText: 'End Date',
-                prefixIcon: Icon(Icons.calendar_today),
-              ),
-              onTap: () async {
-                final picked = await _pickDateTime();
-                if (picked == null) return;
-
-                if (startDate == null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Select start date first')),
-                  );
-                  return;
-                }
-
-                if (picked.isBefore(startDate!)) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('End date must be after start date'),
+                        setState(() {
+                          endDate = picked;
+                          _endDateController.text = DateFormat(
+                            'dd/MM/yyyy HH:mm',
+                          ).format(picked);
+                        });
+                      },
                     ),
-                  );
-                  return;
-                }
-
-                setState(() {
-                  endDate = picked;
-                  _endDateController.text = DateFormat(
-                    'dd/MM/yyyy HH:mm',
-                  ).format(picked);
-                });
-              },
-            ),
-
-            const SizedBox(height: 20),
-
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Environmental Goals',
-                style: theme.textTheme.titleMedium,
+                  ],
+                ),
               ),
             ),
 
-            const SizedBox(height: 10),
+            const SizedBox(height: 24),
 
+            _sectionLabel('Environmental Goals'),
             GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -399,47 +546,73 @@ class _CreateEventPageState extends State<CreateEventPage> {
 
                 final isSelected = selectedObjectives.contains(goal);
 
-                return GestureDetector(
-                  onTap: goal == 18
-                      ? null
-                      : () {
-                          setState(() {
-                            if (isSelected) {
-                              selectedObjectives.remove(goal);
-                            } else {
-                              selectedObjectives.add(goal);
-                            }
-                          });
-                        },
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      border: (isSelected && goal != 18)
-                          ? Border.all(color: Colors.green, width: 3)
-                          : null,
-                    ),
-                    clipBehavior: Clip.antiAlias,
-                    child: Image.asset(
-                      'assets/objectives/goal$goal.jpg',
-                      fit: BoxFit.cover,
+                return Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(14),
+                    onTap: goal == 18
+                        ? null
+                        : () {
+                            setState(() {
+                              if (isSelected) {
+                                selectedObjectives.remove(goal);
+                              } else {
+                                selectedObjectives.add(goal);
+                              }
+                            });
+                          },
+                    child: Ink(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: isSelected
+                              ? const Color(0xFF3E5F36)
+                              : Colors.grey.shade300,
+                          width: isSelected ? 3 : 1,
+                        ),
+                        boxShadow: isSelected
+                            ? [
+                                BoxShadow(
+                                  color: const Color(
+                                    0xFF3E5F36,
+                                  ).withOpacity(0.25),
+                                  blurRadius: 8,
+                                ),
+                              ]
+                            : [],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(14),
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            Image.asset(
+                              'assets/objectives/goal$goal.jpg',
+                              fit: BoxFit.cover,
+                            ),
+                            if (isSelected)
+                              Container(
+                                color: Colors.black.withOpacity(0.35),
+                                child: const Icon(
+                                  Icons.check_circle_rounded,
+                                  color: Colors.white,
+                                  size: 28,
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 );
               },
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 24),
 
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text('Location', style: theme.textTheme.titleMedium),
-            ),
-
-            const SizedBox(height: 10),
-
+            _sectionLabel('Location'),
             DropdownButtonFormField<String>(
-              decoration: const InputDecoration(labelText: 'Country'),
+              decoration: _dropDec('Country'),
               value: selectedCountry,
               menuMaxHeight: 300,
               isExpanded: true,
@@ -459,7 +632,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
             if (selectedCountry != null) ...[
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
-                decoration: const InputDecoration(labelText: 'District'),
+                decoration: _dropDec('District'),
                 value: selectedDistrict,
                 menuMaxHeight: 300,
                 isExpanded: true,
@@ -481,7 +654,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
             if (selectedDistrict != null) ...[
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
-                decoration: const InputDecoration(labelText: 'City'),
+                decoration: _dropDec('City'),
                 value: selectedCity,
                 menuMaxHeight: 300,
                 isExpanded: true,
@@ -495,6 +668,278 @@ class _CreateEventPageState extends State<CreateEventPage> {
               ),
             ],
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _WheelTimePicker extends StatefulWidget {
+  final TimeOfDay initial;
+  const _WheelTimePicker({required this.initial});
+
+  @override
+  State<_WheelTimePicker> createState() => _WheelTimePickerState();
+}
+
+class _WheelTimePickerState extends State<_WheelTimePicker> {
+  late int _hour;
+  late int _minute;
+
+  late FixedExtentScrollController _hourCtrl;
+  late FixedExtentScrollController _minuteCtrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _hour = widget.initial.hour;
+    _minute = widget.initial.minute;
+    _hourCtrl = FixedExtentScrollController(initialItem: _hour);
+    _minuteCtrl = FixedExtentScrollController(initialItem: _minute);
+  }
+
+  @override
+  void dispose() {
+    _hourCtrl.dispose();
+    _minuteCtrl.dispose();
+    super.dispose();
+  }
+
+  Widget _wheel({
+    required FixedExtentScrollController controller,
+    required int itemCount,
+    required String Function(int) label,
+    required ValueChanged<int> onChanged,
+  }) {
+    return SizedBox(
+      width: 72,
+      height: 180,
+      child: ListWheelScrollView.useDelegate(
+        controller: controller,
+        itemExtent: 48,
+        diameterRatio: 1.6,
+        physics: const FixedExtentScrollPhysics(),
+        onSelectedItemChanged: onChanged,
+        childDelegate: ListWheelChildBuilderDelegate(
+          childCount: itemCount,
+          builder: (context, index) {
+            final isSelected =
+                (controller.hasClients && controller.selectedItem == index) ||
+                (!controller.hasClients &&
+                    (label == ((i) => i.toString().padLeft(2, '0'))
+                        ? index == _hour
+                        : index == _minute));
+            return Center(
+              child: AnimatedDefaultTextStyle(
+                duration: const Duration(milliseconds: 180),
+                style: GoogleFonts.dmSerifDisplay(
+                  fontSize: isSelected ? 34 : 24,
+                  color: isSelected
+                      ? const Color(0xFF3E5F36)
+                      : Colors.grey.shade400,
+                  fontWeight: FontWeight.w400,
+                ),
+                child: Text(label(index)),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      child: Container(
+        decoration: BoxDecoration(
+          color: const Color(0xFFF4F7F2),
+          borderRadius: BorderRadius.circular(28),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+              color: const Color(0xFF43A047),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _CircleButton(
+                    onTap: () => Navigator.pop(context),
+                    child: const Icon(
+                      Icons.close_rounded,
+                      color: Colors.white,
+                      size: 22,
+                    ),
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Transform.translate(
+                        offset: const Offset(0, 2),
+                        child: Transform.rotate(
+                          angle: -1.57,
+                          child: const Icon(
+                            Icons.grass_rounded,
+                            size: 18,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        'Pick Time',
+                        style: GoogleFonts.dmSerifDisplay(
+                          fontSize: 38,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Transform.translate(
+                        offset: const Offset(0, 2),
+                        child: Transform.rotate(
+                          angle: 1.57,
+                          child: const Icon(
+                            Icons.grass_rounded,
+                            size: 18,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(width: 52),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                Container(
+                  height: 48,
+                  margin: const EdgeInsets.symmetric(horizontal: 24),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF3E5F36).withOpacity(0.08),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(
+                      color: const Color(0xFF3E5F36).withOpacity(0.18),
+                      width: 1.5,
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _wheel(
+                      controller: _hourCtrl,
+                      itemCount: 24,
+                      label: (i) => i.toString().padLeft(2, '0'),
+                      onChanged: (i) => setState(() => _hour = i),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      child: Text(
+                        ':',
+                        style: GoogleFonts.dmSerifDisplay(
+                          fontSize: 36,
+                          color: const Color(0xFF3E5F36),
+                        ),
+                      ),
+                    ),
+                    _wheel(
+                      controller: _minuteCtrl,
+                      itemCount: 60,
+                      label: (i) => i.toString().padLeft(2, '0'),
+                      onChanged: (i) => setState(() => _minute = i),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 20),
+
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    elevation: 0,
+                    backgroundColor: const Color(0xFF43A047),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                  ),
+                  onPressed: () => Navigator.pop(
+                    context,
+                    TimeOfDay(hour: _hour, minute: _minute),
+                  ),
+                  child: Text(
+                    'Confirm  ${_hour.toString().padLeft(2, '0')}:${_minute.toString().padLeft(2, '0')}',
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CircleButton extends StatefulWidget {
+  final Widget child;
+  final VoidCallback? onTap;
+  const _CircleButton({required this.child, this.onTap});
+
+  @override
+  State<_CircleButton> createState() => _CircleButtonState();
+}
+
+class _CircleButtonState extends State<_CircleButton> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          width: 52,
+          height: 52,
+          decoration: BoxDecoration(
+            color: _hovered
+                ? Colors.white.withOpacity(0.25)
+                : Colors.white.withOpacity(0.14),
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: _hovered
+                  ? Colors.white.withOpacity(0.25)
+                  : Colors.white.withOpacity(0.10),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.08),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Center(child: widget.child),
         ),
       ),
     );
