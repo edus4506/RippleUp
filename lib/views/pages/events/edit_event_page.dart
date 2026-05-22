@@ -153,16 +153,18 @@ class _EditEventPageState extends State<EditEventPage> {
     final currentUser = context.read<AuthViewModel>().currentUser;
 
     if (currentUser == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('You must be logged in')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('You must be logged in')));
       return;
     }
 
     // Guard: only the owner can save
     if (currentUser.uid != widget.event.idCreator) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Only the event owner can edit this event')),
+        const SnackBar(
+          content: Text('Only the event owner can edit this event'),
+        ),
       );
       return;
     }
@@ -387,10 +389,11 @@ class _EditEventPageState extends State<EditEventPage> {
                 const SizedBox(width: 10),
                 Expanded(
                   child: Slider(
-                    value: (_maxUsersController.text.isEmpty
-                            ? 0
-                            : int.parse(_maxUsersController.text))
-                        .toDouble(),
+                    value:
+                        (_maxUsersController.text.isEmpty
+                                ? 0
+                                : int.parse(_maxUsersController.text))
+                            .toDouble(),
                     min: 0,
                     max: 50,
                     divisions: 50,
@@ -428,8 +431,9 @@ class _EditEventPageState extends State<EditEventPage> {
 
                 setState(() {
                   startDate = picked;
-                  _startDateController.text =
-                      DateFormat('dd/MM/yyyy HH:mm').format(picked);
+                  _startDateController.text = DateFormat(
+                    'dd/MM/yyyy HH:mm',
+                  ).format(picked);
                 });
               },
             ),
@@ -465,8 +469,9 @@ class _EditEventPageState extends State<EditEventPage> {
 
                 setState(() {
                   endDate = picked;
-                  _endDateController.text =
-                      DateFormat('dd/MM/yyyy HH:mm').format(picked);
+                  _endDateController.text = DateFormat(
+                    'dd/MM/yyyy HH:mm',
+                  ).format(picked);
                 });
               },
             ),

@@ -32,8 +32,7 @@ class FakeFavoriteRepository implements FavoriteRepository {
   Stream<bool> isEventFavorited({
     required String userId,
     required String eventId,
-  }) =>
-      Stream.value(false);
+  }) => Stream.value(false);
 
   @override
   Future<void> addFavorite({
@@ -123,9 +122,7 @@ Widget buildEditPageTestable({
       ChangeNotifierProvider<EventViewModel>.value(value: eventVm),
     ],
     child: MaterialApp(
-      home: Scaffold(
-        body: EditEventPage(event: event),
-      ),
+      home: Scaffold(body: EditEventPage(event: event)),
     ),
   );
 }
@@ -285,37 +282,29 @@ void main() {
 
   // ── Scenario: Edit page pre-fills existing data ───────────────────────────
 
-  testWidgets(
-    'EditEventPage pre-fills the form with the existing event data',
-    (tester) async {
-      // Given a logged-in owner navigates to the EditEventPage
-      when(() => authVm.addListener(any())).thenAnswer((_) {});
-      when(() => authVm.removeListener(any())).thenAnswer((_) {});
-      when(() => eventVm.addListener(any())).thenAnswer((_) {});
-      when(() => eventVm.removeListener(any())).thenAnswer((_) {});
-      when(() => authVm.currentUser).thenReturn(user);
-      when(() => user.uid).thenReturn('creator-1');
+  testWidgets('EditEventPage pre-fills the form with the existing event data', (
+    tester,
+  ) async {
+    // Given a logged-in owner navigates to the EditEventPage
+    when(() => authVm.addListener(any())).thenAnswer((_) {});
+    when(() => authVm.removeListener(any())).thenAnswer((_) {});
+    when(() => eventVm.addListener(any())).thenAnswer((_) {});
+    when(() => eventVm.removeListener(any())).thenAnswer((_) {});
+    when(() => authVm.currentUser).thenReturn(user);
+    when(() => user.uid).thenReturn('creator-1');
 
-      final event = buildEvent(idCreator: 'creator-1');
+    final event = buildEvent(idCreator: 'creator-1');
 
-      await tester.pumpWidget(
-        buildEditPageTestable(
-          auth: authVm,
-          eventVm: eventVm,
-          event: event,
-        ),
-      );
-      await tester.pumpAndSettle();
+    await tester.pumpWidget(
+      buildEditPageTestable(auth: authVm, eventVm: eventVm, event: event),
+    );
+    await tester.pumpAndSettle();
 
-      // Then the title field is pre-filled with the event's title
-      expect(find.text('Beach Cleanup'), findsOneWidget);
-      // And the description field is pre-filled
-      expect(
-        find.text('Let us clean the beach together.'),
-        findsOneWidget,
-      );
-    },
-  );
+    // Then the title field is pre-filled with the event's title
+    expect(find.text('Beach Cleanup'), findsOneWidget);
+    // And the description field is pre-filled
+    expect(find.text('Let us clean the beach together.'), findsOneWidget);
+  });
 
   // ── Scenario: Successful event update ────────────────────────────────────
 
@@ -337,18 +326,12 @@ void main() {
           images: any(named: 'images'),
         ),
       ).thenAnswer((_) async => []);
-      when(
-        () => eventVm.updateEvent(any()),
-      ).thenAnswer((_) async => true);
+      when(() => eventVm.updateEvent(any())).thenAnswer((_) async => true);
 
       final event = buildEvent(idCreator: 'creator-1');
 
       await tester.pumpWidget(
-        buildEditPageTestable(
-          auth: authVm,
-          eventVm: eventVm,
-          event: event,
-        ),
+        buildEditPageTestable(auth: authVm, eventVm: eventVm, event: event),
       );
       await tester.pumpAndSettle();
 
@@ -365,43 +348,33 @@ void main() {
 
   // ── Scenario: Invalid data submission ────────────────────────────────────
 
-  testWidgets(
-    'Tapping Save with an empty title shows a validation error '
-    'and does NOT call updateEvent',
-    (tester) async {
-      // Given a logged-in owner on the EditEventPage
-      when(() => authVm.addListener(any())).thenAnswer((_) {});
-      when(() => authVm.removeListener(any())).thenAnswer((_) {});
-      when(() => eventVm.addListener(any())).thenAnswer((_) {});
-      when(() => eventVm.removeListener(any())).thenAnswer((_) {});
-      when(() => authVm.currentUser).thenReturn(user);
-      when(() => user.uid).thenReturn('creator-1');
-      when(() => eventVm.isLoading).thenReturn(false);
-      when(() => eventVm.errorMessage).thenReturn(null);
+  testWidgets('Tapping Save with an empty title shows a validation error '
+      'and does NOT call updateEvent', (tester) async {
+    // Given a logged-in owner on the EditEventPage
+    when(() => authVm.addListener(any())).thenAnswer((_) {});
+    when(() => authVm.removeListener(any())).thenAnswer((_) {});
+    when(() => eventVm.addListener(any())).thenAnswer((_) {});
+    when(() => eventVm.removeListener(any())).thenAnswer((_) {});
+    when(() => authVm.currentUser).thenReturn(user);
+    when(() => user.uid).thenReturn('creator-1');
+    when(() => eventVm.isLoading).thenReturn(false);
+    when(() => eventVm.errorMessage).thenReturn(null);
 
-      final event = buildEvent(idCreator: 'creator-1');
+    final event = buildEvent(idCreator: 'creator-1');
 
-      await tester.pumpWidget(
-        buildEditPageTestable(
-          auth: authVm,
-          eventVm: eventVm,
-          event: event,
-        ),
-      );
-      await tester.pumpAndSettle();
+    await tester.pumpWidget(
+      buildEditPageTestable(auth: authVm, eventVm: eventVm, event: event),
+    );
+    await tester.pumpAndSettle();
 
-      // When the user clears the title field
-      await tester.enterText(find.widgetWithText(TextField, 'Beach Cleanup'), '');
-      await tester.tap(find.text('Save'));
-      await tester.pumpAndSettle();
+    // When the user clears the title field
+    await tester.enterText(find.widgetWithText(TextField, 'Beach Cleanup'), '');
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
 
-      // Then updateEvent is NOT called
-      verifyNever(() => eventVm.updateEvent(any()));
-      // And an error snackbar is shown
-      expect(
-        find.text('Please fill in all fields correctly'),
-        findsOneWidget,
-      );
-    },
-  );
+    // Then updateEvent is NOT called
+    verifyNever(() => eventVm.updateEvent(any()));
+    // And an error snackbar is shown
+    expect(find.text('Please fill in all fields correctly'), findsOneWidget);
+  });
 }
