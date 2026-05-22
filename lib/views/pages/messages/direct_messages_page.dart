@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -30,6 +31,48 @@ class DirectMessagesPage extends StatefulWidget {
 class _DirectMessagesPageState extends State<DirectMessagesPage> {
   bool showEventChats = false;
 
+  List<DirectChatPreview> _chats = [];
+  DocumentSnapshot? _lastDoc;
+  bool _hasMore = true;
+  bool _isLoadingMore = false;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFirstPage();
+  }
+
+  Future<void> _loadFirstPage() async {
+    final currentUserId = FirebaseAuth.instance.currentUser!.uid;
+    final result = await context
+        .read<DirectMessageRepository>()
+        .fetchChatsPaged(userId: currentUserId);
+    setState(() {
+      _chats = result.chats;
+      _lastDoc = result.lastDoc;
+      _hasMore = result.hasMore;
+      _isLoading = false;
+    });
+  }
+
+  Future<void> _loadMore() async {
+    if (!_hasMore || _isLoadingMore) return;
+    setState(() => _isLoadingMore = true);
+
+    final currentUserId = FirebaseAuth.instance.currentUser!.uid;
+    final result = await context
+        .read<DirectMessageRepository>()
+        .fetchChatsPaged(userId: currentUserId, startAfter: _lastDoc);
+
+    setState(() {
+      _chats = [..._chats, ...result.chats];
+      _lastDoc = result.lastDoc;
+      _hasMore = result.hasMore;
+      _isLoadingMore = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentUserId = FirebaseAuth.instance.currentUser!.uid;
@@ -37,12 +80,9 @@ class _DirectMessagesPageState extends State<DirectMessagesPage> {
     return Scaffold(
       appBar: TopBar(
         leftWidget: NotificationDropdown(),
-
         title: "DM' s",
-
         rightWidget: SwapDMButton(
           showingEvents: showEventChats,
-
           onPressed: () {
             setState(() {
               showEventChats = !showEventChats;
@@ -50,209 +90,172 @@ class _DirectMessagesPageState extends State<DirectMessagesPage> {
           },
         ),
       ),
-      body: StreamBuilder<List<DirectChatPreview>>(
-        stream: context.read<DirectMessageRepository>().getUserChats(
-          currentUserId,
-        ),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : StreamBuilder<List<EventChatPreview>>(
+              stream: context.read<EventChatRepository>().getUserEventChats(
+                currentUserId,
+              ),
+              builder: (context, eventSnapshot) {
+                if (!eventSnapshot.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-          final chats = snapshot.data!;
+                final events = eventSnapshot.data!;
 
-          return StreamBuilder<List<EventChatPreview>>(
-            stream: context.read<EventChatRepository>().getUserEventChats(
-              currentUserId,
-            ),
-            builder: (context, eventSnapshot) {
-              if (!eventSnapshot.hasData) {
-                return const Center(child: CircularProgressIndicator());
-              }
+                if (events.isEmpty && _chats.isEmpty) {
+                  return const Center(child: Text('No conversations yet'));
+                }
 
-              final events = eventSnapshot.data!;
+                return ListView(
+                  padding: const EdgeInsets.all(12),
+                  children: showEventChats
+                      ? [
+                          ...events.map((event) {
+                            final isMe = event.lastSenderId == currentUserId;
+                            final isUnread =
+                                !event.lastSeenBy.contains(currentUserId) &&
+                                event.lastSenderId != currentUserId;
 
-              if (events.isEmpty && chats.isEmpty) {
-                return const Center(child: Text('No conversations yet'));
-              }
-
-              return ListView(
-                padding: const EdgeInsets.all(12),
-
-                children: showEventChats
-                    ? [
-                        ...events.map((event) {
-                          final isMe = event.lastSenderId == currentUserId;
-
-                          final isUnread =
-                              !event.lastSeenBy.contains(currentUserId) &&
-                              event.lastSenderId != currentUserId;
-
-                          return GestureDetector(
-                            onTap: () {
-                              context
-                                  .read<EventChatRepository>()
-                                  .markEventChatAsSeen(
-                                    eventId: event.eventId,
-                                    userId: currentUserId,
-                                  );
-                              Navigator.pushNamed(
-                                context,
-                                AppRoutes.chat,
-
-                                arguments: {
-                                  'eventId': event.eventId,
-
-                                  'title': event.title,
-                                },
-                              );
-                            },
-
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 180),
-
-                              width: double.infinity,
-
-                              padding: const EdgeInsets.all(14),
-
-                              margin: const EdgeInsets.only(bottom: 12),
-
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-
-                                borderRadius: BorderRadius.circular(18),
-
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withAlpha(10),
-
-                                    blurRadius: 8,
-
-                                    offset: const Offset(0, 3),
-                                  ),
-                                ],
-                              ),
-
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: 56,
-                                    height: 56,
-
-                                    decoration: const BoxDecoration(
-                                      color: Color(0xFFE8F3E4),
-
-                                      shape: BoxShape.circle,
+                            return GestureDetector(
+                              onTap: () {
+                                context
+                                    .read<EventChatRepository>()
+                                    .markEventChatAsSeen(
+                                      eventId: event.eventId,
+                                      userId: currentUserId,
+                                    );
+                                Navigator.pushNamed(
+                                  context,
+                                  AppRoutes.chat,
+                                  arguments: {
+                                    'eventId': event.eventId,
+                                    'title': event.title,
+                                  },
+                                );
+                              },
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 180),
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(14),
+                                margin: const EdgeInsets.only(bottom: 12),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(18),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withAlpha(10),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 3),
                                     ),
-
-                                    child: const Icon(
-                                      Icons.groups,
-
-                                      color: Color(0xFF4A693D),
-
-                                      size: 28,
-                                    ),
-                                  ),
-
-                                  const SizedBox(width: 16),
-
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-
-                                      children: [
-                                        Text(
-                                          event.title,
-
-                                          style: const TextStyle(
-                                            fontSize: 18,
-
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-
-                                        const SizedBox(height: 4),
-
-                                        Text(
-                                          '${isMe ? 'Sent' : 'Received'} • ${formatRelativeTime(event.lastMessageAt)}',
-
-                                          style: TextStyle(
-                                            color: Colors.black54,
-
-                                            fontWeight: isUnread
-                                                ? FontWeight.w700
-                                                : FontWeight.normal,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-
-                                  if (isUnread)
+                                  ],
+                                ),
+                                child: Row(
+                                  children: [
                                     Container(
-                                      width: 12,
-                                      height: 12,
-
+                                      width: 56,
+                                      height: 56,
                                       decoration: const BoxDecoration(
-                                        color: Colors.green,
-
+                                        color: Color(0xFFE8F3E4),
                                         shape: BoxShape.circle,
                                       ),
+                                      child: const Icon(
+                                        Icons.groups,
+                                        color: Color(0xFF4A693D),
+                                        size: 28,
+                                      ),
                                     ),
-                                ],
+                                    const SizedBox(width: 16),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            event.title,
+                                            style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            '${isMe ? 'Sent' : 'Received'} • ${formatRelativeTime(event.lastMessageAt)}',
+                                            style: TextStyle(
+                                              color: Colors.black54,
+                                              fontWeight: isUnread
+                                                  ? FontWeight.w700
+                                                  : FontWeight.normal,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    if (isUnread)
+                                      Container(
+                                        width: 12,
+                                        height: 12,
+                                        decoration: const BoxDecoration(
+                                          color: Colors.green,
+                                          shape: BoxShape.circle,
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
+                        ]
+                      : [
+                          // ← usa _chats em vez do stream
+                          ..._chats.map((chat) {
+                            final otherUserId = chat.participants.firstWhere(
+                              (id) => id != currentUserId,
+                            );
+                            return StreamBuilder<Users?>(
+                              stream: context.read<UserViewModel>().userStream(
+                                otherUserId,
+                              ),
+                              builder: (context, userSnapshot) {
+                                final user = userSnapshot.data;
+                                if (userSnapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const Padding(
+                                    padding: EdgeInsets.all(24),
+                                    child: Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  );
+                                }
+                                if (user == null) return const SizedBox();
+                                return _HoverChatCard(
+                                  chat: chat,
+                                  user: user,
+                                  currentUserId: currentUserId,
+                                  otherUserId: otherUserId,
+                                );
+                              },
+                            );
+                          }),
+
+                          // ← botão Load More
+                          if (_hasMore)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              child: Center(
+                                child: _isLoadingMore
+                                    ? const CircularProgressIndicator()
+                                    : TextButton.icon(
+                                        onPressed: _loadMore,
+                                        icon: const Icon(Icons.expand_more),
+                                        label: const Text('Load more'),
+                                      ),
                               ),
                             ),
-                          );
-                        }),
-                      ]
-                    : [
-                        ...chats.map((chat) {
-                          final otherUserId = chat.participants.firstWhere(
-                            (id) => id != currentUserId,
-                          );
-
-                          return StreamBuilder<Users?>(
-                            stream: context.read<UserViewModel>().userStream(
-                              otherUserId,
-                            ),
-
-                            builder: (context, userSnapshot) {
-                              final user = userSnapshot.data;
-
-                              if (userSnapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return const Padding(
-                                  padding: EdgeInsets.all(24),
-
-                                  child: Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                );
-                              }
-
-                              if (user == null) {
-                                return const SizedBox();
-                              }
-
-                              return _HoverChatCard(
-                                chat: chat,
-
-                                user: user,
-
-                                currentUserId: currentUserId,
-
-                                otherUserId: otherUserId,
-                              );
-                            },
-                          );
-                        }),
-                      ],
-              );
-            },
-          );
-        },
-      ),
+                        ],
+                );
+              },
+            ),
     );
   }
 }
