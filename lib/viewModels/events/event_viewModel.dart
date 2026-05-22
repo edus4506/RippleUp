@@ -158,6 +158,29 @@ class EventViewModel extends ChangeNotifier {
   }
 
   // =========================
+  // UPDATE EVENT
+  // =========================
+
+  Future<bool> updateEvent(Event event) async {
+    try {
+      isLoading = true;
+      errorMessage = null;
+      notifyListeners();
+
+      await _eventRepository.updateEvent(event);
+
+      return true;
+    } catch (e) {
+      errorMessage = e.toString().replaceFirst('Exception: ', '');
+
+      return false;
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  // =========================
   // JOIN EVENT
   // =========================
 

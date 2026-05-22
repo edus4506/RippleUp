@@ -67,7 +67,7 @@ class EventDetailsDialog extends StatelessWidget {
                         }
                         break;
                       case 'participants':
-                        Navigator.pop(context); // fecha o dialog primeiro
+                        Navigator.pop(context);
                         Navigator.pushNamed(
                           context,
                           AppRoutes.participants,
@@ -165,6 +165,21 @@ class EventDetailsDialog extends StatelessWidget {
         ),
       ),
       actions: [
+        // ── Edit button: only visible to the owner of a planning event ──
+        if (isCreator && !isLocked)
+          TextButton.icon(
+            icon: const Icon(Icons.edit_outlined),
+            label: const Text('Edit Event'),
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(
+                context,
+                AppRoutes.editEvent,
+                arguments: {'event': event},
+              );
+            },
+          ),
+
         if (userId != null && !isCreator)
           StreamBuilder<bool>(
             stream: context.read<EventViewModel>().isUserInEvent(

@@ -12,7 +12,9 @@ import 'package:t5/views/pages/splash_page.dart';
 import 'package:t5/views/pages/social/public_profile_page.dart';
 import 'package:t5/views/pages/social/followers_following_page.dart';
 import 'package:t5/views/pages/messages/direct_messages_page.dart';
-import 'package:t5/views/pages/events/participants_page.dart'; // 🚀 Importado o teu ecrã de participantes
+import 'package:t5/views/pages/events/participants_page.dart';
+import 'package:t5/views/pages/events/edit_event_page.dart';
+import 'package:t5/data/models/events/event.dart';
 
 class AppRoutes {
   static const String splash = '/splash';
@@ -28,8 +30,8 @@ class AppRoutes {
   static const String directMessages = '/direct-messages';
   static const String publicProfile = '/public-profile';
   static const String followersFollowing = '/followers-following';
-  static const String participants =
-      '/participants'; // 🚀 Nova constante de rota
+  static const String participants = '/participants';
+  static const String editEvent = '/edit-event';
 
   static final Map<String, WidgetBuilder> routes = {
     splash: (context) => const SplashPage(),
@@ -78,7 +80,6 @@ class AppRoutes {
           ),
         );
 
-      // 🚀 Nova rota dinâmica adicionada de forma limpa para os participantes
       case participants:
         final args = settings.arguments as Map;
         return MaterialPageRoute(
@@ -86,6 +87,12 @@ class AppRoutes {
             eventId: args['eventId'] as String,
             creatorId: args['creatorId'] as String,
           ),
+        );
+
+      case editEvent:
+        final args = settings.arguments as Map;
+        return MaterialPageRoute(
+          builder: (_) => EditEventPage(event: args['event'] as Event),
         );
 
       default:

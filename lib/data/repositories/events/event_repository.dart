@@ -217,4 +217,43 @@ class EventRepository {
     }
     return events;
   }
+
+  // =========================
+  // UPDATE EVENT
+  // =========================
+
+  /// Updates the editable fields of an existing event.
+  /// Only the event owner should call this (enforced also in the UI layer).
+  Future<void> updateEvent(Event event) async {
+    final eventRef = _db.collection('events').doc(event.id);
+
+    final eventSnap = await eventRef.get();
+
+    if (!eventSnap.exists) {
+      throw Exception('Event not found');
+    }
+
+    final existing = Event.fromMap(eventSnap.data()!, eventSnap.id);
+
+    if (existing.status == EventStatus.occurring ||
+        existing.status == EventStatus.done) {
+      throw Exception(
+        'Cannot edit an event that is already ongoing or finished',
+      );
+    }
+
+    await eventRef.update({
+      'title': event.title,
+      'description': event.description,
+      'startDate': Timestamp.fromDate(event.startDate),
+      'endDate': Timestamp.fromDate(event.endDate),
+      'maxUsers': event.maxUsers,
+      'country': event.country,
+      'district': event.district,
+      'city': event.city,
+      'objectives': event.objectives,
+      'imageUrls': event.imageUrls,
+      'coverImageUrl': event.coverImageUrl,
+    });
+  }
 }

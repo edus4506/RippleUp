@@ -325,14 +325,14 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                                 onTap: goal == 18
                                     ? null
                                     : () {
-                                  setState(() {
-                                    if (isSelected) {
-                                      selectedGoals.remove(goal);
-                                    } else {
-                                      selectedGoals.add(goal);
-                                    }
-                                  });
-                                },
+                                        setState(() {
+                                          if (isSelected) {
+                                            selectedGoals.remove(goal);
+                                          } else {
+                                            selectedGoals.add(goal);
+                                          }
+                                        });
+                                      },
                                 child: Ink(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(14),
@@ -344,11 +344,13 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                                     ),
                                     boxShadow: isSelected
                                         ? [
-                                      BoxShadow(
-                                        color: const Color(0xFF3E5F36).withOpacity(0.25),
-                                        blurRadius: 8,
-                                      )
-                                    ]
+                                            BoxShadow(
+                                              color: const Color(
+                                                0xFF3E5F36,
+                                              ).withOpacity(0.25),
+                                              blurRadius: 8,
+                                            ),
+                                          ]
                                         : [],
                                   ),
                                   child: ClipRRect(
@@ -362,7 +364,9 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                                         ),
                                         if (isSelected)
                                           Container(
-                                            color: Colors.black.withOpacity(0.35),
+                                            color: Colors.black.withOpacity(
+                                              0.35,
+                                            ),
                                             child: const Icon(
                                               Icons.check_circle_rounded,
                                               color: Colors.white,
@@ -770,9 +774,7 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
         },
         child: Ink(
           decoration: BoxDecoration(
-            color: isSelected
-                ? const Color(0xFF3E5F36)
-                : Colors.white,
+            color: isSelected ? const Color(0xFF3E5F36) : Colors.white,
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
               color: isSelected
@@ -781,16 +783,11 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
             ),
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 14,
-              vertical: 10,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             child: Text(
               text,
               style: TextStyle(
-                color: isSelected
-                    ? Colors.white
-                    : Colors.black87,
+                color: isSelected ? Colors.white : Colors.black87,
                 fontWeight: FontWeight.w600,
               ),
             ),
