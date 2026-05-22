@@ -18,19 +18,18 @@ class SearchUsersViewModel extends ChangeNotifier {
 
   List<Users> get filteredUsers => _filteredUsers;
 
+  static const int kSearchUsersMaxResults = 7;  
+
   Future<void> loadUsers() async {
     final users = await userRepository.getAllUsers();
-
     _allUsers = users.whereType<Users>().toList();
-
-    _filteredUsers = _allUsers;
-
+    _filteredUsers = _allUsers.take(kSearchUsersMaxResults).toList();
     notifyListeners();
   }
 
   void updateSearch(String query) {
-    _filteredUsers = UserSearchService.search(_allUsers, query);
-
+    final results = UserSearchService.search(_allUsers, query);
+    _filteredUsers = results.take(kSearchUsersMaxResults).toList(); // ← limita a 7
     notifyListeners();
   }
 
