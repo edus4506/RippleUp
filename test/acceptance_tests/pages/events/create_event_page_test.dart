@@ -96,7 +96,7 @@ void main() {
     testWidgets('renders Cancel and Create buttons', (tester) async {
       await pumpCreateEventPage(tester);
       expect(find.text('Cancel'), findsOneWidget);
-      expect(find.text('Create'), findsOneWidget);
+      expect(find.text('Create Event'), findsOneWidget);
     });
 
     testWidgets('renders name and description text fields', (tester) async {
@@ -129,7 +129,7 @@ void main() {
   group('Validation', () {
     testWidgets('shows error when all fields are empty', (tester) async {
       await pumpCreateEventPage(tester);
-      await tester.tap(find.text('Create'));
+      await tester.tap(find.text('Create Event'));
       await tester.pumpAndSettle();
       expect(find.text('Please fill in all fields correctly'), findsOneWidget);
     });
@@ -142,7 +142,7 @@ void main() {
         find.widgetWithText(TextField, 'Event name'),
         'Beach Cleanup',
       );
-      await tester.tap(find.text('Create'));
+      await tester.tap(find.text('Create Event'));
       await tester.pumpAndSettle();
       expect(find.text('Please fill in all fields correctly'), findsOneWidget);
     });
@@ -157,7 +157,7 @@ void main() {
         find.widgetWithText(TextField, 'Description'),
         'Some description',
       );
-      await tester.tap(find.text('Create'));
+      await tester.tap(find.text('Create Event'));
       await tester.pumpAndSettle();
       expect(find.text('Please fill in all fields correctly'), findsOneWidget);
     });
@@ -232,7 +232,7 @@ void main() {
   group('AppBar', () {
     testWidgets('AppBar shows Create Event title', (tester) async {
       await pumpCreateEventPage(tester);
-      expect(find.text('Create Event'), findsOneWidget);
+      expect(find.text('Create'), findsOneWidget);
     });
 
     testWidgets('AppBar back button is present', (tester) async {
