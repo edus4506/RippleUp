@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../../data/constants/event_locations.dart';
 import '../../../data/models/events/event.dart';
@@ -171,7 +172,40 @@ class _CreateEventPageState extends State<CreateEventPage> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Create Event')),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF43A047),
+        elevation: 0,
+        leading: _CircleButton(
+          onTap: () => Navigator.pop(context),
+          child: const Icon(Icons.arrow_back_rounded, color: Colors.white, size: 22),
+        ),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Transform.translate(
+              offset: const Offset(0, 2),
+              child: Transform.rotate(
+                angle: -1.57,
+                child: const Icon(Icons.grass_rounded, size: 20, color: Colors.white),
+              ),
+            ),
+            const SizedBox(width: 6),
+            Text(
+              'Create Event',
+              style: GoogleFonts.dmSerifDisplay(fontSize: 32, color: Colors.white),
+            ),
+            const SizedBox(width: 6),
+            Transform.translate(
+              offset: const Offset(0, 2),
+              child: Transform.rotate(
+                angle: 1.57,
+                child: const Icon(Icons.grass_rounded, size: 20, color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+        centerTitle: true,
+      ),
 
       bottomNavigationBar: SafeArea(
         child: Container(
@@ -186,15 +220,28 @@ class _CreateEventPageState extends State<CreateEventPage> {
             children: [
               Expanded(
                 child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: const Color(0xFF43A047),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    side: const BorderSide(color: Color(0xFF43A047)),
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                  ),
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('Cancel'),
+                  child: const Text('Cancel', style: TextStyle(fontWeight: FontWeight.w600)),
                 ),
               ),
               const SizedBox(width: 10),
               Expanded(
                 child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    elevation: 0,
+                    backgroundColor: const Color(0xFF43A047),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                  ),
                   onPressed: _createEvent,
-                  child: const Text('Create'),
+                  child: const Text('Create', style: TextStyle(fontWeight: FontWeight.w600)),
                 ),
               ),
             ],
@@ -495,6 +542,47 @@ class _CreateEventPageState extends State<CreateEventPage> {
               ),
             ],
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CircleButton extends StatefulWidget {
+  final Widget child;
+  final VoidCallback? onTap;
+  const _CircleButton({required this.child, this.onTap});
+
+  @override
+  State<_CircleButton> createState() => _CircleButtonState();
+}
+
+class _CircleButtonState extends State<_CircleButton> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          width: 52,
+          height: 52,
+          decoration: BoxDecoration(
+            color: _hovered ? Colors.white.withOpacity(0.25) : Colors.white.withOpacity(0.14),
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: _hovered ? Colors.white.withOpacity(0.25) : Colors.white.withOpacity(0.10),
+            ),
+            boxShadow: [
+              BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 12, offset: const Offset(0, 4)),
+            ],
+          ),
+          child: Center(child: widget.child),
         ),
       ),
     );
