@@ -339,23 +339,35 @@ class _CreateEventPageState extends State<CreateEventPage> {
                       ),
                     );
                   }
-
-                  return Container(
-                    width: 110,
-                    margin: const EdgeInsets.only(right: 10),
-                    clipBehavior: Clip.antiAlias,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: kIsWeb
-                        ? Image.network(
+                  return Stack(
+                    children: [
+                      Container(
+                        width: 110,
+                        margin: const EdgeInsets.only(right: 10),
+                        clipBehavior: Clip.antiAlias,
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
+                        child: kIsWeb
+                          ? Image.network(
                             selectedImages[index].path,
                             fit: BoxFit.cover,
                           )
-                        : Image.file(
+                          : Image.file(
                             File(selectedImages[index].path),
-                            fit: BoxFit.cover,
+                            fit: BoxFit.cover),
+                      ),
+                      Positioned(
+                        top: 4,
+                        right: 14,
+                        child: GestureDetector(
+                          onTap: () => setState(() => selectedImages.removeAt(index)),
+                          child: Container(
+                            decoration: BoxDecoration(color: Colors.black.withOpacity(0.5), shape: BoxShape.circle),
+                            padding: const EdgeInsets.all(3),
+                            child: const Icon(Icons.close, color: Colors.white, size: 14),
                           ),
+                        ),
+                      ),
+                    ],
                   );
                 },
               ),
@@ -479,30 +491,46 @@ class _CreateEventPageState extends State<CreateEventPage> {
 
                 final isSelected = selectedObjectives.contains(goal);
 
-                return GestureDetector(
-                  onTap: goal == 18
-                      ? null
-                      : () {
-                    setState(() {
-                      if (isSelected) {
-                        selectedObjectives.remove(goal);
-                      } else {
-                        selectedObjectives.add(goal);
-                      }
-                    });
-                  },
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      border: (isSelected && goal != 18)
-                          ? Border.all(color: Colors.green, width: 3)
-                          : null,
-                    ),
-                    clipBehavior: Clip.antiAlias,
-                    child: Image.asset(
-                      'assets/objectives/goal$goal.jpg',
-                      fit: BoxFit.cover,
+                return Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(14),
+                    onTap: goal == 18
+                        ? null
+                        : () {
+                      setState(() {
+                        if (isSelected) {
+                          selectedObjectives.remove(goal);
+                        } else {
+                          selectedObjectives.add(goal);
+                        }
+                      });
+                    },
+                    child: Ink(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: isSelected ? const Color(0xFF3E5F36) : Colors.grey.shade300,
+                          width: isSelected ? 3 : 1,
+                        ),
+                        boxShadow: isSelected
+                            ? [BoxShadow(color: const Color(0xFF3E5F36).withOpacity(0.25), blurRadius: 8)]
+                            : [],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(14),
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            Image.asset('assets/objectives/goal$goal.jpg', fit: BoxFit.cover),
+                            if (isSelected)
+                              Container(
+                                color: Colors.black.withOpacity(0.35),
+                                child: const Icon(Icons.check_circle_rounded, color: Colors.white, size: 28),
+                              ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 );
