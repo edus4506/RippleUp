@@ -26,6 +26,12 @@ class Palette {
 
   static const accentDark = Color(0xFF355F24);
 
+  // Green Login
+  static const greenLogin = Color(0xFF0A7A3E);
+
+  // Green Light Register
+  static const greenLight = Color(0xFFF1F8F3);
+
   // Ink / Neutral
   static const ink0 = Colors.white;
 

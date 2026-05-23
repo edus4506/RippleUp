@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../routes/app_routes.dart';
+import '../../../theme/palette.dart';
 import 'package:t5/viewModels/authenthication/auth_viewModel.dart';
 
 class LoginPage extends StatefulWidget {
@@ -15,9 +16,6 @@ class _LoginPageState extends State<LoginPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   bool _obscurePassword = true;
-
-  static const _green = Color(0xFF0A7A3E);
-  static const _greenLight = Color(0xFFF1F8F3);
 
   @override
   void dispose() {
@@ -112,7 +110,7 @@ class _LoginPageState extends State<LoginPage> {
                     },
                     child: const Text(
                       'Forgot password?',
-                      style: TextStyle(fontSize: 12, color: _green),
+                      style: TextStyle(fontSize: 12, color: Palette.greenLogin),
                     ),
                   ),*/
                 ],
@@ -177,7 +175,7 @@ class _LoginPageState extends State<LoginPage> {
                 height: 52,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: _green,
+                    backgroundColor: Palette.greenLogin,
                     foregroundColor: Colors.white,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
@@ -234,7 +232,7 @@ class _LoginPageState extends State<LoginPage> {
                         TextSpan(
                           text: 'Sign up',
                           style: TextStyle(
-                            color: _green,
+                            color: Palette.greenLogin,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -267,7 +265,7 @@ class _LoginPageState extends State<LoginPage> {
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: const TextStyle(color: Colors.black26),
-        prefixIcon: Icon(icon, color: const Color(0xFF0A7A3E), size: 20),
+        prefixIcon: Icon(icon, color: Palette.greenLogin, size: 20),
         suffixIcon: suffixIcon,
         filled: true,
         fillColor: const Color(0xFFF1F8F3),
@@ -281,7 +279,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: Color(0xFF0A7A3E), width: 1.5),
+          borderSide: const BorderSide(color: Palette.greenLogin, width: 1.5),
         ),
       ),
     );

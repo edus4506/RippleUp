@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import '../../../routes/app_routes.dart';
+import '../../../theme/palette.dart';
 import 'package:t5/viewModels/authenthication/auth_viewModel.dart';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
@@ -20,9 +21,6 @@ class _RegisterPageState extends State<RegisterPage> {
   bool _obscurePassword = true;
 
   XFile? selectedImage;
-
-  static const _green = Color(0xFF0A7A3E);
-  static const _greenLight = Color(0xFFF1F8F3);
 
   @override
   void dispose() {
@@ -67,7 +65,7 @@ class _RegisterPageState extends State<RegisterPage> {
               style: TextStyle(
                 fontSize: 26,
                 fontWeight: FontWeight.bold,
-                color: _green,
+                color: Palette.greenLogin,
               ),
             ),
             const SizedBox(height: 4),
@@ -88,11 +86,11 @@ class _RegisterPageState extends State<RegisterPage> {
                       height: 88,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: _greenLight,
+                        color: Palette.greenLight,
                         border: Border.all(
                           color: selectedImage != null
-                              ? _green
-                              : const Color(0xFF0A7A3E),
+                              ? Palette.greenLogin
+                              : Palette.greenLogin,
                           width: selectedImage != null ? 2.5 : 1.5,
                           // dashed via custom painter would be ideal;
                           // solid border used here for simplicity
@@ -113,7 +111,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               children: [
                                 Icon(
                                   Icons.camera_alt_outlined,
-                                  color: _green,
+                                  color: Palette.greenLogin,
                                   size: 28,
                                 ),
                                 SizedBox(height: 2),
@@ -121,7 +119,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   'photo',
                                   style: TextStyle(
                                     fontSize: 11,
-                                    color: _green,
+                                    color: Palette.greenLogin,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
@@ -137,7 +135,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           width: 26,
                           height: 26,
                           decoration: const BoxDecoration(
-                            color: _green,
+                            color: Palette.greenLogin,
                             shape: BoxShape.circle,
                           ),
                           child: const Icon(
@@ -260,7 +258,7 @@ class _RegisterPageState extends State<RegisterPage> {
               height: 52,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: _green,
+                  backgroundColor: Palette.greenLogin,
                   foregroundColor: Colors.white,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
@@ -276,7 +274,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               content: const Text(
                                 'Please choose a profile photo',
                               ),
-                              backgroundColor: const Color(0xFF0A7A3E),
+                              backgroundColor: Palette.greenLogin,
                               behavior: SnackBarBehavior.floating,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -333,7 +331,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       TextSpan(
                         text: 'Sign in',
                         style: TextStyle(
-                          color: _green,
+                          color: Palette.greenLogin,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -365,10 +363,10 @@ class _RegisterPageState extends State<RegisterPage> {
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: const TextStyle(color: Colors.black26),
-        prefixIcon: Icon(icon, color: const Color(0xFF0A7A3E), size: 20),
+        prefixIcon: Icon(icon, color: Palette.greenLogin, size: 20),
         suffixIcon: suffixIcon,
         filled: true,
-        fillColor: const Color(0xFFF1F8F3),
+        fillColor: Palette.greenLight,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 14,
@@ -379,7 +377,7 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: Color(0xFF0A7A3E), width: 1.5),
+          borderSide: const BorderSide(color: Palette.greenLogin, width: 1.5),
         ),
       ),
     );
