@@ -67,14 +67,10 @@ class _ChatPageState extends State<ChatPage> {
         titleSpacing: 0,
         title: Row(
           children: [
-            Container(
-              width: 36,
-              height: 36,
-              decoration: const BoxDecoration(
-                color: _greenLight,
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(Icons.eco_outlined, size: 20, color: _green),
+            CircleAvatar(
+              radius: 18,
+              backgroundColor: _greenLight,
+              backgroundImage: const AssetImage('assets/rippleup_logo.png'),
             ),
             const SizedBox(width: 10),
             Column(
