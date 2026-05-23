@@ -128,8 +128,8 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
 
                   child: Container(
                     constraints: const BoxConstraints(
-                      minWidth: 220,
-                      maxWidth: 320,
+                      minWidth: 219,
+                      maxWidth: 221,
                     ),
                     height: 60,
 
@@ -155,55 +155,40 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
 
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
-
                           crossAxisAlignment: CrossAxisAlignment.center,
-
                           children: [
                             Transform.translate(
                               offset: const Offset(0, 2),
-
                               child: Transform.rotate(
                                 angle: -1.57,
-
                                 child: Icon(
                                   Icons.grass_rounded,
-
                                   size: 22,
-
                                   color: Colors.green.shade300,
                                 ),
                               ),
                             ),
-
                             const SizedBox(width: 6),
-
-                            Text(
-                              title,
-
-                              style: GoogleFonts.dmSerifDisplay(
-                                fontSize: 40,
-
-                                color: const Color(0xFF2E7D32),
-
-                                height: 1,
-
-                                letterSpacing: -1,
+                            Flexible(
+                              child: Text(
+                                title,
+                                style: GoogleFonts.dmSerifDisplay(
+                                  fontSize: 40,
+                                  color: const Color(0xFF2E7D32),
+                                  height: 1,
+                                  letterSpacing: -1,
+                                ),
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
-
                             const SizedBox(width: 6),
-
                             Transform.translate(
                               offset: const Offset(0, 2),
-
                               child: Transform.rotate(
                                 angle: 1.57,
-
                                 child: Icon(
                                   Icons.grass_rounded,
-
                                   size: 22,
-
                                   color: Colors.green.shade300,
                                 ),
                               ),
