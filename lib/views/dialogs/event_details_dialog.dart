@@ -100,17 +100,23 @@ class EventDetailsDialog extends StatelessWidget {
 
                         if (confirmed == true && context.mounted) {
                           try {
-                            await context.read<EventViewModel>().deleteEvent(event.id);
+                            await context.read<EventViewModel>().deleteEvent(
+                              event.id,
+                            );
                             if (context.mounted) {
                               Navigator.pop(context);
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Event deleted successfully')),
+                                const SnackBar(
+                                  content: Text('Event deleted successfully'),
+                                ),
                               );
                             }
                           } catch (e) {
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Error deleting event: $e')),
+                                SnackBar(
+                                  content: Text('Error deleting event: $e'),
+                                ),
                               );
                             }
                           }
@@ -158,7 +164,7 @@ class EventDetailsDialog extends StatelessWidget {
                       ),
                     ),
                     const PopupMenuDivider(),
-                    
+
                     if (isCreator && !isLocked)
                       const PopupMenuItem<String>(
                         value: 'edit',
@@ -170,7 +176,7 @@ class EventDetailsDialog extends StatelessWidget {
                           ],
                         ),
                       ),
-                      
+
                     if (isCreator && event.status == EventStatus.planning)
                       const PopupMenuItem<String>(
                         value: 'delete',
@@ -178,15 +184,19 @@ class EventDetailsDialog extends StatelessWidget {
                           children: [
                             Icon(Icons.delete_outline, color: Colors.red),
                             SizedBox(width: 10),
-                            Text('Delete Event', style: TextStyle(color: Colors.red)),
+                            Text(
+                              'Delete Event',
+                              style: TextStyle(color: Colors.red),
+                            ),
                           ],
                         ),
                       ),
-                      
+
                     // A correção foi feita nesta linha:
-                    if (isCreator && (!isLocked || event.status == EventStatus.planning))
+                    if (isCreator &&
+                        (!isLocked || event.status == EventStatus.planning))
                       const PopupMenuDivider(),
-                      
+
                     const PopupMenuItem<String>(
                       value: 'participants',
                       child: Row(
