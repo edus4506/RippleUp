@@ -120,7 +120,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
                         borderRadius: BorderRadius.circular(30),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.10),
+                            color: Colors.black.withValues(alpha: 0.10),
                             blurRadius: 18,
                             offset: const Offset(0, 8),
                           ),
@@ -190,15 +190,15 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
       height: 52,
 
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.14),
+        color: Colors.white.withValues(alpha: 0.14),
 
         shape: BoxShape.circle,
 
-        border: Border.all(color: Colors.white.withOpacity(0.10)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.10)),
 
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withValues(alpha: 0.08),
 
             blurRadius: 12,
 

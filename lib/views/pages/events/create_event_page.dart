@@ -387,7 +387,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                               setState(() => selectedImages.removeAt(index)),
                           child: Container(
                             decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.5),
+                              color: Colors.black.withValues(alpha: 0.5),
                               shape: BoxShape.circle,
                             ),
                             padding: const EdgeInsets.all(3),
@@ -575,7 +575,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                                 BoxShadow(
                                   color: const Color(
                                     0xFF3E5F36,
-                                  ).withOpacity(0.25),
+                                  ).withValues(alpha: 0.25),
                                   blurRadius: 8,
                                 ),
                               ]
@@ -592,7 +592,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                             ),
                             if (isSelected)
                               Container(
-                                color: Colors.black.withOpacity(0.35),
+                                color: Colors.black.withValues(alpha: 0.35),
                                 child: const Icon(
                                   Icons.check_circle_rounded,
                                   color: Colors.white,
@@ -613,7 +613,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
             _sectionLabel('Location'),
             DropdownButtonFormField<String>(
               decoration: _dropDec('Country'),
-              value: selectedCountry,
+              initialValue: selectedCountry,
               menuMaxHeight: 300,
               isExpanded: true,
               items: eventCountries
@@ -633,7 +633,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
                 decoration: _dropDec('District'),
-                value: selectedDistrict,
+                initialValue: selectedDistrict,
                 menuMaxHeight: 300,
                 isExpanded: true,
                 items: eventDistrictsByCountry[selectedCountry]!
@@ -655,7 +655,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
                 decoration: _dropDec('City'),
-                value: selectedCity,
+                initialValue: selectedCity,
                 menuMaxHeight: 300,
                 isExpanded: true,
                 items: eventCitiesByDistrict[selectedDistrict]!
@@ -825,10 +825,10 @@ class _WheelTimePickerState extends State<_WheelTimePicker> {
                   height: 48,
                   margin: const EdgeInsets.symmetric(horizontal: 24),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF3E5F36).withOpacity(0.08),
+                    color: const Color(0xFF3E5F36).withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(
-                      color: const Color(0xFF3E5F36).withOpacity(0.18),
+                      color: const Color(0xFF3E5F36).withValues(alpha: 0.18),
                       width: 1.5,
                     ),
                   ),
@@ -923,17 +923,17 @@ class _CircleButtonState extends State<_CircleButton> {
           height: 52,
           decoration: BoxDecoration(
             color: _hovered
-                ? Colors.white.withOpacity(0.25)
-                : Colors.white.withOpacity(0.14),
+                ? Colors.white.withValues(alpha: 0.25)
+                : Colors.white.withValues(alpha: 0.14),
             shape: BoxShape.circle,
             border: Border.all(
               color: _hovered
-                  ? Colors.white.withOpacity(0.25)
-                  : Colors.white.withOpacity(0.10),
+                  ? Colors.white.withValues(alpha: 0.25)
+                  : Colors.white.withValues(alpha: 0.10),
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.08),
+                color: Colors.black.withValues(alpha: 0.08),
                 blurRadius: 12,
                 offset: const Offset(0, 4),
               ),

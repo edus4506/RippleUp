@@ -375,7 +375,7 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                                             BoxShadow(
                                               color: const Color(
                                                 0xFF3E5F36,
-                                              ).withOpacity(0.25),
+                                              ).withValues(alpha: 0.25),
                                               blurRadius: 8,
                                             ),
                                           ]
@@ -392,8 +392,8 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                                         ),
                                         if (isSelected)
                                           Container(
-                                            color: Colors.black.withOpacity(
-                                              0.35,
+                                            color: Colors.black.withValues(
+                                              alpha: 0.35,
                                             ),
                                             child: const Icon(
                                               Icons.check_circle_rounded,
@@ -432,7 +432,7 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                               borderSide: BorderSide.none,
                             ),
                           ),
-                          value: selectedCountry,
+                          initialValue: selectedCountry,
                           menuMaxHeight: 300,
                           isExpanded: true,
                           items: eventCountries
@@ -465,7 +465,7 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                                 borderSide: BorderSide.none,
                               ),
                             ),
-                            value: selectedDistrict,
+                            initialValue: selectedDistrict,
                             menuMaxHeight: 300,
                             isExpanded: true,
                             items: eventDistrictsByCountry[selectedCountry]!
@@ -497,7 +497,7 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
                                 borderSide: BorderSide.none,
                               ),
                             ),
-                            value: selectedCity,
+                            initialValue: selectedCity,
                             menuMaxHeight: 300,
                             isExpanded: true,
                             items: eventCitiesByDistrict[selectedDistrict]!
@@ -826,7 +826,7 @@ class _EventFilterDialogState extends State<EventFilterDialog> {
   }
 
   Widget _buildCircleButton({required Widget child, VoidCallback? onTap}) {
-    return _HoverCircleButton(child: child, onTap: onTap);
+    return _HoverCircleButton(onTap: onTap, child: child);
   }
 }
 
@@ -857,17 +857,17 @@ class _HoverCircleButtonState extends State<_HoverCircleButton> {
           height: 52,
           decoration: BoxDecoration(
             color: isHovered
-                ? Colors.white.withOpacity(0.25)
-                : Colors.white.withOpacity(0.14),
+                ? Colors.white.withValues(alpha: 0.25)
+                : Colors.white.withValues(alpha: 0.14),
             shape: BoxShape.circle,
             border: Border.all(
               color: isHovered
-                  ? Colors.white.withOpacity(0.25)
-                  : Colors.white.withOpacity(0.10),
+                  ? Colors.white.withValues(alpha: 0.25)
+                  : Colors.white.withValues(alpha: 0.10),
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.08),
+                color: Colors.black.withValues(alpha: 0.08),
                 blurRadius: 12,
                 offset: const Offset(0, 4),
               ),

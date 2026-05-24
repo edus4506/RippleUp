@@ -25,7 +25,6 @@ class RecommendedEventRepository {
         randomUserDoc.id,
       );
     } catch (e) {
-      print('Error getting random user: $e');
       return null;
     }
   }
@@ -79,7 +78,6 @@ class RecommendedEventRepository {
 
       return filteredEvents.take(limit).toList();
     } catch (e) {
-      print('Error getting recent events by user: $e');
       return [];
     }
   }
@@ -95,7 +93,6 @@ class RecommendedEventRepository {
           .map((doc) => doc.data()['idEvent'] as String)
           .toSet();
     } catch (e) {
-      print('Error getting user participated events: $e');
       return {};
     }
   }
@@ -114,7 +111,6 @@ class RecommendedEventRepository {
         final randomUser = await getRandomUser(currentUserId);
 
         if (randomUser == null) {
-          print('No random user found on attempt $attempt');
           continue;
         }
 
@@ -129,21 +125,12 @@ class RecommendedEventRepository {
             .toList();
 
         if (recommendedEvents.isNotEmpty) {
-          print(
-            'Found ${recommendedEvents.length} recommended events from user ${randomUser.uid}',
-          );
           return recommendedEvents;
         }
-
-        print(
-          'User ${randomUser.profilePictureUrl} has no new events, trying next...',
-        );
       }
 
-      print('Could not find recommended events after $maxAttempts attempts');
       return [];
     } catch (e) {
-      print('Error getting recommended events: $e');
       return [];
     }
   }

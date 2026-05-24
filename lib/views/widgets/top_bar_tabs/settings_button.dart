@@ -36,7 +36,7 @@ class _SettingsButtonState extends State<SettingsButton> {
           shape: BoxShape.circle,
 
           color: isHovered
-              ? Colors.white.withOpacity(0.12)
+              ? Colors.white.withValues(alpha: 0.12)
               : Colors.transparent,
         ),
 

@@ -77,7 +77,7 @@ class _SplashPageState extends State<SplashPage>
                   width: 200,
                   height: 200,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.15),
+                    color: Colors.white.withValues(alpha: 0.15),
                     shape: BoxShape.circle,
                   ),
                   child: Padding(
@@ -106,7 +106,7 @@ class _SplashPageState extends State<SplashPage>
                 Text(
                   'Make a difference, one ripple at a time',
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.75),
+                    color: Colors.white.withValues(alpha: 0.75),
                     fontSize: 14,
                   ),
                 ),

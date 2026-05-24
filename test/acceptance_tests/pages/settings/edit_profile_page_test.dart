@@ -7,7 +7,9 @@ import 'package:t5/viewModels/social/profile_viewModel.dart';
 import 'package:t5/views/pages/settings/edit_profile_page.dart';
 
 class FakeProfileViewModel extends ChangeNotifier implements ProfileViewModel {
+  @override
   Users? user;
+  @override
   bool isLoading = false;
   bool updateCalled = false;
 
