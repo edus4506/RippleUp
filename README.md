@@ -95,7 +95,7 @@ To learn more about how to write a good product vision, please read:
  - Event Chat – Participants of an event can communicate through a dedicated event chat, also accessible from the direct messages page.
  - Direct Messages – Users can exchange private 1-to-1 messages with other users.
  - Social Graph – Users can follow and unfollow other users, view their followers and following lists, and browse public profiles.
- - Discover – Users can search for other users and explore the platform through a dedicated discover page.
+ - Discover – Users can search for other users and explore the platform through a dedicated discover page. The discover page also surfaces recommended events based on the activity of other users on the platform.
  - Event Categories – Events are classified by UN Sustainable Development Goals (SDGs 1–17) to improve search and discovery.
  - Image Support – Users can upload profile pictures and event cover images.
 <!-- 
@@ -159,8 +159,6 @@ At the end, it is good to add a rough indication of the value of the user story 
 ![UML Diagram](assets/Readme/uml.png)
 
 The domain model of _RippleUP_ represents the core entities and relationships required to support the platform’s main functionality.
-
-> **Note:** the diagram above reflects the initial Sprint 0/1 design. The descriptions below document the current state of the domain as implemented.
 
 - **User** represents a platform user identified by a unique UID. Stores name, email, and profile picture URL. Users create events, participate in activities, exchange messages, follow other users, and receive notifications.
 - **Event** represents an activity on the platform. Contains title, description, start and end dates, maximum participants, current participant count, status (`planning` / `occurring` / `done`), location (country, district, city), a list of environmental objectives (indices 1–17 mapping to the UN SDGs), and optional image URLs. Status is derived at runtime from the dates — it is not stored.
@@ -233,9 +231,7 @@ The system follows a layered logical architecture composed of three main compone
 - The **Business Logic** layer manages the core functionalities of the application. It processes user inputs, applies application rules, and coordinates operations between the UI and the data layer. Implemented as view models (`lib/viewModels/`) and service classes (`lib/services/`).
 - The **Data Access** layer is responsible for communication with external services. This includes Firebase Auth for authentication, Cloud Firestore for all structured data (events, users, participations, messages, reviews, follows, notifications), and Supabase Storage for file storage (profile images and event images).
 
-!["Logical Architecture"](assets/Readme/logical_architecture.jpeg)
-
-> **Note:** the diagram above was produced at Sprint 0. The external services shown as "Cloud Storage" and "Database" correspond to Supabase Storage and Cloud Firestore respectively in the current implementation. The GoogleMapsAPI node shown in the diagram is not used — event location is handled through structured country/district/city dropdowns.
+!["Logical Architecture"](assets/Readme/logical_architeture.png)
 <!--
 The purpose of this subsection is to document the high-level logical structure of the code (Logical View), using a UML diagram with logical packages, without the worry of allocating to components, processes or machines.
 
@@ -251,9 +247,7 @@ Example of _UML package diagram_ showing a _logical view_ of the Eletronic Ticke
 
 The physical architecture of _RippleUP_ is based on a Flutter mobile client that communicates with two cloud backends: Firebase and Supabase.
 
-!["Physical Architecture"](assets/Readme/physical_architecture.jpeg)
-
-> **Note:** the diagram above was produced at Sprint 0 and reflects an earlier design. The current physical architecture is described below. The GoogleMaps Platform node shown in the diagram is not used in the final implementation.
+!["Physical Architecture"](assets/Readme/physical_architeture.png)
 
 The main physical nodes of the current application are:
 
@@ -911,8 +905,11 @@ The selected backlog items for this sprint focused on:
 At the beginning of the sprint, the selected Product Backlog Items were moved into the Sprint Backlog.
 
 <p align="center">
-  <!-- TODO: add sprint3_start_1.png and sprint3_start_2.png to assets/scrumboard/ -->
-  <em>Sprint 3 board at start — screenshots to be added</em>
+  <img src="assets/scrumboard/sprint3_start_1.png" width="400"/>
+  <img src="assets/scrumboard/sprint3_start_2.png" width="400"/>
+  <img src="assets/scrumboard/sprint3_start_3.png" width="400"/>
+  <img src="assets/scrumboard/sprint3_start_4.png" width="400"/>
+  <img src="assets/scrumboard/sprint3_start_5.png" width="400"/>
 </p>
 
 ---
@@ -936,6 +933,7 @@ During Sprint 3, the team continued following an incremental development process
 - **PR #134** — Bug fixes: event search delay, DMs complexity, home events complexity
 - **PR #136** — Create event page UI overhaul (wheel time picker, new icons, hover effects)
 - **PR #137** — Auth pages, direct messages, and event chat UI
+- **PR #138** — Recommended events in the discover page (based on other users' participation activity)
 
 Main functionalities implemented during this sprint:
 
@@ -945,7 +943,7 @@ Main functionalities implemented during this sprint:
 - Notification system with multiple types (event, follow, DM, reminder)
 - Event participants page (list of joined users)
 - Edit event details (available to event owner)
-- Discover page with user search
+- Discover page with user search and recommended events (surfaced from other users' participation history)
 - Reviews history page
 - Splash screen and loading states
 - Image support (event cover images and profile pictures via Supabase)
@@ -1129,7 +1127,7 @@ Branch naming conventions used during Sprint 3:
 - `bug/<description>` — bug fix branches (e.g., `bug/complexity`, `Bug/DM-Querys`)
 - `<feature-name>` — standalone feature branches (e.g., `edit_event`, `participants`, `directMessages`)
 
-Each pull request was reviewed and had to pass all CI checks before merging. After merging, branches were deleted to keep the repository organised.
+Each pull request was reviewed by at least one other team member before being merged, in addition to passing all CI checks. After merging, branches were deleted to keep the repository organised.
 
 ---
 
@@ -1149,6 +1147,7 @@ The following PBIs involved AI-assisted development. These items are labelled `M
 | #105 | See Followers/Following in Profile | `FollowersFollowingPage` structure and ViewModel |
 | #116 | General UI | UI consistency pass across multiple screens |
 | #119 | Direct Messages | `DirectMessagesPage` layout and chat bubble structure |
+| #11 | Discover Related Activities | `RecommendedEventRepository` and `RecommendedEventsSection` widget structure |
 
 **Prompts used during Sprint 3:**
 
@@ -1178,7 +1177,7 @@ The application now allows users to:
 - View the full list of participants for any event
 - Edit events they created
 - Search for events by keyword in the feed
-- Browse a discover page with user search
+- Browse a discover page with user search and recommended events based on platform activity
 - Upload and display profile pictures and event cover images
 - Navigate the application through a redesigned bottom navigation bar
 - Use consistently redesigned screens across all major flows
@@ -1195,7 +1194,7 @@ The application now allows users to:
 The Sprint 3 release was published as a GitHub Release:
 
 - **Version:** v3 — Sprint 3
-- Includes all Sprint 3 features: social graph, direct messages, event chat in DMs, notifications, participants page, edit event, discover page, image support, UI overhaul across all screens
+- Includes all Sprint 3 features: social graph, direct messages, event chat in DMs, notifications, participants page, edit event, discover page with recommended events, image support, UI overhaul across all screens
 - `CHANGELOG.md` updated with all changes introduced in this sprint
 - Can be executed locally with `flutter run`, on Android via the APK attached to the GitHub Release, or on web via `flutter run -d chrome`
 
