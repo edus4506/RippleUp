@@ -97,61 +97,61 @@ class _FollowersFollowingPageState extends State<FollowersFollowingPage>
                     child: CircularProgressIndicator(color: Palette.primary),
                   )
                 : vm.errorMessage != null
-                    ? _ErrorWidget(message: vm.errorMessage!)
-                    : SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            const SizedBox(height: 16),
-                            _TabBar(
-                              tabController: _tabController,
-                              followerCount: vm.followers.length,
-                              followingCount: vm.following.length,
-                            ),
-                            const SizedBox(height: 16),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16),
-                              // 👇 A CORREÇÃO ESTÁ AQUI: AnimatedBuilder
-                              child: AnimatedBuilder(
-                                animation: _tabController,
-                                builder: (context, _) {
-                                  return IndexedStack(
-                                    index: _tabController.index,
-                                    children: [
-                                      _UserList(
-                                        users: vm.followers,
-                                        emptyMessage: 'No followers yet.',
-                                        currentUserId: _currentUserId,
-                                        vm: vm,
-                                        onUserTap: (uid) {
-                                          Navigator.pushNamed(
-                                            context,
-                                            AppRoutes.publicProfile,
-                                            arguments: {'userId': uid},
-                                          );
-                                        },
-                                      ),
-                                      _UserList(
-                                        users: vm.following,
-                                        emptyMessage: 'Not following anyone yet.',
-                                        currentUserId: _currentUserId,
-                                        vm: vm,
-                                        onUserTap: (uid) {
-                                          Navigator.pushNamed(
-                                            context,
-                                            AppRoutes.publicProfile,
-                                            arguments: {'userId': uid},
-                                          );
-                                        },
-                                      ),
-                                    ],
-                                  );
-                                },
-                              ),
-                            ),
-                            const SizedBox(height: 24),
-                          ],
+                ? _ErrorWidget(message: vm.errorMessage!)
+                : SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 16),
+                        _TabBar(
+                          tabController: _tabController,
+                          followerCount: vm.followers.length,
+                          followingCount: vm.following.length,
                         ),
-                      ),
+                        const SizedBox(height: 16),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          // 👇 A CORREÇÃO ESTÁ AQUI: AnimatedBuilder
+                          child: AnimatedBuilder(
+                            animation: _tabController,
+                            builder: (context, _) {
+                              return IndexedStack(
+                                index: _tabController.index,
+                                children: [
+                                  _UserList(
+                                    users: vm.followers,
+                                    emptyMessage: 'No followers yet.',
+                                    currentUserId: _currentUserId,
+                                    vm: vm,
+                                    onUserTap: (uid) {
+                                      Navigator.pushNamed(
+                                        context,
+                                        AppRoutes.publicProfile,
+                                        arguments: {'userId': uid},
+                                      );
+                                    },
+                                  ),
+                                  _UserList(
+                                    users: vm.following,
+                                    emptyMessage: 'Not following anyone yet.',
+                                    currentUserId: _currentUserId,
+                                    vm: vm,
+                                    onUserTap: (uid) {
+                                      Navigator.pushNamed(
+                                        context,
+                                        AppRoutes.publicProfile,
+                                        arguments: {'userId': uid},
+                                      );
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                      ],
+                    ),
+                  ),
           );
         },
       ),
@@ -350,8 +350,7 @@ class _UserList extends StatelessWidget {
                     ? Image.network(
                         user.profilePictureUrl,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) =>
-                            _avatarPlaceholder(),
+                        errorBuilder: (_, __, ___) => _avatarPlaceholder(),
                       )
                     : _avatarPlaceholder(),
               ),
@@ -368,10 +367,7 @@ class _UserList extends StatelessWidget {
             ),
             subtitle: Text(
               user.email,
-              style: const TextStyle(
-                fontSize: 12,
-                color: Colors.grey,
-              ),
+              style: const TextStyle(fontSize: 12, color: Colors.grey),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -409,9 +405,9 @@ class _UserList extends StatelessWidget {
                             if (follower != null && followed != null) {
                               await notificationVm
                                   .createNewFollowerNotification(
-                                followed,
-                                follower,
-                              );
+                                    followed,
+                                    follower,
+                                  );
                             }
                           }
                         },
@@ -435,10 +431,7 @@ class _FollowButton extends StatelessWidget {
   final bool isFollowing;
   final VoidCallback onPressed;
 
-  const _FollowButton({
-    required this.isFollowing,
-    required this.onPressed,
-  });
+  const _FollowButton({required this.isFollowing, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -557,10 +550,7 @@ class _ErrorWidget extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               message,
-              style: const TextStyle(
-                fontSize: 13,
-                color: Colors.grey,
-              ),
+              style: const TextStyle(fontSize: 13, color: Colors.grey),
               textAlign: TextAlign.center,
             ),
           ],

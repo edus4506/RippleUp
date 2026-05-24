@@ -47,11 +47,12 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
     final picked = await picker.pickImage(source: ImageSource.gallery);
     if (picked == null || !mounted) return;
     await context.read<ProfileViewModel>().updateUserProfile(
-          profilePicture: picked,
-        );
+      profilePicture: picked,
+    );
     if (!mounted) return;
-    ScaffoldMessenger.of(context)
-        .showSnackBar(const SnackBar(content: Text('Photo updated')));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Photo updated')));
   }
 
   Future<void> _saveProfile() async {
@@ -67,8 +68,9 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
     );
     if (!mounted) return;
     setState(() => _isSaving = false);
-    ScaffoldMessenger.of(context)
-        .showSnackBar(const SnackBar(content: Text('Profile updated')));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Profile updated')));
   }
 
   Future<void> _confirmLogout() async {
@@ -80,11 +82,13 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
         content: const Text('Are you sure you want to logout?'),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('Cancel')),
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel'),
+          ),
           TextButton(
-              onPressed: () => Navigator.pop(ctx, true),
-              child: const Text('Logout')),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Logout'),
+          ),
         ],
       ),
     );
@@ -102,11 +106,13 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Text('Delete Account'),
         content: const Text(
-            'This will permanently delete your account. Are you sure?'),
+          'This will permanently delete your account. Are you sure?',
+        ),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('Cancel')),
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel'),
+          ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
             style: TextButton.styleFrom(foregroundColor: Colors.red),
@@ -163,8 +169,11 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
                         color: Colors.grey.shade100,
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.close_rounded,
-                          size: 18, color: Colors.grey),
+                      child: const Icon(
+                        Icons.close_rounded,
+                        size: 18,
+                        color: Colors.grey,
+                      ),
                     ),
                   ),
                 ],
@@ -205,7 +214,8 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
                               ),
                             ),
                             child: ClipOval(
-                              child: (user?.profilePictureUrl != null &&
+                              child:
+                                  (user?.profilePictureUrl != null &&
                                       user!.profilePictureUrl.isNotEmpty)
                                   ? Image.network(
                                       user.profilePictureUrl,
@@ -228,10 +238,15 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
                                   color: Palette.primary,
                                   shape: BoxShape.circle,
                                   border: Border.all(
-                                      color: Colors.white, width: 2),
+                                    color: Colors.white,
+                                    width: 2,
+                                  ),
                                 ),
-                                child: const Icon(Icons.camera_alt_rounded,
-                                    size: 12, color: Colors.white),
+                                child: const Icon(
+                                  Icons.camera_alt_rounded,
+                                  size: 12,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ),
@@ -273,7 +288,8 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
                           backgroundColor: Palette.primary,
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14)),
+                            borderRadius: BorderRadius.circular(14),
+                          ),
                           elevation: 0,
                         ),
                         onPressed: _isSaving ? null : _saveProfile,
@@ -289,8 +305,9 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
                             : const Text(
                                 'Save Changes',
                                 style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w600),
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                       ),
                     ),
@@ -315,8 +332,7 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
                       label: 'Change Password',
                       onTap: () {
                         Navigator.pop(context);
-                        Navigator.pushNamed(
-                            context, AppRoutes.changePassword);
+                        Navigator.pushNamed(context, AppRoutes.changePassword);
                       },
                     ),
                     const SizedBox(height: 8),
@@ -325,8 +341,7 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
                       label: 'Reviews History',
                       onTap: () {
                         Navigator.pop(context);
-                        Navigator.pushNamed(
-                            context, AppRoutes.reviewsHistory);
+                        Navigator.pushNamed(context, AppRoutes.reviewsHistory);
                       },
                     ),
                     const SizedBox(height: 8),
@@ -367,9 +382,9 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
   }
 
   Widget _placeholder() => Container(
-        color: Palette.greenLight,
-        child: const Icon(Icons.person, size: 32, color: Palette.primary),
-      );
+    color: Palette.greenLight,
+    child: const Icon(Icons.person, size: 32, color: Palette.primary),
+  );
 }
 
 // ─────────────────────────────────────────
@@ -421,16 +436,17 @@ class _InputField extends StatelessWidget {
         hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 14),
         filled: true,
         fillColor: enabled ? Colors.white : Colors.grey.shade50,
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: 14,
+        ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: Colors.grey.shade200),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide:
-              const BorderSide(color: Palette.primary, width: 1.5),
+          borderSide: const BorderSide(color: Palette.primary, width: 1.5),
         ),
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -493,11 +509,13 @@ class _AccountOption extends StatelessWidget {
                   ),
                 ),
               ),
-              Icon(Icons.chevron_right_rounded,
-                  color: color != null
-                      ? color!.withOpacity(0.4)
-                      : Colors.grey.shade400,
-                  size: 20),
+              Icon(
+                Icons.chevron_right_rounded,
+                color: color != null
+                    ? color!.withOpacity(0.4)
+                    : Colors.grey.shade400,
+                size: 20,
+              ),
             ],
           ),
         ),
