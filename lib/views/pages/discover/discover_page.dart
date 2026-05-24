@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../widgets/top_bar_tabs/notification_dropdown.dart';
 import 'package:t5/views/widgets/top_bar_tabs/top_bar.dart';
+import 'package:t5/viewModels/events/recommended_event_viewModel.dart';
+import 'package:t5/viewModels/authenthication/auth_viewModel.dart';
+import 'package:t5/data/repositories/events/recommended_event_repository.dart';
+import 'package:t5/views/widgets/recommended_events_section.dart';
 
 import 'search_events_page.dart';
 import 'search_users_page.dart';
@@ -19,14 +24,12 @@ class DiscoverPage extends StatelessWidget {
 
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-
           children: [
             _HoverCard(
               icon: Icons.search,
               title: "Search Events",
               description:
                   "Find environmental activities near you using smart search.",
-
               onTap: () {
                 Navigator.push(
                   context,
@@ -40,7 +43,6 @@ class DiscoverPage extends StatelessWidget {
               title: "Search Users",
               description:
                   "Discover people with similar interests and connect together.",
-
               onTap: () {
                 Navigator.push(
                   context,
@@ -49,40 +51,13 @@ class DiscoverPage extends StatelessWidget {
               },
             ),
 
-            Container(
-              width: double.infinity,
-              height: 260,
-
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(24),
-
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withAlpha(12),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+            ChangeNotifierProvider(
+              create: (context) => RecommendedEventViewModel(
+                currentUserId:
+                    context.read<AuthViewModel>().currentUser?.uid ?? '',
+                repository: RecommendedEventRepository(),
               ),
-
-              child: const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(24),
-
-                  child: Text(
-                    'Future discover features coming soon...\n\nLourenço mete aqui\nos discover new events',
-
-                    textAlign: TextAlign.center,
-
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.black54,
-                      height: 1.5,
-                    ),
-                  ),
-                ),
-              ),
+              child: const RecommendedEventsSection(),
             ),
           ],
         ),
@@ -115,84 +90,64 @@ class _HoverCardState extends State<_HoverCard> {
   Widget build(BuildContext context) {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
-
       onEnter: (_) {
         setState(() {
           isHovered = true;
         });
       },
-
       onExit: (_) {
         setState(() {
           isHovered = false;
         });
       },
-
       child: GestureDetector(
         onTap: widget.onTap,
-
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 180),
-
           width: double.infinity,
           padding: const EdgeInsets.all(20),
           margin: const EdgeInsets.only(bottom: 18),
-
           decoration: BoxDecoration(
             color: isHovered ? const Color(0xFFF5F5F5) : Colors.white,
-
             borderRadius: BorderRadius.circular(24),
-
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withAlpha(isHovered ? 20 : 12),
-
                 blurRadius: isHovered ? 16 : 12,
-
                 offset: const Offset(0, 4),
               ),
             ],
           ),
-
           child: Row(
             children: [
               Container(
                 width: 80,
                 height: 80,
-
                 decoration: BoxDecoration(
                   color: const Color(0xFFF1F8F3),
                   borderRadius: BorderRadius.circular(20),
                 ),
-
                 child: Icon(
                   widget.icon,
                   size: 42,
                   color: const Color(0xFF0A7A3E),
                 ),
               ),
-
               const SizedBox(width: 20),
-
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-
                   children: [
                     Text(
                       widget.title,
-
                       style: const TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-
                     const SizedBox(height: 8),
-
                     Text(
                       widget.description,
-
                       style: const TextStyle(
                         fontSize: 16,
                         color: Colors.black54,
@@ -202,7 +157,6 @@ class _HoverCardState extends State<_HoverCard> {
                   ],
                 ),
               ),
-
               const Icon(Icons.arrow_forward_ios, color: Color(0xFF0A7A3E)),
             ],
           ),
