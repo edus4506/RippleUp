@@ -75,10 +75,16 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
       backgroundColor: const Color(0xFFF0F4EF),
       appBar: TopBar(
         title: 'Password',
-        leftWidget: GestureDetector(
+        leftWidget: InkWell(
           onTap: () => Navigator.pop(context),
-          child: const Icon(Icons.arrow_back_ios_new_rounded,
-              color: Colors.white, size: 22),
+          customBorder: const CircleBorder(),
+          splashColor: Colors.white.withOpacity(0.25),
+          highlightColor: Colors.white.withOpacity(0.15),
+          child: const Padding(
+            padding: EdgeInsets.all(8),
+            child: Icon(Icons.arrow_back_ios_new_rounded,
+                color: Colors.white, size: 22),
+          ),
         ),
       ),
       body: SingleChildScrollView(

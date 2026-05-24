@@ -11,8 +11,6 @@ import 'package:t5/routes/app_routes.dart';
 import 'package:t5/theme/palette.dart';
 import 'package:t5/viewModels/social/public_profile_viewModel.dart';
 import 'package:t5/views/widgets/top_bar_tabs/top_bar.dart';
-import 'package:t5/views/widgets/event_card.dart';
-import 'package:t5/views/dialogs/event_details_dialog.dart';
 import '../messages/direct_chat_page.dart';
 import '../../../services/messages/direct_chat_service.dart';
 import '../../../data/repositories/messages/direct_message_repository.dart';
@@ -56,471 +54,330 @@ class _PublicProfilePageState extends State<PublicProfilePage> {
             backgroundColor: const Color(0xFFF0F4EF),
             appBar: TopBar(
               title: vm.user?.name ?? 'Profile',
-              leftWidget: _BackButtonWithOverlay(
+              leftWidget: InkWell(
                 onTap: () => Navigator.pop(context),
+                customBorder: const CircleBorder(),
+                splashColor: Colors.white.withOpacity(0.25),
+                highlightColor: Colors.white.withOpacity(0.15),
+                child: const Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Icon(Icons.arrow_back_ios_new_rounded,
+                      color: Colors.white, size: 22),
+                ),
               ),
             ),
             body: vm.isLoading
                 ? const Center(
-                    child: CircularProgressIndicator(color: Palette.primary),
-                  )
+                    child: CircularProgressIndicator(color: Palette.primary))
                 : vm.errorMessage != null
-                ? Center(
-                    child: Text(
-                      vm.errorMessage!,
-                      style: const TextStyle(color: Colors.red),
-                    ),
-                  )
-                : SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        // ── Card principal ──
-                        Container(
-                          width: double.infinity,
-                          margin: const EdgeInsets.fromLTRB(16, 20, 16, 0),
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(24),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
-                                blurRadius: 16,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // ── Avatar + nome + stats ──
-                              Row(
-                                children: [
-                                  // Avatar
-                                  Container(
-                                    width: 86,
-                                    height: 86,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color: Palette.primary.withOpacity(
-                                          0.35,
-                                        ),
-                                        width: 3,
-                                      ),
-                                    ),
-                                    child: ClipOval(
-                                      child:
-                                          (vm.user?.profilePictureUrl != null &&
-                                              vm
-                                                  .user!
-                                                  .profilePictureUrl
-                                                  .isNotEmpty)
-                                          ? Image.network(
-                                              vm.user!.profilePictureUrl,
-                                              fit: BoxFit.cover,
-                                              errorBuilder: (_, __, ___) =>
-                                                  _placeholder(),
-                                            )
-                                          : _placeholder(),
-                                    ),
-                                  ),
-
-                                  const SizedBox(width: 20),
-
-                                  // Nome + stats
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          vm.user?.name ?? 'Unknown',
-                                          style: GoogleFonts.dmSerifDisplay(
-                                            fontSize: 26,
-                                            color: Palette.primary,
-                                            letterSpacing: -0.5,
-                                            height: 1.1,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 10),
-                                        _FollowCounts(userId: widget.userId),
-                                      ],
-                                    ),
+                    ? Center(
+                        child: Text(vm.errorMessage!,
+                            style: const TextStyle(color: Colors.red)))
+                    : SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            // ── Card principal ──
+                            Container(
+                              width: double.infinity,
+                              margin:
+                                  const EdgeInsets.fromLTRB(16, 20, 16, 0),
+                              padding: const EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(24),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.05),
+                                    blurRadius: 16,
+                                    offset: const Offset(0, 4),
                                   ),
                                 ],
                               ),
-
-                              const SizedBox(height: 10),
-
-                              // Email
-                              if (vm.user?.email != null &&
-                                  vm.user!.email.isNotEmpty)
-                                Text(
-                                  vm.user!.email,
-                                  style: const TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 13,
-                                  ),
-                                ),
-
-                              // ── Botões Follow + Message ──
-                              if (_currentUserId != null &&
-                                  _currentUserId != widget.userId) ...[
-                                const SizedBox(height: 16),
-                                Divider(color: Colors.grey.shade100),
-                                const SizedBox(height: 12),
-                                StreamBuilder<bool>(
-                                  stream: vm.isFollowing(
-                                    followerId: _currentUserId,
-                                    followedId: widget.userId,
-                                  ),
-                                  builder: (context, snapshot) {
-                                    final isFollowing = snapshot.data ?? false;
-                                    return Row(
-                                      children: [
-                                        // Follow button
-                                        Expanded(
-                                          child: _OverlayButton(
-                                            onTap: () => vm.toggleFollow(
-                                              followerId: _currentUserId,
-                                              followedId: widget.userId,
-                                              currentlyFollowing: isFollowing,
-                                            ),
-                                            isActive: !isFollowing,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Icon(
-                                                  isFollowing
-                                                      ? Icons
-                                                            .person_remove_rounded
-                                                      : Icons
-                                                            .person_add_rounded,
-                                                  size: 16,
-                                                  color: isFollowing
-                                                      ? Colors.red.shade400
-                                                      : Colors.white,
-                                                ),
-                                                const SizedBox(width: 6),
-                                                Text(
-                                                  isFollowing
-                                                      ? 'Unfollow'
-                                                      : 'Follow',
-                                                  style: TextStyle(
-                                                    fontSize: 13,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: isFollowing
-                                                        ? Colors.red.shade400
-                                                        : Colors.white,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            backgroundColor: isFollowing
-                                                ? Colors.white
-                                                : Palette.primary,
-                                            borderColor: isFollowing
-                                                ? Colors.red.shade300
-                                                : Palette.primary,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // ── Avatar + nome + stats ──
+                                  Row(
+                                    children: [
+                                      // Avatar
+                                      Container(
+                                        width: 86,
+                                        height: 86,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                            color: Palette.primary
+                                                .withOpacity(0.35),
+                                            width: 3,
                                           ),
                                         ),
+                                        child: ClipOval(
+                                          child: (vm.user?.profilePictureUrl !=
+                                                      null &&
+                                                  vm.user!.profilePictureUrl
+                                                      .isNotEmpty)
+                                              ? Image.network(
+                                                  vm.user!.profilePictureUrl,
+                                                  fit: BoxFit.cover,
+                                                  errorBuilder:
+                                                      (_, __, ___) =>
+                                                          _placeholder(),
+                                                )
+                                              : _placeholder(),
+                                        ),
+                                      ),
 
-                                        // Message button
-                                        FutureBuilder<bool>(
-                                          future:
-                                              DirectChatService.hasExistingChat(
+                                      const SizedBox(width: 20),
+
+                                      // Nome + stats
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              vm.user?.name ?? 'Unknown',
+                                              style:
+                                                  GoogleFonts.dmSerifDisplay(
+                                                fontSize: 26,
+                                                color: Palette.primary,
+                                                letterSpacing: -0.5,
+                                                height: 1.1,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 10),
+                                            _FollowCounts(
+                                                userId: widget.userId),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
+                                  const SizedBox(height: 10),
+
+                                  // Email
+                                  if (vm.user?.email != null &&
+                                      vm.user!.email.isNotEmpty)
+                                    Text(
+                                      vm.user!.email,
+                                      style: const TextStyle(
+                                          color: Colors.grey, fontSize: 13),
+                                    ),
+
+                                  // ── Botões Follow + Message ──
+                                  if (_currentUserId != null &&
+                                      _currentUserId != widget.userId) ...[
+                                    const SizedBox(height: 16),
+                                    Divider(color: Colors.grey.shade100),
+                                    const SizedBox(height: 12),
+                                    StreamBuilder<bool>(
+                                      stream: vm.isFollowing(
+                                        followerId: _currentUserId,
+                                        followedId: widget.userId,
+                                      ),
+                                      builder: (context, snapshot) {
+                                        final isFollowing =
+                                            snapshot.data ?? false;
+                                        return Row(
+                                          children: [
+                                            // Follow button
+                                            Expanded(
+                                              child: GestureDetector(
+                                                onTap: () => vm.toggleFollow(
+                                                  followerId: _currentUserId,
+                                                  followedId: widget.userId,
+                                                  currentlyFollowing:
+                                                      isFollowing,
+                                                ),
+                                                child: Container(
+                                                  height: 42,
+                                                  decoration: BoxDecoration(
+                                                    color: isFollowing
+                                                        ? Colors.white
+                                                        : Palette.primary,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            12),
+                                                    border: Border.all(
+                                                      color: isFollowing
+                                                          ? Colors.red.shade300
+                                                          : Palette.primary,
+                                                    ),
+                                                  ),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Icon(
+                                                        isFollowing
+                                                            ? Icons
+                                                                .person_remove_rounded
+                                                            : Icons
+                                                                .person_add_rounded,
+                                                        size: 16,
+                                                        color: isFollowing
+                                                            ? Colors.red.shade400
+                                                            : Colors.white,
+                                                      ),
+                                                      const SizedBox(width: 6),
+                                                      Text(
+                                                        isFollowing
+                                                            ? 'Unfollow'
+                                                            : 'Follow',
+                                                        style: TextStyle(
+                                                          fontSize: 13,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color: isFollowing
+                                                              ? Colors
+                                                                  .red.shade400
+                                                              : Colors.white,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+
+                                            // Message button
+                                            FutureBuilder<bool>(
+                                              future: DirectChatService
+                                                  .hasExistingChat(
                                                 currentUserId: _currentUserId,
                                                 otherUserId: widget.userId,
-                                                directMessageRepository: context
-                                                    .read<
-                                                      DirectMessageRepository
-                                                    >(),
+                                                directMessageRepository:
+                                                    context.read<
+                                                        DirectMessageRepository>(),
                                               ),
-                                          builder: (context, chatSnap) {
-                                            final canMessage =
-                                                isFollowing ||
-                                                (chatSnap.data ?? false);
-                                            if (!canMessage)
-                                              return const SizedBox.shrink();
-                                            return Row(
-                                              children: [
-                                                const SizedBox(width: 10),
-                                                _OverlayIconButton(
-                                                  onTap: () => Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (_) =>
-                                                          DirectChatPage(
+                                              builder: (context, chatSnap) {
+                                                final canMessage = isFollowing ||
+                                                    (chatSnap.data ?? false);
+                                                if (!canMessage)
+                                                  return const SizedBox
+                                                      .shrink();
+                                                return Row(
+                                                  children: [
+                                                    const SizedBox(width: 10),
+                                                    GestureDetector(
+                                                      onTap: () =>
+                                                          Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (_) =>
+                                                              DirectChatPage(
                                                             otherUserId:
                                                                 widget.userId,
                                                             otherUserName:
-                                                                vm.user?.name ??
+                                                                vm.user
+                                                                    ?.name ??
                                                                 'User',
                                                           ),
+                                                        ),
+                                                      ),
+                                                      child: Container(
+                                                        height: 42,
+                                                        width: 42,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: Palette
+                                                              .greenLight,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(12),
+                                                          border: Border.all(
+                                                              color: Palette
+                                                                  .primary
+                                                                  .withOpacity(
+                                                                      0.2)),
+                                                        ),
+                                                        child: const Icon(
+                                                          Icons
+                                                              .chat_bubble_outline_rounded,
+                                                          color: Palette.primary,
+                                                          size: 20,
+                                                        ),
+                                                      ),
                                                     ),
-                                                  ),
-                                                  backgroundColor:
-                                                      Palette.greenLight,
-                                                  child: const Icon(
-                                                    Icons
-                                                        .chat_bubble_outline_rounded,
-                                                    color: Palette.primary,
-                                                    size: 20,
-                                                  ),
-                                                ),
-                                              ],
-                                            );
-                                          },
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                ),
-                              ],
-                            ],
-                          ),
-                        ),
-
-                        const SizedBox(height: 16),
-
-                        // ── Tab bar ──
-                        Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 16),
-                          padding: const EdgeInsets.all(5),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.04),
-                                blurRadius: 8,
-                                offset: const Offset(0, 2),
+                                                  ],
+                                                );
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ],
                               ),
-                            ],
-                          ),
-                          child: Row(
-                            children: [
-                              _TabButton(
-                                icon: Icons.add_circle_outline_rounded,
-                                label: 'Created (${vm.createdEvents.length})',
-                                selected: _selectedTab == 0,
-                                onTap: () => setState(() => _selectedTab = 0),
+                            ),
+
+                            const SizedBox(height: 16),
+
+                            // ── Tab bar ──
+                            Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 16),
+                              padding: const EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.04),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
                               ),
-                              _TabButton(
-                                icon: Icons.event_available_rounded,
-                                label: 'Joined (${vm.joinedEvents.length})',
-                                selected: _selectedTab == 1,
-                                onTap: () => setState(() => _selectedTab = 1),
+                              child: Row(
+                                children: [
+                                  _TabButton(
+                                    icon: Icons.add_circle_outline_rounded,
+                                    label:
+                                        'Created (${vm.createdEvents.length})',
+                                    selected: _selectedTab == 0,
+                                    onTap: () =>
+                                        setState(() => _selectedTab = 0),
+                                  ),
+                                  _TabButton(
+                                    icon: Icons.event_available_rounded,
+                                    label: 'Joined (${vm.joinedEvents.length})',
+                                    selected: _selectedTab == 1,
+                                    onTap: () =>
+                                        setState(() => _selectedTab = 1),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+
+                            const SizedBox(height: 16),
+
+                            // ── Lista de eventos ──
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              child: _selectedTab == 0
+                                  ? _EventList(events: vm.createdEvents)
+                                  : _EventList(events: vm.joinedEvents),
+                            ),
+
+                            const SizedBox(height: 24),
+                          ],
                         ),
-
-                        const SizedBox(height: 16),
-
-                        // ── Lista de eventos com EventCard ──
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 0),
-                          child: _selectedTab == 0
-                              ? _EventList(
-                                  events: vm.createdEvents,
-                                  onEventTap: (event) =>
-                                      _openEventDetails(context, event),
-                                )
-                              : _EventList(
-                                  events: vm.joinedEvents,
-                                  onEventTap: (event) =>
-                                      _openEventDetails(context, event),
-                                ),
-                        ),
-
-                        const SizedBox(height: 24),
-                      ],
-                    ),
-                  ),
+                      ),
           );
         },
       ),
     );
   }
 
-  void _openEventDetails(BuildContext context, Event event) {
-    showDialog(
-      context: context,
-      builder: (_) => EventDetailsDialog(event: event),
-    );
-  }
-
   Widget _placeholder() => Container(
-    color: Palette.greenLight,
-    child: const Icon(Icons.person, size: 44, color: Palette.primary),
-  );
-}
-
-// ─────────────────────────────────────────
-// Overlay Button - com hover e click effects
-// ─────────────────────────────────────────
-
-class _OverlayButton extends StatefulWidget {
-  final VoidCallback onTap;
-  final Widget child;
-  final Color backgroundColor;
-  final Color borderColor;
-  final bool isActive;
-
-  const _OverlayButton({
-    required this.onTap,
-    required this.child,
-    required this.backgroundColor,
-    required this.borderColor,
-    this.isActive = true,
-  });
-
-  @override
-  State<_OverlayButton> createState() => _OverlayButtonState();
-}
-
-class _OverlayButtonState extends State<_OverlayButton> {
-  bool _isHovered = false;
-  bool _isPressed = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      child: GestureDetector(
-        onTapDown: (_) => setState(() => _isPressed = true),
-        onTapUp: (_) => setState(() => _isPressed = false),
-        onTapCancel: () => setState(() => _isPressed = false),
-        onTap: widget.onTap,
-        child: Stack(
-          children: [
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 150),
-              height: 42,
-              decoration: BoxDecoration(
-                color: widget.backgroundColor,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: widget.borderColor),
-                boxShadow: [
-                  if (_isPressed)
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.15),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    )
-                  else if (_isHovered)
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                ],
-              ),
-              child: Center(child: widget.child),
-            ),
-            // Overlay escuro no hover/click
-            if (_isHovered || _isPressed)
-              AnimatedOpacity(
-                opacity: _isPressed ? 0.2 : 0.12,
-                duration: const Duration(milliseconds: 150),
-                child: Container(
-                  height: 42,
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────
-// Overlay Icon Button - versão para ícone
-// ─────────────────────────────────────────
-
-class _OverlayIconButton extends StatefulWidget {
-  final VoidCallback onTap;
-  final Widget child;
-  final Color backgroundColor;
-
-  const _OverlayIconButton({
-    required this.onTap,
-    required this.child,
-    required this.backgroundColor,
-  });
-
-  @override
-  State<_OverlayIconButton> createState() => _OverlayIconButtonState();
-}
-
-class _OverlayIconButtonState extends State<_OverlayIconButton> {
-  bool _isHovered = false;
-  bool _isPressed = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      child: GestureDetector(
-        onTapDown: (_) => setState(() => _isPressed = true),
-        onTapUp: (_) => setState(() => _isPressed = false),
-        onTapCancel: () => setState(() => _isPressed = false),
-        onTap: widget.onTap,
-        child: Stack(
-          children: [
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 150),
-              height: 42,
-              width: 42,
-              decoration: BoxDecoration(
-                color: widget.backgroundColor,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Palette.primary.withOpacity(0.2)),
-                boxShadow: [
-                  if (_isPressed)
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.15),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    )
-                  else if (_isHovered)
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                ],
-              ),
-              child: Center(child: widget.child),
-            ),
-            // Overlay escuro no hover/click
-            if (_isHovered || _isPressed)
-              AnimatedOpacity(
-                opacity: _isPressed ? 0.2 : 0.12,
-                duration: const Duration(milliseconds: 150),
-                child: Container(
-                  height: 42,
-                  width: 42,
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
+        color: Palette.greenLight,
+        child:
+            const Icon(Icons.person, size: 44, color: Palette.primary),
+      );
 }
 
 // ─────────────────────────────────────────
@@ -555,17 +412,14 @@ class _TabButton extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                icon,
-                size: 18,
-                color: selected ? Colors.white : Colors.grey,
-              ),
+              Icon(icon, size: 18, color: selected ? Colors.white : Colors.grey),
               const SizedBox(width: 6),
               Text(
                 label,
                 style: TextStyle(
                   fontSize: 12,
-                  fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+                  fontWeight:
+                      selected ? FontWeight.w600 : FontWeight.w400,
                   color: selected ? Colors.white : Colors.grey,
                 ),
               ),
@@ -609,11 +463,8 @@ class _FollowCounts extends StatelessWidget {
           },
         ),
         Container(
-          width: 1,
-          height: 32,
-          color: Colors.grey.shade200,
-          margin: const EdgeInsets.symmetric(horizontal: 16),
-        ),
+            width: 1, height: 32, color: Colors.grey.shade200,
+            margin: const EdgeInsets.symmetric(horizontal: 16)),
         StreamBuilder<int>(
           stream: followRepo.followingCountStream(userId),
           builder: (context, snapshot) {
@@ -661,7 +512,8 @@ class _StatColumn extends StatelessWidget {
               color: Palette.primary,
             ),
           ),
-          Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+          Text(label,
+              style: const TextStyle(fontSize: 12, color: Colors.grey)),
         ],
       ),
     );
@@ -669,64 +521,13 @@ class _StatColumn extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────
-// Back Button with Overlay
-// ─────────────────────────────────────────
-
-class _BackButtonWithOverlay extends StatefulWidget {
-  final VoidCallback onTap;
-
-  const _BackButtonWithOverlay({required this.onTap});
-
-  @override
-  State<_BackButtonWithOverlay> createState() => _BackButtonWithOverlayState();
-}
-
-class _BackButtonWithOverlayState extends State<_BackButtonWithOverlay> {
-  bool _isHovered = false;
-  bool _isPressed = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      child: GestureDetector(
-        onTapDown: (_) => setState(() => _isPressed = true),
-        onTapUp: (_) => setState(() => _isPressed = false),
-        onTapCancel: () => setState(() => _isPressed = false),
-        onTap: widget.onTap,
-        child: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(
-              _isPressed
-                  ? 0.3
-                  : _isHovered
-                  ? 0.15
-                  : 0,
-            ),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: const Icon(
-            Icons.arrow_back_ios_new_rounded,
-            color: Colors.white,
-            size: 22,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────
-// Event List com EventCard
+// Event List
 // ─────────────────────────────────────────
 
 class _EventList extends StatelessWidget {
   final List<Event> events;
-  final Function(Event) onEventTap;
 
-  const _EventList({required this.events, required this.onEventTap});
+  const _EventList({required this.events});
 
   @override
   Widget build(BuildContext context) {
@@ -739,13 +540,74 @@ class _EventList extends StatelessWidget {
       );
     }
 
-    return ListView.builder(
+    return ListView.separated(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: events.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 10),
       itemBuilder: (context, index) {
         final event = events[index];
-        return EventCard(event: event, onTap: () => onEventTap(event));
+        final statusColor = getEventStatusColor(event.status);
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: ListTile(
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            leading: Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                color: Palette.greenLight,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(Icons.eco_rounded,
+                  color: Palette.primary, size: 22),
+            ),
+            title: Text(
+              event.title,
+              style: const TextStyle(
+                  fontWeight: FontWeight.w600, fontSize: 14),
+            ),
+            subtitle: Row(
+              children: [
+                const Icon(Icons.location_on_outlined,
+                    size: 12, color: Colors.grey),
+                const SizedBox(width: 2),
+                Text(
+                  '${event.city}, ${event.district}',
+                  style:
+                      const TextStyle(color: Colors.grey, fontSize: 12),
+                ),
+                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: statusColor.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    event.status.text,
+                    style: TextStyle(
+                        fontSize: 10,
+                        color: statusColor,
+                        fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
       },
     );
   }
