@@ -83,14 +83,21 @@ To learn more about how to write a good product vision, please read:
 
 
 ### Features and Assumptions
- - Users Profile - Users can view and edit their personal profile, including name, photo, interests, and contact details.
- - Event Creation - Users can create events by providing details such as title, description, date, time, location, and participant limits.
- - Event Discovery - Users can browse and search for events based on categories, date, location, or keywords.
- - Join / Leave Events - Users can register for events they are interested in and leave events if they change their plans.
- - Event Management - Event organizers can edit, update, or cancel events they created.
- - Event history - Users can view a record of past events they attended or organized.
- - Event Notifications – Users receive notifications or reminders about upcoming events, updates, or cancellations.
- - Event Categories – Events can be classified into categories or tagged to improve search and discovery.
+ - User Profile – Users can view and edit their personal profile, including name and profile picture.
+ - Event Creation – Users can create events by providing details such as title, description, start/end dates, capacity, location (country, district, city), and environmental objectives (UN SDGs).
+ - Event Discovery – Users can browse and search for events by keyword, and filter by objectives, location, date range, and participant count.
+ - Join / Leave Events – Users can register for events they are interested in and leave events if they change their plans.
+ - Event Management – Event owners can edit or delete events they created and manage participant limits and event status.
+ - Event Participants – Users can view the list of participants for any event.
+ - Event Feedback – Users can leave a rating and comment review on events they attended, and sort or delete their reviews.
+ - Event History – Users can view a record of past events they attended and their review history.
+ - Event Notifications – Users receive in-app notifications for event participation changes, new events from followed users, direct messages, and 48-hour event reminders.
+ - Event Chat – Participants of an event can communicate through a dedicated event chat, also accessible from the direct messages page.
+ - Direct Messages – Users can exchange private 1-to-1 messages with other users.
+ - Social Graph – Users can follow and unfollow other users, view their followers and following lists, and browse public profiles.
+ - Discover – Users can search for other users and explore the platform through a dedicated discover page.
+ - Event Categories – Events are classified by UN Sustainable Development Goals (SDGs 1–17) to improve search and discovery.
+ - Image Support – Users can upload profile pictures and event cover images.
 <!-- 
 Indicate an  initial/tentative list of high-level features - high-level capabilities or desired services of the system that are necessary to deliver benefits to the users.
  - Feature XPTO - a few words to briefly describe the feature
@@ -107,12 +114,16 @@ Optionally, indicate an initial/tentative list of assumptions that you are doing
 The system supports several user stories focused on enabling users to organize and participate in humanitarian events.
 
 The main functionalities include:
-- Creating humanitarian events
-- Browsing available events
-- Joining and leaving events
-- Favourite events
-- Managing events created by the user
-- Viewing event details and participants
+- Creating and managing humanitarian events (create, edit, delete)
+- Browsing, searching, and filtering events
+- Joining and leaving events; viewing event participants
+- Favouriting events and viewing joined events history
+- Event chat for participant coordination
+- Direct messages between users
+- Social graph: follow/unfollow users, public profiles, followers/following lists
+- Discover page and user search
+- Event feedback and reviews
+- In-app notification system
 
 Each user story is documented and tracked in the GitHub Project board with the label "user story".
 <!-- 
@@ -149,13 +160,18 @@ At the end, it is good to add a rough indication of the value of the user story 
 
 The domain model of _RippleUP_ represents the core entities and relationships required to support the platform’s main functionality.
 
-- **User** represents a platform user. A user is identified by a unique identifier and stores personal information such as name, email, and profile image. Users interact with the platform by creating events, participating in activities, exchanging messages, and receiving notifications.
-- **Event** represents an activity available in the platform. An event is identified by a unique identifier and contains relevant information such as title, description, date and time, maximum number of participants, current status, location, and the environmental goal it addresses.
-- **Participation** models the association between a user and an event. This entity allows the system to register when a user joined or left an event, through the attributes `entryDate` and `exitDate`.
-- **Message** models communication between participants in the context of an event. Each message stores its content and timestamp and is associated with exactly one user and one event.
-- **Notification** models alerts generated by the system in response to relevant event actions, such as event creation, cancellation, updates, or participation changes. Each notification is associated with one user and one event.
+> **Note:** the diagram above reflects the initial Sprint 0/1 design. The descriptions below document the current state of the domain as implemented.
 
-Overall, the domain model reflects the essential structure of the system and supports the application’s main user flows: discovering events, participating in activities, coordinating with other users, and receiving event-related updates.
+- **User** represents a platform user identified by a unique UID. Stores name, email, and profile picture URL. Users create events, participate in activities, exchange messages, follow other users, and receive notifications.
+- **Event** represents an activity on the platform. Contains title, description, start and end dates, maximum participants, current participant count, status (`planning` / `occurring` / `done`), location (country, district, city), a list of environmental objectives (indices 1–17 mapping to the UN SDGs), and optional image URLs. Status is derived at runtime from the dates — it is not stored.
+- **Participation** models the association between a user and an event, represented as a composite document ID `{eventId}_{userId}` in Firestore. Joining and leaving an event atomically updates the event’s participant count.
+- **Review** models feedback left by a participant on a completed event. Stores rating, comment, and creation timestamp. Stored as a subcollection of each event document.
+- **Message (Event Chat)** models communication between participants in the context of an event. Each message stores sender ID, text content, and timestamp, and is scoped to a specific event.
+- **DirectChat / DirectMessage** models 1-to-1 private conversations between two users. A chat document (ID: `{userId1}_{userId2}`) tracks the last message and seen state. Messages are stored in a subcollection.
+- **Follow** models the social graph. A follow document (ID: `{followerId}_{followedId}`) records a directional follow relationship between two users.
+- **Notification** models in-app alerts. Types include `new_event` (a followed user created an event), `upcoming_event` (48-hour reminder), `new_follower` (someone followed the user), and `new_message` (new DM). Each notification is associated with one user.
+
+Overall, the domain model supports the full application: discovering and participating in events, coordinating through chat, building a social graph, leaving feedback, and receiving relevant alerts.
 
 ### User interfaces
 
@@ -212,10 +228,14 @@ In this section you should start by briefly describing the components of the pro
 
 ### Logical architecture
 The system follows a layered logical architecture composed of three main components: the User Interface, Business Logic, and Data Access layers.
-- The User Interface (UI) is responsible for handling user interactions and presenting visual elements. It captures user input and displays processed data in a user-friendly format.
-- The Business Logic layer manages the core functionalities of the application. It processes user inputs, applies application rules, and coordinates operations between the UI and external services.
-- The Data Access layer is responsible for handling communication with external systems and services. This includes interactions with the database and third-party APIs.
+
+- The **User Interface (UI)** layer is responsible for handling user interactions and presenting visual elements. It captures user input and displays processed data in a user-friendly format. Implemented as Flutter widgets and pages following the MVVM pattern, with view models exposing state via `ChangeNotifier`.
+- The **Business Logic** layer manages the core functionalities of the application. It processes user inputs, applies application rules, and coordinates operations between the UI and the data layer. Implemented as view models (`lib/viewModels/`) and service classes (`lib/services/`).
+- The **Data Access** layer is responsible for communication with external services. This includes Firebase Auth for authentication, Cloud Firestore for all structured data (events, users, participations, messages, reviews, follows, notifications), and Supabase Storage for file storage (profile images and event images).
+
 !["Logical Architecture"](assets/Readme/logical_architecture.jpeg)
+
+> **Note:** the diagram above was produced at Sprint 0. The external services shown as "Cloud Storage" and "Database" correspond to Supabase Storage and Cloud Firestore respectively in the current implementation. The GoogleMapsAPI node shown in the diagram is not used — event location is handled through structured country/district/city dropdowns.
 <!--
 The purpose of this subsection is to document the high-level logical structure of the code (Logical View), using a UML diagram with logical packages, without the worry of allocating to components, processes or machines.
 
@@ -229,19 +249,21 @@ Example of _UML package diagram_ showing a _logical view_ of the Eletronic Ticke
 
 ### Physical architecture
 
-The physical architecture of _RippleUP_ is currently based on a client-side mobile application developed with Flutter and executed on the user’s device.
-
-At this stage, the prototype runs mostly as a self-contained application. The mobile app includes the user interface, business logic, and local access to mock data used to simulate the behaviour of the system. This approach allowed the team to validate the main user flows and architectural decisions without depending on a complete backend infrastructure.
-
-The main physical node of the current prototype is:
-
-- **Mobile Device** – executes the Flutter application and contains the presentation layer, application logic, and local mock data repositories.
-
-Although the current prototype does not yet integrate external production services, the architecture was designed to support future extension with cloud-based components. These may include backend services for persistent data storage, user authentication, notifications, and third-party APIs for geolocation and mapping support.
-
-This separation between the mobile client and future external services helps keep the architecture modular, scalable, and easier to evolve in later development stages.
+The physical architecture of _RippleUP_ is based on a Flutter mobile client that communicates with two cloud backends: Firebase and Supabase.
 
 !["Physical Architecture"](assets/Readme/physical_architecture.jpeg)
+
+> **Note:** the diagram above was produced at Sprint 0 and reflects an earlier design. The current physical architecture is described below. The GoogleMaps Platform node shown in the diagram is not used in the final implementation.
+
+The main physical nodes of the current application are:
+
+- **User Device** – executes the Flutter application (Android, iOS, or web). Contains the UI, view models, and service/repository classes. No data is stored locally beyond Flutter’s runtime state; all persistence is delegated to cloud services.
+- **Firebase** – provides two services:
+  - **Firebase Auth** – handles user authentication (sign-up, login, password change, account deletion).
+  - **Cloud Firestore** – the primary database. Stores all structured data: events, users, participations, reviews, direct chats, messages, follows, and notifications.
+- **Supabase** – used exclusively for file storage. Two buckets: `profile-images` (user profile pictures) and `event-images` (event cover images). No Supabase Auth or Supabase Database is used.
+
+The Flutter app communicates with Firebase directly via the FlutterFire SDK and with Supabase via the Supabase Flutter client. All reads and writes go through repository classes in `lib/data/repositories/`, keeping the data layer decoupled from the rest of the application.
 
 <!--
 The goal of this subsection is to document the high-level physical structure of the software system (machines, connections, software components installed, and their dependencies) using UML deployment diagrams (Deployment View) or component diagrams (Implementation View), separate or integrated, showing the physical structure of the system.
@@ -256,23 +278,10 @@ Example of _UML deployment diagram_ showing a _deployment view_ of the Eletronic
 
 ### Functional prototype
 
-The current version of Ripple Up is a working prototype that shows the main features of the application.
+The application is a fully functional product backed by Firebase and Supabase, covering all planned Must-have features across three sprints.
 
-The current prototype already supports the main user flows of the application:
-- View a list of events
-- Create new events with detailed inputs (description, capacity, dates, objectives, location)
-- Filter events based on multiple criteria (location, objectives, participants)
-- View event details
-- Join events
-- Favourite events
+The screenshots below are from the Sprint 1 release and illustrate the initial working prototype used to validate the core architecture and user flows.
 
-The prototype also includes the following screens:
-- Home page – shows all available events
-- Create event screen – allows users to add a new event
-- Filter screen – lets users filter events
-- Event details popup/page – shows full information about an event
-
-Below are screenshots of the current implementation:
 <p align="center">
   <img src="assets/Functional_Prototype/feed_screen.png" alt="Feed Screen" width="250"/>
   <img src="assets/Functional_Prototype/create_event_screen.png" alt="Create Event Screen" width="250"/>
@@ -280,13 +289,7 @@ Below are screenshots of the current implementation:
   <img src="assets/Functional_Prototype/event_details_screen.png" alt="Event Details Screen" width="250"/>
 </p>
 
-Future things to improve:
-- Persist data using a backend service (e.g., Firebase)
-- Mark events as favorites and manage them
-- Improve the design and user experience
-- View what events you joined
-- Notification reminders
-- Activity chats
+The Sprint 1 prototype validated the main event flow: listing events with status badges, creating events with objectives and location, filtering by multiple criteria, and viewing event details. Since then the application has evolved significantly — the full feature set is described in the sprint sections below.
 
 <!--
 To help on validating all the architectural, design and technological decisions made, we usually implement a functional prototype, a thin vertical slice of the system integrating as much technologies as we can.
@@ -298,31 +301,70 @@ At this phase, instead of a complete user story, you can simply implement a smal
 
 ## Development Environment
 
-The project was developed using Flutter and Dart.
+### How to run the app
 
-Required tools:
-- Flutter SDK stable channel
-- Dart SDK included with Flutter
-- Android Studio or Visual Studio Code
-- Android Emulator, physical Android device, or web browser
-- Git
+There are three ways to run _Ripple Up_:
 
-To set up the project locally:
+#### 1. Web (local network)
+
+You can run the app as a web server on your machine and access it from any device on the same Wi-Fi network (e.g., a phone):
+
+```bash
+flutter run -d web-server --web-hostname 0.0.0.0 --web-port 8080
+```
+
+Then on the other device open a browser and navigate to:
+
+```
+http://<your-machine-ip>:8080
+```
+
+To find your machine's local IP address:
+- **Linux/macOS:** `ip a` or `ifconfig` — look for the `inet` address on your Wi-Fi interface (e.g., `192.168.1.x`)
+- **Windows:** `ipconfig` — look for the IPv4 address under your Wi-Fi adapter
+
+#### 2. Android APK
+
+A pre-built APK is available as an asset attached to each GitHub Release:
+
+1. Go to the [Releases page](https://github.com/LEIC-ES-2025-26-2LEIC05/T5/releases)
+2. Download the `.apk` file from the latest release
+3. On your Android device, enable "Install from unknown sources" in Settings → Security
+4. Open the downloaded `.apk` to install and launch the app
+
+#### 3. Run locally from source
+
+**Prerequisites:**
+- Flutter SDK (stable channel) — [install guide](https://docs.flutter.dev/get-started/install)
+- Dart SDK (included with Flutter)
+- Android Studio or Visual Studio Code with the Flutter extension
+- A connected Android device, running emulator, or a Chromium-based browser for web
+- `google-services.json` placed at `android/app/` (required for Firebase — contact the team to obtain it)
+- Supabase credentials configured (required for image storage — contact the team)
+
+**Setup and run:**
 
 ```bash
 git clone https://github.com/LEIC-ES-2025-26-2LEIC05/T5.git
 cd T5
 flutter pub get
+```
+
+Run on Android (emulator or physical device):
+
+```bash
 flutter run
 ```
 
-To run the application on web:
+Run on web (Chrome):
 
 ```bash
 flutter run -d chrome
 ```
 
-To run the main quality checks locally:
+### Quality checks
+
+To run the same checks executed by CI locally:
 
 ```bash
 dart format --set-exit-if-changed .
@@ -331,7 +373,7 @@ flutter test
 flutter build web --release
 ```
 
-The same quality checks are also executed automatically through the GitHub Actions workflow on push and pull request.
+The same quality checks are also executed automatically through the GitHub Actions workflow on every push and pull request.
 
 ## Tools Used
 
@@ -825,10 +867,12 @@ This increment delivers additional value to end-users by improving interaction, 
 
 #### Release
 
-TODO: create and document the GitHub release after all Sprint 2 features are completed, merged into `main`, and added to `CHANGELOG.md`. 
- - Version v2 - Sprint 2. --reference to the release here--
- - Includes a functional version of the application.
- - Can be executed on mobile device or emulator.
+The Sprint 2 release was published as a GitHub Release:
+
+- **Version:** v2 — Sprint 2
+- Includes all Sprint 2 features: event locations, activity chat, definitions page, change password, event feedback and reviews (create, delete, sort), user profile page, event permissions, completed-event filtering, and view joined events
+- `CHANGELOG.md` updated with all changes introduced in this sprint
+- Can be executed on a mobile device, emulator, or web browser using `flutter run`
 
 ---
 
@@ -850,5 +894,328 @@ TODO: create and document the GitHub release after all Sprint 2 features are com
  - How to efficiently manage synchronization between frontend and backend for dynamic data (like reviews and event updates)
 
 ### Sprint 3
+
+#### Sprint Planning
+
+The goal of Sprint 3 was to complete the _Ripple Up_ platform by adding social features, improving UI across all screens, and delivering a polished product increment ready for final evaluation.
+
+The selected backlog items for this sprint focused on:
+
+- Social features: follow/unfollow users, public profiles, followers/following lists
+- Messaging: 1-to-1 direct messages, event chat accessible from DMs
+- Notifications: event join/leave, new events to followers, DM notifications, 48-hour event reminders
+- UI overhaul: feed/home, authentication screens, create event, filter dialog, DMs, event details
+- New functionality: event participants page, edit event details, discover page, user search
+- Quality: test structure reorganisation, additional unit and acceptance tests
+
+At the beginning of the sprint, the selected Product Backlog Items were moved into the Sprint Backlog.
+
+<p align="center">
+  <!-- TODO: add sprint3_start_1.png and sprint3_start_2.png to assets/scrumboard/ -->
+  <em>Sprint 3 board at start — screenshots to be added</em>
+</p>
+
+---
+
+#### Sprint Development
+
+During Sprint 3, the team continued following an incremental development process with feature branches and pull requests. Development was organised around the following merged pull requests:
+
+- **PR #119 / #121** — Direct messages (1-to-1 DMs, chat bubbles, conversation list)
+- **PR #120** — Discover page and user search
+- **PR #115** — Follow / unfollow users and public profiles
+- **PR #117** — Notification system (event, follow, DM, 48h reminder)
+- **PR #123** — Notification dropdown UI and notification chat event
+- **PR #124** — New bottom navigation bar (4 tabs + floating action button)
+- **PR #127** — Bug fixes: event chat Firebase query, message send permission
+- **PR #128** — Event participants page
+- **PR #129** — Test architecture refactored into domain subdirectories
+- **PR #130** — UI/Home: event card and top bar redesign
+- **PR #132** — Event filter dialog redesign (new look, checkboxes, date filter)
+- **PR #133** — Edit event functionality for event owners
+- **PR #134** — Bug fixes: event search delay, DMs complexity, home events complexity
+- **PR #136** — Create event page UI overhaul (wheel time picker, new icons, hover effects)
+- **PR #137** — Auth pages, direct messages, and event chat UI
+
+Main functionalities implemented during this sprint:
+
+- Social graph: follow/unfollow, public profile viewing, followers/following list
+- 1-to-1 direct messages with real-time updates
+- Event chat accessible from the DMs page
+- Notification system with multiple types (event, follow, DM, reminder)
+- Event participants page (list of joined users)
+- Edit event details (available to event owner)
+- Discover page with user search
+- Reviews history page
+- Splash screen and loading states
+- Image support (event cover images and profile pictures via Supabase)
+- New bottom navigation bar
+- UI overhaul of all major screens
+
+---
+
+#### Testing and Quality Assurance
+
+During Sprint 3, the team significantly expanded test coverage and reorganised the test structure into a domain-driven directory layout.
+
+The test suite now contains **233 tests** — all passing.
+
+Current test structure:
+
+```txt
+test/
+├── unit_tests/
+│   ├── services/
+│   │   ├── filter/         # event_filter_service_test.dart
+│   │   ├── messages/       # direct_chat_service_test.dart
+│   │   ├── reviews/        # review_service_test.dart
+│   │   ├── search/         # event_search_service_test.dart, user_search_service_test.dart
+│   │   ├── social/         # notification_service_test.dart
+│   │   └── sort/           # sort_review_service_test.dart
+│   └── viewModels/
+│       ├── events/         # event_viewModel_test.dart, favorite_event_viewModel_test.dart
+│       ├── messages/       # messageViewModel_test.dart
+│       ├── reviews/        # review_viewModel_test.dart
+│       ├── search/         # search_users_viewModel_test.dart
+│       └── social/         # followers_following_viewModel_test.dart,
+│                           # notification_viewModel_test.dart,
+│                           # public_profile_viewModel_test.dart
+└── acceptance_tests/
+    ├── dialogs/            # event_filter_dialog_test.dart,
+    │                       # event_details_dialog_test.dart
+    ├── pages/
+    │   ├── authentication/ # login_page_test.dart
+    │   ├── discover/       # discover_page_test.dart, search_users_page_test.dart
+    │   ├── events/         # create_event_page_test.dart, feedback_page_test.dart,
+    │   │                   # feedback_page_sort_test.dart
+    │   ├── messages/       # direct_messages_page_test.dart
+    │   ├── settings/       # settings_page_test.dart, edit_profile_page_test.dart,
+    │   │                   # change_password_page_test.dart, edit_event_page_test.dart
+    │   └── social/         # followers_following_page_test.dart
+    └── widgets/
+        ├── profile_tabs/   # current_events_widget_test.dart
+        ├── bottom_nav_test.dart
+        ├── event_card_test.dart
+        ├── notification_dropdown_test.dart
+        └── review_card_test.dart
+
+integration_test/
+├── followers_following_test.dart
+└── create_and_join_event_test.dart
+```
+
+Tests can be executed with:
+
+```bash
+flutter test test/unit_tests/        # unit tests only
+flutter test test/acceptance_tests/  # acceptance tests only
+flutter test test/                   # all 233 tests
+flutter test integration_test/       # requires connected device + Firebase credentials
+```
+
+Static analysis and formatting are verified as part of the CI pipeline on every push and pull request.
+
+---
+
+#### Acceptance Tests
+
+Acceptance tests validate whether the Sprint 3 features satisfy the expected user interactions. Automated acceptance tests are located under `test/acceptance_tests/`. The scenarios below represent the key new features delivered in this sprint.
+
+```gherkin
+Feature: View event participants
+
+Scenario: User views the list of participants of an event
+  Given the user is viewing an event's details
+  When the user taps the participants button
+  Then the system should display a list of users who joined the event
+```
+
+```gherkin
+Feature: Edit event
+
+Scenario: Event owner edits event details
+  Given the user is the creator of an event
+  When the user opens the edit event page and modifies the event title
+  Then the updated title should be reflected in the event feed
+```
+
+```gherkin
+Feature: Send direct message
+
+Scenario: User sends a direct message to another user
+  Given the user is on the direct messages page
+  When the user opens a conversation and sends a message
+  Then the message should appear in the conversation immediately
+```
+
+```gherkin
+Feature: Follow a user
+
+Scenario: User follows another user from their public profile
+  Given the user is viewing a public profile
+  When the user taps the Follow button
+  Then the Follow button should change to Unfollow
+  And the followed user's follower count should increase
+```
+
+```gherkin
+Feature: Receive notification
+
+Scenario: User receives a notification when someone joins their event
+  Given the user has created an event
+  When another user joins that event
+  Then the creator should receive a notification in their notification dropdown
+```
+
+These acceptance tests helped confirm that the implemented features delivered value in line with the expected user behaviour.
+
+---
+
+#### Bugs, Defects, Fixes and Improvements
+
+Bugs, defects, fixes, and improvements identified during development and testing are documented in [`BUGS.md`](BUGS.md).
+
+During Sprint 3, six new defects were identified and resolved:
+
+- **BUG-07** — Event search lag caused by missing debounce in `EventViewModel`
+- **BUG-08** — Users could send messages in event chats they had not joined
+- **BUG-09** — Firebase query for EventChat returned wrong results due to an incorrect Firestore path
+- **BUG-10** — "Seen" status was not updated when opening an event chat from the DMs page
+- **BUG-11** — Excessive rebuild complexity in the DMs page caused jank
+- **BUG-12** — Redundant work in the home events list degraded performance
+
+All six defects were resolved before merging into `main`.
+
+---
+
+#### DevOps and Deployment
+
+The project continues to use GitHub Actions for Continuous Integration.
+
+The CI workflow runs automatically on every push and pull request and is divided into four jobs:
+
+- **Format** – checks Dart formatting with `dart format --set-exit-if-changed .`
+- **Analyze** – runs static analysis with `flutter analyze --no-fatal-infos --no-fatal-warnings`
+- **Test** – runs the full test suite with `flutter test`
+- **Build Web** – validates that the application builds successfully for web release with `flutter build web --release`
+
+All four jobs must pass before a pull request can be merged into `main`.
+
+The application can be run locally using:
+
+```bash
+flutter run             # default device
+flutter run -d chrome   # web (browser)
+flutter run -d android  # Android emulator or device
+```
+
+Prerequisites:
+- Flutter SDK (stable channel)
+- A `google-services.json` file placed at `android/app/` (required for Firebase; not included in the repository)
+- The Supabase URL and anon key set as environment variables or in a local config file (required for image storage)
+
+---
+
+#### Branching Strategy
+
+During Sprint 3, the team continued following a GitHub Flow-based workflow.
+
+The `main` branch was kept stable throughout the sprint. All new features, bug fixes, and UI improvements were developed in separate branches and integrated through pull requests.
+
+Branch naming conventions used during Sprint 3:
+
+- `UI/<screen-name>` — UI overhaul branches (e.g., `UI/auth`, `UI/create_event`, `UI/Home`)
+- `feat/<feature-name>` — new feature branches (e.g., `feat/notifications`, `feat/follows`)
+- `bug/<description>` — bug fix branches (e.g., `bug/complexity`, `Bug/DM-Querys`)
+- `<feature-name>` — standalone feature branches (e.g., `edit_event`, `participants`, `directMessages`)
+
+Each pull request was reviewed and had to pass all CI checks before merging. After merging, branches were deleted to keep the repository organised.
+
+---
+
+#### Use of AI Tools During Sprint 3
+
+During Sprint 3, AI tools were used selectively to support specific tasks — primarily documentation, debugging, and test planning. The team maintained ownership of all design decisions and implementation.
+
+**AI-labelled Product Backlog Items (MisterAI):**
+
+The following PBIs involved AI-assisted development. These items are labelled `MisterAI` in the GitHub Project board, and their AI-generated code contributions were committed in separate commits when applicable:
+
+| # | Title | AI usage |
+|---|---|---|
+| #95 | User Profile Viewing | Structure and layout of `PublicProfilePage` |
+| #96 | Follow / Unfollow Users | Follow/unfollow repository and ViewModel logic |
+| #102 | RippleUp Logo | Logo design and asset integration |
+| #105 | See Followers/Following in Profile | `FollowersFollowingPage` structure and ViewModel |
+| #116 | General UI | UI consistency pass across multiple screens |
+| #119 | Direct Messages | `DirectMessagesPage` layout and chat bubble structure |
+
+**Prompts used during Sprint 3:**
+
+| Prompt | Purpose |
+|---|---|
+| "Explain why the Firestore query for subcollection messages returns empty results when the collection path includes a dynamic segment" | Debugging BUG-09 |
+| "Write Gherkin acceptance scenarios for an event participants page feature" | Acceptance test documentation |
+| "Suggest a layout for a direct messages conversation list in Flutter using ListView.builder and ListTile" | UI structure for #119 |
+| "What is the correct way to structure a ChangeNotifierProvider with a constructor-injected repository in Flutter Provider?" | Architecture clarification |
+| "Generate a commit message for a fix that adds a 300ms debounce to the event search query" | Commit message support |
+| "Review this README section for Sprint 3 and suggest improvements for the DevOps paragraph" | Documentation review |
+
+All AI-generated suggestions were reviewed and validated by the team before being integrated. No AI-generated code was merged without understanding and adapting it to the project's architecture and conventions.
+
+---
+
+#### Sprint Review
+
+At the end of Sprint 3, a significantly more complete product increment was delivered. The application now covers the full set of planned Must-have features and a substantial portion of Should-have and Could-have items.
+
+The application now allows users to:
+
+- Discover and follow other users; view public profiles and followers/following lists
+- Exchange direct messages with other users in real time
+- Participate in event chats accessible from the DMs page
+- Receive notifications for event activity, follows, DMs, and upcoming events
+- View the full list of participants for any event
+- Edit events they created
+- Search for events by keyword in the feed
+- Browse a discover page with user search
+- Upload and display profile pictures and event cover images
+- Navigate the application through a redesigned bottom navigation bar
+- Use consistently redesigned screens across all major flows
+
+<p align="center">
+  <!-- TODO: add sprint3_end_1.png and sprint3_end_2.png to assets/scrumboard/ -->
+  <em>Sprint 3 board at end — screenshots to be added</em>
+</p>
+
+---
+
+#### Release
+
+The Sprint 3 release was published as a GitHub Release:
+
+- **Version:** v3 — Sprint 3
+- Includes all Sprint 3 features: social graph, direct messages, event chat in DMs, notifications, participants page, edit event, discover page, image support, UI overhaul across all screens
+- `CHANGELOG.md` updated with all changes introduced in this sprint
+- Can be executed locally with `flutter run`, on Android via the APK attached to the GitHub Release, or on web via `flutter run -d chrome`
+
+---
+
+#### Sprint Retrospective
+
+**Did well:**
+- Large scope managed effectively by splitting work across focused branches and PRs
+- UI consistency improved significantly across all screens by the end of the sprint
+- Test suite restructured into a maintainable domain-driven layout and coverage increased to 233 tests
+- Social features (follows, DMs, notifications) integrated cleanly with the existing architecture
+
+**Do differently:**
+- Start UI overhaul tasks earlier in the sprint to allow more review time
+- Coordinate more explicitly between teams working on overlapping areas (e.g., DMs page and event chat)
+- Track WiP limits more strictly to avoid multiple large PRs open at the same time
+
+**Puzzles:**
+- How to handle real-time message delivery consistently across different network conditions
+- How to balance Firestore read costs with real-time updates in features like notifications and DMs
 
 ### Final Release

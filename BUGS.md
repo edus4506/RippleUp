@@ -192,6 +192,194 @@ The commands were rerun from the project root and the web server/build workflow 
 
 ---
 
+---
+
+## BUG-07 — Event search caused noticeable UI lag
+
+**Category:** Feature / Event Feed  
+**Status:** Fixed  
+**Priority:** Medium
+
+**Description:**  
+The event search in the feed fired a listener notification on every keystroke, causing unnecessary rebuilds and visible lag in the results list.
+
+**Steps to reproduce:**
+1. Open the home feed.
+2. Type quickly in the search field.
+3. Observe the results list updating with a noticeable delay.
+
+**Expected result:**  
+Results should update smoothly without excessive rebuilds.
+
+**Actual result:**  
+Each keystroke triggered an immediate notification, resulting in lag and redundant processing.
+
+**Cause:**  
+`EventViewModel.updateSearchQuery` called `notifyListeners` immediately without any debounce.
+
+**Fix implemented:**  
+A 300ms debounce was added to `updateSearchQuery` so that listeners are only notified after the user stops typing.
+
+**Verification:**  
+Search was tested manually and confirmed to feel responsive without triggering excessive rebuilds.
+
+---
+
+## BUG-08 — Users could send messages in event chats they had not joined
+
+**Category:** Feature / Event Chat  
+**Status:** Fixed  
+**Priority:** High
+
+**Description:**  
+The event chat accessible from the DMs page did not check whether the current user was a participant in the event before allowing them to send messages.
+
+**Steps to reproduce:**
+1. Obtain the chat ID of an event the current user has not joined.
+2. Navigate to the event chat from the DMs page.
+3. Attempt to send a message.
+
+**Expected result:**  
+Non-participants should not be able to send messages in an event chat.
+
+**Actual result:**  
+The send button was active and messages could be submitted by any user regardless of participation.
+
+**Cause:**  
+Participation was not verified before enabling the message input.
+
+**Fix implemented:**  
+A participation check was added before allowing message submission in the event chat.
+
+**Verification:**  
+Tested with a user who is not a participant — the input is now blocked for non-participants.
+
+---
+
+## BUG-09 — Firebase query for EventChat returned wrong or empty results
+
+**Category:** Feature / Event Chat / Firebase  
+**Status:** Fixed  
+**Priority:** High
+
+**Description:**  
+The Firestore query used to fetch event chat messages from the DMs page pointed to the wrong collection path, causing messages not to load.
+
+**Steps to reproduce:**
+1. Join an event that has existing chat activity.
+2. Open the DMs page and tap the event chat entry.
+3. Observe that messages are missing or the page appears blank.
+
+**Expected result:**  
+Event chat messages should load correctly.
+
+**Actual result:**  
+The query returned empty results because it targeted the wrong Firestore collection path.
+
+**Cause:**  
+The collection reference in the EventChat repository was constructed incorrectly.
+
+**Fix implemented:**  
+The Firestore collection path in the EventChat query was corrected to point to the right subcollection.
+
+**Verification:**  
+Event chat messages load correctly from the DMs page after the fix.
+
+---
+
+## BUG-10 — "Seen" status not updating in event DMs
+
+**Category:** Feature / DMs  
+**Status:** Fixed  
+**Priority:** Medium
+
+**Description:**  
+When a user read an event chat message via the DMs page, the "seen" indicator was not updated, so messages appeared perpetually unread in the conversation list.
+
+**Steps to reproduce:**
+1. Receive an event chat message.
+2. Open the event chat from the DMs page.
+3. Return to the DMs list and observe the unread indicator.
+
+**Expected result:**  
+The message should be marked as seen after the chat is opened.
+
+**Actual result:**  
+The unread indicator persisted even after the chat was viewed.
+
+**Cause:**  
+The seen state update call was not triggered when the event chat was opened from the DMs page.
+
+**Fix implemented:**  
+The seen update call was added to the event chat open flow in the DMs page.
+
+**Verification:**  
+Opening the event chat now correctly clears the unread indicator in the DMs list.
+
+---
+
+## BUG-11 — Excessive rebuild complexity in DMs page caused performance issues
+
+**Category:** Performance / DMs  
+**Status:** Fixed  
+**Priority:** Medium
+
+**Description:**  
+The DMs page was rebuilding large portions of the widget tree too frequently, causing jank when the conversation list updated.
+
+**Steps to reproduce:**
+1. Open the DMs page with several active conversations.
+2. Receive a new message or wait for a list update.
+3. Observe frame drops or sluggish scrolling.
+
+**Expected result:**  
+The DMs list should update smoothly without visible frame drops.
+
+**Actual result:**  
+Unnecessary full-list rebuilds caused noticeable performance degradation.
+
+**Cause:**  
+State management in the DMs page was not scoped correctly, triggering wider rebuilds than needed.
+
+**Fix implemented:**  
+`direct_messages_page.dart` was refactored to reduce rebuild scope and avoid redundant computations on each update.
+
+**Verification:**  
+The DMs page scrolls and updates smoothly after the refactor.
+
+---
+
+## BUG-12 — Excessive complexity in home events list
+
+**Category:** Performance / Event Feed  
+**Status:** Fixed  
+**Priority:** Medium
+
+**Description:**  
+The home events list performed redundant work on each rebuild, leading to slow list updates when the event dataset was larger.
+
+**Steps to reproduce:**
+1. Open the home feed with a sizeable list of events.
+2. Scroll or trigger a state update (e.g., join an event).
+3. Observe sluggish rendering or delayed list refresh.
+
+**Expected result:**  
+The feed should render efficiently regardless of the number of events.
+
+**Actual result:**  
+Redundant operations on each rebuild degraded performance with a larger event dataset.
+
+**Cause:**  
+The `EventViewModel` and `events_page.dart` were not caching intermediate results effectively between rebuilds.
+
+**Fix implemented:**  
+The home events query and list rendering were optimised in `event_viewModel.dart` and `events_page.dart`.
+
+**Verification:**  
+The home feed renders smoothly with an extended event list after the fix.
+
+---
+
 ## Summary
 
-The defects above were identified during development and testing activities and were resolved before integration into the main branch. Their correction improved the reliability of the test suite, the consistency of event location handling, the review management experience, the overall code quality of the project, and the stability of the local development workflow.
+The defects above were identified during development and testing activities and were resolved before integration into the main branch. Their correction improved the reliability of the test suite, the consistency of event location handling, the review management experience, the overall code quality of the project, the stability of the local development workflow, and the runtime performance of the event feed and direct messages page.

@@ -1,4 +1,3 @@
-# Changelog
 
 ## v0 - Sprint 0
 
@@ -65,3 +64,42 @@
 - Fixed permission-related issues in event actions
 - Fixed review management behavior by allowing users to delete their own reviews
 - Fixed language inconsistencies by standardizing the application interface to English
+
+---
+
+## v3 - Sprint 3
+
+### Added
+- Follow / unfollow users
+- Public profile page with user events and follow state
+- Followers / following list page
+- 1-to-1 direct messages with real-time updates
+- Event chat accessible from the direct messages page
+- Notification system: event join/leave, new event to creator's followers, DM notifications, 48-hour event reminder
+- Notification dropdown UI
+- Event participants page (list of joined users)
+- Edit event details (available to event owner)
+- Discover page with user search
+- Reviews history page
+- Splash screen and loading states
+- Image support for event cover images and profile pictures
+- New bottom navigation bar (4 tabs + centred floating action button)
+- New routes: `/participants`, `/edit-event`
+
+### Improved
+- Create event page: wheel time picker, new top bar, circle create button, hover effects on objectives, improved date icons and photo icon
+- Event filter dialog: redesigned with checkboxes, date range filter, updated colour scheme
+- Home / event feed: redesigned event card and top bar
+- Auth pages (login and register): full UI redesign
+- Direct messages page: redesigned conversation list and chat UI
+- Top bar: consistency pass across all pages
+- Test structure: reorganised into domain subdirectories under `unit_tests/` and `acceptance_tests/`
+- Test coverage: 233 tests — all passing
+
+### Fixed
+- Event search lag: added 300ms debounce to `EventViewModel.updateSearchQuery`
+- Users could send messages in event chats they had not joined
+- Firebase query for EventChat returned empty results due to incorrect Firestore collection path
+- "Seen" status not updating when opening event chat from DMs page
+- Excessive rebuild complexity in DMs page causing jank
+- Redundant work in home events list degrading performance with large datasets
