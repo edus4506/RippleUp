@@ -66,6 +66,56 @@ class EventDetailsDialog extends StatelessWidget {
                           );
                         }
                         break;
+                      case 'edit':
+                        Navigator.pop(context);
+                        Navigator.pushNamed(
+                          context,
+                          AppRoutes.editEvent,
+                          arguments: {'event': event},
+                        );
+                        break;
+                      case 'delete':
+                        final confirmed = await showDialog<bool>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Delete Event?'),
+                            content: const Text(
+                              'Are you sure you want to delete this event? This action cannot be undone.',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, false),
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, true),
+                                child: const Text(
+                                  'Delete',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+
+                        if (confirmed == true && context.mounted) {
+                          try {
+                            await context.read<EventViewModel>().deleteEvent(event.id);
+                            if (context.mounted) {
+                              Navigator.pop(context);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Event deleted successfully')),
+                              );
+                            }
+                          } catch (e) {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Error deleting event: $e')),
+                              );
+                            }
+                          }
+                        }
+                        break;
                       case 'participants':
                         Navigator.pop(context);
                         Navigator.pushNamed(
@@ -108,12 +158,41 @@ class EventDetailsDialog extends StatelessWidget {
                       ),
                     ),
                     const PopupMenuDivider(),
+                    
+                    if (isCreator && !isLocked)
+                      const PopupMenuItem<String>(
+                        value: 'edit',
+                        child: Row(
+                          children: [
+                            Icon(Icons.edit_outlined),
+                            SizedBox(width: 10),
+                            Text('Edit Event'),
+                          ],
+                        ),
+                      ),
+                      
+                    if (isCreator && event.status == EventStatus.planning)
+                      const PopupMenuItem<String>(
+                        value: 'delete',
+                        child: Row(
+                          children: [
+                            Icon(Icons.delete_outline, color: Colors.red),
+                            SizedBox(width: 10),
+                            Text('Delete Event', style: TextStyle(color: Colors.red)),
+                          ],
+                        ),
+                      ),
+                      
+                    // A correção foi feita nesta linha:
+                    if (isCreator && (!isLocked || event.status == EventStatus.planning))
+                      const PopupMenuDivider(),
+                      
                     const PopupMenuItem<String>(
                       value: 'participants',
                       child: Row(
                         children: [
                           Icon(Icons.people_outline),
-                          const SizedBox(width: 10),
+                          SizedBox(width: 10),
                           Text('Participants'),
                         ],
                       ),
@@ -123,7 +202,7 @@ class EventDetailsDialog extends StatelessWidget {
                       child: Row(
                         children: [
                           Icon(Icons.chat_bubble_outline),
-                          const SizedBox(width: 10),
+                          SizedBox(width: 10),
                           Text('Open Chat'),
                         ],
                       ),
@@ -165,21 +244,6 @@ class EventDetailsDialog extends StatelessWidget {
         ),
       ),
       actions: [
-        // ── Edit button: only visible to the owner of a planning event ──
-        if (isCreator && !isLocked)
-          TextButton.icon(
-            icon: const Icon(Icons.edit_outlined),
-            label: const Text('Edit Event'),
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.pushNamed(
-                context,
-                AppRoutes.editEvent,
-                arguments: {'event': event},
-              );
-            },
-          ),
-
         if (userId != null && !isCreator)
           StreamBuilder<bool>(
             stream: context.read<EventViewModel>().isUserInEvent(
@@ -207,10 +271,6 @@ class EventDetailsDialog extends StatelessWidget {
               );
             },
           ),
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('Close'),
-        ),
       ],
     );
   }
