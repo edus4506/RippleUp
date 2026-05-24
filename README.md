@@ -911,7 +911,6 @@ At the beginning of the sprint, the selected Product Backlog Items were moved in
   <img src="assets/scrumboard/sprint3_start_2.png" width="400"/>
   <img src="assets/scrumboard/sprint3_start_3.png" width="400"/>
   <img src="assets/scrumboard/sprint3_start_4.png" width="400"/>
-  <img src="assets/scrumboard/sprint3_start_5.png" width="400"/>
 </p>
 
 ---
@@ -1198,8 +1197,10 @@ The application now allows users to:
 - Use consistently redesigned screens across all major flows
 
 <p align="center">
-  <!-- TODO: add sprint3_end_1.png and sprint3_end_2.png to assets/scrumboard/ -->
-  <em>Sprint 3 board at end — screenshots to be added</em>
+  <img src="assets/scrumboard/sprint3_end_1.png" width="400"/>
+  <img src="assets/scrumboard/sprint3_end_2.png" width="400"/>
+  <img src="assets/scrumboard/sprint3_end_3.png" width="400"/>
+  <img src="assets/scrumboard/sprint3_end_4.png" width="400"/>
 </p>
 
 ---
