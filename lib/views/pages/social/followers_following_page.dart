@@ -76,7 +76,7 @@ class _FollowersFollowingPageState extends State<FollowersFollowingPage>
           return Scaffold(
             backgroundColor: const Color(0xFFF0F4EF),
             appBar: TopBar(
-              title: 'Connections',
+              title: 'Friends',
               leftWidget: InkWell(
                 onTap: () => Navigator.pop(context),
                 customBorder: const CircleBorder(),
