@@ -20,9 +20,8 @@ class RecommendedEventViewModel extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
   bool get hasNoData => !_isLoading && _recommendedEvents.isEmpty;
 
-  /// Carrega eventos recomendados
   Future<void> loadRecommendedEvents({
-    int limit = 10,  // ← Muda de 10 para 15 ou 20
+    int limit = 10,
     int maxAttempts = 3,
   }) async {
     _isLoading = true;
@@ -48,7 +47,6 @@ class RecommendedEventViewModel extends ChangeNotifier {
     }
   }
 
-  /// Recarrega eventos recomendados (novo random user)
   Future<void> refreshRecommendations({
     int limit = 10,
     int maxAttempts = 3,
@@ -58,7 +56,6 @@ class RecommendedEventViewModel extends ChangeNotifier {
     await loadRecommendedEvents(limit: limit, maxAttempts: maxAttempts);
   }
 
-  /// Limpa o estado
   void clear() {
     _recommendedEvents = [];
     _isLoading = false;

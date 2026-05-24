@@ -51,10 +51,10 @@ class DiscoverPage extends StatelessWidget {
               },
             ),
 
-            // ─── RECOMMENDED EVENTS SECTION ─────────────────────────────
             ChangeNotifierProvider(
               create: (context) => RecommendedEventViewModel(
-                currentUserId: context.read<AuthViewModel>().currentUser?.uid ?? '',
+                currentUserId:
+                    context.read<AuthViewModel>().currentUser?.uid ?? '',
                 repository: RecommendedEventRepository(),
               ),
               child: const RecommendedEventsSection(),
