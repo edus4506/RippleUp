@@ -21,19 +21,24 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
   late final TextEditingController _nameController;
   bool _isSaving = false;
 
+  late final TextEditingController _emailController;
+
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController();
+    _emailController = TextEditingController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final user = context.read<ProfileViewModel>().user;
       _nameController.text = user?.name ?? '';
+      _emailController.text = user?.email ?? '';
     });
   }
 
   @override
   void dispose() {
     _nameController.dispose();
+    _emailController.dispose();
     super.dispose();
   }
 
@@ -251,8 +256,7 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
                     _FieldLabel(label: 'Email'),
                     const SizedBox(height: 6),
                     _InputField(
-                      controller: TextEditingController(
-                          text: user?.email ?? ''),
+                      controller: _emailController,
                       hint: 'Email',
                       icon: Icons.email_outlined,
                       enabled: false,
@@ -324,6 +328,18 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
                         Navigator.pushNamed(
                             context, AppRoutes.reviewsHistory);
                       },
+                    ),
+                    const SizedBox(height: 8),
+                    _AccountOption(
+                      icon: Icons.help_outline_rounded,
+                      label: 'Help & Support',
+                      onTap: () => Navigator.pop(context),
+                    ),
+                    const SizedBox(height: 8),
+                    _AccountOption(
+                      icon: Icons.info_outline_rounded,
+                      label: 'About the App',
+                      onTap: () => Navigator.pop(context),
                     ),
                     const SizedBox(height: 8),
                     _AccountOption(
