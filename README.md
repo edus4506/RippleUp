@@ -6,6 +6,8 @@
 
 [![Flutter CI](https://github.com/LEIC-ES-2025-26-2LEIC05/T5/actions/workflows/flutter.yml/badge.svg?branch=main)](https://github.com/LEIC-ES-2025-26-2LEIC05/T5/actions/workflows/flutter.yml)
 
+> [!NOTE] The CI badge above may show a failing or inactive state. During the final stages of Sprint 3, the team exhausted the free GitHub Actions minutes available on the organisation account, which prevented the workflow from running on recent commits. All quality checks (formatting, static analysis, tests, and web build) were validated locally and passed before merging. See the [DevOps section of Sprint 3](#devops-and-deployment-1) for more details.
+
 Welcome to the documentation of _Ripple Up_!
 
 This Software Development Report, tailored for LEIC-ES-2025-26, provides comprehensive details about _Ripple Up_, starting from an high-level vision and going into low-level implementation decisions. 
@@ -1098,6 +1100,19 @@ The CI workflow runs automatically on every push and pull request and is divided
 - **Build Web** – validates that the application builds successfully for web release with `flutter build web --release`
 
 All four jobs must pass before a pull request can be merged into `main`.
+
+During the final stages of Sprint 3, the team encountered a limitation with the free GitHub Actions minutes available on the organisation account. The monthly quota was exhausted, which caused the CI workflow to stop running on new commits and pull requests. As a result, some of the later PRs in the sprint were merged without automated CI validation.
+
+To compensate, all quality checks were run locally before merging:
+
+```bash
+dart format --set-exit-if-changed .
+flutter analyze --no-fatal-infos --no-fatal-warnings
+flutter test
+flutter build web --release
+```
+
+All checks passed locally. The CI workflow remains correctly configured and will resume running normally once the Actions minutes quota is renewed.
 
 The application can be run locally using:
 
