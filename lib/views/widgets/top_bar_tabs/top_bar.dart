@@ -200,11 +200,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
             ),
           ],
         ),
-        child: SizedBox(
-          width: 52,
-          height: 52,
-          child: Center(child: child),
-        ),
+        child: SizedBox(width: 52, height: 52, child: Center(child: child)),
       ),
     );
   }

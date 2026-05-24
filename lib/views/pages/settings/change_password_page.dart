@@ -65,8 +65,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   }
 
   void _showSnack(String msg) {
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(msg)));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 
   @override
@@ -82,8 +81,11 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
           highlightColor: Colors.white.withOpacity(0.15),
           child: const Padding(
             padding: EdgeInsets.all(8),
-            child: Icon(Icons.arrow_back_ios_new_rounded,
-                color: Colors.white, size: 22),
+            child: Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: Colors.white,
+              size: 22,
+            ),
           ),
         ),
       ),
@@ -120,8 +122,11 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                           color: Palette.greenLight,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const Icon(Icons.lock_outline_rounded,
-                            color: Palette.primary, size: 22),
+                        child: const Icon(
+                          Icons.lock_outline_rounded,
+                          color: Palette.primary,
+                          size: 22,
+                        ),
                       ),
                       const SizedBox(width: 12),
                       const Text(
@@ -215,22 +220,21 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               decoration: BoxDecoration(
                 color: Palette.greenLight,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                    color: Palette.primary.withOpacity(0.15)),
+                border: Border.all(color: Palette.primary.withOpacity(0.15)),
               ),
               padding: const EdgeInsets.all(14),
               child: Row(
                 children: [
-                  Icon(Icons.info_outline_rounded,
-                      color: Palette.primary.withOpacity(0.7), size: 18),
+                  Icon(
+                    Icons.info_outline_rounded,
+                    color: Palette.primary.withOpacity(0.7),
+                    size: 18,
+                  ),
                   const SizedBox(width: 10),
                   const Expanded(
                     child: Text(
                       'Password must be at least 6 characters long.',
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Palette.primary,
-                      ),
+                      style: TextStyle(fontSize: 13, color: Palette.primary),
                     ),
                   ),
                 ],
@@ -289,21 +293,20 @@ class _PasswordField extends StatelessWidget {
       style: const TextStyle(fontSize: 14, color: Color(0xFF1B1B1B)),
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle:
-            TextStyle(color: Colors.grey.shade400, fontSize: 14),
+        hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 14),
         filled: true,
         fillColor: Colors.white,
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: 14,
+        ),
         suffixIcon: Material(
           color: Colors.transparent,
           child: InkWell(
             onTap: onToggle,
             borderRadius: BorderRadius.circular(20),
             child: Icon(
-              show
-                  ? Icons.visibility_off_outlined
-                  : Icons.visibility_outlined,
+              show ? Icons.visibility_off_outlined : Icons.visibility_outlined,
               color: Colors.grey.shade400,
               size: 20,
             ),
@@ -315,8 +318,7 @@ class _PasswordField extends StatelessWidget {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide:
-              const BorderSide(color: Palette.primary, width: 1.5),
+          borderSide: const BorderSide(color: Palette.primary, width: 1.5),
         ),
       ),
     );

@@ -77,7 +77,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 ],
               ),
               child: vm.isLoading
-                  ? const Center(child: CircularProgressIndicator(color: Palette.primary))
+                  ? const Center(
+                      child: CircularProgressIndicator(color: Palette.primary),
+                    )
                   : Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -96,7 +98,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                               ),
                               child: ClipOval(
-                                child: (vm.user?.profilePictureUrl != null &&
+                                child:
+                                    (vm.user?.profilePictureUrl != null &&
                                         vm.user!.profilePictureUrl.isNotEmpty)
                                     ? Image.network(
                                         vm.user!.profilePictureUrl,
@@ -242,7 +245,11 @@ class _TabButton extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, size: 20, color: selected ? Colors.white : Colors.grey),
+              Icon(
+                icon,
+                size: 20,
+                color: selected ? Colors.white : Colors.grey,
+              ),
               const SizedBox(height: 3),
               Text(
                 label,
@@ -338,10 +345,7 @@ class _StatColumn extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 2),
-          Text(
-            label,
-            style: const TextStyle(fontSize: 12, color: Colors.grey),
-          ),
+          Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
         ],
       ),
     );

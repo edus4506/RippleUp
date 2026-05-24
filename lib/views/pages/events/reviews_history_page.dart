@@ -24,8 +24,11 @@ class ReviewsHistoryPage extends StatelessWidget {
           title: 'Reviews',
           leftWidget: GestureDetector(
             onTap: () => Navigator.pop(context),
-            child: const Icon(Icons.arrow_back_ios_new_rounded,
-                color: Colors.white, size: 22),
+            child: const Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: Colors.white,
+              size: 22,
+            ),
           ),
         ),
         body: Center(
@@ -41,8 +44,11 @@ class ReviewsHistoryPage extends StatelessWidget {
                     color: Palette.greenLight,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Icon(Icons.lock_outline_rounded,
-                      size: 36, color: Palette.primary),
+                  child: const Icon(
+                    Icons.lock_outline_rounded,
+                    size: 36,
+                    color: Palette.primary,
+                  ),
                 ),
                 const SizedBox(height: 20),
                 const Text(
@@ -54,7 +60,10 @@ class ReviewsHistoryPage extends StatelessWidget {
                 _GreenButton(
                   label: 'Go to Login',
                   onTap: () => Navigator.pushNamedAndRemoveUntil(
-                      context, AppRoutes.login, (_) => false),
+                    context,
+                    AppRoutes.login,
+                    (_) => false,
+                  ),
                 ),
               ],
             ),
@@ -74,24 +83,27 @@ class ReviewsHistoryPage extends StatelessWidget {
           highlightColor: Colors.white.withOpacity(0.15),
           child: const Padding(
             padding: EdgeInsets.all(8),
-            child: Icon(Icons.arrow_back_ios_new_rounded,
-                color: Colors.white, size: 22),
+            child: Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: Colors.white,
+              size: 22,
+            ),
           ),
         ),
       ),
       body: StreamBuilder<List<ReviewHistoryItem>>(
-        stream: context
-            .read<ReviewViewModel>()
-            .getUserReviewsHistory(currentUser.uid),
+        stream: context.read<ReviewViewModel>().getUserReviewsHistory(
+          currentUser.uid,
+        ),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return const Center(
-                child: Text('Could not load reviews history.'));
+            return const Center(child: Text('Could not load reviews history.'));
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
-                child: CircularProgressIndicator(color: Palette.primary));
+              child: CircularProgressIndicator(color: Palette.primary),
+            );
           }
 
           final items = snapshot.data ?? [];
@@ -108,8 +120,11 @@ class ReviewsHistoryPage extends StatelessWidget {
                       color: Palette.greenLight,
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: const Icon(Icons.rate_review_outlined,
-                        size: 36, color: Palette.primary),
+                    child: const Icon(
+                      Icons.rate_review_outlined,
+                      size: 36,
+                      color: Palette.primary,
+                    ),
                   ),
                   const SizedBox(height: 16),
                   const Text(
@@ -177,8 +192,11 @@ class _ReviewHistoryCard extends StatelessWidget {
                       color: Palette.greenLight,
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: const Icon(Icons.eco_rounded,
-                        color: Palette.primary, size: 20),
+                    child: const Icon(
+                      Icons.eco_rounded,
+                      color: Palette.primary,
+                      size: 20,
+                    ),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
@@ -191,8 +209,11 @@ class _ReviewHistoryCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const Icon(Icons.chevron_right_rounded,
-                      color: Colors.grey, size: 20),
+                  const Icon(
+                    Icons.chevron_right_rounded,
+                    color: Colors.grey,
+                    size: 20,
+                  ),
                 ],
               ),
 
@@ -205,7 +226,9 @@ class _ReviewHistoryCard extends StatelessWidget {
                 children: List.generate(
                   5,
                   (i) => Icon(
-                    i < item.review.rating ? Icons.star_rounded : Icons.star_outline_rounded,
+                    i < item.review.rating
+                        ? Icons.star_rounded
+                        : Icons.star_outline_rounded,
                     size: 20,
                     color: i < item.review.rating
                         ? const Color(0xFFFFC107)
@@ -231,13 +254,15 @@ class _ReviewHistoryCard extends StatelessWidget {
               // Date
               Row(
                 children: [
-                  Icon(Icons.calendar_today_outlined,
-                      size: 12, color: Colors.grey.shade400),
+                  Icon(
+                    Icons.calendar_today_outlined,
+                    size: 12,
+                    color: Colors.grey.shade400,
+                  ),
                   const SizedBox(width: 4),
                   Text(
                     _formatDate(item.review.createdAt),
-                    style: TextStyle(
-                        color: Colors.grey.shade400, fontSize: 12),
+                    style: TextStyle(color: Colors.grey.shade400, fontSize: 12),
                   ),
                 ],
               ),

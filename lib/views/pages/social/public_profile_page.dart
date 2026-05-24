@@ -61,312 +61,308 @@ class _PublicProfilePageState extends State<PublicProfilePage> {
                 highlightColor: Colors.white.withOpacity(0.15),
                 child: const Padding(
                   padding: EdgeInsets.all(8),
-                  child: Icon(Icons.arrow_back_ios_new_rounded,
-                      color: Colors.white, size: 22),
+                  child: Icon(
+                    Icons.arrow_back_ios_new_rounded,
+                    color: Colors.white,
+                    size: 22,
+                  ),
                 ),
               ),
             ),
             body: vm.isLoading
                 ? const Center(
-                    child: CircularProgressIndicator(color: Palette.primary))
+                    child: CircularProgressIndicator(color: Palette.primary),
+                  )
                 : vm.errorMessage != null
-                    ? Center(
-                        child: Text(vm.errorMessage!,
-                            style: const TextStyle(color: Colors.red)))
-                    : SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            // ── Card principal ──
-                            Container(
-                              width: double.infinity,
-                              margin:
-                                  const EdgeInsets.fromLTRB(16, 20, 16, 0),
-                              padding: const EdgeInsets.all(20),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(24),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.05),
-                                    blurRadius: 16,
-                                    offset: const Offset(0, 4),
+                ? Center(
+                    child: Text(
+                      vm.errorMessage!,
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                  )
+                : SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        // ── Card principal ──
+                        Container(
+                          width: double.infinity,
+                          margin: const EdgeInsets.fromLTRB(16, 20, 16, 0),
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(24),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 16,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // ── Avatar + nome + stats ──
+                              Row(
+                                children: [
+                                  // Avatar
+                                  Container(
+                                    width: 86,
+                                    height: 86,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: Palette.primary.withOpacity(
+                                          0.35,
+                                        ),
+                                        width: 3,
+                                      ),
+                                    ),
+                                    child: ClipOval(
+                                      child:
+                                          (vm.user?.profilePictureUrl != null &&
+                                              vm
+                                                  .user!
+                                                  .profilePictureUrl
+                                                  .isNotEmpty)
+                                          ? Image.network(
+                                              vm.user!.profilePictureUrl,
+                                              fit: BoxFit.cover,
+                                              errorBuilder: (_, __, ___) =>
+                                                  _placeholder(),
+                                            )
+                                          : _placeholder(),
+                                    ),
+                                  ),
+
+                                  const SizedBox(width: 20),
+
+                                  // Nome + stats
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          vm.user?.name ?? 'Unknown',
+                                          style: GoogleFonts.dmSerifDisplay(
+                                            fontSize: 26,
+                                            color: Palette.primary,
+                                            letterSpacing: -0.5,
+                                            height: 1.1,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 10),
+                                        _FollowCounts(userId: widget.userId),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  // ── Avatar + nome + stats ──
-                                  Row(
-                                    children: [
-                                      // Avatar
-                                      Container(
-                                        width: 86,
-                                        height: 86,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          border: Border.all(
-                                            color: Palette.primary
-                                                .withOpacity(0.35),
-                                            width: 3,
-                                          ),
-                                        ),
-                                        child: ClipOval(
-                                          child: (vm.user?.profilePictureUrl !=
-                                                      null &&
-                                                  vm.user!.profilePictureUrl
-                                                      .isNotEmpty)
-                                              ? Image.network(
-                                                  vm.user!.profilePictureUrl,
-                                                  fit: BoxFit.cover,
-                                                  errorBuilder:
-                                                      (_, __, ___) =>
-                                                          _placeholder(),
-                                                )
-                                              : _placeholder(),
-                                        ),
-                                      ),
 
-                                      const SizedBox(width: 20),
+                              const SizedBox(height: 10),
 
-                                      // Nome + stats
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              vm.user?.name ?? 'Unknown',
-                                              style:
-                                                  GoogleFonts.dmSerifDisplay(
-                                                fontSize: 26,
-                                                color: Palette.primary,
-                                                letterSpacing: -0.5,
-                                                height: 1.1,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 10),
-                                            _FollowCounts(
-                                                userId: widget.userId),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
+                              // Email
+                              if (vm.user?.email != null &&
+                                  vm.user!.email.isNotEmpty)
+                                Text(
+                                  vm.user!.email,
+                                  style: const TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 13,
                                   ),
+                                ),
 
-                                  const SizedBox(height: 10),
-
-                                  // Email
-                                  if (vm.user?.email != null &&
-                                      vm.user!.email.isNotEmpty)
-                                    Text(
-                                      vm.user!.email,
-                                      style: const TextStyle(
-                                          color: Colors.grey, fontSize: 13),
-                                    ),
-
-                                  // ── Botões Follow + Message ──
-                                  if (_currentUserId != null &&
-                                      _currentUserId != widget.userId) ...[
-                                    const SizedBox(height: 16),
-                                    Divider(color: Colors.grey.shade100),
-                                    const SizedBox(height: 12),
-                                    StreamBuilder<bool>(
-                                      stream: vm.isFollowing(
-                                        followerId: _currentUserId,
-                                        followedId: widget.userId,
-                                      ),
-                                      builder: (context, snapshot) {
-                                        final isFollowing =
-                                            snapshot.data ?? false;
-                                        return Row(
-                                          children: [
-                                            // Follow button
-                                            Expanded(
-                                              child: GestureDetector(
-                                                onTap: () => vm.toggleFollow(
-                                                  followerId: _currentUserId,
-                                                  followedId: widget.userId,
-                                                  currentlyFollowing:
-                                                      isFollowing,
+                              // ── Botões Follow + Message ──
+                              if (_currentUserId != null &&
+                                  _currentUserId != widget.userId) ...[
+                                const SizedBox(height: 16),
+                                Divider(color: Colors.grey.shade100),
+                                const SizedBox(height: 12),
+                                StreamBuilder<bool>(
+                                  stream: vm.isFollowing(
+                                    followerId: _currentUserId,
+                                    followedId: widget.userId,
+                                  ),
+                                  builder: (context, snapshot) {
+                                    final isFollowing = snapshot.data ?? false;
+                                    return Row(
+                                      children: [
+                                        // Follow button
+                                        Expanded(
+                                          child: GestureDetector(
+                                            onTap: () => vm.toggleFollow(
+                                              followerId: _currentUserId,
+                                              followedId: widget.userId,
+                                              currentlyFollowing: isFollowing,
+                                            ),
+                                            child: Container(
+                                              height: 42,
+                                              decoration: BoxDecoration(
+                                                color: isFollowing
+                                                    ? Colors.white
+                                                    : Palette.primary,
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                                border: Border.all(
+                                                  color: isFollowing
+                                                      ? Colors.red.shade300
+                                                      : Palette.primary,
                                                 ),
-                                                child: Container(
-                                                  height: 42,
-                                                  decoration: BoxDecoration(
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Icon(
+                                                    isFollowing
+                                                        ? Icons
+                                                              .person_remove_rounded
+                                                        : Icons
+                                                              .person_add_rounded,
+                                                    size: 16,
                                                     color: isFollowing
-                                                        ? Colors.white
-                                                        : Palette.primary,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            12),
-                                                    border: Border.all(
+                                                        ? Colors.red.shade400
+                                                        : Colors.white,
+                                                  ),
+                                                  const SizedBox(width: 6),
+                                                  Text(
+                                                    isFollowing
+                                                        ? 'Unfollow'
+                                                        : 'Follow',
+                                                    style: TextStyle(
+                                                      fontSize: 13,
+                                                      fontWeight:
+                                                          FontWeight.w600,
                                                       color: isFollowing
-                                                          ? Colors.red.shade300
-                                                          : Palette.primary,
+                                                          ? Colors.red.shade400
+                                                          : Colors.white,
                                                     ),
                                                   ),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Icon(
-                                                        isFollowing
-                                                            ? Icons
-                                                                .person_remove_rounded
-                                                            : Icons
-                                                                .person_add_rounded,
-                                                        size: 16,
-                                                        color: isFollowing
-                                                            ? Colors.red.shade400
-                                                            : Colors.white,
-                                                      ),
-                                                      const SizedBox(width: 6),
-                                                      Text(
-                                                        isFollowing
-                                                            ? 'Unfollow'
-                                                            : 'Follow',
-                                                        style: TextStyle(
-                                                          fontSize: 13,
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          color: isFollowing
-                                                              ? Colors
-                                                                  .red.shade400
-                                                              : Colors.white,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
+                                                ],
                                               ),
                                             ),
+                                          ),
+                                        ),
 
-                                            // Message button
-                                            FutureBuilder<bool>(
-                                              future: DirectChatService
-                                                  .hasExistingChat(
+                                        // Message button
+                                        FutureBuilder<bool>(
+                                          future:
+                                              DirectChatService.hasExistingChat(
                                                 currentUserId: _currentUserId,
                                                 otherUserId: widget.userId,
-                                                directMessageRepository:
-                                                    context.read<
-                                                        DirectMessageRepository>(),
+                                                directMessageRepository: context
+                                                    .read<
+                                                      DirectMessageRepository
+                                                    >(),
                                               ),
-                                              builder: (context, chatSnap) {
-                                                final canMessage = isFollowing ||
-                                                    (chatSnap.data ?? false);
-                                                if (!canMessage)
-                                                  return const SizedBox
-                                                      .shrink();
-                                                return Row(
-                                                  children: [
-                                                    const SizedBox(width: 10),
-                                                    GestureDetector(
-                                                      onTap: () =>
-                                                          Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (_) =>
-                                                              DirectChatPage(
+                                          builder: (context, chatSnap) {
+                                            final canMessage =
+                                                isFollowing ||
+                                                (chatSnap.data ?? false);
+                                            if (!canMessage)
+                                              return const SizedBox.shrink();
+                                            return Row(
+                                              children: [
+                                                const SizedBox(width: 10),
+                                                GestureDetector(
+                                                  onTap: () => Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (_) =>
+                                                          DirectChatPage(
                                                             otherUserId:
                                                                 widget.userId,
                                                             otherUserName:
-                                                                vm.user
-                                                                    ?.name ??
+                                                                vm.user?.name ??
                                                                 'User',
                                                           ),
-                                                        ),
-                                                      ),
-                                                      child: Container(
-                                                        height: 42,
-                                                        width: 42,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: Palette
-                                                              .greenLight,
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(12),
-                                                          border: Border.all(
-                                                              color: Palette
-                                                                  .primary
-                                                                  .withOpacity(
-                                                                      0.2)),
-                                                        ),
-                                                        child: const Icon(
-                                                          Icons
-                                                              .chat_bubble_outline_rounded,
-                                                          color: Palette.primary,
-                                                          size: 20,
-                                                        ),
+                                                    ),
+                                                  ),
+                                                  child: Container(
+                                                    height: 42,
+                                                    width: 42,
+                                                    decoration: BoxDecoration(
+                                                      color: Palette.greenLight,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            12,
+                                                          ),
+                                                      border: Border.all(
+                                                        color: Palette.primary
+                                                            .withOpacity(0.2),
                                                       ),
                                                     ),
-                                                  ],
-                                                );
-                                              },
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                ],
-                              ),
-                            ),
-
-                            const SizedBox(height: 16),
-
-                            // ── Tab bar ──
-                            Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 16),
-                              padding: const EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(16),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.04),
-                                    blurRadius: 8,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              child: Row(
-                                children: [
-                                  _TabButton(
-                                    icon: Icons.add_circle_outline_rounded,
-                                    label:
-                                        'Created (${vm.createdEvents.length})',
-                                    selected: _selectedTab == 0,
-                                    onTap: () =>
-                                        setState(() => _selectedTab = 0),
-                                  ),
-                                  _TabButton(
-                                    icon: Icons.event_available_rounded,
-                                    label: 'Joined (${vm.joinedEvents.length})',
-                                    selected: _selectedTab == 1,
-                                    onTap: () =>
-                                        setState(() => _selectedTab = 1),
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                            const SizedBox(height: 16),
-
-                            // ── Lista de eventos ──
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
-                              child: _selectedTab == 0
-                                  ? _EventList(events: vm.createdEvents)
-                                  : _EventList(events: vm.joinedEvents),
-                            ),
-
-                            const SizedBox(height: 24),
-                          ],
+                                                    child: const Icon(
+                                                      Icons
+                                                          .chat_bubble_outline_rounded,
+                                                      color: Palette.primary,
+                                                      size: 20,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                ),
+                              ],
+                            ],
+                          ),
                         ),
-                      ),
+
+                        const SizedBox(height: 16),
+
+                        // ── Tab bar ──
+                        Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 16),
+                          padding: const EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.04),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            children: [
+                              _TabButton(
+                                icon: Icons.add_circle_outline_rounded,
+                                label: 'Created (${vm.createdEvents.length})',
+                                selected: _selectedTab == 0,
+                                onTap: () => setState(() => _selectedTab = 0),
+                              ),
+                              _TabButton(
+                                icon: Icons.event_available_rounded,
+                                label: 'Joined (${vm.joinedEvents.length})',
+                                selected: _selectedTab == 1,
+                                onTap: () => setState(() => _selectedTab = 1),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        const SizedBox(height: 16),
+
+                        // ── Lista de eventos ──
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: _selectedTab == 0
+                              ? _EventList(events: vm.createdEvents)
+                              : _EventList(events: vm.joinedEvents),
+                        ),
+
+                        const SizedBox(height: 24),
+                      ],
+                    ),
+                  ),
           );
         },
       ),
@@ -374,10 +370,9 @@ class _PublicProfilePageState extends State<PublicProfilePage> {
   }
 
   Widget _placeholder() => Container(
-        color: Palette.greenLight,
-        child:
-            const Icon(Icons.person, size: 44, color: Palette.primary),
-      );
+    color: Palette.greenLight,
+    child: const Icon(Icons.person, size: 44, color: Palette.primary),
+  );
 }
 
 // ─────────────────────────────────────────
@@ -412,14 +407,17 @@ class _TabButton extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, size: 18, color: selected ? Colors.white : Colors.grey),
+              Icon(
+                icon,
+                size: 18,
+                color: selected ? Colors.white : Colors.grey,
+              ),
               const SizedBox(width: 6),
               Text(
                 label,
                 style: TextStyle(
                   fontSize: 12,
-                  fontWeight:
-                      selected ? FontWeight.w600 : FontWeight.w400,
+                  fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
                   color: selected ? Colors.white : Colors.grey,
                 ),
               ),
@@ -463,8 +461,11 @@ class _FollowCounts extends StatelessWidget {
           },
         ),
         Container(
-            width: 1, height: 32, color: Colors.grey.shade200,
-            margin: const EdgeInsets.symmetric(horizontal: 16)),
+          width: 1,
+          height: 32,
+          color: Colors.grey.shade200,
+          margin: const EdgeInsets.symmetric(horizontal: 16),
+        ),
         StreamBuilder<int>(
           stream: followRepo.followingCountStream(userId),
           builder: (context, snapshot) {
@@ -512,8 +513,7 @@ class _StatColumn extends StatelessWidget {
               color: Palette.primary,
             ),
           ),
-          Text(label,
-              style: const TextStyle(fontSize: 12, color: Colors.grey)),
+          Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
         ],
       ),
     );
@@ -561,8 +561,10 @@ class _EventList extends StatelessWidget {
             ],
           ),
           child: ListTile(
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 8,
+            ),
             leading: Container(
               width: 42,
               height: 42,
@@ -570,28 +572,34 @@ class _EventList extends StatelessWidget {
                 color: Palette.greenLight,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Icon(Icons.eco_rounded,
-                  color: Palette.primary, size: 22),
+              child: const Icon(
+                Icons.eco_rounded,
+                color: Palette.primary,
+                size: 22,
+              ),
             ),
             title: Text(
               event.title,
-              style: const TextStyle(
-                  fontWeight: FontWeight.w600, fontSize: 14),
+              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
             ),
             subtitle: Row(
               children: [
-                const Icon(Icons.location_on_outlined,
-                    size: 12, color: Colors.grey),
+                const Icon(
+                  Icons.location_on_outlined,
+                  size: 12,
+                  color: Colors.grey,
+                ),
                 const SizedBox(width: 2),
                 Text(
                   '${event.city}, ${event.district}',
-                  style:
-                      const TextStyle(color: Colors.grey, fontSize: 12),
+                  style: const TextStyle(color: Colors.grey, fontSize: 12),
                 ),
                 const SizedBox(width: 8),
                 Container(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 6, vertical: 2),
+                    horizontal: 6,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: statusColor.withOpacity(0.12),
                     borderRadius: BorderRadius.circular(6),
@@ -599,9 +607,10 @@ class _EventList extends StatelessWidget {
                   child: Text(
                     event.status.text,
                     style: TextStyle(
-                        fontSize: 10,
-                        color: statusColor,
-                        fontWeight: FontWeight.w600),
+                      fontSize: 10,
+                      color: statusColor,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ],
