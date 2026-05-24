@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import '../../widgets/profile_tabs/favorite_events_widget.dart';
 import '../../widgets/profile_tabs/current_events_widget.dart';
 import '../../widgets/profile_tabs/history_events_widget.dart';
+import 'package:t5/views/widgets/top_bar_tabs/settings_drawer.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -55,6 +56,7 @@ class _ProfilePageState extends State<ProfilePage> {
         title: vm.user?.name ?? 'Profile',
         rightWidget: SettingsButton(),
       ),
+      endDrawer: const SettingsDrawer(),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -75,9 +77,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ],
               ),
               child: vm.isLoading
-                  ? const Center(
-                      child: CircularProgressIndicator(color: Palette.primary),
-                    )
+                  ? const Center(child: CircularProgressIndicator(color: Palette.primary))
                   : Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -96,8 +96,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                               ),
                               child: ClipOval(
-                                child:
-                                    (vm.user?.profilePictureUrl != null &&
+                                child: (vm.user?.profilePictureUrl != null &&
                                         vm.user!.profilePictureUrl.isNotEmpty)
                                     ? Image.network(
                                         vm.user!.profilePictureUrl,
@@ -114,21 +113,15 @@ class _ProfilePageState extends State<ProfilePage> {
                             // Nome + stats
                             Expanded(
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                      right: 100.0,
-                                    ),
-                                    child: Text(
-                                      vm.user?.name ?? 'No name',
-                                      style: GoogleFonts.dmSerifDisplay(
-                                        fontSize: 26,
-                                        color: Palette.primary,
-                                        letterSpacing: -0.5,
-                                        height: 1.1,
-                                      ),
-                                      textAlign: TextAlign.center,
+                                  Text(
+                                    vm.user?.name ?? 'No name',
+                                    style: GoogleFonts.dmSerifDisplay(
+                                      fontSize: 26,
+                                      color: Palette.primary,
+                                      letterSpacing: -0.5,
+                                      height: 1.1,
                                     ),
                                   ),
                                   const SizedBox(height: 10),
@@ -249,11 +242,7 @@ class _TabButton extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                icon,
-                size: 20,
-                color: selected ? Colors.white : Colors.grey,
-              ),
+              Icon(icon, size: 20, color: selected ? Colors.white : Colors.grey),
               const SizedBox(height: 3),
               Text(
                 label,
@@ -349,7 +338,10 @@ class _StatColumn extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 2),
-          Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+          Text(
+            label,
+            style: const TextStyle(fontSize: 12, color: Colors.grey),
+          ),
         ],
       ),
     );
