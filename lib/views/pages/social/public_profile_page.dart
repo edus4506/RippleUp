@@ -210,8 +210,7 @@ class _PublicProfilePageState extends State<PublicProfilePage> {
                                                       : 'Follow',
                                                   style: TextStyle(
                                                     fontSize: 13,
-                                                    fontWeight:
-                                                        FontWeight.w600,
+                                                    fontWeight: FontWeight.w600,
                                                     color: isFollowing
                                                         ? Colors.red.shade400
                                                         : Colors.white,
@@ -327,11 +326,13 @@ class _PublicProfilePageState extends State<PublicProfilePage> {
                           child: _selectedTab == 0
                               ? _EventList(
                                   events: vm.createdEvents,
-                                  onEventTap: (event) => _openEventDetails(context, event),
+                                  onEventTap: (event) =>
+                                      _openEventDetails(context, event),
                                 )
                               : _EventList(
                                   events: vm.joinedEvents,
-                                  onEventTap: (event) => _openEventDetails(context, event),
+                                  onEventTap: (event) =>
+                                      _openEventDetails(context, event),
                                 ),
                         ),
 
@@ -403,9 +404,7 @@ class _OverlayButtonState extends State<_OverlayButton> {
               decoration: BoxDecoration(
                 color: widget.backgroundColor,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: widget.borderColor,
-                ),
+                border: Border.all(color: widget.borderColor),
                 boxShadow: [
                   if (_isPressed)
                     BoxShadow(
@@ -485,9 +484,7 @@ class _OverlayIconButtonState extends State<_OverlayIconButton> {
               decoration: BoxDecoration(
                 color: widget.backgroundColor,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Palette.primary.withOpacity(0.2),
-                ),
+                border: Border.all(color: Palette.primary.withOpacity(0.2)),
                 boxShadow: [
                   if (_isPressed)
                     BoxShadow(
@@ -701,7 +698,13 @@ class _BackButtonWithOverlayState extends State<_BackButtonWithOverlay> {
         child: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(_isPressed ? 0.3 : _isHovered ? 0.15 : 0),
+            color: Colors.white.withOpacity(
+              _isPressed
+                  ? 0.3
+                  : _isHovered
+                  ? 0.15
+                  : 0,
+            ),
             borderRadius: BorderRadius.circular(8),
           ),
           child: const Icon(
@@ -742,10 +745,7 @@ class _EventList extends StatelessWidget {
       itemCount: events.length,
       itemBuilder: (context, index) {
         final event = events[index];
-        return EventCard(
-          event: event,
-          onTap: () => onEventTap(event),
-        );
+        return EventCard(event: event, onTap: () => onEventTap(event));
       },
     );
   }
