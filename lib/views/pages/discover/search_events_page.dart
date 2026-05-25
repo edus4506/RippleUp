@@ -88,16 +88,22 @@ class SearchEventsPage extends StatelessWidget {
                               onPressed: () => Navigator.of(context).pop(),
                             ),
                           ),
-                          const SizedBox(width: 12),
-                          Text(
-                            'Search',
-                            style: GoogleFonts.dmSerifDisplay(
-                              fontSize: 32,
-                              color: Colors.white,
-                              height: 1,
-                              letterSpacing: -0.5,
+                          Expanded(
+                            child: Center(
+                              child: Text(
+                                'Search Events',
+                                style: GoogleFonts.dmSerifDisplay(
+                                  fontSize: 32,
+                                  color: Colors.white,
+                                  height: 1,
+                                  letterSpacing: -0.5,
+                                ),
+                              ),
                             ),
                           ),
+                          const SizedBox(
+                            width: 44,
+                          ), // equilibra o botão da esquerda
                         ],
                       ),
 
