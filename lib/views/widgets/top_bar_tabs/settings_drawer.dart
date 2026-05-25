@@ -456,7 +456,8 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
                     _AccountOption(
                       icon: Icons.help_outline_rounded,
                       label: 'Help & Support',
-                      onTap: () => Navigator.pop(context),
+                      onTap: () =>
+                          Navigator.pushNamed(context, AppRoutes.helpSupport),
                     ),
                     const SizedBox(height: 8),
                     _AccountOption(

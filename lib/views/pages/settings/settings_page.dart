@@ -266,13 +266,14 @@ class _SettingsPageState extends State<SettingsPage> {
                 _SettingsOption(
                   icon: Icons.help_outline,
                   label: 'Help & Support',
-                  onTap: () {},
+                  onTap: () =>
+                      Navigator.pushNamed(context, AppRoutes.helpSupport),
                 ),
 
                 _SettingsOption(
                   icon: Icons.info_outline,
                   label: 'About the App',
-                  onTap: () {},
+                  onTap: () => Navigator.pushNamed(context, AppRoutes.about),
                 ),
 
                 const Divider(height: 1),

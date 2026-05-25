@@ -8,6 +8,7 @@ import 'package:t5/views/pages/events/reviews_history_page.dart';
 import 'package:t5/views/pages/settings/change_password_page.dart';
 import 'package:t5/views/pages/settings/edit_profile_page.dart';
 import 'package:t5/views/pages/settings/about_page.dart';
+import 'package:t5/views/pages/settings/help_support_page.dart';
 import 'package:t5/views/pages/settings/settings_page.dart';
 import 'package:t5/views/pages/splash_page.dart';
 import 'package:t5/views/pages/social/public_profile_page.dart';
@@ -27,6 +28,7 @@ class AppRoutes {
   static const String settings = '/settings';
   static const String editProfile = '/settings/edit-profile';
   static const String about = '/settings/about';
+  static const String helpSupport = '/settings/help-support';
   static const String changePassword = '/settings/change-password';
   static const String reviewsHistory = '/reviews-history';
   static const String directMessages = '/direct-messages';
@@ -43,6 +45,7 @@ class AppRoutes {
     settings: (context) => const SettingsPage(),
     editProfile: (context) => const EditProfilePage(),
     about: (context) => const AboutPage(),
+    helpSupport: (context) => const HelpSupportPage(),
     changePassword: (context) => const ChangePasswordPage(),
     reviewsHistory: (context) => const ReviewsHistoryPage(),
     directMessages: (context) => const DirectMessagesPage(),

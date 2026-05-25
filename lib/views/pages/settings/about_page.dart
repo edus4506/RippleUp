@@ -144,6 +144,116 @@ class AboutPage extends StatelessWidget {
 
             const SizedBox(height: 12),
 
+            // ── Full Platform Overview ──
+            _SectionCard(
+              icon: Icons.dashboard_customize_outlined,
+              title: 'Complete Platform Overview',
+              items: const [
+                _FeatureItem(
+                  icon: Icons.login_rounded,
+                  label:
+                      'Secure authentication system powered by Firebase Authentication with login, registration, logout, password change, and account deletion support.',
+                ),
+                _FeatureItem(
+                  icon: Icons.person_outline_rounded,
+                  label:
+                      'Custom user profiles with profile pictures, editable information, public profiles, and social interaction features.',
+                ),
+                _FeatureItem(
+                  icon: Icons.group_outlined,
+                  label:
+                      'Follower and following system allowing users to build a community of environmentally conscious people.',
+                ),
+                _FeatureItem(
+                  icon: Icons.event_available_rounded,
+                  label:
+                      'Advanced event management system where users can create, edit, join, leave, and delete environmental events.',
+                ),
+                _FeatureItem(
+                  icon: Icons.location_on_outlined,
+                  label:
+                      'Location-aware events with country, district, and city support to help users discover nearby environmental activities.',
+                ),
+                _FeatureItem(
+                  icon: Icons.filter_alt_outlined,
+                  label:
+                      'Powerful filtering system with support for environmental goals, event capacity, participant limits, location filters, and event status.',
+                ),
+                _FeatureItem(
+                  icon: Icons.search_rounded,
+                  label:
+                      'Intelligent event and user search system with optimized matching and debounced search queries for better performance.',
+                ),
+                _FeatureItem(
+                  icon: Icons.favorite_border_rounded,
+                  label:
+                      'Favorite events system allowing users to save and revisit important or interesting activities.',
+                ),
+                _FeatureItem(
+                  icon: Icons.chat_bubble_outline_rounded,
+                  label:
+                      'Real-time event chat rooms where participants can communicate, coordinate, and interact before and during activities.',
+                ),
+                _FeatureItem(
+                  icon: Icons.forum_outlined,
+                  label:
+                      'Private direct messaging system with chat previews, unread tracking, last seen support, and real-time conversations.',
+                ),
+                _FeatureItem(
+                  icon: Icons.notifications_active_outlined,
+                  label:
+                      'Integrated notification system for messages, follows, event updates, participation changes, and upcoming activities.',
+                ),
+                _FeatureItem(
+                  icon: Icons.reviews_outlined,
+                  label:
+                      'Review and feedback system where users can rate events, leave comments, and view community opinions.',
+                ),
+                _FeatureItem(
+                  icon: Icons.auto_awesome_outlined,
+                  label:
+                      'Recommendation engine that suggests environmental events based on user activity and community interactions.',
+                ),
+                _FeatureItem(
+                  icon: Icons.eco_outlined,
+                  label:
+                      'Environmental objective integration allowing events to focus on sustainability goals such as cleanups, recycling, and reforestation.',
+                ),
+                _FeatureItem(
+                  icon: Icons.image_outlined,
+                  label:
+                      'Image upload and storage support using Supabase Storage for profile pictures and event galleries.',
+                ),
+                _FeatureItem(
+                  icon: Icons.security_outlined,
+                  label:
+                      'Firestore transactions and validation logic to ensure safe joins, participant limits, and consistent event data.',
+                ),
+                _FeatureItem(
+                  icon: Icons.layers_outlined,
+                  label:
+                      'Well-structured architecture using repositories, services, models, providers, and view models for maintainability and scalability.',
+                ),
+                _FeatureItem(
+                  icon: Icons.phone_android_outlined,
+                  label:
+                      'Responsive Flutter interface optimized for mobile and web platforms with modern UI components and animations.',
+                ),
+                _FeatureItem(
+                  icon: Icons.speed_outlined,
+                  label:
+                      'Pagination, lazy loading, and optimized Firestore queries designed to improve performance and scalability.',
+                ),
+                _FeatureItem(
+                  icon: Icons.palette_outlined,
+                  label:
+                      'Custom design system with themed colors, reusable widgets, custom navigation bars, dialogs, and polished visual components.',
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 12),
+
             // ── Footer ──
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
