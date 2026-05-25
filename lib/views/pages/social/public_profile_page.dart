@@ -190,56 +190,53 @@ class _PublicProfilePageState extends State<PublicProfilePage> {
                                       children: [
                                         // Follow button
                                         Expanded(
-                                          child: GestureDetector(
-                                            onTap: () => vm.toggleFollow(
-                                              followerId: _currentUserId,
-                                              followedId: widget.userId,
-                                              currentlyFollowing: isFollowing,
-                                            ),
-                                            child: Container(
-                                              height: 42,
-                                              decoration: BoxDecoration(
-                                                color: isFollowing
-                                                    ? Colors.white
-                                                    : Palette.primary,
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                                border: Border.all(
-                                                  color: isFollowing
-                                                      ? Colors.red.shade300
-                                                      : Palette.primary,
-                                                ),
+                                          child: Material(
+                                            color: isFollowing
+                                                ? Colors.white
+                                                : Palette.primary,
+                                            borderRadius: BorderRadius.circular(12),
+                                            child: InkWell(
+                                              onTap: () => vm.toggleFollow(
+                                                followerId: _currentUserId,
+                                                followedId: widget.userId,
+                                                currentlyFollowing: isFollowing,
                                               ),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Icon(
-                                                    isFollowing
-                                                        ? Icons
-                                                              .person_remove_rounded
-                                                        : Icons
-                                                              .person_add_rounded,
-                                                    size: 16,
+                                              borderRadius: BorderRadius.circular(12),
+                                              child: Container(
+                                                height: 42,
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(12),
+                                                  border: Border.all(
                                                     color: isFollowing
-                                                        ? Colors.red.shade400
-                                                        : Colors.white,
+                                                        ? Colors.red.shade300
+                                                        : Palette.primary,
                                                   ),
-                                                  const SizedBox(width: 6),
-                                                  Text(
-                                                    isFollowing
-                                                        ? 'Unfollow'
-                                                        : 'Follow',
-                                                    style: TextStyle(
-                                                      fontSize: 13,
-                                                      fontWeight:
-                                                          FontWeight.w600,
+                                                ),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    Icon(
+                                                      isFollowing
+                                                          ? Icons.person_remove_rounded
+                                                          : Icons.person_add_rounded,
+                                                      size: 16,
                                                       color: isFollowing
                                                           ? Colors.red.shade400
                                                           : Colors.white,
                                                     ),
-                                                  ),
-                                                ],
+                                                    const SizedBox(width: 6),
+                                                    Text(
+                                                      isFollowing ? 'Unfollow' : 'Follow',
+                                                      style: TextStyle(
+                                                        fontSize: 13,
+                                                        fontWeight: FontWeight.w600,
+                                                        color: isFollowing
+                                                            ? Colors.red.shade400
+                                                            : Colors.white,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -265,39 +262,36 @@ class _PublicProfilePageState extends State<PublicProfilePage> {
                                             return Row(
                                               children: [
                                                 const SizedBox(width: 10),
-                                                GestureDetector(
-                                                  onTap: () => Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (_) =>
-                                                          DirectChatPage(
-                                                            otherUserId:
-                                                                widget.userId,
-                                                            otherUserName:
-                                                                vm.user?.name ??
-                                                                'User',
-                                                          ),
-                                                    ),
-                                                  ),
-                                                  child: Container(
-                                                    height: 42,
-                                                    width: 42,
-                                                    decoration: BoxDecoration(
-                                                      color: Palette.greenLight,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            12,
-                                                          ),
-                                                      border: Border.all(
-                                                        color: Palette.primary
-                                                            .withOpacity(0.2),
+                                                Material(
+                                                  color: Palette.greenLight,
+                                                  borderRadius: BorderRadius.circular(12),
+                                                  child: InkWell(
+                                                    onTap: () => Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (_) => DirectChatPage(
+                                                          otherUserId: widget.userId,
+                                                          otherUserName:
+                                                          vm.user?.name ?? 'User',
+                                                        ),
                                                       ),
                                                     ),
-                                                    child: const Icon(
-                                                      Icons
-                                                          .chat_bubble_outline_rounded,
-                                                      color: Palette.primary,
-                                                      size: 20,
+                                                    borderRadius: BorderRadius.circular(12),
+                                                    child: Container(
+                                                      height: 42,
+                                                      width: 42,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(12),
+                                                        border: Border.all(
+                                                          color:
+                                                          Palette.primary.withOpacity(0.2),
+                                                        ),
+                                                      ),
+                                                      child: const Icon(
+                                                        Icons.chat_bubble_outline_rounded,
+                                                        color: Palette.primary,
+                                                        size: 20,
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
@@ -395,33 +389,37 @@ class _TabButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          decoration: BoxDecoration(
-            color: selected ? Palette.primary : Colors.transparent,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                size: 18,
-                color: selected ? Colors.white : Colors.grey,
-              ),
-              const SizedBox(width: 6),
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+      child: Material(
+        color: selected ? Palette.primary : Colors.transparent,
+        borderRadius: BorderRadius.circular(12),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(12),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  icon,
+                  size: 18,
                   color: selected ? Colors.white : Colors.grey,
                 ),
-              ),
-            ],
+                const SizedBox(width: 6),
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+                    color: selected ? Colors.white : Colors.grey,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -499,22 +497,32 @@ class _StatColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '$count',
-            style: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Palette.primary,
-            ),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '$count',
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Palette.primary,
+                ),
+              ),
+              Text(
+                label,
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
+              ),
+            ],
           ),
-          Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
-        ],
+        ),
       ),
     );
   }
