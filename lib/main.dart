@@ -17,7 +17,7 @@ import 'package:t5/services/social/profile_image_service.dart';
 
 import 'package:t5/viewModels/events/event_viewModel.dart';
 import 'package:t5/viewModels/events/favorite_event_viewModel.dart';
-import 'package:t5/viewModels/authenthication/auth_viewModel.dart';
+import 'package:t5/viewModels/authentication/auth_viewModel.dart';
 import 'package:t5/viewModels/messages/message_viewModel.dart';
 import 'package:t5/viewModels/social/profile_viewModel.dart';
 import 'package:t5/viewModels/reviews/review_viewModel.dart';

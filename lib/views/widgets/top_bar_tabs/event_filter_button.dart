@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:t5/viewModels/authenthication/auth_viewModel.dart';
+import 'package:t5/viewModels/authentication/auth_viewModel.dart';
 import '../../dialogs/event_filter_dialog.dart';
 
 class EventFilterButton extends StatefulWidget {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:t5/theme/palette.dart';
-import 'package:t5/viewModels/authenthication/auth_viewModel.dart';
+import 'package:t5/viewModels/authentication/auth_viewModel.dart';
 import 'package:t5/views/widgets/top_bar_tabs/top_bar.dart';
 
 class ChangePasswordPage extends StatefulWidget {

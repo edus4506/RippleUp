@@ -199,9 +199,9 @@ void main() {
       );
       final texts = items.map((t) => t.data ?? '').toList();
 
-      final highIdx = texts.indexOf('High rating recent'); // rating 5
-      final midIdx = texts.indexOf('Mid rating mid'); // rating 3
-      final lowIdx = texts.indexOf('Low rating old'); // rating 2
+      final highIdx = texts.indexOf('High rating recent');
+      final midIdx = texts.indexOf('Mid rating mid');
+      final lowIdx = texts.indexOf('Low rating old');
 
       expect(highIdx, lessThan(midIdx));
       expect(midIdx, lessThan(lowIdx));
@@ -226,9 +226,9 @@ void main() {
       );
       final texts = items.map((t) => t.data ?? '').toList();
 
-      final highIdx = texts.indexOf('High rating recent'); // rating 5
-      final midIdx = texts.indexOf('Mid rating mid'); // rating 3
-      final lowIdx = texts.indexOf('Low rating old'); // rating 2
+      final highIdx = texts.indexOf('High rating recent');
+      final midIdx = texts.indexOf('Mid rating mid');
+      final lowIdx = texts.indexOf('Low rating old');
 
       expect(lowIdx, lessThan(midIdx));
       expect(midIdx, lessThan(highIdx));
@@ -242,19 +242,15 @@ void main() {
 
       await pumpFeedbackPage(tester, vm);
 
-      // Starts as Most Recent
       expect(find.text('Most Recent'), findsOneWidget);
 
-      // Switch to Oldest
       await tester.tap(find.text('Most Recent'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Oldest').last);
       await tester.pumpAndSettle();
 
-      // Dropdown now shows Oldest
       expect(find.text('Oldest'), findsOneWidget);
 
-      // Switch to Highest Rating
       await tester.tap(find.text('Oldest'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Highest Rating').last);

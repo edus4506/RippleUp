@@ -1,82 +1,81 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:t5/data/models/social/notification.dart';
+import 'package:t5/data/repositories/events/event_repository.dart';
+import 'package:t5/data/repositories/social/follow_repository.dart';
+import 'package:t5/data/repositories/social/notification_repository.dart';
+import 'package:t5/data/repositories/social/participation_repository.dart';
+import 'package:t5/data/repositories/social/user_repository.dart';
+import 'package:t5/viewModels/social/notification_viewModel.dart';
+
+class MockNotificationRepository extends Mock
+    implements NotificationRepository {}
+
+class MockParticipationRepository extends Mock
+    implements ParticipationRepository {}
+
+class MockEventRepository extends Mock implements EventRepository {}
+
+class MockUserRepository extends Mock implements UserRepository {}
+
+class MockFollowRepository extends Mock implements FollowRepository {}
+
+AppNotification _buildNotification() {
+  return AppNotification(
+    id: 'n1',
+    title: 'Test',
+    body: 'Body',
+    createdAt: DateTime.now(),
+    seen: false,
+    type: 'direct_message',
+  );
+}
 
 void main() {
-  group('Notification icon tests', () {
-    test('event icon exists', () {
-      expect(Icons.event_available, isNotNull);
-    });
+  late MockNotificationRepository mockNotifRepo;
+  late MockParticipationRepository mockParticipationRepo;
+  late MockEventRepository mockEventRepo;
+  late MockUserRepository mockUserRepo;
+  late MockFollowRepository mockFollowRepo;
+  late AppNotificationViewModel vm;
 
-    test('clock icon exists', () {
-      expect(Icons.access_time, isNotNull);
-    });
+  setUp(() {
+    mockNotifRepo = MockNotificationRepository();
+    mockParticipationRepo = MockParticipationRepository();
+    mockEventRepo = MockEventRepository();
+    mockUserRepo = MockUserRepository();
+    mockFollowRepo = MockFollowRepository();
 
-    test('notification icon exists', () {
-      expect(Icons.notifications, isNotNull);
-    });
+    vm = AppNotificationViewModel(
+      mockNotifRepo,
+      mockParticipationRepo,
+      mockEventRepo,
+      mockUserRepo,
+      mockFollowRepo,
+    );
   });
 
-  group('Notification string tests', () {
-    test('new_event type is correct', () {
-      const type = 'new_event';
+  group('AppNotificationViewModel.getNotifications', () {
+    test('returns notifications stream', () {
+      final notifications = [_buildNotification()];
 
-      expect(type, 'new_event');
+      when(
+        () => mockNotifRepo.listenUserNotifications('u1'),
+      ).thenAnswer((_) => Stream.value(notifications));
+
+      final stream = vm.getNotifications('u1');
+
+      expect(stream, emits(notifications));
     });
 
-    test('upcoming_event type is correct', () {
-      const type = 'upcoming_event';
+    test('returns empty notifications stream', () {
+      when(
+        () => mockNotifRepo.listenUserNotifications('u1'),
+      ).thenAnswer((_) => Stream.value([]));
 
-      expect(type.contains('upcoming'), true);
-    });
+      final stream = vm.getNotifications('u1');
 
-    test('new_follower type is correct', () {
-      const type = 'new_follower';
-
-      expect(type.isNotEmpty, true);
-    });
-  });
-
-  group('Notification counter tests', () {
-    test('notification counter increments', () {
-      int counter = 1;
-
-      counter++;
-
-      expect(counter, 2);
-    });
-
-    test('notification counter can reach 4', () {
-      int counter = 0;
-
-      counter += 4;
-
-      expect(counter, 4);
-    });
-
-    test('notification counter above 4 works', () {
-      int counter = 5;
-
-      expect(counter > 4, true);
-    });
-  });
-
-  group('Notification body tests', () {
-    test('body contains username', () {
-      const body = 'David followed you';
-
-      expect(body.contains('David'), true);
-    });
-
-    test('body contains event title', () {
-      const body = 'Beach Cleanup starts soon';
-
-      expect(body.contains('Beach Cleanup'), true);
-    });
-
-    test('body is not empty', () {
-      const body = 'New notification';
-
-      expect(body.isNotEmpty, true);
+      expect(stream, emits(isEmpty));
     });
   });
 }

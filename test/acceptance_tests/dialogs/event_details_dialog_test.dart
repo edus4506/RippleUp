@@ -1,4 +1,3 @@
-//David corrige por favor
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -8,7 +7,7 @@ import 'package:t5/data/models/events/event.dart';
 import 'package:t5/data/models/events/favorite_event.dart';
 import 'package:t5/data/models/social/user.dart';
 import 'package:t5/data/repositories/events/favorite_event_repository.dart';
-import 'package:t5/viewModels/authenthication/auth_viewModel.dart';
+import 'package:t5/viewModels/authentication/auth_viewModel.dart';
 import 'package:t5/viewModels/events/event_viewModel.dart';
 import 'package:t5/viewModels/events/favorite_event_viewModel.dart';
 import 'package:t5/viewModels/social/user_view_model.dart';
@@ -102,6 +101,7 @@ void _setupCommonMocks({
   required MockUserViewModel userVm,
   required MockFirebaseUser user,
   bool isInEvent = false,
+  String userId = 'user-1',
 }) {
   when(() => authVm.addListener(any())).thenAnswer((_) {});
   when(() => authVm.removeListener(any())).thenAnswer((_) {});
@@ -112,7 +112,7 @@ void _setupCommonMocks({
   when(() => eventVm.isLoading).thenReturn(false);
   when(() => eventVm.errorMessage).thenReturn(null);
   when(() => authVm.currentUser).thenReturn(user);
-  when(() => user.uid).thenReturn('user-1');
+  when(() => user.uid).thenReturn(userId);
   when(() => userVm.userStream(any())).thenAnswer(
     (_) => Stream.value(
       Users(
@@ -144,103 +144,90 @@ void main() {
     user = MockFirebaseUser();
   });
 
-  /*testWidgets('shows Join button when user is not in event', (tester) async {
-    _setupCommonMocks(
-      authVm: authVm,
-      eventVm: eventVm,
-      userVm: userVm,
-      user: user,
-      isInEvent: false,
-    );
-    final event = buildEvent();
-    await tester.pumpWidget(
-      buildTestable(
-        auth: authVm,
+  group('EventDetailsDialog rendering', () {
+    testWidgets('shows event title in dialog', (tester) async {
+      _setupCommonMocks(
+        authVm: authVm,
         eventVm: eventVm,
         userVm: userVm,
-        event: event,
-      ),
-    );
-    await tester.pumpAndSettle();
-    expect(find.text('Join'), findsOneWidget);
-    expect(find.text('Leave'), findsNothing);
-  });*/
+        user: user,
+      );
+      final event = buildEvent();
+      await tester.pumpWidget(
+        buildTestable(
+          auth: authVm,
+          eventVm: eventVm,
+          userVm: userVm,
+          event: event,
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Beach Cleanup'), findsOneWidget);
+    });
 
-  /*testWidgets('shows Leave button when user is in event', (tester) async {
-    _setupCommonMocks(
-      authVm: authVm,
-      eventVm: eventVm,
-      userVm: userVm,
-      user: user,
-      isInEvent: true,
-    );
-    final event = buildEvent();
-    await tester.pumpWidget(
-      buildTestable(
-        auth: authVm,
+    testWidgets('shows event description', (tester) async {
+      _setupCommonMocks(
+        authVm: authVm,
         eventVm: eventVm,
         userVm: userVm,
-        event: event,
-      ),
-    );
-    await tester.pumpAndSettle();
-    await tester.pump();
-    expect(find.text('Leave'), findsOneWidget);
-    expect(find.text('Join'), findsNothing);
-  });*/
+        user: user,
+      );
+      final event = buildEvent();
+      await tester.pumpWidget(
+        buildTestable(
+          auth: authVm,
+          eventVm: eventVm,
+          userVm: userVm,
+          event: event,
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.textContaining('clean the beach'), findsOneWidget);
+    });
 
-  /*testWidgets('tap Join calls joinEvent on viewModel', (tester) async {
-    _setupCommonMocks(
-      authVm: authVm,
-      eventVm: eventVm,
-      userVm: userVm,
-      user: user,
-      isInEvent: false,
-    );
-    when(
-      () => eventVm.joinEvent(
-        eventId: any(named: 'eventId'),
-        userId: any(named: 'userId'),
-      ),
-    ).thenAnswer((_) async => true);
-
-    final event = buildEvent();
-    await tester.pumpWidget(
-      buildTestable(
-        auth: authVm,
+    testWidgets('shows location information', (tester) async {
+      _setupCommonMocks(
+        authVm: authVm,
         eventVm: eventVm,
         userVm: userVm,
-        event: event,
-      ),
-    );
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Join'));
-    await tester.pump();
-    verify(
-      () => eventVm.joinEvent(
-        eventId: any(named: 'eventId'),
-        userId: any(named: 'userId'),
-      ),
-    ).called(1);
-  });*/
+        user: user,
+      );
+      final event = buildEvent();
+      await tester.pumpWidget(
+        buildTestable(
+          auth: authVm,
+          eventVm: eventVm,
+          userVm: userVm,
+          event: event,
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.textContaining('Porto'), findsWidgets);
+    });
+  });
 
-  testWidgets('shows event title in dialog', (tester) async {
-    _setupCommonMocks(
-      authVm: authVm,
-      eventVm: eventVm,
-      userVm: userVm,
-      user: user,
-    );
-    final event = buildEvent();
-    await tester.pumpWidget(
-      buildTestable(
-        auth: authVm,
+  group('EventDetailsDialog interactions', () {
+    testWidgets('creator is not shown Join or Leave buttons', (tester) async {
+      _setupCommonMocks(
+        authVm: authVm,
         eventVm: eventVm,
         userVm: userVm,
-        event: event,
-      ),
-    );
-    await tester.pumpAndSettle();
-    expect(find.text('Beach Cleanup'), findsOneWidget);
+        user: user,
+        userId: 'creator-2',
+        isInEvent: false,
+      );
+      final event = buildEvent(idCreator: 'creator-2');
+      await tester.pumpWidget(
+        buildTestable(
+          auth: authVm,
+          eventVm: eventVm,
+          userVm: userVm,
+          event: event,
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Join'), findsNothing);
+      expect(find.text('Leave'), findsNothing);
+    });
   });
 }

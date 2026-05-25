@@ -4,7 +4,7 @@ import 'package:t5/data/models/events/event.dart';
 import 'package:t5/data/models/events/event_status.dart';
 import 'package:t5/data/models/social/participation.dart';
 import 'package:t5/data/repositories/social/participation_repository.dart';
-import 'package:t5/viewModels/authenthication/auth_viewModel.dart';
+import 'package:t5/viewModels/authentication/auth_viewModel.dart';
 import 'package:t5/viewModels/events/event_viewModel.dart';
 import 'package:t5/views/dialogs/event_details_dialog.dart';
 import '../event_card.dart';
