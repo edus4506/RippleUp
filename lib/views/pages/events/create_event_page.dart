@@ -55,7 +55,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
     final images = await _picker.pickMultiImage();
 
     if (images.isNotEmpty) {
-      setState(() => selectedImages = images);
+      setState(() => selectedImages.addAll(images));
     }
   }
 
