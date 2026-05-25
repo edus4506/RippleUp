@@ -462,7 +462,8 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
                     _AccountOption(
                       icon: Icons.info_outline_rounded,
                       label: 'About the App',
-                      onTap: () => Navigator.pop(context),
+                      onTap: () =>
+                          Navigator.pushNamed(context, AppRoutes.about),
                     ),
                     const SizedBox(height: 8),
                     _AccountOption(
