@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:t5/data/models/events/event.dart';
 import 'package:t5/data/models/events/event_status.dart';
 import 'package:t5/routes/app_routes.dart';
-import 'package:t5/viewModels/authenthication/auth_viewModel.dart';
+import 'package:t5/viewModels/authentication/auth_viewModel.dart';
 import 'package:t5/viewModels/events/event_viewModel.dart';
 import 'package:t5/views/pages/events/edit_event_page.dart';
 import 'package:t5/viewModels/events/favorite_event_viewModel.dart';

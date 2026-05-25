@@ -7,7 +7,7 @@ import 'package:t5/data/models/events/event.dart';
 import 'package:t5/data/models/events/favorite_event.dart';
 import 'package:t5/data/models/social/user.dart';
 import 'package:t5/data/repositories/events/favorite_event_repository.dart';
-import 'package:t5/viewModels/authenthication/auth_viewModel.dart';
+import 'package:t5/viewModels/authentication/auth_viewModel.dart';
 import 'package:t5/viewModels/events/event_viewModel.dart';
 import 'package:t5/viewModels/events/favorite_event_viewModel.dart';
 import 'package:t5/viewModels/social/user_view_model.dart';

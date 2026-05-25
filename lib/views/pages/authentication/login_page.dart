@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../routes/app_routes.dart';
 import '../../../theme/palette.dart';
-import 'package:t5/viewModels/authenthication/auth_viewModel.dart';
+import 'package:t5/viewModels/authentication/auth_viewModel.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

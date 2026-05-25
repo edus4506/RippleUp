@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:t5/data/models/events/event.dart';
-import 'package:t5/viewModels/authenthication/auth_viewModel.dart';
+import 'package:t5/viewModels/authentication/auth_viewModel.dart';
 import 'package:t5/viewModels/events/event_viewModel.dart';
 import 'package:t5/viewModels/social/notification_viewModel.dart';
 import 'package:t5/views/pages/events/create_event_page.dart';

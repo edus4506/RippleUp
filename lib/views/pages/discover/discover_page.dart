@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../../widgets/top_bar_tabs/notification_dropdown.dart';
 import 'package:t5/views/widgets/top_bar_tabs/top_bar.dart';
 import 'package:t5/viewModels/events/recommended_event_viewModel.dart';
-import 'package:t5/viewModels/authenthication/auth_viewModel.dart';
+import 'package:t5/viewModels/authentication/auth_viewModel.dart';
 import 'package:t5/data/repositories/events/recommended_event_repository.dart';
 import 'package:t5/views/widgets/recommended_events_section.dart';
 

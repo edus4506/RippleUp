@@ -9,7 +9,7 @@ import 'package:t5/data/repositories/social/follow_repository.dart';
 import 'package:t5/data/repositories/social/notification_repository.dart';
 import 'package:t5/data/repositories/social/participation_repository.dart';
 import 'package:t5/data/repositories/social/user_repository.dart';
-import 'package:t5/viewModels/authenthication/auth_viewModel.dart';
+import 'package:t5/viewModels/authentication/auth_viewModel.dart';
 import 'package:t5/viewModels/social/notification_viewModel.dart';
 import 'package:t5/views/widgets/top_bar_tabs/notification_dropdown.dart';
 

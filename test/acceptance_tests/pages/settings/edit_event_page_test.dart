@@ -8,7 +8,7 @@ import 'package:t5/data/models/events/favorite_event.dart';
 import 'package:t5/data/repositories/events/favorite_event_repository.dart';
 import 'package:t5/data/models/social/user.dart';
 import 'package:t5/routes/app_routes.dart';
-import 'package:t5/viewModels/authenthication/auth_viewModel.dart';
+import 'package:t5/viewModels/authentication/auth_viewModel.dart';
 import 'package:t5/viewModels/events/event_viewModel.dart';
 import 'package:t5/viewModels/events/favorite_event_viewModel.dart';
 import 'package:t5/viewModels/social/user_view_model.dart';
@@ -169,12 +169,9 @@ void main() {
     user = MockFirebaseUser();
   });
 
-  
-
   testWidgets(
     'Edit Event button is NOT shown when the logged-in user is not the owner',
     (tester) async {
-
       _setupCommonMocks(
         authVm: authVm,
         eventVm: eventVm,
@@ -201,7 +198,6 @@ void main() {
   testWidgets(
     'Edit Event button is NOT shown when the event is ongoing (locked)',
     (tester) async {
-
       _setupCommonMocks(
         authVm: authVm,
         eventVm: eventVm,
@@ -233,7 +229,6 @@ void main() {
   testWidgets('EditEventPage pre-fills the form with the existing event data', (
     tester,
   ) async {
-
     when(() => authVm.addListener(any())).thenAnswer((_) {});
     when(() => authVm.removeListener(any())).thenAnswer((_) {});
     when(() => eventVm.addListener(any())).thenAnswer((_) {});
@@ -253,11 +248,8 @@ void main() {
     expect(find.text('Let us clean the beach together.'), findsOneWidget);
   });
 
-  
-
   testWidgets('Tapping Save with an empty title shows a validation error '
       'and does NOT call updateEvent', (tester) async {
-
     when(() => authVm.addListener(any())).thenAnswer((_) {});
     when(() => authVm.removeListener(any())).thenAnswer((_) {});
     when(() => eventVm.addListener(any())).thenAnswer((_) {});

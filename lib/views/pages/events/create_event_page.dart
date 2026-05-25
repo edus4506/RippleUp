@@ -10,7 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../data/constants/event_locations.dart';
 import '../../../data/models/events/event.dart';
 
-import '../../../viewModels/authenthication/auth_viewModel.dart';
+import '../../../viewModels/authentication/auth_viewModel.dart';
 import '../../../viewModels/events/event_viewModel.dart';
 import '../../../viewModels/social/notification_viewModel.dart';
 import '../../widgets/top_bar_tabs/top_bar.dart';
