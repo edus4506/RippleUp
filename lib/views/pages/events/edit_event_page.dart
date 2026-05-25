@@ -8,7 +8,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../../data/constants/event_locations.dart';
 import '../../../data/models/events/event.dart';
-import '../../../viewModels/authenthication/auth_viewModel.dart';
+import '../../../viewModels/authentication/auth_viewModel.dart';
 import '../../../viewModels/events/event_viewModel.dart';
 
 class EditEventPage extends StatefulWidget {

@@ -1,12 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-//import 'package:t5/data/models/event.dart';
+import 'package:t5/data/models/events/event.dart';
 import 'package:t5/data/models/messages/message.dart';
-//import 'package:t5/data/models/participation.dart';
+import 'package:t5/data/models/social/participation.dart';
 import 'package:t5/data/repositories/events/event_repository.dart';
-import 'package:t5/data/repositories/messages/message_repository.dart';
 import 'package:t5/data/repositories/messages/event_chat_repository.dart';
+import 'package:t5/data/repositories/messages/message_repository.dart';
 import 'package:t5/data/repositories/social/participation_repository.dart';
 import 'package:t5/viewModels/messages/message_viewModel.dart';
 
@@ -24,7 +24,7 @@ class MockUser extends Mock implements User {
   String get uid => 'sender-uid';
 }
 
-/*Event _event() {
+Event _buildEvent() {
   final now = DateTime.now();
   return Event(
     id: 'e1',
@@ -42,7 +42,7 @@ class MockUser extends Mock implements User {
     city: 'Porto',
     imageUrls: const [],
   );
-}*/
+}
 
 void main() {
   late MockMessageRepository mockMessageRepo;
@@ -50,7 +50,7 @@ void main() {
   late MockEventRepository mockEventRepo;
   late MockEventChatRepository mockEventChatRepo;
   late MessageViewModel vm;
-  //late MockUser mockUser;
+  late MockUser mockUser;
 
   setUpAll(() {
     registerFallbackValue(
@@ -63,7 +63,7 @@ void main() {
     mockParticipationRepo = MockParticipationRepository();
     mockEventRepo = MockEventRepository();
     mockEventChatRepo = MockEventChatRepository();
-    //mockUser = MockUser();
+    mockUser = MockUser();
 
     vm = MessageViewModel(
       mockMessageRepo,
@@ -74,7 +74,7 @@ void main() {
   });
 
   group('MessageViewModel.getMessages', () {
-    test('delegates to repository stream', () {
+    test('returns stream from repository', () {
       final messages = [
         Message(
           id: 'm1',
@@ -97,32 +97,88 @@ void main() {
         () => mockMessageRepo.getEventMessages('e1'),
       ).thenAnswer((_) => Stream.value([]));
 
-      final stream = vm.getMessages('e1');
+      expect(vm.getMessages('e1'), emits(isEmpty));
+    });
 
-      expect(stream, emits(isEmpty));
+    test('delegates to repository with correct eventId', () {
+      when(
+        () => mockMessageRepo.getEventMessages('e1'),
+      ).thenAnswer((_) => Stream.value([]));
+
+      vm.getMessages('e1');
+
+      verify(() => mockMessageRepo.getEventMessages('e1')).called(1);
     });
   });
 
-  /*group('MessageViewModel.sendMessage', () {
-   test('creates message when participants include only the sender', () async {
+  group('MessageViewModel.sendMessage', () {
+    void _setupSendMessage({
+      bool isParticipant = true,
+      List<Participation> participations = const [],
+    }) {
+      when(
+        () => mockParticipationRepo.hasUserParticipated(any(), any()),
+      ).thenAnswer((_) async => isParticipant);
+
+      when(
+        () => mockEventRepo.getEventById('e1'),
+      ).thenAnswer((_) async => _buildEvent());
+
+      when(
+        () => mockParticipationRepo.getParticipationsByEvent('e1'),
+      ).thenAnswer((_) async => participations);
+
       when(
         () => mockMessageRepo.createMessage('e1', any()),
       ).thenAnswer((_) async {});
+
       when(
-        () => mockParticipationRepo.getParticipationsByEvent('e1'),
-      ).thenAnswer(
-        (_) async => [
-          // only the sender — NotificationService is skipped entirely
+        () => mockEventChatRepo.updateEventChatPreview(
+          eventId: any(named: 'eventId'),
+          eventTitle: any(named: 'eventTitle'),
+          message: any(named: 'message'),
+          participantIds: any(named: 'participantIds'),
+        ),
+      ).thenAnswer((_) async {});
+    }
+
+    test('creates message when user is a participant', () async {
+      _setupSendMessage(
+        participations: [
           Participation(id: 'p1', idUser: 'sender-uid', idEvent: 'e1'),
         ],
       );
-      when(
-        () => mockEventRepo.getEventById('e1'),
-      ).thenAnswer((_) async => _event());
 
       await vm.sendMessage('e1', 'hello', currentUser: mockUser);
 
       verify(() => mockMessageRepo.createMessage('e1', any())).called(1);
     });
-  });*/
+
+    test('does not create message when user is not a participant', () async {
+      _setupSendMessage(isParticipant: false);
+
+      await vm.sendMessage('e1', 'hello', currentUser: mockUser);
+
+      verifyNever(() => mockMessageRepo.createMessage(any(), any()));
+    });
+
+    test('updates event chat preview after sending', () async {
+      _setupSendMessage(
+        participations: [
+          Participation(id: 'p1', idUser: 'sender-uid', idEvent: 'e1'),
+        ],
+      );
+
+      await vm.sendMessage('e1', 'hello', currentUser: mockUser);
+
+      verify(
+        () => mockEventChatRepo.updateEventChatPreview(
+          eventId: 'e1',
+          eventTitle: any(named: 'eventTitle'),
+          message: any(named: 'message'),
+          participantIds: any(named: 'participantIds'),
+        ),
+      ).called(1);
+    });
+  });
 }

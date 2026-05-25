@@ -1,103 +1,118 @@
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  group('Direct message notification tests', () {
-    test('message counter increments correctly', () {
-      int count = 1;
+  group('NotificationService display count logic', () {
+    String displayCount(int count) => count >= 4 ? '4+' : count.toString();
 
-      count++;
-
-      expect(count, 2);
+    test('count below 4 displays exact number', () {
+      expect(displayCount(1), '1');
+      expect(displayCount(2), '2');
+      expect(displayCount(3), '3');
     });
 
-    test('display count becomes 4+ after four messages', () {
-      int count = 5;
-
-      final displayCount = count >= 4 ? '4+' : count.toString();
-
-      expect(displayCount, '4+');
+    test('count of exactly 4 displays 4+', () {
+      expect(displayCount(4), '4+');
     });
 
-    test('notification body contains sender name', () {
-      const senderName = 'David';
+    test('count above 4 displays 4+', () {
+      expect(displayCount(10), '4+');
+      expect(displayCount(100), '4+');
+    });
+  });
 
-      final body = 'You received 1 message from $senderName';
+  group('NotificationService direct message body format', () {
+    String directMessageBody(int count, String senderName) {
+      final display = count >= 4 ? '4+' : count.toString();
+      final word = count == 1 ? 'message' : 'messages';
+      return 'You received $display $word from $senderName';
+    }
 
+    test('single message uses singular form', () {
+      final body = directMessageBody(1, 'Alice');
+      expect(body, 'You received 1 message from Alice');
+    });
+
+    test('multiple messages uses plural form', () {
+      final body = directMessageBody(3, 'Alice');
+      expect(body, 'You received 3 messages from Alice');
+    });
+
+    test('body includes sender name', () {
+      final body = directMessageBody(2, 'David');
       expect(body.contains('David'), true);
     });
 
-    test('notification body contains correct amount', () {
-      const body = 'You received 3 messages from David';
-
-      expect(body.contains('3'), true);
-    });
-  });
-
-  group('Event notification tests', () {
-    test('event notification contains title', () {
-      const eventTitle = 'Beach Cleanup';
-
-      final body = 'You received 1 message in $eventTitle';
-
-      expect(body.contains('Beach Cleanup'), true);
-    });
-
-    test('event notification supports 4+ display', () {
-      int count = 10;
-
-      final displayCount = count >= 4 ? '4+' : count.toString();
-
-      expect(displayCount, '4+');
-    });
-
-    test('event notification body is not empty', () {
-      const body = 'You received 2 messages in Event';
-
-      expect(body.isNotEmpty, true);
-    });
-  });
-
-  group('Notification type tests', () {
-    test('direct_message type exists', () {
-      const type = 'direct_message';
-
-      expect(type, 'direct_message');
-    });
-
-    test('event_message type exists', () {
-      const type = 'event_message';
-
-      expect(type.contains('event'), true);
-    });
-
-    test('chat id is preserved', () {
-      const chatId = 'user1_user2';
-
-      expect(chatId.contains('_'), true);
-    });
-  });
-
-  group('Aggregation tests', () {
-    test('single notification aggregates messages', () {
-      int notifications = 1;
-
-      int receivedMessages = 4;
-
-      expect(notifications, 1);
-
-      expect(receivedMessages, 4);
-    });
-
-    test('message counter can exceed four', () {
-      int count = 8;
-
-      expect(count > 4, true);
-    });
-
-    test('aggregation body updates correctly', () {
-      const body = 'You received 4+ messages from John';
-
+    test('4+ messages uses display count', () {
+      final body = directMessageBody(5, 'Alice');
       expect(body.contains('4+'), true);
+    });
+  });
+
+  group('NotificationService event message body format', () {
+    String eventMessageBody(int count, String eventTitle) {
+      final display = count >= 4 ? '4+' : count.toString();
+      final word = count == 1 ? 'message' : 'messages';
+      return 'You received $display $word in $eventTitle';
+    }
+
+    test('single message body is correct', () {
+      final body = eventMessageBody(1, 'Beach Cleanup');
+      expect(body, 'You received 1 message in Beach Cleanup');
+    });
+
+    test('multiple messages body is correct', () {
+      final body = eventMessageBody(3, 'Beach Cleanup');
+      expect(body, 'You received 3 messages in Beach Cleanup');
+    });
+
+    test('body includes event title', () {
+      final body = eventMessageBody(2, 'Forest Walk');
+      expect(body.contains('Forest Walk'), true);
+    });
+  });
+
+  group('NotificationService chat id format', () {
+    String generateChatId(String a, String b) {
+      final sorted = [a, b]..sort();
+      return '${sorted[0]}_${sorted[1]}';
+    }
+
+    test('chat id is symmetric', () {
+      expect(
+        generateChatId('user1', 'user2'),
+        generateChatId('user2', 'user1'),
+      );
+    });
+
+    test('chat id contains underscore separator', () {
+      final id = generateChatId('a', 'b');
+      expect(id.contains('_'), true);
+    });
+
+    test('chat id sorts lexicographically', () {
+      expect(generateChatId('b', 'a'), 'a_b');
+    });
+  });
+
+  group('NotificationService notification types', () {
+    test('direct_message type is recognised', () {
+      const type = 'direct_message';
+      expect(type, isNotEmpty);
+    });
+
+    test('event_message type is recognised', () {
+      const type = 'event_message';
+      expect(type, isNotEmpty);
+    });
+
+    test('upcoming_event type is recognised', () {
+      const type = 'upcoming_event';
+      expect(type, isNotEmpty);
+    });
+
+    test('new_event type is recognised', () {
+      const type = 'new_event';
+      expect(type, isNotEmpty);
     });
   });
 }

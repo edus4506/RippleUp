@@ -20,10 +20,7 @@ class RecommendedEventRepository {
       otherUsers.shuffle();
       final randomUserDoc = otherUsers.first;
 
-      return Users.fromMap(
-        randomUserDoc.data() as Map<String, dynamic>,
-        randomUserDoc.id,
-      );
+      return Users.fromMap(randomUserDoc.data(), randomUserDoc.id);
     } catch (e) {
       return null;
     }
