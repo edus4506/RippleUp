@@ -60,36 +60,7 @@ class AppBottomNav extends StatelessWidget {
             ),
 
             Expanded(
-              child: Center(
-                child: GestureDetector(
-                  onTap: onAddPressed,
-
-                  child: Container(
-                    width: 72,
-                    height: 72,
-
-                    decoration: BoxDecoration(
-                      color: Palette.accentDark,
-
-                      shape: BoxShape.circle,
-
-                      border: Border.all(color: Palette.ink0, width: 5),
-
-                      boxShadow: [
-                        BoxShadow(
-                          color: Palette.accentDark.withOpacity(0.45),
-
-                          blurRadius: 18,
-
-                          offset: const Offset(0, 6),
-                        ),
-                      ],
-                    ),
-
-                    child: const Icon(Icons.add, color: Colors.white, size: 34),
-                  ),
-                ),
-              ),
+              child: Center(child: _AddButton(onPressed: onAddPressed)),
             ),
 
             _NavItem(
@@ -115,7 +86,60 @@ class AppBottomNav extends StatelessWidget {
   }
 }
 
-class _NavItem extends StatelessWidget {
+class _AddButton extends StatefulWidget {
+  final VoidCallback onPressed;
+  const _AddButton({required this.onPressed});
+
+  @override
+  State<_AddButton> createState() => _AddButtonState();
+}
+
+class _AddButtonState extends State<_AddButton> {
+  bool isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => isHovered = true),
+      onExit: (_) => setState(() => isHovered = false),
+
+      child: GestureDetector(
+        onTap: widget.onPressed,
+
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          width: 72,
+          height: 72,
+
+          decoration: BoxDecoration(
+            color: isHovered
+                ? Palette.accentDark.withOpacity(0.75)
+                : Palette.accentDark,
+
+            shape: BoxShape.circle,
+
+            border: Border.all(color: Palette.ink0, width: 5),
+
+            boxShadow: [
+              BoxShadow(
+                color: Palette.accentDark.withOpacity(isHovered ? 0.25 : 0.45),
+
+                blurRadius: 18,
+
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
+
+          child: const Icon(Icons.add, color: Colors.white, size: 34),
+        ),
+      ),
+    );
+  }
+}
+
+class _NavItem extends StatefulWidget {
   final IconData icon;
   final IconData iconActive;
   final String label;
@@ -133,41 +157,72 @@ class _NavItem extends StatelessWidget {
   });
 
   @override
+  State<_NavItem> createState() => _NavItemState();
+}
+
+class _NavItemState extends State<_NavItem> {
+  bool isHovered = false;
+
+  @override
   Widget build(BuildContext context) {
-    final color = active ? Palette.accentDark : Palette.ink400;
+    final color = widget.active ? Palette.accentDark : Palette.ink400;
 
     return Expanded(
-      child: InkWell(
-        onTap: onTap,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        onEnter: (_) => setState(() => isHovered = true),
+        onExit: (_) => setState(() => isHovered = false),
 
-        borderRadius: BorderRadius.circular(12),
+        child: GestureDetector(
+          onTap: widget.onTap,
 
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
 
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
 
-            children: [
-              Transform.rotate(
-                angle: rotateIcon ? -0.785398 : 0,
+              children: [
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  width: 40,
+                  height: 32,
 
-                child: Icon(active ? iconActive : icon, size: 24, color: color),
-              ),
+                  decoration: BoxDecoration(
+                    color: isHovered
+                        ? Colors.grey.withOpacity(0.12)
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
 
-              const SizedBox(height: 3),
+                  child: Center(
+                    child: Transform.rotate(
+                      angle: widget.rotateIcon ? -0.785398 : 0,
 
-              Text(
-                label,
-
-                style: TextStyle(
-                  fontSize: 11,
-                  color: color,
-
-                  fontWeight: active ? FontWeight.w700 : FontWeight.w500,
+                      child: Icon(
+                        widget.active ? widget.iconActive : widget.icon,
+                        size: 24,
+                        color: color,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ],
+
+                const SizedBox(height: 3),
+
+                Text(
+                  widget.label,
+
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: color,
+                    fontWeight: widget.active
+                        ? FontWeight.w700
+                        : FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

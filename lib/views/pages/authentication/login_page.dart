@@ -220,27 +220,53 @@ class _LoginPageState extends State<LoginPage> {
               const Divider(height: 1, color: Color(0xFFEEEEEE)),
               const SizedBox(height: 20),
 
-              // Register link
               Center(
-                child: GestureDetector(
-                  onTap: () => Navigator.pushNamed(context, AppRoutes.register),
-                  child: RichText(
-                    text: const TextSpan(
-                      style: TextStyle(fontSize: 14, color: Colors.black54),
-                      children: [
-                        TextSpan(text: "Don't have an account? "),
-                        TextSpan(
-                          text: 'Sign up',
-                          style: TextStyle(
-                            color: Palette.greenLogin,
-                            fontWeight: FontWeight.w600,
+                child: RichText(
+                  text: TextSpan(
+                    style: const TextStyle(fontSize: 14, color: Colors.black54),
+
+                    children: [
+                      const TextSpan(text: "Don't have an account? "),
+
+                      WidgetSpan(
+                        alignment: PlaceholderAlignment.middle,
+
+                        child: Material(
+                          color: Colors.transparent,
+
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(6),
+
+                            hoverColor: Colors.grey.withValues(alpha: 0.15),
+
+                            onTap: () {
+                              Navigator.pushNamed(context, AppRoutes.register);
+                            },
+
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
+
+                              child: Text(
+                                'Sign up',
+
+                                style: TextStyle(
+                                  color: Palette.greenLogin,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
+
               const SizedBox(height: 32),
             ],
           ),
