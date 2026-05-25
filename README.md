@@ -935,10 +935,11 @@ During Sprint 3, the team continued following an incremental development process
 - **PR #136** — Create event page UI overhaul (wheel time picker, new icons, hover effects)
 - **PR #137** — Auth pages, direct messages, and event chat UI
 - **PR #138** — Recommended events in the discover page (based on other users' participation activity)
+- **PR #143** — Final polish and fixes: About page, Help & Support page, settings improvements, UI enhancements across profile, followers/following, review history, change password, DMs, and public profile screens; multiple bug fixes (image upload, search, participant limit validation, edit event refresh, done-event filtering)
 
 Main functionalities implemented during this sprint:
 
-- Social graph: follow/unfollow, public profile viewing, followers/following list
+- Social graph: follow/unfollow, public profile viewing, followers/following list (labelled "Friends")
 - 1-to-1 direct messages with real-time updates
 - Event chat accessible from the DMs page
 - Notification system with multiple types (event, follow, DM, reminder)
@@ -947,9 +948,11 @@ Main functionalities implemented during this sprint:
 - Discover page with user search and recommended events (surfaced from other users' participation history)
 - Reviews history page
 - Splash screen and loading states
-- Image support (event cover images and profile pictures via Supabase)
+- Image support for event cover images and profile pictures (Supabase); event creation supports multiple images
+- About page with app information, team, and mission statement
+- Help & Support page with FAQs and contact information
 - New bottom navigation bar
-- UI overhaul of all major screens
+- UI overhaul and polish of all major screens
 
 ---
 
@@ -957,7 +960,7 @@ Main functionalities implemented during this sprint:
 
 During Sprint 3, the team significantly expanded test coverage and reorganised the test structure into a domain-driven directory layout.
 
-The test suite now contains **233 tests** — all passing.
+The test suite now contains **313 tests** — all passing.
 
 Current test structure:
 
@@ -1008,7 +1011,7 @@ Tests can be executed with:
 ```bash
 flutter test test/unit_tests/        # unit tests only
 flutter test test/acceptance_tests/  # acceptance tests only
-flutter test test/                   # all 233 tests
+flutter test test/                   # all 313 tests
 flutter test integration_test/       # requires connected device + Firebase credentials
 ```
 
@@ -1074,7 +1077,7 @@ These acceptance tests helped confirm that the implemented features delivered va
 
 Bugs, defects, fixes, and improvements identified during development and testing are documented in [`BUGS.md`](BUGS.md).
 
-During Sprint 3, six new defects were identified and resolved:
+During Sprint 3, eleven new defects were identified and resolved:
 
 - **BUG-07** — Event search lag caused by missing debounce in `EventViewModel`
 - **BUG-08** — Users could send messages in event chats they had not joined
@@ -1082,8 +1085,13 @@ During Sprint 3, six new defects were identified and resolved:
 - **BUG-10** — "Seen" status was not updated when opening an event chat from the DMs page
 - **BUG-11** — Excessive rebuild complexity in the DMs page caused jank
 - **BUG-12** — Redundant work in the home events list degraded performance
+- **BUG-13** — Event creation only uploaded the first selected image; subsequent images were discarded
+- **BUG-14** — Events with status "done" appeared in the main feed without requiring an explicit filter
+- **BUG-15** — Editing an event did not immediately refresh the event in the feed
+- **BUG-16** — Participant limit could be reduced below the current number of joined participants
+- **BUG-17** — Search users returned incomplete results due to a query construction error
 
-All six defects were resolved before merging into `main`.
+All eleven defects were resolved before the final release.
 
 ---
 
@@ -1194,7 +1202,9 @@ The application now allows users to:
 - Browse a discover page with user search and recommended events based on platform activity
 - Upload and display profile pictures and event cover images
 - Navigate the application through a redesigned bottom navigation bar
-- Use consistently redesigned screens across all major flows
+- Use consistently redesigned and polished screens across all major flows
+- Access an About page with app information, team, and mission statement
+- Access a Help & Support page with FAQs and contact information
 
 <p align="center">
   <img src="assets/scrumboard/sprint3_end_1.png" width="400"/>
@@ -1221,7 +1231,7 @@ The Sprint 3 release was published as a GitHub Release:
 **Did well:**
 - Large scope managed effectively by splitting work across focused branches and PRs
 - UI consistency improved significantly across all screens by the end of the sprint
-- Test suite restructured into a maintainable domain-driven layout and coverage increased to 233 tests
+- Test suite restructured into a maintainable domain-driven layout and coverage increased to 313 tests
 - Social features (follows, DMs, notifications) integrated cleanly with the existing architecture
 
 **Do differently:**
@@ -1248,11 +1258,11 @@ _Ripple Up_ is a community event platform focused on humanitarian and environmen
 | Sprint 0 | Project setup, architecture, UI mockups, backlog |
 | Sprint 1 | Event feed, event creation, filtering, event details, join/leave, favourites, event management, authentication |
 | Sprint 2 | Improved location selection, event chat, change password, event feedback and reviews (create, delete, sort), user profile, event permissions, completed-event filtering, view joined events |
-| Sprint 3 | Social graph (follow/unfollow, public profiles, followers/following), direct messages (1-to-1, real-time), event chat accessible from DMs, notification system (join/leave, new event, DM, 48h reminder), participants page, edit event, discover page with user search and recommended events, image support (profile pictures and event covers), full UI overhaul across all screens, search events in feed, reviews history |
+| Sprint 3 | Social graph (follow/unfollow, public profiles, followers/following), direct messages (1-to-1, real-time), event chat accessible from DMs, notification system (join/leave, new event, DM, 48h reminder), participants page, edit event, discover page with user search and recommended events, image support (profile pictures and event covers, multiple images), About page, Help & Support page, full UI overhaul and polish across all screens, search events in feed, reviews history |
 
 #### Quality
 
-- **233 tests** — unit tests, acceptance tests, and integration tests — all passing
+- **313 tests** — unit tests, acceptance tests, and integration tests — all passing
 - Static analysis passing (`dart analyze`)
 - Code formatted with `dart format`
 

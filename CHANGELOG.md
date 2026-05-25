@@ -72,29 +72,35 @@
 ### Added
 - Follow / unfollow users
 - Public profile page with user events and follow state
-- Followers / following list page
+- Followers / following list page (labelled "Friends")
 - 1-to-1 direct messages with real-time updates
 - Event chat accessible from the direct messages page
 - Notification system: event join/leave, new event to creator's followers, DM notifications, 48-hour event reminder
 - Notification dropdown UI
 - Event participants page (list of joined users)
 - Edit event details (available to event owner)
-- Discover page with user search
+- Discover page with user search and recommended events based on platform activity
 - Reviews history page
 - Splash screen and loading states
-- Image support for event cover images and profile pictures
+- Image support for event cover images and profile pictures; event creation supports multiple images
+- About page with app information, team, and mission statement
+- Help & Support page with FAQs and contact information
 - New bottom navigation bar (4 tabs + centred floating action button)
-- New routes: `/participants`, `/edit-event`
+- New routes: `/participants`, `/edit-event`, `/about`, `/help-support`
 
 ### Improved
 - Create event page: wheel time picker, new top bar, circle create button, hover effects on objectives, improved date icons and photo icon
 - Event filter dialog: redesigned with checkboxes, date range filter, updated colour scheme
 - Home / event feed: redesigned event card and top bar
 - Auth pages (login and register): full UI redesign
-- Direct messages page: redesigned conversation list and chat UI
+- Direct messages page: redesigned conversation list and chat UI; hover effects on event conversations
+- Settings page: new menu items for About and Help & Support
+- Public profile page: improved layout and responsive action buttons
+- Review history page: enhanced UI and back navigation
+- Change password page: enhanced UI
 - Top bar: consistency pass across all pages
 - Test structure: reorganised into domain subdirectories under `unit_tests/` and `acceptance_tests/`
-- Test coverage: 233 tests — all passing
+- Test coverage: 313 tests — all passing
 
 ### Fixed
 - Event search lag: added 300ms debounce to `EventViewModel.updateSearchQuery`
@@ -103,3 +109,8 @@
 - "Seen" status not updating when opening event chat from DMs page
 - Excessive rebuild complexity in DMs page causing jank
 - Redundant work in home events list degrading performance with large datasets
+- Event creation only uploading the first selected image; now uploads all selected images
+- Completed events appearing in the main feed without an explicit filter
+- Edited event details not immediately reflected in the feed after saving
+- Participant limit could be set below current occupancy
+- Search users returning incomplete results due to query construction error
