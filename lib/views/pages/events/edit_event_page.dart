@@ -150,6 +150,17 @@ class _EditEventPageState extends State<EditEventPage> {
       return;
     }
 
+    if (maxUsers < widget.event.currentUsers) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Capacity cannot be less than current participants (${widget.event.currentUsers})',
+          ),
+        ),
+      );
+      return;
+    }
+
     final currentUser = context.read<AuthViewModel>().currentUser;
 
     if (currentUser == null) {
@@ -391,12 +402,12 @@ class _EditEventPageState extends State<EditEventPage> {
                   child: Slider(
                     value:
                         (_maxUsersController.text.isEmpty
-                                ? 0
+                                ? widget.event.currentUsers
                                 : int.parse(_maxUsersController.text))
                             .toDouble(),
-                    min: 0,
+                    min: widget.event.currentUsers.toDouble(),
                     max: 50,
-                    divisions: 50,
+                    divisions: (50 - widget.event.currentUsers).clamp(1, 50),
                     onChanged: (value) {
                       setState(() {
                         _maxUsersController.text = value.round().toString();
