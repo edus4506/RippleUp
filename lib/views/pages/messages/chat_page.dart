@@ -286,7 +286,7 @@ class _ChatInputBar extends StatelessWidget {
                 decoration: InputDecoration(
                   hintText: canSend
                       ? 'Type a message...'
-                      : 'You left this event',
+                      : 'You must participate in the event to send messages',
                   hintStyle: const TextStyle(
                     color: Colors.black38,
                     fontSize: 13,

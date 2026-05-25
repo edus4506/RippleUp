@@ -296,7 +296,7 @@ class EventViewModel extends ChangeNotifier {
 
     try {
       final result = await _eventRepository.fetchEventsPaged();
-      _pagedEvents = result.events;
+      _pagedEvents = EventFilterService.apply(result.events, _filter);
       _lastDoc = result.lastDoc;
       _hasMore = result.hasMore;
     } catch (e) {
@@ -318,7 +318,8 @@ class EventViewModel extends ChangeNotifier {
       final result = await _eventRepository.fetchEventsPaged(
         startAfter: _lastDoc,
       );
-      _pagedEvents = [..._pagedEvents, ...result.events];
+      final filtered = EventFilterService.apply(result.events, _filter);
+      _pagedEvents = [..._pagedEvents, ...filtered];
       _lastDoc = result.lastDoc;
       _hasMore = result.hasMore;
     } catch (e) {

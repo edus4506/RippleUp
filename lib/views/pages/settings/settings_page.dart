@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 
 import 'package:t5/viewModels/authenthication/auth_viewModel.dart';
@@ -51,28 +52,123 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future<void> _confirmDeleteAccount() async {
+    final passwordController = TextEditingController();
+    bool obscure = true;
+
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Delete Account'),
-        content: const Text(
-          'This will permanently delete your account. Are you sure?',
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setStateDialog) => AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: const Row(
+            children: [
+              Icon(Icons.delete_forever, color: Colors.red, size: 24),
+              SizedBox(width: 8),
+              Text('Delete Account', style: TextStyle(fontSize: 18)),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'This will permanently delete your account. Please enter your password to confirm.',
+                style: TextStyle(color: Colors.black54, fontSize: 13),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: passwordController,
+                obscureText: obscure,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  labelStyle: const TextStyle(color: Colors.black45),
+                  filled: true,
+                  fillColor: const Color(0xFFF5F5F5),
+                  prefixIcon: const Icon(
+                    Icons.lock_outline,
+                    color: Colors.black38,
+                    size: 20,
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      obscure
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
+                      color: Colors.black38,
+                      size: 20,
+                    ),
+                    onPressed: () => setStateDialog(() => obscure = !obscure),
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: const BorderSide(color: Colors.red, width: 1.5),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: Colors.black54),
+              ),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              onPressed: () {
+                if (passwordController.text.trim().isEmpty) {
+                  ScaffoldMessenger.of(ctx).showSnackBar(
+                    const SnackBar(content: Text('Please enter your password')),
+                  );
+                  return;
+                }
+                Navigator.pop(ctx, true);
+              },
+              child: const Text('Delete'),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Delete'),
-          ),
-        ],
       ),
     );
 
+    final password = passwordController.text.trim();
+    final email = context.read<ProfileViewModel>().user?.email ?? '';
+    passwordController.dispose();
+
     if (confirmed != true || !mounted) return;
+
+    try {
+      final credential = EmailAuthProvider.credential(
+        email: email,
+        password: password,
+      );
+      await FirebaseAuth.instance.currentUser!.reauthenticateWithCredential(
+        credential,
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Incorrect password. Account not deleted.'),
+        ),
+      );
+      return;
+    }
 
     context.read<EventViewModel>().resetFilters();
     await context.read<ProfileViewModel>().softDeleteAcc();
@@ -91,12 +187,8 @@ class _SettingsPageState extends State<SettingsPage> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: () => Navigator.pop(context),
         ),
-
         title: const Text('Settings'),
       ),
       body: vm.isLoading
@@ -174,13 +266,14 @@ class _SettingsPageState extends State<SettingsPage> {
                 _SettingsOption(
                   icon: Icons.help_outline,
                   label: 'Help & Support',
-                  onTap: () {},
+                  onTap: () =>
+                      Navigator.pushNamed(context, AppRoutes.helpSupport),
                 ),
 
                 _SettingsOption(
                   icon: Icons.info_outline,
                   label: 'About the App',
-                  onTap: () {},
+                  onTap: () => Navigator.pushNamed(context, AppRoutes.about),
                 ),
 
                 const Divider(height: 1),

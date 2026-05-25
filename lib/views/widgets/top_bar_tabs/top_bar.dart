@@ -185,29 +185,23 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   Widget _buildCircleButton({required Widget child}) {
-    return Container(
-      width: 52,
-      height: 52,
-
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.14),
-
-        shape: BoxShape.circle,
-
-        border: Border.all(color: Colors.white.withValues(alpha: 0.10)),
-
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-
-            blurRadius: 12,
-
-            offset: const Offset(0, 4),
-          ),
-        ],
+    return Material(
+      color: Colors.transparent,
+      child: Ink(
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.14),
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.white.withOpacity(0.10)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.08),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: SizedBox(width: 52, height: 52, child: Center(child: child)),
       ),
-
-      child: Center(child: child),
     );
   }
 

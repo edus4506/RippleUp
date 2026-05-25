@@ -8,6 +8,7 @@ import 'package:t5/data/models/events/event_status.dart';
 import 'package:t5/routes/app_routes.dart';
 import 'package:t5/viewModels/authenthication/auth_viewModel.dart';
 import 'package:t5/viewModels/events/event_viewModel.dart';
+import 'package:t5/views/pages/events/edit_event_page.dart';
 import 'package:t5/viewModels/events/favorite_event_viewModel.dart';
 import 'package:t5/data/repositories/events/favorite_event_repository.dart';
 import 'package:t5/theme/event_status_colors.dart';
@@ -285,12 +286,17 @@ class _MenuButton extends StatelessWidget {
                 }
                 break;
               case 'edit':
-                Navigator.pop(context);
-                Navigator.pushNamed(
-                  context,
-                  AppRoutes.editEvent,
-                  arguments: {'event': event},
+                final rootNav = Navigator.of(context, rootNavigator: true);
+                final vm = context.read<EventViewModel>();
+                final updated = await rootNav.push(
+                  MaterialPageRoute(
+                    builder: (_) => EditEventPage(event: event),
+                  ),
                 );
+                if (updated == true && context.mounted) {
+                  vm.loadFirstPage();
+                }
+                rootNav.pop();
                 break;
               case 'delete':
                 final confirmed = await showDialog<bool>(
