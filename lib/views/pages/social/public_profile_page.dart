@@ -57,8 +57,8 @@ class _PublicProfilePageState extends State<PublicProfilePage> {
               leftWidget: InkWell(
                 onTap: () => Navigator.pop(context),
                 customBorder: const CircleBorder(),
-                splashColor: Colors.white.withOpacity(0.25),
-                highlightColor: Colors.white.withOpacity(0.15),
+                splashColor: Colors.white.withValues(alpha: 0.25),
+                highlightColor: Colors.white.withValues(alpha: 0.15),
                 child: const Padding(
                   padding: EdgeInsets.all(8),
                   child: Icon(
@@ -93,7 +93,7 @@ class _PublicProfilePageState extends State<PublicProfilePage> {
                             borderRadius: BorderRadius.circular(24),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
+                                color: Colors.black.withValues(alpha: 0.05),
                                 blurRadius: 16,
                                 offset: const Offset(0, 4),
                               ),
@@ -112,8 +112,8 @@ class _PublicProfilePageState extends State<PublicProfilePage> {
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
                                       border: Border.all(
-                                        color: Palette.primary.withOpacity(
-                                          0.35,
+                                        color: Palette.primary.withValues(
+                                          alpha: 0.35,
                                         ),
                                         width: 3,
                                       ),
@@ -128,7 +128,7 @@ class _PublicProfilePageState extends State<PublicProfilePage> {
                                           ? Image.network(
                                               vm.user!.profilePictureUrl,
                                               fit: BoxFit.cover,
-                                              errorBuilder: (_, __, ___) =>
+                                              errorBuilder: (_, _, _) =>
                                                   _placeholder(),
                                             )
                                           : _placeholder(),
@@ -269,8 +269,9 @@ class _PublicProfilePageState extends State<PublicProfilePage> {
                                             final canMessage =
                                                 isFollowing ||
                                                 (chatSnap.data ?? false);
-                                            if (!canMessage)
+                                            if (!canMessage) {
                                               return const SizedBox.shrink();
+                                            }
                                             return Row(
                                               children: [
                                                 const SizedBox(width: 10),
@@ -308,7 +309,9 @@ class _PublicProfilePageState extends State<PublicProfilePage> {
                                                             ),
                                                         border: Border.all(
                                                           color: Palette.primary
-                                                              .withOpacity(0.2),
+                                                              .withValues(
+                                                                alpha: 0.2,
+                                                              ),
                                                         ),
                                                       ),
                                                       child: const Icon(
@@ -344,7 +347,7 @@ class _PublicProfilePageState extends State<PublicProfilePage> {
                             borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.04),
+                                color: Colors.black.withValues(alpha: 0.04),
                                 blurRadius: 8,
                                 offset: const Offset(0, 2),
                               ),
@@ -575,7 +578,7 @@ class _EventList extends StatelessWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: events.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 10),
+      separatorBuilder: (_, _) => const SizedBox(height: 10),
       itemBuilder: (context, index) {
         final event = events[index];
         final statusColor = getEventStatusColor(event.status);
@@ -585,7 +588,7 @@ class _EventList extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.04),
+                color: Colors.black.withValues(alpha: 0.04),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -632,7 +635,7 @@ class _EventList extends StatelessWidget {
                     vertical: 2,
                   ),
                   decoration: BoxDecoration(
-                    color: statusColor.withOpacity(0.12),
+                    color: statusColor.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(

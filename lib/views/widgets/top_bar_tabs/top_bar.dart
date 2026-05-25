@@ -189,12 +189,12 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
       color: Colors.transparent,
       child: Ink(
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.14),
+          color: Colors.white.withValues(alpha: 0.14),
           shape: BoxShape.circle,
-          border: Border.all(color: Colors.white.withOpacity(0.10)),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.10)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.08),
+              color: Colors.black.withValues(alpha: 0.08),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),

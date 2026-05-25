@@ -17,6 +17,7 @@ class _SearchUsersPageState extends State<SearchUsersPage> {
   void initState() {
     super.initState();
     Future.microtask(() {
+      if (!mounted) return;
       context.read<SearchUsersViewModel>().loadUsers();
     });
   }
@@ -117,7 +118,7 @@ class _SearchUsersPageState extends State<SearchUsersPage> {
                           borderRadius: BorderRadius.circular(24),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.10),
+                              color: Colors.black.withValues(alpha: 0.10),
                               blurRadius: 18,
                               offset: const Offset(0, 8),
                             ),
@@ -156,8 +157,9 @@ class _SearchUsersPageState extends State<SearchUsersPage> {
                             ValueListenableBuilder<TextEditingValue>(
                               valueListenable: viewModel.searchController,
                               builder: (context, value, _) {
-                                if (value.text.isEmpty)
+                                if (value.text.isEmpty) {
                                   return const SizedBox(width: 14);
+                                }
                                 return IconButton(
                                   icon: Icon(
                                     Icons.close_rounded,
@@ -251,13 +253,13 @@ class _CircleButtonState extends State<_CircleButton> {
           height: 44,
           decoration: BoxDecoration(
             color: isHovered
-                ? Colors.white.withOpacity(0.30)
-                : Colors.white.withOpacity(0.14),
+                ? Colors.white.withValues(alpha: 0.30)
+                : Colors.white.withValues(alpha: 0.14),
             shape: BoxShape.circle,
-            border: Border.all(color: Colors.white.withOpacity(0.10)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.10)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.08),
+                color: Colors.black.withValues(alpha: 0.08),
                 blurRadius: 12,
                 offset: const Offset(0, 4),
               ),
@@ -307,7 +309,7 @@ class _UserCardState extends State<_UserCard> {
             border: Border.all(color: const Color(0xFFE8F0E9), width: 1.2),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(isHovered ? 0.07 : 0.04),
+                color: Colors.black.withValues(alpha: isHovered ? 0.07 : 0.04),
                 blurRadius: isHovered ? 14 : 10,
                 offset: const Offset(0, 3),
               ),
@@ -328,7 +330,7 @@ class _UserCardState extends State<_UserCard> {
                       ? Image.network(
                           user.profilePictureUrl,
                           fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) =>
+                          errorBuilder: (_, _, _) =>
                               const Icon(Icons.person, color: Colors.grey),
                         )
                       : const Icon(Icons.person, color: Colors.grey),

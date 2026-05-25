@@ -80,6 +80,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
     );
 
     if (date == null) return null;
+    if (!mounted) return null;
 
     TimeOfDay? time = await showDialog<TimeOfDay>(
       context: context,
@@ -139,7 +140,10 @@ class _CreateEventPageState extends State<CreateEventPage> {
 
     final eventId = DateTime.now().millisecondsSinceEpoch.toString();
 
-    final imageUrls = await context.read<EventViewModel>().uploadEventImages(
+    final eventVm = context.read<EventViewModel>();
+    final notifVm = context.read<AppNotificationViewModel>();
+
+    final imageUrls = await eventVm.uploadEventImages(
       eventId: eventId,
       images: selectedImages,
     );
@@ -162,10 +166,8 @@ class _CreateEventPageState extends State<CreateEventPage> {
       coverImageUrl: imageUrls.isNotEmpty ? imageUrls.first : null,
     );
 
-    await context.read<EventViewModel>().createEvent(event);
-    await context.read<AppNotificationViewModel>().createNewEventNotification(
-      event,
-    );
+    await eventVm.createEvent(event);
+    await notifVm.createNewEventNotification(event);
 
     if (!mounted) return;
 
@@ -463,6 +465,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                       onTap: () async {
                         final picked = await _pickDateTime();
                         if (picked == null) return;
+                        if (!context.mounted) return;
 
                         if (picked.isBefore(DateTime.now())) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -505,6 +508,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                         }
                         final picked = await _pickDateTime();
                         if (picked == null) return;
+                        if (!context.mounted) return;
                         if (picked.isBefore(startDate!)) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(

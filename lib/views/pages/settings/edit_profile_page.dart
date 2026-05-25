@@ -19,8 +19,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await context.read<ProfileViewModel>().loadUser();
-      final user = context.read<ProfileViewModel>().user;
+      if (!mounted) return;
+      final profileVm = context.read<ProfileViewModel>();
+      await profileVm.loadUser();
+      if (!mounted) return;
+      final user = profileVm.user;
       if (user != null) _nameController.text = user.name;
     });
   }
@@ -32,13 +35,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   Future<void> _pickAndUploadImage() async {
+    final profileVm = context.read<ProfileViewModel>();
     final picker = ImagePicker();
     final picked = await picker.pickImage(source: ImageSource.gallery);
     if (picked == null) return;
 
-    await context.read<ProfileViewModel>().updateUserProfile(
-      profilePicture: picked,
-    );
+    await profileVm.updateUserProfile(profilePicture: picked);
 
     if (!mounted) return;
     ScaffoldMessenger.of(

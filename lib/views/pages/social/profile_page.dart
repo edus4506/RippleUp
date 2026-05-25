@@ -70,7 +70,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withValues(alpha: 0.05),
                     blurRadius: 16,
                     offset: const Offset(0, 4),
                   ),
@@ -93,7 +93,9 @@ class _ProfilePageState extends State<ProfilePage> {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                  color: Palette.primary.withOpacity(0.35),
+                                  color: Palette.primary.withValues(
+                                    alpha: 0.35,
+                                  ),
                                   width: 3,
                                 ),
                               ),
@@ -104,7 +106,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     ? Image.network(
                                         vm.user!.profilePictureUrl,
                                         fit: BoxFit.cover,
-                                        errorBuilder: (_, __, ___) =>
+                                        errorBuilder: (_, _, _) =>
                                             _avatarPlaceholder(),
                                       )
                                     : _avatarPlaceholder(),
@@ -160,7 +162,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.04),
+                    color: Colors.black.withValues(alpha: 0.04),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -240,11 +242,11 @@ class _TabButton extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(12),
           splashColor: selected
-              ? Colors.white.withOpacity(0.2)
-              : Palette.primary.withOpacity(0.08),
+              ? Colors.white.withValues(alpha: 0.2)
+              : Palette.primary.withValues(alpha: 0.08),
           highlightColor: selected
-              ? Colors.white.withOpacity(0.1)
-              : Palette.primary.withOpacity(0.05),
+              ? Colors.white.withValues(alpha: 0.1)
+              : Palette.primary.withValues(alpha: 0.05),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
             padding: const EdgeInsets.symmetric(vertical: 10),
@@ -348,8 +350,8 @@ class _StatColumn extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(10),
-        splashColor: Palette.primary.withOpacity(0.10),
-        highlightColor: Palette.primary.withOpacity(0.06),
+        splashColor: Palette.primary.withValues(alpha: 0.10),
+        highlightColor: Palette.primary.withValues(alpha: 0.06),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           child: Column(

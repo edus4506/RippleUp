@@ -79,8 +79,8 @@ class _FollowersFollowingPageState extends State<FollowersFollowingPage>
               leftWidget: InkWell(
                 onTap: () => Navigator.pop(context),
                 customBorder: const CircleBorder(),
-                splashColor: Colors.white.withOpacity(0.25),
-                highlightColor: Colors.white.withOpacity(0.15),
+                splashColor: Colors.white.withValues(alpha: 0.25),
+                highlightColor: Colors.white.withValues(alpha: 0.15),
                 child: const Padding(
                   padding: EdgeInsets.all(8),
                   child: Icon(
@@ -205,7 +205,7 @@ class _TabBarState extends State<_TabBar> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -256,11 +256,11 @@ class _TabItem extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(12),
           splashColor: isSelected
-              ? Colors.white.withOpacity(0.2)
-              : Palette.primary.withOpacity(0.08),
+              ? Colors.white.withValues(alpha: 0.2)
+              : Palette.primary.withValues(alpha: 0.08),
           highlightColor: isSelected
-              ? Colors.white.withOpacity(0.1)
-              : Palette.primary.withOpacity(0.05),
+              ? Colors.white.withValues(alpha: 0.1)
+              : Palette.primary.withValues(alpha: 0.05),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
             padding: const EdgeInsets.symmetric(vertical: 10),
@@ -311,7 +311,7 @@ class _UserList extends StatelessWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: users.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 10),
+      separatorBuilder: (_, _) => const SizedBox(height: 10),
       itemBuilder: (context, index) {
         final uid = users[index].key;
         final user = users[index].value;
@@ -323,7 +323,7 @@ class _UserList extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.04),
+                color: Colors.black.withValues(alpha: 0.04),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -340,7 +340,7 @@ class _UserList extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: Palette.primary.withOpacity(0.25),
+                  color: Palette.primary.withValues(alpha: 0.25),
                   width: 2,
                 ),
               ),
@@ -349,7 +349,7 @@ class _UserList extends StatelessWidget {
                     ? Image.network(
                         user.profilePictureUrl,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => _avatarPlaceholder(),
+                        errorBuilder: (_, _, _) => _avatarPlaceholder(),
                       )
                     : _avatarPlaceholder(),
               ),
@@ -382,6 +382,14 @@ class _UserList extends StatelessWidget {
                       return _FollowButton(
                         isFollowing: following,
                         onPressed: () async {
+                          // Capture before first await; only needed when starting to follow
+                          final notificationVm = !following
+                              ? context.read<AppNotificationViewModel>()
+                              : null;
+                          final userRepo = !following
+                              ? context.read<UserRepository>()
+                              : null;
+
                           await vm.toggleFollow(
                             followerId: currentUserId!,
                             followedId: uid,
@@ -389,17 +397,14 @@ class _UserList extends StatelessWidget {
                           );
 
                           // Só envia notificação quando começa a seguir
-                          if (!following) {
-                            final notificationVm = context
-                                .read<AppNotificationViewModel>();
+                          if (!following &&
+                              notificationVm != null &&
+                              userRepo != null) {
+                            final follower = await userRepo.getUser(
+                              currentUserId!,
+                            );
 
-                            final follower = await context
-                                .read<UserRepository>()
-                                .getUser(currentUserId!);
-
-                            final followed = await context
-                                .read<UserRepository>()
-                                .getUser(uid);
+                            final followed = await userRepo.getUser(uid);
 
                             if (follower != null && followed != null) {
                               await notificationVm
@@ -440,11 +445,11 @@ class _FollowButton extends StatelessWidget {
         onTap: onPressed,
         borderRadius: BorderRadius.circular(8),
         splashColor: isFollowing
-            ? Colors.red.withOpacity(0.1)
-            : Palette.primary.withOpacity(0.1),
+            ? Colors.red.withValues(alpha: 0.1)
+            : Palette.primary.withValues(alpha: 0.1),
         highlightColor: isFollowing
-            ? Colors.red.withOpacity(0.05)
-            : Palette.primary.withOpacity(0.05),
+            ? Colors.red.withValues(alpha: 0.05)
+            : Palette.primary.withValues(alpha: 0.05),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
@@ -528,7 +533,7 @@ class _ErrorWidget extends StatelessWidget {
               width: 64,
               height: 64,
               decoration: BoxDecoration(
-                color: Colors.red.withOpacity(0.1),
+                color: Colors.red.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: const Icon(
