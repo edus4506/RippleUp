@@ -111,100 +111,12 @@ class _DirectMessagesPageState extends State<DirectMessagesPage> {
                   padding: const EdgeInsets.all(12),
                   children: showEventChats
                       ? [
-                          ...events.map((event) {
-                            final isMe = event.lastSenderId == currentUserId;
-                            final isUnread =
-                                !event.lastSeenBy.contains(currentUserId) &&
-                                event.lastSenderId != currentUserId;
-
-                            return GestureDetector(
-                              onTap: () {
-                                context
-                                    .read<EventChatRepository>()
-                                    .markEventChatAsSeen(
-                                      eventId: event.eventId,
-                                      userId: currentUserId,
-                                    );
-                                Navigator.pushNamed(
-                                  context,
-                                  AppRoutes.chat,
-                                  arguments: {
-                                    'eventId': event.eventId,
-                                    'title': event.title,
-                                  },
-                                );
-                              },
-                              child: AnimatedContainer(
-                                duration: const Duration(milliseconds: 180),
-                                width: double.infinity,
-                                padding: const EdgeInsets.all(14),
-                                margin: const EdgeInsets.only(bottom: 12),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(18),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withAlpha(10),
-                                      blurRadius: 8,
-                                      offset: const Offset(0, 3),
-                                    ),
-                                  ],
-                                ),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 56,
-                                      height: 56,
-                                      decoration: const BoxDecoration(
-                                        color: Color(0xFFE8F3E4),
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: const Icon(
-                                        Icons.groups,
-                                        color: Color(0xFF4A693D),
-                                        size: 28,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 16),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            event.title,
-                                            style: const TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            '${isMe ? 'Sent' : 'Received'} • ${formatRelativeTime(event.lastMessageAt)}',
-                                            style: TextStyle(
-                                              color: Colors.black54,
-                                              fontWeight: isUnread
-                                                  ? FontWeight.w700
-                                                  : FontWeight.normal,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    if (isUnread)
-                                      Container(
-                                        width: 12,
-                                        height: 12,
-                                        decoration: const BoxDecoration(
-                                          color: Colors.green,
-                                          shape: BoxShape.circle,
-                                        ),
-                                      ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          }),
+                          ...events.map(
+                            (event) => _HoverEventCard(
+                              event: event,
+                              currentUserId: currentUserId,
+                            ),
+                          ),
                         ]
                       : [
                           // ← usa _chats em vez do stream
@@ -423,6 +335,118 @@ class _HoverChatCardState extends State<_HoverChatCard> {
                   width: 12,
                   height: 12,
 
+                  decoration: const BoxDecoration(
+                    color: Colors.green,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _HoverEventCard extends StatefulWidget {
+  final EventChatPreview event;
+  final String currentUserId;
+
+  const _HoverEventCard({required this.event, required this.currentUserId});
+
+  @override
+  State<_HoverEventCard> createState() => _HoverEventCardState();
+}
+
+class _HoverEventCardState extends State<_HoverEventCard> {
+  bool isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final isMe = widget.event.lastSenderId == widget.currentUserId;
+    final isUnread =
+        !widget.event.lastSeenBy.contains(widget.currentUserId) &&
+        widget.event.lastSenderId != widget.currentUserId;
+
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => isHovered = true),
+      onExit: (_) => setState(() => isHovered = false),
+      child: GestureDetector(
+        onTap: () {
+          context.read<EventChatRepository>().markEventChatAsSeen(
+            eventId: widget.event.eventId,
+            userId: widget.currentUserId,
+          );
+          Navigator.pushNamed(
+            context,
+            AppRoutes.chat,
+            arguments: {
+              'eventId': widget.event.eventId,
+              'title': widget.event.title,
+            },
+          );
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          width: double.infinity,
+          padding: const EdgeInsets.all(14),
+          margin: const EdgeInsets.only(bottom: 12),
+          decoration: BoxDecoration(
+            color: isHovered ? const Color(0xFFF2F2F2) : Colors.white,
+            borderRadius: BorderRadius.circular(18),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withAlpha(isHovered ? 18 : 10),
+                blurRadius: isHovered ? 12 : 8,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 56,
+                height: 56,
+                decoration: const BoxDecoration(
+                  color: Color(0xFFE8F3E4),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.groups,
+                  color: Color(0xFF4A693D),
+                  size: 28,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.event.title,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '${isMe ? 'Sent' : 'Received'} • ${formatRelativeTime(widget.event.lastMessageAt)}',
+                      style: TextStyle(
+                        color: Colors.black54,
+                        fontWeight: isUnread
+                            ? FontWeight.w700
+                            : FontWeight.normal,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (isUnread)
+                Container(
+                  width: 12,
+                  height: 12,
                   decoration: const BoxDecoration(
                     color: Colors.green,
                     shape: BoxShape.circle,
