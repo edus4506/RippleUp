@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import '../../widgets/profile_tabs/favorite_events_widget.dart';
 import '../../widgets/profile_tabs/current_events_widget.dart';
 import '../../widgets/profile_tabs/history_events_widget.dart';
+import 'package:t5/views/widgets/top_bar_tabs/settings_drawer.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -55,6 +56,7 @@ class _ProfilePageState extends State<ProfilePage> {
         title: vm.user?.name ?? 'Profile',
         rightWidget: SettingsButton(),
       ),
+      endDrawer: const SettingsDrawer(),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -114,21 +116,15 @@ class _ProfilePageState extends State<ProfilePage> {
                             // Nome + stats
                             Expanded(
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                      right: 100.0,
-                                    ),
-                                    child: Text(
-                                      vm.user?.name ?? 'No name',
-                                      style: GoogleFonts.dmSerifDisplay(
-                                        fontSize: 26,
-                                        color: Palette.primary,
-                                        letterSpacing: -0.5,
-                                        height: 1.1,
-                                      ),
-                                      textAlign: TextAlign.center,
+                                  Text(
+                                    vm.user?.name ?? 'No name',
+                                    style: GoogleFonts.dmSerifDisplay(
+                                      fontSize: 26,
+                                      color: Palette.primary,
+                                      letterSpacing: -0.5,
+                                      height: 1.1,
                                     ),
                                   ),
                                   const SizedBox(height: 10),
@@ -237,33 +233,44 @@ class _TabButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          decoration: BoxDecoration(
-            color: selected ? Palette.primary : Colors.transparent,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                icon,
-                size: 20,
-                color: selected ? Colors.white : Colors.grey,
-              ),
-              const SizedBox(height: 3),
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(12),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(12),
+          splashColor: selected
+              ? Colors.white.withOpacity(0.2)
+              : Palette.primary.withOpacity(0.08),
+          highlightColor: selected
+              ? Colors.white.withOpacity(0.1)
+              : Palette.primary.withOpacity(0.05),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            decoration: BoxDecoration(
+              color: selected ? Palette.primary : Colors.transparent,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  icon,
+                  size: 20,
                   color: selected ? Colors.white : Colors.grey,
                 ),
-              ),
-            ],
+                const SizedBox(height: 3),
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+                    color: selected ? Colors.white : Colors.grey,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -335,22 +342,35 @@ class _StatColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            '$count',
-            style: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Palette.primary,
-            ),
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(10),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(10),
+        splashColor: Palette.primary.withOpacity(0.10),
+        highlightColor: Palette.primary.withOpacity(0.06),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                '$count',
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Palette.primary,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                label,
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
+              ),
+            ],
           ),
-          const SizedBox(height: 2),
-          Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
-        ],
+        ),
       ),
     );
   }
