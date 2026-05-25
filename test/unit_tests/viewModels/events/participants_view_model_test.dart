@@ -6,7 +6,9 @@ import 'package:t5/data/repositories/social/participation_repository.dart';
 import 'package:t5/data/repositories/social/user_repository.dart';
 import 'package:t5/viewModels/events/participants_view_model.dart';
 
-class MockParticipationRepository extends Mock implements ParticipationRepository {}
+class MockParticipationRepository extends Mock
+    implements ParticipationRepository {}
+
 class MockUserRepository extends Mock implements UserRepository {}
 
 Users _user(String id, String name) =>
@@ -35,15 +37,20 @@ void main() {
 
   group('ParticipantsViewModel.getEventParticipants', () {
     test('returns list of users for event participations', () async {
-      when(() => mockParticipationRepo.getParticipationsByEvent('e1'))
-          .thenAnswer((_) async => [
-                Participation(id: 'p1', idUser: 'u1', idEvent: 'e1'),
-                Participation(id: 'p2', idUser: 'u2', idEvent: 'e1'),
-              ]);
-      when(() => mockUserRepo.getUser('u1'))
-          .thenAnswer((_) async => _user('u1', 'Alice'));
-      when(() => mockUserRepo.getUser('u2'))
-          .thenAnswer((_) async => _user('u2', 'Bob'));
+      when(
+        () => mockParticipationRepo.getParticipationsByEvent('e1'),
+      ).thenAnswer(
+        (_) async => [
+          Participation(id: 'p1', idUser: 'u1', idEvent: 'e1'),
+          Participation(id: 'p2', idUser: 'u2', idEvent: 'e1'),
+        ],
+      );
+      when(
+        () => mockUserRepo.getUser('u1'),
+      ).thenAnswer((_) async => _user('u1', 'Alice'));
+      when(
+        () => mockUserRepo.getUser('u2'),
+      ).thenAnswer((_) async => _user('u2', 'Bob'));
 
       final result = await vm.getEventParticipants('e1');
 
@@ -52,8 +59,9 @@ void main() {
     });
 
     test('returns empty list when event has no participations', () async {
-      when(() => mockParticipationRepo.getParticipationsByEvent('e1'))
-          .thenAnswer((_) async => []);
+      when(
+        () => mockParticipationRepo.getParticipationsByEvent('e1'),
+      ).thenAnswer((_) async => []);
 
       final result = await vm.getEventParticipants('e1');
 
@@ -61,15 +69,18 @@ void main() {
     });
 
     test('skips users that return null from repository', () async {
-      when(() => mockParticipationRepo.getParticipationsByEvent('e1'))
-          .thenAnswer((_) async => [
-                Participation(id: 'p1', idUser: 'u1', idEvent: 'e1'),
-                Participation(id: 'p2', idUser: 'missing', idEvent: 'e1'),
-              ]);
-      when(() => mockUserRepo.getUser('u1'))
-          .thenAnswer((_) async => _user('u1', 'Alice'));
-      when(() => mockUserRepo.getUser('missing'))
-          .thenAnswer((_) async => null);
+      when(
+        () => mockParticipationRepo.getParticipationsByEvent('e1'),
+      ).thenAnswer(
+        (_) async => [
+          Participation(id: 'p1', idUser: 'u1', idEvent: 'e1'),
+          Participation(id: 'p2', idUser: 'missing', idEvent: 'e1'),
+        ],
+      );
+      when(
+        () => mockUserRepo.getUser('u1'),
+      ).thenAnswer((_) async => _user('u1', 'Alice'));
+      when(() => mockUserRepo.getUser('missing')).thenAnswer((_) async => null);
 
       final result = await vm.getEventParticipants('e1');
 
@@ -77,19 +88,24 @@ void main() {
       expect(result.first.name, 'Alice');
     });
 
-    test('sets errorMessage and returns empty list when repository throws', () async {
-      when(() => mockParticipationRepo.getParticipationsByEvent(any()))
-          .thenThrow(Exception('network error'));
+    test(
+      'sets errorMessage and returns empty list when repository throws',
+      () async {
+        when(
+          () => mockParticipationRepo.getParticipationsByEvent(any()),
+        ).thenThrow(Exception('network error'));
 
-      final result = await vm.getEventParticipants('e1');
+        final result = await vm.getEventParticipants('e1');
 
-      expect(result, isEmpty);
-      expect(vm.errorMessage, isNotNull);
-    });
+        expect(result, isEmpty);
+        expect(vm.errorMessage, isNotNull);
+      },
+    );
 
     test('isLoading is false after successful load', () async {
-      when(() => mockParticipationRepo.getParticipationsByEvent('e1'))
-          .thenAnswer((_) async => []);
+      when(
+        () => mockParticipationRepo.getParticipationsByEvent('e1'),
+      ).thenAnswer((_) async => []);
 
       await vm.getEventParticipants('e1');
 
@@ -97,8 +113,9 @@ void main() {
     });
 
     test('isLoading is false even after error', () async {
-      when(() => mockParticipationRepo.getParticipationsByEvent(any()))
-          .thenThrow(Exception('fail'));
+      when(
+        () => mockParticipationRepo.getParticipationsByEvent(any()),
+      ).thenThrow(Exception('fail'));
 
       await vm.getEventParticipants('e1');
 
@@ -106,8 +123,9 @@ void main() {
     });
 
     test('notifies listeners during and after load', () async {
-      when(() => mockParticipationRepo.getParticipationsByEvent('e1'))
-          .thenAnswer((_) async => []);
+      when(
+        () => mockParticipationRepo.getParticipationsByEvent('e1'),
+      ).thenAnswer((_) async => []);
 
       int notifyCount = 0;
       vm.addListener(() => notifyCount++);
@@ -120,12 +138,16 @@ void main() {
 
   group('ParticipantsViewModel.streamEventParticipants', () {
     test('emits list of users from stream', () async {
-      when(() => mockParticipationRepo.listenToEventParticipations('e1'))
-          .thenAnswer((_) => Stream.value([
-                Participation(id: 'p1', idUser: 'u1', idEvent: 'e1'),
-              ]));
-      when(() => mockUserRepo.getUser('u1'))
-          .thenAnswer((_) async => _user('u1', 'Alice'));
+      when(
+        () => mockParticipationRepo.listenToEventParticipations('e1'),
+      ).thenAnswer(
+        (_) => Stream.value([
+          Participation(id: 'p1', idUser: 'u1', idEvent: 'e1'),
+        ]),
+      );
+      when(
+        () => mockUserRepo.getUser('u1'),
+      ).thenAnswer((_) async => _user('u1', 'Alice'));
 
       final result = await vm.streamEventParticipants('e1').first;
 
@@ -134,8 +156,9 @@ void main() {
     });
 
     test('emits empty list when no participations exist', () async {
-      when(() => mockParticipationRepo.listenToEventParticipations('e1'))
-          .thenAnswer((_) => Stream.value([]));
+      when(
+        () => mockParticipationRepo.listenToEventParticipations('e1'),
+      ).thenAnswer((_) => Stream.value([]));
 
       final result = await vm.streamEventParticipants('e1').first;
 

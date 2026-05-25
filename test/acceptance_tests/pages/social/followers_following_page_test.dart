@@ -292,8 +292,6 @@ void main() {
       expect(find.text('Follow'), findsNothing);
     });
 
-    
-
     testWidgets('tapping Unfollow calls unfollow on the repository', (
       tester,
     ) async {

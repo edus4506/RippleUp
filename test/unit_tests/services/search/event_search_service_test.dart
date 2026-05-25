@@ -32,7 +32,6 @@ Event buildEvent({
 
 void main() {
   group('EventSearchService.search', () {
-
     test('returns all events when query is empty', () {
       final events = [
         buildEvent(title: 'Music Festival'),

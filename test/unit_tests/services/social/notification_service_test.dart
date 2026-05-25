@@ -78,7 +78,10 @@ void main() {
     }
 
     test('chat id is symmetric', () {
-      expect(generateChatId('user1', 'user2'), generateChatId('user2', 'user1'));
+      expect(
+        generateChatId('user1', 'user2'),
+        generateChatId('user2', 'user1'),
+      );
     });
 
     test('chat id contains underscore separator', () {

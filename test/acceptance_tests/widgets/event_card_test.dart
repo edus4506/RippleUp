@@ -48,10 +48,4 @@ void main() {
     expect(allText, contains('Lisbon'));
     expect(allText, contains('Lisboa'));
   });
-
-  
-
-  
-
-  
 }

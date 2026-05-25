@@ -4,7 +4,8 @@ import 'package:t5/data/models/events/event.dart';
 import 'package:t5/data/repositories/events/recommended_event_repository.dart';
 import 'package:t5/viewModels/events/recommended_event_viewModel.dart';
 
-class MockRecommendedEventRepository extends Mock implements RecommendedEventRepository {}
+class MockRecommendedEventRepository extends Mock
+    implements RecommendedEventRepository {}
 
 Event _buildEvent(String id) {
   final now = DateTime.now();
@@ -32,10 +33,7 @@ void main() {
 
   setUp(() {
     mockRepo = MockRecommendedEventRepository();
-    vm = RecommendedEventViewModel(
-      currentUserId: 'u1',
-      repository: mockRepo,
-    );
+    vm = RecommendedEventViewModel(currentUserId: 'u1', repository: mockRepo);
   });
 
   group('RecommendedEventViewModel initial state', () {

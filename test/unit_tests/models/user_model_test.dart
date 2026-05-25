@@ -20,12 +20,18 @@ void main() {
     });
 
     test('uses Unknown User when name is missing', () {
-      final user = Users.fromMap({'email': 'x@test.com', 'profilePictureUrl': ''}, 'u1');
+      final user = Users.fromMap({
+        'email': 'x@test.com',
+        'profilePictureUrl': '',
+      }, 'u1');
       expect(user.name, 'Unknown User');
     });
 
     test('uses empty string when email is missing', () {
-      final user = Users.fromMap({'name': 'Bob', 'profilePictureUrl': ''}, 'u1');
+      final user = Users.fromMap({
+        'name': 'Bob',
+        'profilePictureUrl': '',
+      }, 'u1');
       expect(user.email, '');
     });
 
@@ -54,7 +60,12 @@ void main() {
     });
 
     test('does not include uid in map', () {
-      final user = Users(uid: 'u1', name: 'Alice', email: 'a@t.com', profilePictureUrl: '');
+      final user = Users(
+        uid: 'u1',
+        name: 'Alice',
+        email: 'a@t.com',
+        profilePictureUrl: '',
+      );
       final map = user.toMap();
       expect(map.containsKey('uid'), false);
     });

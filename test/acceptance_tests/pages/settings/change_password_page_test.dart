@@ -26,7 +26,4 @@ void main() {
 
     expect(find.text('Please fill in all fields'), findsOneWidget);
   });
-
-  
-  
 }
