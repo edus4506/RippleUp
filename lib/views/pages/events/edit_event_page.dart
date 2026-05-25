@@ -553,7 +553,7 @@ class _EditEventPageState extends State<EditEventPage> {
 
             DropdownButtonFormField<String>(
               decoration: const InputDecoration(labelText: 'Country'),
-              value: selectedCountry,
+              initialValue: selectedCountry,
               menuMaxHeight: 300,
               isExpanded: true,
               items: eventCountries
@@ -573,7 +573,7 @@ class _EditEventPageState extends State<EditEventPage> {
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
                 decoration: const InputDecoration(labelText: 'District'),
-                value: selectedDistrict,
+                initialValue: selectedDistrict,
                 menuMaxHeight: 300,
                 isExpanded: true,
                 items: eventDistrictsByCountry[selectedCountry]!
@@ -595,7 +595,7 @@ class _EditEventPageState extends State<EditEventPage> {
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
                 decoration: const InputDecoration(labelText: 'City'),
-                value: selectedCity,
+                initialValue: selectedCity,
                 menuMaxHeight: 300,
                 isExpanded: true,
                 items: eventCitiesByDistrict[selectedDistrict]!

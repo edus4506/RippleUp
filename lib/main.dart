@@ -61,7 +61,7 @@ void main() async {
         Provider(create: (_) => DirectMessageRepository()),
         Provider(create: (_) => EventChatRepository()),
         ProxyProvider<StorageRepository, ProfileImageService>(
-          update: (_, storageRepo, __) => ProfileImageService(storageRepo),
+          update: (_, storageRepo, _) => ProfileImageService(storageRepo),
         ),
 
         ChangeNotifierProvider(

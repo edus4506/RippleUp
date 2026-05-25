@@ -233,7 +233,7 @@ class _DateChip extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
           decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.06),
+            color: Colors.black.withValues(alpha: 0.06),
             borderRadius: BorderRadius.circular(20),
           ),
           child: Text(

@@ -21,7 +21,7 @@ class _SettingsButtonState extends State<SettingsButton> {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: isHovered
-              ? Colors.white.withOpacity(0.12)
+              ? Colors.white.withValues(alpha: 0.12)
               : Colors.transparent,
         ),
         child: IconButton(

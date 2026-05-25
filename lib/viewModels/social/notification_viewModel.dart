@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:t5/data/models/events/event.dart';
 import 'package:t5/data/models/social/notification.dart';
@@ -102,8 +101,9 @@ class AppNotificationViewModel extends ChangeNotifier {
     final followers = await _userRepository.getUsersByIds(followersIds);
 
     for (Users? u in followers.values) {
-      if (u == null)
+      if (u == null) {
         continue; //model doesnt have access to uid, just do email, its is unique too so it works
+      }
       if (u.uid == creator!.uid) continue;
 
       AppNotification notification = createNewEventNotificationTemplate(

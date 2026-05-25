@@ -7,7 +7,7 @@ class AppTheme {
       colorScheme: ColorScheme.light(
         primary: Palette.primary,
         secondary: Palette.secondary,
-        background: Palette.background,
+        surface: Palette.background,
       ),
 
       scaffoldBackgroundColor: Palette.background,
@@ -29,7 +29,7 @@ class AppTheme {
       cardTheme: CardThemeData(
         color: Palette.cardBackground,
         elevation: 3,
-        shadowColor: Colors.black.withOpacity(0.08),
+        shadowColor: Colors.black.withValues(alpha: 0.08),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18),
           side: BorderSide(color: Palette.border, width: 1),
@@ -104,7 +104,7 @@ class AppTheme {
         activeTrackColor: Palette.primary,
         inactiveTrackColor: Palette.secondary,
         thumbColor: Palette.primary,
-        overlayColor: Palette.primary.withOpacity(0.2),
+        overlayColor: Palette.primary.withValues(alpha: 0.2),
         valueIndicatorColor: Palette.primary,
       ),
     );
