@@ -292,35 +292,7 @@ void main() {
       expect(find.text('Follow'), findsNothing);
     });
 
-    /*testWidgets('tapping Follow calls follow on the repository', (
-      tester,
-    ) async {
-      _stubWithUsers(
-        followRepo,
-        userRepo,
-        followerIds: [_otherUid],
-        usersMap: {_otherUid: _user('Alice')},
-      );
-      when(
-        () => followRepo.isFollowing(
-          followerId: _currentUid,
-          followedId: _otherUid,
-        ),
-      ).thenAnswer((_) => Stream.value(false));
-      when(
-        () => followRepo.follow(followerId: _currentUid, followedId: _otherUid),
-      ).thenAnswer((_) async {});
-
-      await tester.pumpWidget(_buildPage(followRepo, userRepo));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.text('Follow'));
-      await tester.pump();
-
-      verify(
-        () => followRepo.follow(followerId: _currentUid, followedId: _otherUid),
-      ).called(1);
-    });*/
+    
 
     testWidgets('tapping Unfollow calls unfollow on the repository', (
       tester,

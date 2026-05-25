@@ -32,9 +32,6 @@ Event buildEvent({
 
 void main() {
   group('EventSearchService.search', () {
-    // =========================
-    // SEARCH TESTS
-    // =========================
 
     test('returns all events when query is empty', () {
       final events = [
@@ -70,10 +67,6 @@ void main() {
       expect(result.length, 1);
       expect(result.first.description.contains('music'), true);
     });
-
-    // =========================
-    // FUZZY SEARCH TESTS
-    // =========================
 
     test('matches events with small typing mistakes', () {
       final events = [buildEvent(title: 'Music Festival')];
