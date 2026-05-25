@@ -1234,3 +1234,37 @@ The Sprint 3 release was published as a GitHub Release:
 - How to balance Firestore read costs with real-time updates in features like notifications and DMs
 
 ### Final Release
+
+_Ripple Up_ v3 is the final release of the application, delivering the full planned feature set across three sprints of development.
+
+#### Product summary
+
+_Ripple Up_ is a community event platform focused on humanitarian and environmental activities. Users can discover, create, and join events aligned with the UN Sustainable Development Goals (SDGs 1–17), communicate with other participants, and build a social network around shared causes.
+
+#### Features delivered
+
+| Sprint | Key features |
+|--------|-------------|
+| Sprint 0 | Project setup, architecture, UI mockups, backlog |
+| Sprint 1 | Event feed, event creation, filtering, event details, join/leave, favourites, event management, authentication |
+| Sprint 2 | Improved location selection, event chat, change password, event feedback and reviews (create, delete, sort), user profile, event permissions, completed-event filtering, view joined events |
+| Sprint 3 | Social graph (follow/unfollow, public profiles, followers/following), direct messages (1-to-1, real-time), event chat accessible from DMs, notification system (join/leave, new event, DM, 48h reminder), participants page, edit event, discover page with user search and recommended events, image support (profile pictures and event covers), full UI overhaul across all screens, search events in feed, reviews history |
+
+#### Quality
+
+- **233 tests** — unit tests, acceptance tests, and integration tests — all passing
+- Static analysis passing (`dart analyze`)
+- Code formatted with `dart format`
+
+#### Releases
+
+All releases are available on the [GitHub Releases page](https://github.com/LEIC-ES-2025-26-2LEIC05/T5/releases):
+
+| Version | Sprint | Description |
+|---------|--------|-------------|
+| v0 | Sprint 0 | Project setup and architecture |
+| v1 | Sprint 1 | First functional increment — event feed, creation, filtering, join/leave |
+| v2 | Sprint 2 | Event chat, reviews, user profile, improved location and event management |
+| v3 | Sprint 3 | Social graph, DMs, notifications, discover page, image support, UI overhaul |
+
+The latest APK and web build instructions are available in the [Development Environment](#development-environment) section above.
