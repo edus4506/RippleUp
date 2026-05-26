@@ -130,49 +130,39 @@ class EventCard extends StatelessWidget {
                           children: [
                             const Icon(
                               Icons.calendar_today_rounded,
-
                               size: 15,
-
                               color: Colors.black54,
                             ),
-
                             const SizedBox(width: 6),
-
-                            Text(
-                              DateFormat(
-                                'MMM dd, yyyy',
-                              ).format(event.startDate),
-
-                              style: const TextStyle(
-                                fontSize: 13,
-
-                                color: Colors.black54,
-
-                                fontWeight: FontWeight.w500,
+                            Flexible(
+                              child: Text(
+                                DateFormat('MMM dd, yyyy').format(
+                                  event.startDate,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ),
-
                             const SizedBox(width: 12),
-
                             const Icon(
                               Icons.access_time,
-
                               size: 15,
-
                               color: Colors.black54,
                             ),
-
                             const SizedBox(width: 6),
-
-                            Text(
-                              DateFormat('hh:mm a').format(event.startDate),
-
-                              style: const TextStyle(
-                                fontSize: 13,
-
-                                color: Colors.black54,
-
-                                fontWeight: FontWeight.w500,
+                            Flexible(
+                              child: Text(
+                                DateFormat('HH:mm').format(event.startDate),
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ),
                           ],

@@ -272,6 +272,18 @@ class _MenuButton extends StatelessWidget {
         return PopupMenuButton<String>(
           padding: EdgeInsets.zero,
           icon: const Icon(Icons.more_vert, color: Colors.white),
+          style: ButtonStyle(
+            overlayColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.hovered)) {
+                return Colors.white.withValues(alpha: 0.20);
+              }
+              if (states.contains(WidgetState.pressed)) {
+                return Colors.white.withValues(alpha: 0.12);
+              }
+              return null;
+            }),
+            shape: WidgetStateProperty.all(const CircleBorder()),
+          ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
