@@ -112,7 +112,7 @@ void main() {
   });
 
   group('MessageViewModel.sendMessage', () {
-    void _setupSendMessage({
+    void setupSendMessage({
       bool isParticipant = true,
       List<Participation> participations = const [],
     }) {
@@ -143,7 +143,7 @@ void main() {
     }
 
     test('creates message when user is a participant', () async {
-      _setupSendMessage(
+      setupSendMessage(
         participations: [
           Participation(id: 'p1', idUser: 'sender-uid', idEvent: 'e1'),
         ],
@@ -155,7 +155,7 @@ void main() {
     });
 
     test('does not create message when user is not a participant', () async {
-      _setupSendMessage(isParticipant: false);
+      setupSendMessage(isParticipant: false);
 
       await vm.sendMessage('e1', 'hello', currentUser: mockUser);
 
@@ -163,7 +163,7 @@ void main() {
     });
 
     test('updates event chat preview after sending', () async {
-      _setupSendMessage(
+      setupSendMessage(
         participations: [
           Participation(id: 'p1', idUser: 'sender-uid', idEvent: 'e1'),
         ],

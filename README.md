@@ -1215,6 +1215,28 @@ The application now allows users to:
 
 ---
 
+#### Technical Highlights
+
+##### Fuzzy Search — Users and Events
+
+Both the **Search Users** and **Search Events** features use a custom scoring algorithm implemented in `UserSearchService` and `EventSearchService` (under `lib/services/search/`).
+
+Rather than a simple `contains` check, each query is scored across all searchable fields using a priority hierarchy:
+
+| Match type | Example | Score boost |
+|---|---|---|
+| Exact match | `"joão"` == `"joão"` | Highest |
+| Prefix match | `"joão"` starts with `"jo"` | High |
+| Contains match | `"joão"` contains `"oã"` | Medium |
+| Word prefix | any word in field starts with query | Medium-low |
+| Fuzzy (Levenshtein ≤ 2) | `"joao"` ≈ `"joão"` | Low (typo tolerance) |
+
+The **Levenshtein distance** is computed via dynamic programming (O(a × b)) and applied only to words longer than 4 characters, keeping the overall search complexity at O(n × m) where n is the number of items and m is the number of searchable fields per item.
+
+Results are ranked by score descending, so exact matches always appear first, followed by progressively looser matches. This gives the search a natural feel without any external search library.
+
+---
+
 #### Release
 
 The Sprint 3 release was published as a GitHub Release:

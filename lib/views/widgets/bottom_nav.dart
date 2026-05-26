@@ -114,7 +114,7 @@ class _AddButtonState extends State<_AddButton> {
 
           decoration: BoxDecoration(
             color: isHovered
-                ? Palette.accentDark.withOpacity(0.75)
+                ? Palette.accentDark.withValues(alpha: 0.75)
                 : Palette.accentDark,
 
             shape: BoxShape.circle,
@@ -123,7 +123,9 @@ class _AddButtonState extends State<_AddButton> {
 
             boxShadow: [
               BoxShadow(
-                color: Palette.accentDark.withOpacity(isHovered ? 0.25 : 0.45),
+                color: Palette.accentDark.withValues(
+                  alpha: isHovered ? 0.25 : 0.45,
+                ),
 
                 blurRadius: 18,
 
@@ -190,7 +192,7 @@ class _NavItemState extends State<_NavItem> {
 
                   decoration: BoxDecoration(
                     color: isHovered
-                        ? Colors.grey.withOpacity(0.12)
+                        ? Colors.grey.withValues(alpha: 0.12)
                         : Colors.transparent,
                     borderRadius: BorderRadius.circular(12),
                   ),

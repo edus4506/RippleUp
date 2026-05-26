@@ -49,29 +49,27 @@ class ReviewRepository {
   }
 
   Stream<List<ReviewHistoryItem>> getUserReviewsHistory(String userId) {
-    return FirebaseFirestore.instance.collection('events').snapshots().asyncMap(
-      (eventSnapshot) async {
-        final items = <ReviewHistoryItem>[];
-
-        for (final eventDoc in eventSnapshot.docs) {
-          final event = Event.fromMap(eventDoc.data(), eventDoc.id);
-
-          final reviewsSnapshot = await eventDoc.reference
-              .collection('reviews')
-              .where('userId', isEqualTo: userId)
-              .get();
-
-          for (final reviewDoc in reviewsSnapshot.docs) {
+    return FirebaseFirestore.instance
+        .collectionGroup('reviews')
+        .where('userId', isEqualTo: userId)
+        .snapshots()
+        .asyncMap((reviewSnapshot) async {
+          final futures = reviewSnapshot.docs.map((reviewDoc) async {
             final review = Review.fromMap(reviewDoc.data(), reviewDoc.id);
+            final eventRef = reviewDoc.reference.parent.parent;
+            if (eventRef == null) return null;
+            final eventDoc = await eventRef.get();
+            if (!eventDoc.exists) return null;
+            final event = Event.fromMap(eventDoc.data()!, eventDoc.id);
+            return ReviewHistoryItem(review: review, event: event);
+          });
 
-            items.add(ReviewHistoryItem(review: review, event: event));
-          }
-        }
-
-        items.sort((a, b) => b.review.createdAt.compareTo(a.review.createdAt));
-
-        return items;
-      },
-    );
+          final results = await Future.wait(futures);
+          final items = results.whereType<ReviewHistoryItem>().toList();
+          items.sort(
+            (a, b) => b.review.createdAt.compareTo(a.review.createdAt),
+          );
+          return items;
+        });
   }
 }

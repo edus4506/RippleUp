@@ -101,6 +101,11 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
   }
 
   Future<void> _confirmDeleteAccount() async {
+    final email = context.read<ProfileViewModel>().user?.email ?? '';
+    final eventVm = context.read<EventViewModel>();
+    final profileVm = context.read<ProfileViewModel>();
+    final authVm = context.read<AuthViewModel>();
+
     final passwordController = TextEditingController();
     bool obscure = true;
 
@@ -206,7 +211,6 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
     );
 
     final password = passwordController.text.trim();
-    final email = context.read<ProfileViewModel>().user?.email ?? '';
     passwordController.dispose();
 
     if (confirmed != true || !mounted) return;
@@ -229,9 +233,9 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
       return;
     }
 
-    context.read<EventViewModel>().resetFilters();
-    await context.read<ProfileViewModel>().softDeleteAcc();
-    await context.read<AuthViewModel>().deleteAcc();
+    eventVm.resetFilters();
+    await profileVm.softDeleteAcc();
+    await authVm.deleteAcc();
 
     if (!mounted) return;
     Navigator.pushNamedAndRemoveUntil(context, '/login', (_) => false);
@@ -317,7 +321,7 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               border: Border.all(
-                                color: Palette.primary.withOpacity(0.3),
+                                color: Palette.primary.withValues(alpha: 0.3),
                                 width: 2.5,
                               ),
                             ),
@@ -328,8 +332,7 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
                                   ? Image.network(
                                       user.profilePictureUrl,
                                       fit: BoxFit.cover,
-                                      errorBuilder: (_, __, ___) =>
-                                          _placeholder(),
+                                      errorBuilder: (_, _, _) => _placeholder(),
                                     )
                                   : _placeholder(),
                             ),
@@ -588,20 +591,22 @@ class _AccountOption extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = color ?? const Color(0xFF1B1B1B);
     return Material(
-      color: color != null ? color!.withOpacity(0.05) : Colors.grey.shade50,
+      color: color != null
+          ? color!.withValues(alpha: 0.05)
+          : Colors.grey.shade50,
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
-        splashColor: (color ?? Palette.primary).withOpacity(0.12),
-        highlightColor: (color ?? Palette.primary).withOpacity(0.07),
+        splashColor: (color ?? Palette.primary).withValues(alpha: 0.12),
+        highlightColor: (color ?? Palette.primary).withValues(alpha: 0.07),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: color != null
-                  ? color!.withOpacity(0.15)
+                  ? color!.withValues(alpha: 0.15)
                   : Colors.grey.shade100,
             ),
           ),
@@ -622,7 +627,7 @@ class _AccountOption extends StatelessWidget {
               Icon(
                 Icons.chevron_right_rounded,
                 color: color != null
-                    ? color!.withOpacity(0.4)
+                    ? color!.withValues(alpha: 0.4)
                     : Colors.grey.shade400,
                 size: 20,
               ),

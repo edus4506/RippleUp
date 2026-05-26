@@ -52,6 +52,11 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future<void> _confirmDeleteAccount() async {
+    final email = context.read<ProfileViewModel>().user?.email ?? '';
+    final eventVm = context.read<EventViewModel>();
+    final profileVm = context.read<ProfileViewModel>();
+    final authVm = context.read<AuthViewModel>();
+
     final passwordController = TextEditingController();
     bool obscure = true;
 
@@ -147,7 +152,6 @@ class _SettingsPageState extends State<SettingsPage> {
     );
 
     final password = passwordController.text.trim();
-    final email = context.read<ProfileViewModel>().user?.email ?? '';
     passwordController.dispose();
 
     if (confirmed != true || !mounted) return;
@@ -170,9 +174,9 @@ class _SettingsPageState extends State<SettingsPage> {
       return;
     }
 
-    context.read<EventViewModel>().resetFilters();
-    await context.read<ProfileViewModel>().softDeleteAcc();
-    await context.read<AuthViewModel>().deleteAcc();
+    eventVm.resetFilters();
+    await profileVm.softDeleteAcc();
+    await authVm.deleteAcc();
 
     if (!mounted) return;
     Navigator.pushNamedAndRemoveUntil(context, '/login', (_) => false);

@@ -24,6 +24,7 @@ class ProfileViewModel extends ChangeNotifier {
 
       user = await _userRepository.getUser(firebaseUser.uid);
     } catch (e) {
+      // ignore: empty_catches
     } finally {
       isLoading = false;
       notifyListeners();

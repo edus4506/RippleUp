@@ -43,7 +43,7 @@ class _HelpSupportPageState extends State<HelpSupportPage> {
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withValues(alpha: 0.05),
                     blurRadius: 16,
                     offset: const Offset(0, 4),
                   ),
@@ -153,7 +153,7 @@ class _HelpSupportPageState extends State<HelpSupportPage> {
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withValues(alpha: 0.05),
                     blurRadius: 16,
                     offset: const Offset(0, 4),
                   ),
@@ -296,13 +296,15 @@ class _HelpSupportPageState extends State<HelpSupportPage> {
               decoration: BoxDecoration(
                 color: Palette.greenLight,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Palette.primary.withOpacity(0.15)),
+                border: Border.all(
+                  color: Palette.primary.withValues(alpha: 0.15),
+                ),
               ),
               child: Row(
                 children: [
                   Icon(
                     Icons.info_outline_rounded,
-                    color: Palette.primary.withOpacity(0.7),
+                    color: Palette.primary.withValues(alpha: 0.7),
                     size: 18,
                   ),
                   const SizedBox(width: 10),
@@ -375,7 +377,7 @@ class _FaqCardState extends State<_FaqCard> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 10,
             offset: const Offset(0, 3),
           ),
@@ -483,10 +485,10 @@ class _BackButtonState extends State<_BackButton> {
           height: 52,
           decoration: BoxDecoration(
             color: _hovered
-                ? Colors.white.withOpacity(0.30)
-                : Colors.white.withOpacity(0.14),
+                ? Colors.white.withValues(alpha: 0.30)
+                : Colors.white.withValues(alpha: 0.14),
             shape: BoxShape.circle,
-            border: Border.all(color: Colors.white.withOpacity(0.10)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.10)),
           ),
           child: const Center(
             child: Icon(

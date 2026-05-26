@@ -52,13 +52,18 @@ class _FeedbackPageState extends State<FeedbackPage> {
       return;
     }
 
-    final participated = await context
-        .read<ParticipationRepository>()
-        .hasUserParticipated(widget.currentUserId, widget.eventId);
+    final participationRepo = context.read<ParticipationRepository>();
+    final reviewVm = context.read<ReviewViewModel>();
 
-    final alreadyReviewed = await context
-        .read<ReviewViewModel>()
-        .hasUserReviewed(widget.eventId, widget.currentUserId);
+    final participated = await participationRepo.hasUserParticipated(
+      widget.currentUserId,
+      widget.eventId,
+    );
+
+    final alreadyReviewed = await reviewVm.hasUserReviewed(
+      widget.eventId,
+      widget.currentUserId,
+    );
 
     if (!mounted) return;
 
@@ -149,7 +154,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                           commentController.text.trim(),
                         );
 
-                        if (!mounted) return;
+                        if (!context.mounted) return;
                         Navigator.pop(context);
 
                         setState(() {
@@ -170,6 +175,8 @@ class _FeedbackPageState extends State<FeedbackPage> {
   }
 
   Future<void> _confirmDeleteReview(Review review) async {
+    final reviewVm = context.read<ReviewViewModel>();
+
     final shouldDelete = await showDialog<bool>(
       context: context,
       builder: (context) {
@@ -192,7 +199,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
 
     if (shouldDelete != true) return;
 
-    final deleted = await context.read<ReviewViewModel>().deleteReview(
+    final deleted = await reviewVm.deleteReview(
       widget.eventId,
       review,
       widget.currentUserId,

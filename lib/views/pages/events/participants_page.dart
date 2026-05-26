@@ -213,7 +213,7 @@ class _ParticipantsTopBar extends StatelessWidget
                     borderRadius: BorderRadius.circular(30),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.10),
+                        color: Colors.black.withValues(alpha: 0.10),
                         blurRadius: 18,
                         offset: const Offset(0, 8),
                       ),
@@ -305,13 +305,13 @@ class _CircleButtonState extends State<_CircleButton> {
           height: 52,
           decoration: BoxDecoration(
             color: isHovered
-                ? Colors.white.withOpacity(0.30)
-                : Colors.white.withOpacity(0.14),
+                ? Colors.white.withValues(alpha: 0.30)
+                : Colors.white.withValues(alpha: 0.14),
             shape: BoxShape.circle,
-            border: Border.all(color: Colors.white.withOpacity(0.10)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.10)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.08),
+                color: Colors.black.withValues(alpha: 0.08),
                 blurRadius: 12,
                 offset: const Offset(0, 4),
               ),
@@ -342,7 +342,7 @@ class _ParticipantTile extends StatelessWidget {
         border: Border.all(color: const Color(0xFFE8F0E9), width: 1.2),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 10,
             offset: const Offset(0, 3),
           ),
@@ -375,7 +375,7 @@ class _ParticipantTile extends StatelessWidget {
                 ? Image.network(
                     participant.profilePictureUrl,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) =>
+                    errorBuilder: (_, _, _) =>
                         const Icon(Icons.person, color: Colors.grey),
                   )
                 : const Icon(Icons.person, color: Colors.grey),
@@ -404,7 +404,7 @@ class _ParticipantTile extends StatelessWidget {
                   border: Border.all(color: Colors.green.shade700, width: 1.1),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.green.withOpacity(0.08),
+                      color: Colors.green.withValues(alpha: 0.08),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                     ),

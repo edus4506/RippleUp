@@ -78,8 +78,8 @@ class ReviewsHistoryPage extends StatelessWidget {
         leftWidget: InkWell(
           onTap: () => Navigator.pop(context),
           customBorder: const CircleBorder(),
-          splashColor: Colors.white.withOpacity(0.25),
-          highlightColor: Colors.white.withOpacity(0.15),
+          splashColor: Colors.white.withValues(alpha: 0.25),
+          highlightColor: Colors.white.withValues(alpha: 0.15),
           child: const Padding(
             padding: EdgeInsets.all(8),
             child: Icon(
@@ -170,7 +170,7 @@ class _ReviewHistoryCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),

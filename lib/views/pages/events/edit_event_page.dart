@@ -102,6 +102,7 @@ class _EditEventPageState extends State<EditEventPage> {
     );
 
     if (date == null) return null;
+    if (!mounted) return null;
 
     final time = await showTimePicker(
       context: context,
@@ -430,6 +431,7 @@ class _EditEventPageState extends State<EditEventPage> {
               onTap: () async {
                 final picked = await _pickDateTime();
                 if (picked == null) return;
+                if (!context.mounted) return;
 
                 if (picked.isBefore(DateTime.now())) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -461,6 +463,7 @@ class _EditEventPageState extends State<EditEventPage> {
               onTap: () async {
                 final picked = await _pickDateTime();
                 if (picked == null) return;
+                if (!context.mounted) return;
 
                 if (startDate == null) {
                   ScaffoldMessenger.of(context).showSnackBar(
