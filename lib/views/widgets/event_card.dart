@@ -136,9 +136,9 @@ class EventCard extends StatelessWidget {
                             const SizedBox(width: 6),
                             Flexible(
                               child: Text(
-                                DateFormat('MMM dd, yyyy').format(
-                                  event.startDate,
-                                ),
+                                DateFormat(
+                                  'MMM dd, yyyy',
+                                ).format(event.startDate),
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                   fontSize: 13,

@@ -55,7 +55,7 @@ class EventDetailsDialog extends StatelessWidget {
                 ),
 
                 // Título centrado com folhinhas
-                Container(
+                /*Container(
                   constraints: const BoxConstraints(maxWidth: 220),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 14,
@@ -116,8 +116,7 @@ class EventDetailsDialog extends StatelessWidget {
                       ),
                     ],
                   ),
-                ),
-
+                ),*/
                 Positioned(
                   top: -10,
                   right: 40,
@@ -153,6 +152,17 @@ class EventDetailsDialog extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text(
+                    event.title,
+                    style: GoogleFonts.dmSerifDisplay(
+                      fontSize: 30,
+                      color: Palette.primary,
+                      height: 1.1,
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+
+                  const SizedBox(height: 14),
                   // Descrição
                   Text(
                     event.description,
