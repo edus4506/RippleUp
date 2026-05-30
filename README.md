@@ -364,7 +364,7 @@ To run the same checks executed by CI locally:
 
 ```bash
 dart format --set-exit-if-changed .
-flutter analyze --no-fatal-infos --no-fatal-warnings
+flutter analyze
 flutter test
 flutter build web --release
 ```
@@ -960,7 +960,7 @@ Main functionalities implemented during this sprint:
 
 During Sprint 3, the team significantly expanded test coverage and reorganised the test structure into a domain-driven directory layout.
 
-The test suite now contains **313 tests** — all passing.
+The test suite now contains **332 tests** — all passing.
 
 Current test structure:
 
@@ -1011,7 +1011,7 @@ Tests can be executed with:
 ```bash
 flutter test test/unit_tests/        # unit tests only
 flutter test test/acceptance_tests/  # acceptance tests only
-flutter test test/                   # all 313 tests
+flutter test test/                   # all 332 tests
 flutter test integration_test/       # requires connected device + Firebase credentials
 ```
 
@@ -1114,7 +1114,7 @@ To compensate, all quality checks were run locally before merging:
 
 ```bash
 dart format --set-exit-if-changed .
-flutter analyze --no-fatal-infos --no-fatal-warnings
+flutter analyze
 flutter test
 flutter build web --release
 ```
@@ -1253,7 +1253,7 @@ The Sprint 3 release was published as a GitHub Release:
 **Did well:**
 - Large scope managed effectively by splitting work across focused branches and PRs
 - UI consistency improved significantly across all screens by the end of the sprint
-- Test suite restructured into a maintainable domain-driven layout and coverage increased to 313 tests
+- Test suite restructured into a maintainable domain-driven layout and coverage increased to 332 tests
 - Social features (follows, DMs, notifications) integrated cleanly with the existing architecture
 
 **Do differently:**
@@ -1266,3 +1266,128 @@ The Sprint 3 release was published as a GitHub Release:
 - How to balance Firestore read costs with real-time updates in features like notifications and DMs
 
 ### Final Release
+
+The final release of _Ripple Up_ marks the completion of the project across three development sprints. This section summarises the full product delivered, the quality of the implementation, and the engineering practices applied throughout the project.
+
+---
+
+#### Product Summary
+
+_Ripple Up_ is a social event platform for environmental and community-driven activities. Users can create, discover, join, review, and coordinate around events aligned with the UN Sustainable Development Goals. The application supports a complete social layer including follows, direct messages, event chats, and an in-app notification system.
+
+The full set of implemented features is:
+
+| Feature | Description |
+|---|---|
+| Authentication | Sign-up, login, logout, change password, account management via Firebase Auth |
+| Event Creation | Create events with title, description, dates, location (country/district/city), capacity, UN SDG objectives, and cover images |
+| Event Feed | Browse all events with real-time updates; status badges (Planning / Occurring / Done) |
+| Event Search | Fuzzy keyword search with Levenshtein scoring and 300ms debounce |
+| Event Filtering | Filter by objectives, location, date range, capacity, participant count, and status |
+| Event Details | View full details, join/leave, see participants, access chat and feedback |
+| Event Management | Edit and delete events (owner only); capacity validation |
+| Event Participants | List of all users who joined a given event |
+| Favourites | Save and browse favourite events |
+| Event Chat | Group chat scoped to event participants; accessible from DMs page |
+| Reviews & Feedback | Create, sort (by rating/date), and delete reviews on completed events |
+| Reviews History | View all reviews the current user has written across all events |
+| Direct Messages | 1-to-1 private conversations between users; real-time updates |
+| Social Graph | Follow / unfollow users; view public profiles; followers/following lists |
+| Discover | Dedicated page with user search and recommended events |
+| Recommended Events | Collaborative surfacing of upcoming events based on other users' participation history |
+| Notification System | In-app notifications for joins/leaves, new events from followed users, follows, DMs, and 48h event reminders |
+| Image Support | Profile pictures and event cover images stored in Supabase Storage |
+| Splash Screen | Loading and authentication state screen on app launch |
+| About & Help | About page (team, mission) and Help & Support page (FAQs, contact) |
+
+---
+
+#### Architecture
+
+The application is built in Flutter using the **MVVM** pattern with **Provider** for state management. The backend is split between **Firebase** (Auth + Cloud Firestore) for structured data and real-time streams, and **Supabase Storage** for file storage (profile images and event cover images).
+
+All data access is encapsulated in repository classes under `lib/data/repositories/`. View models (`lib/viewModels/`) receive repositories via constructor injection and expose state through `ChangeNotifier`. Views (`lib/views/`) contain no business logic and rebuild only when notified.
+
+Key engineering decisions made throughout the project:
+
+- **Firestore transactions** for join/leave operations — prevents race conditions on participant capacity
+- **Composite document IDs** (`{eventId}_{userId}`, `{followerId}_{followedId}`) — O(1) existence checks without queries
+- **Client-side filtering** for event filters — avoids Firestore compound index complexity
+- **Firestore cursor-based pagination** for the event feed — avoids offset reads
+- **`collectionGroup` query** for reviews history — replaces N sequential reads with a single query
+- **300ms debounce** on event search — eliminates redundant Firestore reads on every keystroke
+- **Fuzzy search with Levenshtein distance** — custom pure-Dart implementation, no external library; 5-level scoring (exact → prefix → contains → word-prefix → fuzzy)
+- **Notification batching** for DMs — groups messages from the same chat into a single notification with a counter, instead of creating one per message
+
+---
+
+#### Testing
+
+The final test suite contains **332 tests — all passing**.
+
+| Type | Location | Description |
+|---|---|---|
+| Unit tests | `test/unit_tests/` | Services and view models tested in isolation with mocked repositories (`mocktail`) |
+| Acceptance tests | `test/acceptance_tests/` | Widget tests covering pages, dialogs, and UI components end-to-end |
+| Integration tests | `integration_test/` | End-to-end flows on a real device with Firebase (create + join event; follow/unfollow) |
+
+```bash
+flutter test test/              # 332 unit + acceptance tests
+flutter test integration_test/  # requires connected device + Firebase credentials
+```
+
+Static analysis runs with `flutter analyze` and reports zero issues. Code formatting is enforced with `dart format --set-exit-if-changed .`.
+
+---
+
+#### CI/CD
+
+The project uses GitHub Actions for continuous integration. The workflow runs on every push and pull request with four jobs:
+
+- **Format** — `dart format --set-exit-if-changed .`
+- **Analyze** — `flutter analyze`
+- **Test** — `flutter test`
+- **Build Web** — `flutter build web --release`
+
+All four jobs must pass before a pull request can be merged into `main`. During the final stages of Sprint 3, the organisation's free Actions minutes were exhausted; all checks were validated locally before merging and the workflow resumed correctly afterwards.
+
+---
+
+#### Quality Metrics
+
+| Metric | Value |
+|---|---|
+| Total tests | **332** (all passing) |
+| Static analysis issues | **0** |
+| Dart format violations | **0** |
+| Bugs documented and resolved | **17** (BUG-01 to BUG-17) |
+| Sprints completed | **3** |
+| GitHub releases published | **5** (v0, v1, v2, v3, v4) |
+
+---
+
+#### GitHub Release
+
+The final product release is published as a separate GitHub Release, distinct from the Sprint 3 release:
+
+- **Tag:** `final`
+- **Version:** v4 — Final Release
+- Includes a pre-built Android APK
+- Full `CHANGELOG.md` covering all three sprints
+- 332 tests passing (19 additional tests added post-Sprint 3)
+- `dart analyze` — 0 issues
+- Can be run locally with `flutter run`, on Android via the attached APK, or on web with `flutter run -d chrome`
+
+[View all releases](https://github.com/LEIC-ES-2025-26-2LEIC05/T5/releases)
+
+---
+
+#### Team
+
+| Name | Email |
+|---|---|
+| Artur Moreira | arturmoreira899@gmail.com |
+| Eduardo Santos | edu.santos4506@gmail.com |
+| David Gomes | david2006gomes@gmail.com |
+| Tiago Ribeiro | tiagoc8ribeiro@gmail.com |
+| Lourenço Paçô | lourencopaco06@gmail.com |
