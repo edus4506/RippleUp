@@ -175,5 +175,153 @@ void main() {
       expect(result.first.country, 'Portugal');
       expect(result.first.currentUsers, 3);
     });
+
+    test('canJoin filters out non-planning events', () {
+      final now = DateTime.now();
+      final events = [
+        // planning — starts in the future
+        buildEvent(
+          startDate: now.add(const Duration(hours: 2)),
+          endDate: now.add(const Duration(hours: 4)),
+        ),
+        // occurring — already started, not yet ended
+        buildEvent(
+          startDate: now.subtract(const Duration(hours: 1)),
+          endDate: now.add(const Duration(hours: 1)),
+        ),
+        // done — already ended
+        buildEvent(
+          startDate: now.subtract(const Duration(hours: 3)),
+          endDate: now.subtract(const Duration(hours: 1)),
+        ),
+      ];
+
+      final filter = EventFilter(canJoin: true, showDone: true);
+
+      final result = EventFilterService.apply(events, filter);
+
+      expect(result.length, 1);
+      expect(result.first.status.name, 'planning');
+    });
+
+    test('excludeCreatedBy filters out events from the given creator', () {
+      final events = [
+        buildEvent(),
+        Event(
+          id: '2',
+          title: 'Other',
+          description: '',
+          createdAt: DateTime.now(),
+          startDate: DateTime.now().add(const Duration(hours: 1)),
+          endDate: DateTime.now().add(const Duration(hours: 2)),
+          maxUsers: 5,
+          currentUsers: 1,
+          idCreator: 'excluded-creator',
+          country: 'Portugal',
+          district: 'Porto',
+          city: 'Porto',
+          objectives: const [1],
+          imageUrls: const [],
+        ),
+      ];
+
+      final filter = EventFilter(excludeCreatedBy: 'excluded-creator');
+
+      final result = EventFilterService.apply(events, filter);
+
+      expect(result.length, 1);
+      expect(result.first.idCreator, isNot('excluded-creator'));
+    });
+
+    test(
+      'startDate filter excludes events that start before the given date',
+      () {
+        final now = DateTime.now();
+        final events = [
+          buildEvent(
+            startDate: now.add(const Duration(days: 1)),
+            endDate: now.add(const Duration(days: 2)),
+          ),
+          buildEvent(
+            startDate: now.add(const Duration(days: 5)),
+            endDate: now.add(const Duration(days: 6)),
+          ),
+        ];
+
+        final filter = EventFilter(startDate: now.add(const Duration(days: 3)));
+
+        final result = EventFilterService.apply(events, filter);
+
+        expect(result.length, 1);
+        expect(
+          result.first.startDate.isAfter(now.add(const Duration(days: 2))),
+          true,
+        );
+      },
+    );
+
+    test('endDate filter excludes events that start after the given date', () {
+      final now = DateTime.now();
+      final events = [
+        buildEvent(
+          startDate: now.add(const Duration(days: 1)),
+          endDate: now.add(const Duration(days: 2)),
+        ),
+        buildEvent(
+          startDate: now.add(const Duration(days: 5)),
+          endDate: now.add(const Duration(days: 6)),
+        ),
+      ];
+
+      final filter = EventFilter(endDate: now.add(const Duration(days: 3)));
+
+      final result = EventFilterService.apply(events, filter);
+
+      expect(result.length, 1);
+      expect(
+        result.first.startDate.isBefore(now.add(const Duration(days: 4))),
+        true,
+      );
+    });
+
+    test('date range filter keeps only events within range', () {
+      final now = DateTime.now();
+      final events = [
+        buildEvent(
+          startDate: now.add(const Duration(days: 1)),
+          endDate: now.add(const Duration(days: 2)),
+        ),
+        buildEvent(
+          startDate: now.add(const Duration(days: 5)),
+          endDate: now.add(const Duration(days: 6)),
+        ),
+        buildEvent(
+          startDate: now.add(const Duration(days: 10)),
+          endDate: now.add(const Duration(days: 11)),
+        ),
+      ];
+
+      final filter = EventFilter(
+        startDate: now.add(const Duration(days: 3)),
+        endDate: now.add(const Duration(days: 7)),
+      );
+
+      final result = EventFilterService.apply(events, filter);
+
+      expect(result.length, 1);
+    });
+
+    test('returns empty list when all events are filtered out', () {
+      final events = [
+        buildEvent(currentUsers: 5, maxUsers: 5),
+        buildEvent(currentUsers: 3, maxUsers: 5, country: 'Spain'),
+      ];
+
+      final filter = EventFilter(hideFull: true, country: 'Portugal');
+
+      final result = EventFilterService.apply(events, filter);
+
+      expect(result, isEmpty);
+    });
   });
 }
