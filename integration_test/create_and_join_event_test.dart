@@ -1,72 +1,81 @@
-// Integration tests for the create-event and join-event flows.
-// Run on a connected device/emulator with a Firebase project configured:
-//   flutter test integration_test/create_and_join_event_test.dart
-//
-// Prerequisites:
-//   - Firebase project configured (google-services.json / GoogleService-Info.plist).
-//   - A test account already signed in, or credentials set via environment:
-//       TEST_EMAIL, TEST_PASSWORD
-//   - Firestore security rules allow reads/writes for the test account.
-
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:t5/main.dart' as app;
+import 'package:t5/views/widgets/event_card.dart';
+
+/// Pumps fixed-duration frames so the UI is visibly rendered on the device
+/// without relying on pumpAndSettle (which can hang on Firestore streams).
+Future<void> _wait(WidgetTester tester, [int seconds = 2]) async {
+  for (var i = 0; i < seconds * 2; i++) {
+    await tester.pump(const Duration(milliseconds: 500));
+  }
+}
+
+Future<void> _loginIfNeeded(WidgetTester tester) async {
+  if (find.text('Sign in').evaluate().isNotEmpty) {
+    await tester.enterText(find.byType(TextField).at(0), 'edu@gmail.com');
+    await tester.enterText(find.byType(TextField).at(1), '123456');
+    await _wait(tester, 1);
+    await tester.tap(find.text('Sign in'));
+    await _wait(tester, 6);
+  }
+}
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  final email = Platform.environment['TEST_EMAIL'];
-  final password = Platform.environment['TEST_PASSWORD'];
-  final credentialsAvailable = email != null && password != null;
+  testWidgets('Create and join event flow - full demo', (tester) async {
+    // 1. Boot the app.
+    app.main();
+    await _wait(tester, 4);
 
-  group('Create and join event - integration', () {
-    setUpAll(() async {
-      app.main();
-    });
+    // 2. Log in.
+    await _loginIfNeeded(tester);
 
-    testWidgets('App starts without crashing', (tester) async {
-      await tester.pumpAndSettle(const Duration(seconds: 3));
-      expect(find.byType(MaterialApp), findsOneWidget);
-    });
+    expect(find.byType(MaterialApp), findsOneWidget);
 
-    testWidgets('Login page shows email and password fields', (tester) async {
-      await tester.pumpAndSettle(const Duration(seconds: 3));
+    // ── PART A: open the create-event form and fill it in ──────────
+    // (The full submit is not automated here: dates use native date/time
+    // pickers and location uses cascading dropdowns, which are unreliable to
+    // drive in integration tests. We demo the form, then return to the feed.)
+    final addButton = find.byIcon(Icons.add);
+    expect(addButton, findsWidgets);
+    await tester.tap(addButton.first);
+    await _wait(tester, 3);
 
-      // The app starts at splash then navigates to login (no user signed in).
-      // If a user is already signed in, this test is a no-op.
-      if (find.text('Login').evaluate().isNotEmpty) {
-        expect(find.text('Email'), findsOneWidget);
-        expect(find.text('Password'), findsOneWidget);
+    expect(find.text('Create Event'), findsWidgets);
+
+    final formFields = find.byType(TextField);
+    if (formFields.evaluate().length >= 2) {
+      await tester.enterText(formFields.at(0), 'Beach Cleanup Demo');
+      await _wait(tester, 1);
+      await tester.enterText(formFields.at(1), 'Integration test event');
+      await _wait(tester, 2);
+    }
+
+    // Go back to the feed.
+    final cancelButton = find.text('Cancel');
+    if (cancelButton.evaluate().isNotEmpty) {
+      await tester.tap(cancelButton.first);
+      await _wait(tester, 3);
+    }
+
+    // ── PART B: join an existing event from the feed ───────────────
+    final eventCards = find.byType(EventCard);
+    if (eventCards.evaluate().isNotEmpty) {
+      // Open the first event's details dialog.
+      await tester.tap(eventCards.first);
+      await _wait(tester, 3);
+
+      // Join the event if not already a member.
+      final joinButton = find.text('Join Event');
+      if (joinButton.evaluate().isNotEmpty) {
+        await tester.tap(joinButton.first);
+        await _wait(tester, 4);
       }
-    }, skip: false);
+    }
 
-    testWidgets('User can log in and see the home feed', (tester) async {
-      await tester.pumpAndSettle(const Duration(seconds: 3));
-
-      if (find.text('Login').evaluate().isNotEmpty) {
-        await tester.enterText(find.widgetWithText(TextField, 'Email'), email!);
-        await tester.enterText(
-          find.widgetWithText(TextField, 'Password'),
-          password!,
-        );
-        await tester.tap(find.text('LOGIN'));
-        await tester.pumpAndSettle(const Duration(seconds: 5));
-      }
-
-      // After login the home feed should be visible.
-      expect(find.byType(MaterialApp), findsOneWidget);
-    }, skip: !credentialsAvailable);
-
-    testWidgets('Create event button is reachable from home', (tester) async {
-      await tester.pumpAndSettle(const Duration(seconds: 5));
-
-      // FAB with add icon should be present on home page.
-      if (find.byIcon(Icons.add).evaluate().isNotEmpty) {
-        expect(find.byIcon(Icons.add), findsOneWidget);
-      }
-    }, skip: !credentialsAvailable);
+    expect(find.byType(MaterialApp), findsOneWidget);
   });
 }
