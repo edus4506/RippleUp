@@ -61,21 +61,52 @@ void main() {
       await _wait(tester, 3);
     }
 
-    // ── PART B: join an existing event from the feed ───────────────
-    final eventCards = find.byType(EventCard);
-    if (eventCards.evaluate().isNotEmpty) {
-      // Open the first event's details dialog.
-      await tester.tap(eventCards.first);
+    // ── PART B: join an event the user is NOT yet in ───────────────
+    // Walk through the feed: open each event, and if it shows "Join Event"
+    // (i.e. we are not a member) join it. If it shows "Leave Event" we are
+    // already in, so close the dialog and try the next event instead of
+    // toggling our membership.
+    final cardCount = find.byType(EventCard).evaluate().length;
+    for (var i = 0; i < cardCount; i++) {
+      final cards = find.byType(EventCard);
+      if (i >= cards.evaluate().length) break;
+
+      await tester.tap(cards.at(i));
       await _wait(tester, 3);
 
-      // Join the event if not already a member.
       final joinButton = find.text('Join Event');
       if (joinButton.evaluate().isNotEmpty) {
+        // Not a member yet — join and stop.
         await tester.tap(joinButton.first);
         await _wait(tester, 4);
+        break;
+      }
+
+      // Already a member (or no join button) — close and try the next event.
+      final closeButton = find.byIcon(Icons.close);
+      if (closeButton.evaluate().isNotEmpty) {
+        await tester.tap(closeButton.first);
+        await _wait(tester, 2);
       }
     }
 
-    expect(find.byType(MaterialApp), findsOneWidget);
+    // ── PART C: open the profile and show the joined event ─────────
+    final profileTab = find.text('Profile');
+    expect(profileTab, findsWidgets);
+    await tester.tap(profileTab.first);
+    await _wait(tester, 3);
+
+    // The "Current" tab lists the events the user is enrolled in.
+    final currentTab = find.text('Current');
+    if (currentTab.evaluate().isNotEmpty) {
+      await tester.tap(currentTab.first);
+      await _wait(tester, 3);
+    }
+
+    // Either the enrolled events are listed or the empty state is shown.
+    final hasEvents = find.byType(EventCard).evaluate().isNotEmpty;
+    final isEmpty =
+        find.text('You have not joined any events yet.').evaluate().isNotEmpty;
+    expect(hasEvents || isEmpty, isTrue);
   });
 }

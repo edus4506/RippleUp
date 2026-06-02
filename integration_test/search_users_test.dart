@@ -56,5 +56,14 @@ void main() {
     final hasResults = find.byType(ListView).evaluate().isNotEmpty;
     final isEmpty = find.text('No users found.').evaluate().isNotEmpty;
     expect(hasResults || isEmpty, isTrue);
+
+    // 7. Open the first matching user's profile. Each user card carries a
+    // trailing chevron icon; tapping it triggers the card's navigation.
+    final userChevron = find.byIcon(Icons.chevron_right_rounded);
+    if (userChevron.evaluate().isNotEmpty) {
+      await tester.tap(userChevron.first);
+      await _wait(tester, 3);
+      expect(find.byType(Scaffold), findsWidgets);
+    }
   });
 }
