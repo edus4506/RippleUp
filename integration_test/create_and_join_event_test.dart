@@ -23,14 +23,16 @@ void main() {
   final credentialsAvailable = email != null && password != null;
 
   group('Create and join event - integration', () {
-    testWidgets('App starts without crashing', (tester) async {
+    setUpAll(() async {
       app.main();
+    });
+
+    testWidgets('App starts without crashing', (tester) async {
       await tester.pumpAndSettle(const Duration(seconds: 3));
       expect(find.byType(MaterialApp), findsOneWidget);
     });
 
     testWidgets('Login page shows email and password fields', (tester) async {
-      app.main();
       await tester.pumpAndSettle(const Duration(seconds: 3));
 
       // The app starts at splash then navigates to login (no user signed in).
@@ -42,7 +44,6 @@ void main() {
     }, skip: false);
 
     testWidgets('User can log in and see the home feed', (tester) async {
-      app.main();
       await tester.pumpAndSettle(const Duration(seconds: 3));
 
       if (find.text('Login').evaluate().isNotEmpty) {
@@ -60,7 +61,6 @@ void main() {
     }, skip: !credentialsAvailable);
 
     testWidgets('Create event button is reachable from home', (tester) async {
-      app.main();
       await tester.pumpAndSettle(const Duration(seconds: 5));
 
       // FAB with add icon should be present on home page.

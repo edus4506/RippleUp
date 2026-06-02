@@ -16,8 +16,11 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   group('Followers/Following page - integration', () {
-    testWidgets('App starts and renders without crashing', (tester) async {
+    setUpAll(() async {
       app.main();
+    });
+
+    testWidgets('App starts and renders without crashing', (tester) async {
       await tester.pumpAndSettle(const Duration(seconds: 3));
 
       // App starts at splash or login — just verify no crash on boot.
@@ -27,7 +30,6 @@ void main() {
     testWidgets(
       'Followers and Following tabs are visible on connections page',
       (tester) async {
-        app.main();
         await tester.pumpAndSettle(const Duration(seconds: 3));
 
         // Navigate directly if already logged in via the profile page.
@@ -56,7 +58,6 @@ void main() {
     testWidgets('Empty followers list shows empty state message', (
       tester,
     ) async {
-      app.main();
       await tester.pumpAndSettle(const Duration(seconds: 3));
 
       // Navigate to the connections page if reachable.
@@ -87,7 +88,6 @@ void main() {
     testWidgets('Follow button is visible for another user in the list', (
       tester,
     ) async {
-      app.main();
       await tester.pumpAndSettle(const Duration(seconds: 3));
 
       final profileIconFinder = find.byTooltip('Profile');
@@ -114,7 +114,6 @@ void main() {
     testWidgets('Tapping a user in the list navigates to their profile', (
       tester,
     ) async {
-      app.main();
       await tester.pumpAndSettle(const Duration(seconds: 3));
 
       final profileIconFinder = find.byTooltip('Profile');
